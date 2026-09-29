@@ -395,3 +395,62 @@ def test_retained_headroom_is_the_share_of_the_free_advantage_that_the_scorer_ke
 def test_break_even_instances():
     assert hd.break_even_instances(1000.0, [500.0, 700.0], [100.0, 300.0]) == pytest.approx(1000.0 / 400.0)
     assert hd.break_even_instances(1000.0, [100.0], [100.0]) is None and hd.break_even_instances(1000.0, [100.0], [200.0]) is None
+
+
+# ---- the table script ---------------------------------------------------------------------------
+
+def test_d4_2_table_script_reads_a_run_directory_in_report_order(tmp_path):
+    import importlib.util
+    import json as _json
+    from pathlib import Path
+
+    spec = importlib.util.spec_from_file_location("d4_2_tables", Path(__file__).resolve().parents[1] / "scripts" / "d4_2_tables.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    def diff(high):
+        return {"ci_low": high - 0.4, "ci_high": high, "estimate": high - 0.2, "ratio_of_geometric_means": math.exp(high - 0.2)}
+
+    pairs = ["amortised / uniform_pass", "cheap / uniform_pass", "cheap_adjoint / uniform_pass", "adjoint / uniform_pass", "residual / uniform_pass",
+             "goal_local / uniform_pass", "indicator / uniform_pass", "cheap_adjoint / cheap", "amortised / cheap", "amortised / cheap_adjoint",
+             "adjoint_free / amortised", "adjoint_free / uniform_pass", "adjoint / amortised"]
+    arms = ("uniform_pass", "amortised", "cheap", "cheap_adjoint", "adjoint", "adjoint_free", "residual", "goal_local", "indicator")
+
+    def block(r1_high, r3_high):
+        out = {}
+        for t in hd.TARGETS:
+            highs = {p: 0.5 for p in pairs}
+            highs["amortised / uniform_pass"], highs["cheap_adjoint / cheap"] = r1_high, r3_high
+            out[t] = {"median_compute": {a: 100.0 for a in arms}, "fraction_reached": {a: 1.0 for a in arms}, "differences": {p: diff(highs[p]) for p in pairs}}
+        return out
+
+    summary = {"summary": {c: {m: block(-0.1, -0.1 if c == "b" else 0.1) for m in ("loglog", "semilog", "staircase")} for c in ("b", "a")},
+               "methods": ["loglog", "semilog", "staircase"], "primary_method": "loglog", "pairs": [], "selected_theta": {}, "selected_hidden": {}}
+    price = {"flops_per_step": 4768, "ratio_to_step_doubling": {"amortised": 0.49, "cheap": 0.14, "cheap_adjoint": 0.15, "indicator": 0.09, "residual": 1.0, "goal_local": 1.0, "adjoint": 1.5},
+             "steps_per_interval": {"amortised": 0.98, "cheap": 0.28, "cheap_adjoint": 0.31, "indicator": 0.17, "residual": 2.0, "goal_local": 2.0, "adjoint": 3.0}, "table_setup_steps": 3518.7}
+    cells = [{"cell": "b", "m": 32, "hidden": 16, "R1": True, "R3": True, "candidate_regime_for_d4_1": True},
+             {"cell": "a", "m": 4, "hidden": 8, "R1": True, "R3": False, "candidate_regime_for_d4_1": False}]
+    report = {"cells": cells, "price_reports": {"a": price, "b": price}, "selected_hidden": {"a": 8, "b": 16},
+              "one_off_costs_and_break_even": {c: {"amortised_training_steps": 1e6, "amortised_break_even_instances": None, "costate_table_setup_steps": 3518.7,
+                                                   "cheap_adjoint_break_even_instances": 6.5} for c in ("a", "b")},
+              "retained_headroom": {c: {t: 0.5 if t != "gap1%" else None for t in hd.TARGETS} for c in ("a", "b")}}
+    (tmp_path / "artifacts").mkdir()
+    (tmp_path / "reports").mkdir()
+    (tmp_path / "artifacts/validation_summary.json").write_text(_json.dumps(summary))
+    (tmp_path / "reports/acceptance_report.json").write_text(_json.dumps(report))
+    (tmp_path / "artifacts/theta_tuning.csv").write_text("cell,arm,theta_0.85,theta_0.95,selected,selected_at_grid_edge\nb,cheap,10,20,0.85,True\n")
+    (tmp_path / "artifacts/hidden_size_selection.csv").write_text(
+        "cell,hidden,tuning_geometric_mean_compute,val_rmse_log10,epochs_run,training_flops,n_train\nb,16,300,0.45,40,1,1\na,8,200,0.5,30,1,1\n")
+    data = module.load(tmp_path)
+    prices = module.price_table(data["report"]).splitlines()
+    assert prices[2].startswith("| b | 32 |") and prices[3].startswith("| a | 4 |")                    # report order, not alphabetical
+    assert "0.490" in prices[2] and "3519" in prices[2]
+    assert "8: 200" not in module.scorer_table(data["hidden"], data["report"]).splitlines()[2]           # cell b lists its own sizes only
+    table = module.compute_table(data["summary"], "loglog", module.cell_order(data["report"]))
+    assert len(table.splitlines()) == 2 + 2 * 3 and "| b | 10% |" in table
+    rules = module.rules_table(data).splitlines()
+    assert rules[2].startswith("| b | True | True | True |") and rules[3].startswith("| a | True | False | False |")
+    assert "n/a" in module.headroom_table(data["report"]) and "6.5" in module.headroom_table(data["report"])
+    report["cells"][1]["R1"] = False                                                                       # a report that disagrees with the rules is caught
+    with pytest.raises(AssertionError, match="does not reproduce"):
+        module.rules_table({**data, "report": report})
