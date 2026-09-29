@@ -1,5 +1,38 @@
 # Changelog
 
+## 2026-09-29 (e): cross-domain track and the D4 reference domain
+
+- **Plan.** Added `docs/plans/cross-domain-plan.md` (Track D). It turns Roman's domain-portfolio brief into a programme reconciled with the governing plan:
+  - a domain admission checklist mapped to `DomainSpec`;
+  - portfolio A–P mapped to plan families, tiers and phases;
+  - how the brief's `AllocationDomain` interface is implemented;
+  - cards for D1–D4;
+  - an experimental ladder from specialists through shared allocator and leave-one-domain-out to N6;
+  - universal metrics using the plan's definitions;
+  - governance for high-stakes and proprietary domains;
+  - open questions.
+
+  The brief ranks LLM context first; the plan proposes D4 first, consistent with the governing N1 → N2 → N6 order. This is flagged as a question for Roman.
+- **Package `adjointrwm.domains`** (NumPy only):
+  - `Cost` and `Candidate` with R/C/L/Q ledgers;
+  - a `DomainSpec` subset;
+  - the `AllocationDomain` interface;
+  - a policy runner that enforces privilege (deployable policies never receive the instance);
+  - generic one-step and exhaustive oracles;
+  - metrics: regret, `AURC`, adaptive gain, fraction of oracle advantage, opportunity over budgets, `TransferMacro`/`TransferWorst`, and a best-known reference curve.
+- **D4 reference domain** (`linear_ode.py`): goal-oriented adaptive time stepping for a linear ODE with Crank–Nicolson, an exact matrix-exponential reference, the discrete co-state recursion (plan §4.2) and a frozen-seed instance family.
+  - Declared objective: the cancellation-free error bound `Σ|Λᵀτ|`.
+  - The signed QoI error rewarded lucky cancellations, so it is a secondary metric.
+- **New notebook `notebooks/04-domains/d4_adaptive_time_stepping.ipynb` (D4-0). Not run yet.** It runs on CPU and covers correctness, the opportunity gate on validation, and a test-family comparison of residual, goal-local and co-state weighting.
+- **Tests.** 119 tests (16 new). New coverage:
+  - the error representation is exact to rounding;
+  - the reference matches a closed form;
+  - the co-state matches finite differences;
+  - CN is second order;
+  - deployable policies never read the exact solution;
+  - the exhaustive oracle bounds the greedy one;
+  - ledgers and metrics.
+
 ## 2026-09-29 (d): rival-model benchmark track, pilot v2, tested training package
 
 - **Plan.** Added `docs/plans/rival-benchmark-plan.md` (Track B). It covers:

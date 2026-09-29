@@ -40,6 +40,7 @@ PRODUCTION PROMOTION           BLOCKED
 HARDWARE                       STAY ON L4 (pilot peak 0.6 GiB)
 PILOT V2 (E2.1/E2.2 = B2)      NOTEBOOK READY, NOT RUN
 RIVAL-MODEL BENCHMARK (B1)     NOTEBOOK READY, NOT RUN
+CROSS-DOMAIN (TRACK D)         PLAN + D4 REFERENCE DOMAIN READY; D4-0 NOT RUN
 ```
 
 ---
@@ -63,6 +64,7 @@ Later (wk 15-68) N4 selective invocation, N5 control, N6 joins, N7 latent, N8 ha
 
 - **Track R** answers the scientific question on benchmarks where the right answer is known.
 - **Track E** builds the real-data substrate (loader, splits, checkpoints, dynamics) that any production model needs, whatever H2 turns out to be. Track E never produces an adjoint-superiority claim by itself.
+- **Track D** generalises the allocator beyond DROID: time series, LLM context, code, simulation, sensing and more (see [`cross-domain-plan.md`](cross-domain-plan.md)). It starts with D4, an exact-adjoint simulation domain, and reaches confirmatory cross-domain claims only through N6.
 - **Track B** benchmarks against rival models under an enforced fairness contract: rival world-model families for the Track E substrate (B1, B3) and rival allocators for H2 on DROID (B2 = E2.1/E2.2). See [`rival-benchmark-plan.md`](rival-benchmark-plan.md). A world-model result says nothing about H2.
 
 ---
@@ -108,6 +110,16 @@ Dates assume a start of Mon 29 Sep 2026 and one person working part-time on Cola
 | B3 | B1 repeated on the E3.1 shard with scene/task/site splits | Confirmatory substrate comparison | Waits for E3.1 |
 | B4 | Released-checkpoint and encoder-swap arms (exploratory; V-JEPA 2-AC is DROID-trained, so contamination is possible) | Contamination status recorded | Optional |
 | B5 | Planning rivals in simulation (official TD-MPC2 code, CEM on ManiSkill3) | — | Gated on G-H2 and Phase II |
+
+### Track D: cross-domain generalisation (details in [`cross-domain-plan.md`](cross-domain-plan.md))
+
+| ID | Deliverable | Done when | Status (2026-09-29) |
+|---|---|---|---|
+| D0 | Plan; `adjointrwm.domains` (interface, runner, ledgers, metrics); D4 reference domain with exact tests | `harness/check.py` passes | Done |
+| D4-0 | `04-domains/d4_adaptive_time_stepping.ipynb` on CPU: correctness + opportunity gate + weighting comparison | Run imported, note written | Not run |
+| D4-1 | Learned direct critic vs co-state-featured critic on D4, 5 seeds | Rung-1 gate, §0A.3 exit class | Waits for D4-0 opportunity |
+| D2-0, D1-0, D3-0 | LLM-context, sensor-stream and graph domain cards and adapters (Tier P) | Rung-0 gate | Wait for model, data and licence choices |
+| DX | Shared allocator, leave-one-domain-out, negative-transfer guard | Rungs 2–3; confirmatory only in N6 | Waits for ≥ 3 specialists and the N2 exit class |
 
 **Progress on existing rows (2026-09-29, not yet run on Colab):**
 
@@ -202,3 +214,8 @@ Every sentence in a submission maps to a gate artefact through a claim matrix (p
 5. **Rival benchmark endpoint:** normalised-state RMSE (the pilot's gate metric, assumed) or native-unit RMSE of one state group as the B1 primary endpoint?
 6. **TD-MPC2 input:** information-matched 8-frame stack (assumed) or the faithful single frame as the primary TD-MPC2 arm?
 7. **B4:** run the released V-JEPA 2-AC checkpoint at all, given possible DROID train/test contamination and a ViT-g encoder on L4?
+8. **Track D, first experiment:** D4, the exact-adjoint simulation (assumed; consistent with the governing plan's N1 → N2 → N6 order), or D2, LLM context (the domain brief's first pick)?
+9. **Track D, D3:** code-repository context (assumed) or database query planning?
+10. **Track D, D2:** which frozen LLM and which QA dataset(s)? They need an L4 fit and a recorded licence.
+11. **Track D, ERP:** is there a de-identified dataset licensed for research? Otherwise ERP stays out of research runs.
+12. **Governing plan:** should N6 be amended to name these domains? That needs explicit instruction and a deviation-log entry.

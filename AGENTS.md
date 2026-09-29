@@ -10,7 +10,7 @@ This repo is research on **adjoint-guided recursive world models (AdjointRWM)**.
 
 It is a **research** repo. Correctness of evidence matters more than speed, and a wrong-but-plausible number does more harm than no number.
 
-- **Status and plan:** read `README.md`, then `docs/plans/roadmap.md`. Milestone IDs there (N0.1, E2.1, B1, …) name the work items. Benchmarks against rival models (Track B) follow `docs/plans/rival-benchmark-plan.md`.
+- **Status and plan:** read `README.md`, then `docs/plans/roadmap.md`. Milestone IDs there (N0.1, E2.1, B1, …) name the work items. Benchmarks against rival models (Track B) follow `docs/plans/rival-benchmark-plan.md`; other domains (Track D) follow `docs/plans/cross-domain-plan.md`.
 - **Governing protocol:** `docs/research-plan/adjoint_guided_comprehensive_research_plan.md`. It is ~390 KB, so grep it rather than reading it whole.
 - **What counts as evidence:** `docs/audits/README.md` and `docs/research-notes/`.
 
@@ -31,7 +31,7 @@ The GPU training pipeline runs **only in Google Colab** (`notebooks/01-productio
 
 | Path | Contents | Rules |
 |---|---|---|
-| `src/adjointrwm/` | Tested Python package: data contracts, metrics, world-model arms, training runner, allocators | Every new function gets a test in `tests/`; notebooks import it |
+| `src/adjointrwm/` | Tested Python package: data contracts, metrics, world-model arms, training runner, allocators, domain-neutral allocation layer (`domains/`) | Every new function gets a test in `tests/`; notebooks import it |
 | `scripts/` | CLIs over `src/` | Thin wrappers; logic belongs in `src/` |
 | `notebooks/` | Colab notebooks | See `notebooks/AGENTS.md` |
 | `results/runs/<run_id>/` | Imported run artefacts | **Immutable once committed.** See `results/AGENTS.md` |

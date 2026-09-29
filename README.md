@@ -19,6 +19,7 @@ The core question: can a recursive world model decide where to spend representat
 | Evidence-integrity reset (N0) | ⏳ in progress: pilot code lifted into `src/` with parity, causality, finite-difference and resume tests | [roadmap §3](docs/plans/roadmap.md) |
 | Pilot v2: fixed allocation contract + rival allocators (E2.1/E2.2 = B2) | ⏳ notebook ready, **not run** | [plan §5](docs/plans/rival-benchmark-plan.md) |
 | Benchmark vs rival world models (B1: DreamerV3-, TD-MPC2-, DINO-WM-, V-JEPA 2-AC-style) | ⏳ notebook ready, **not run** | [plan](docs/plans/rival-benchmark-plan.md) |
+| Cross-domain generalisation (Track D): D4 exact-adjoint reference domain | ⏳ domain and CPU notebook ready, **not run** | [plan](docs/plans/cross-domain-plan.md) |
 | Analytic correctness on LQTree (N1) | ⏳ not started as a gate | — |
 | Task success / planning | not measured | — |
 | Hardware | stay on L4 (pilot peak 0.6 GiB) | [operator brief](docs/production/colab_l4_operator_brief.md) |
@@ -34,6 +35,7 @@ docs/
   README.md                 Documentation index and conventions
   plans/roadmap.md          Future roadmap: tracks, milestones, gates, decision tree, open questions
   plans/rival-benchmark-plan.md  Track B: rival world models and rival allocators, fairness contract
+  plans/cross-domain-plan.md     Track D: generalising the allocator to other domains (text, signals, graphs, simulation, ...)
   research-plan/            Research protocols: comprehensive cross-domain plan (governing) + v5
   production/               Production training plan (gated) + Colab L4 operator brief (binding)
   research-notes/           Dated findings from runs that count as evidence
@@ -46,9 +48,10 @@ notebooks/
   01-production/            Pilot v1 (provenance) and Pilot v2 (fixed allocation contract, rival allocators)
   02-diagnostics/           opportunity_audit.ipynb: run after the pilot, no retraining
   03-benchmarks/            rival_world_models_droid100.ipynb: AdjointRWM vs rival world-model families
+  04-domains/               d4_adaptive_time_stepping.ipynb: first cross-domain reference domain (CPU)
   archive/                  Earlier notebooks, kept for provenance only
 src/adjointrwm/             Tested package the notebooks import: data contracts, metrics, world-model arms,
-                            resumable training runner, allocators, analysis
+                            resumable training runner, allocators, analysis, domain-neutral allocation layer
 scripts/                    CLI tools (analyze_allocation_traces.py)
 harness/                    Cross-tool agent harness: sync, checks, hooks (see AGENTS.md)
 .agents/skills/             Portable agent skills shared by all coding agents

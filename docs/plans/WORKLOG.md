@@ -21,6 +21,27 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 
 ---
 
+## 2026-09-29 13:50 (BST) · Claude Code (web) · D0, D4-0
+
+- **Changed:** added Track D, cross-domain generalisation, from Roman's domain-portfolio brief:
+  - the plan, `docs/plans/cross-domain-plan.md`;
+  - `src/adjointrwm/domains/`: interface, runner, ledgers, metrics and D4;
+  - the D4-0 notebook, `notebooks/04-domains/d4_adaptive_time_stepping.ipynb`;
+  - updates to the roadmap, READMEs and `AGENTS.md`.
+- **Design findings while building D4:**
+  - 1-D Poisson mesh refinement cannot tell adjoint weighting from goal-local weighting (the weight `z − I_h z` is local), so D4 uses time stepping instead.
+  - The signed QoI error rewards lucky cancellations, so the objective is the bound `Σ|Λᵀτ|`.
+  - The greedy one-step oracle can be beaten, so regret uses a best-known curve.
+- **Verified:**
+  - `pytest`: 119 passed. `harness/check.py --base origin/main` passes 7/7.
+  - The D4 error representation holds to about 1e-16 relative error, and the reference matches a closed form to 1e-11.
+  - The D4-0 notebook runs end to end on CPU (smoke config; numbers not recorded).
+  - The previous push's CI passed.
+- **Open:**
+  - D4-0 has not been run at full size; it takes a few CPU minutes.
+  - Roadmap open questions 8–12 need Roman's decision (first domain, D3 choice, D2 model and data, ERP data, N6 amendment).
+- **Next:** run D4-0 and import it. If the opportunity gate passes, design D4-1 (learned direct critic vs co-state-featured critic).
+
 ## 2026-09-29 13:25 (BST) · Claude Code (web) · B0, E2.1, E2.2, N0.1, N0.3
 
 - **Changed:** added Track B, the benchmark against rival models. It has four parts:
