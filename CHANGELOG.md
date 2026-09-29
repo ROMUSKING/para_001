@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-29 (i): licence survey pass 2; `.gitattributes`
+
+- **`.gitattributes`:** `results/runs/**` is marked `linguist-generated`, so GitHub collapses the run-artefact diffs by default (they were 33,561 of 43,388 added lines on the branch). No file changes; `instances.json` is not compacted (Roman's decision).
+- **Licence survey pass 2** (network access widened): register grown to 59 rows (17 `adopt`, 12 `adopt_with_conditions`, 5 `avoid`, 25 `unverified`), 124 evidence URLs, 14 probes. New in `scripts/licence_survey.py`: licence fields from JSON answers and HTML catalogue markup, Hugging Face gating, commit and parameter counts, structure probes of Hugging Face datasets through the datasets server, and a licence census over the repositories behind SWE-bench Verified. `tests/test_licences.py` has 16 tests. See `docs/licences/survey-2026-09-29-pass2.md`.
+- **Findings:** Gemma 4 is Apache-2.0 where Gemma 3 was custom; TriviaQA's and LongBench v1's owner statements conflict or are silent; JOB's IMDb data is non-commercial, which closes the query-planning route for D3; 490 of 500 SWE-bench Verified instances come from repositories with a permissive-family licence file.
+- **Tests:** 151 (was 143).
+
 ## 2026-09-29 (h): licence survey, pass 1 (milestone DL)
 
 - **Roman's decision:** licence survey first, then the rest.

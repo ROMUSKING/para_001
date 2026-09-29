@@ -21,6 +21,19 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 
 ---
 
+## 2026-09-29 22:53 (BST) · Claude Code (web) · DL
+
+- **Decisions (Roman):** add `.gitattributes` but do not compact `instances.json`; network access is on; proceed according to plan.
+- **Changed:**
+  - Added `.gitattributes` (`results/runs/**` as `linguist-generated`).
+  - Licence survey pass 2: register 59 rows, 124 evidence URLs, 14 probes; `scripts/licence_survey.py` now reads JSON licence fields, HTML catalogue markup, Hugging Face gating, commits and parameter counts, probes Hugging Face datasets through the datasets server and runs a licence census over the repositories behind SWE-bench Verified. New note `docs/licences/survey-2026-09-29-pass2.md`; plan, roadmap, README and changelog updated.
+- **Verified:** `pytest -q`: 151 passed. The note's model table (11 rows: parameters and BF16 weight sizes), verdict counts, evidence counts and the census were checked programmatically against `evidence.jsonl`, `register.csv` and `probes.jsonl`.
+- **Result:** 17 `adopt`, 12 `adopt_with_conditions`, 5 `avoid`, 25 `unverified`. Licence candidates: D2 Qwen3-8B (Apache-2.0, licence file read) with MuSiQue and Qasper; D1 SMD, UCI electricity, Monash records; D3 code-repository context (JOB's IMDb data is non-commercial; STATS-CEB has no licence). Owner statements conflict for TriviaQA and are silent for LongBench v1. Datasets server returned 501 for LongBench v2 (recorded as a failed probe).
+- **Open:** Roman to confirm the D1, D2 and D3 candidates before any domain card is written; QuALITY annotation licence, TriviaQA, TPC terms and the licence files of the checkpoints that had none in their listing; the Hugging Face file CDN is still unreachable (no dataset file was downloaded from Hugging Face).
+- **Next:** D4-2 (CPU): learned amortised scorer priced at its measured cost, higher-dimensional system, one factor varied at a time, wider `θ` grid on the tuning family only; freeze regime and price before reading validation. E1.1 and B2 still need Colab.
+
+---
+
 ## 2026-09-29 20:40 (BST) · Claude Code (web) · DL
 
 - **Decision (Roman):** licence survey first, then the rest.

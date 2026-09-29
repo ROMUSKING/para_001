@@ -119,3 +119,63 @@ def test_quality_census_counts_licence_classes():
     dev = census["dev"]
     assert dev["articles"] == 4 and dev["question_sets"] == 5 and dev["questions"] == 8
     assert dev["articles_by_licence_class"] == {"CC BY 4.0": 1, "OANC licence (URL only)": 1, "Project Gutenberg licence": 1, "none": 1}
+
+
+def test_json_licence_values_finds_nested_and_list_values():
+    hf = {"cardData": {"license": ["cc-by-sa-4.0"], "license_name": "Custom"}, "tags": ["license:x"]}
+    assert survey.json_licence_values(hf) == {"Custom": 1, "cc-by-sa-4.0": 1}
+    zenodo = {"hits": {"hits": [{"metadata": {"license": {"id": "cc-by-4.0"}}}, {"metadata": {"license": {"id": "cc-by-4.0"}}},
+                                {"metadata": {"license": {"id": "cc-by-3.0"}}}, {"metadata": {}}]}}
+    assert survey.json_licence_values(zenodo) == {"cc-by-4.0": 2, "cc-by-3.0": 1}
+    assert survey.json_licence_values({"name": "no licence key"}) == {}
+
+
+def test_jsonld_licences_reads_catalogue_markup():
+    page = '<html><script type="application/ld+json">{"@type":"Dataset","license":{"@type":"CreativeWork","name":"CC0: Public Domain"}}</script><script>var x=1</script></html>'
+    assert survey.jsonld_licences(page) == {"CC0: Public Domain": 1}
+    assert survey.jsonld_licences("<html>none</html>") == {}
+    assert survey.jsonld_licences('<script type="application/ld+json">{broken</script>') == {}
+
+
+def test_hf_summary_extracts_gating_licence_files_and_size():
+    obj = {"id": "org/model", "sha": "abc", "cardData": {"license": "apache-2.0"}, "gated": "manual", "tags": ["x", "license:apache-2.0"],
+           "siblings": [{"rfilename": "LICENSE"}, {"rfilename": "model.safetensors"}], "safetensors": {"total": 123}, "lastModified": "2026-01-01"}
+    s = survey.hf_summary(obj)
+    assert s["license"] == "apache-2.0" and s["gated"] == "manual" and s["licence_files"] == ["LICENSE"] and s["safetensors_total_params"] == 123
+    assert s["licence_tags"] == ["license:apache-2.0"]
+    assert survey.hf_summary({"id": "org/x"})["license"] is None
+
+
+def test_html_to_text_drops_scripts_and_splits_on_tags():
+    page = "<html><style>p{}</style><body><h1>Terms</h1><p>Licensed under <b>CC BY 4.0</b></p><script>var license='x'</script></body></html>"
+    text = survey.html_to_text(page)
+    assert "var license" not in text and "p{}" not in text and "Terms" in text.splitlines()
+    assert survey.licence_lines(text) == ["Licensed under", "CC BY 4.0"]
+
+
+def test_guess_licence_recognises_common_families():
+    assert survey.guess_licence("MIT License\n\nPermission is hereby granted, free of charge, to any person") == "MIT"
+    assert survey.guess_licence("Apache License\n Version 2.0, January 2004") == "Apache-2.0"
+    assert survey.guess_licence("Redistribution and use in source and binary forms ... Neither the name of") == "BSD-3-Clause"
+    assert survey.guess_licence("Redistribution and use in source and binary forms, with or without") == "BSD-2-Clause"
+    assert survey.guess_licence("GNU LESSER GENERAL PUBLIC LICENSE Version 3") == "LGPL"
+    assert survey.guess_licence("GNU GENERAL PUBLIC LICENSE Version 2") == "GPL"
+    assert survey.guess_licence("License agreement for matplotlib versions 1.3.0 and later") == "PSF-style"
+    assert survey.guess_licence("something else entirely") == "unrecognised"
+
+
+def test_feature_types_collapses_nested_types():
+    features = [{"name": "q", "type": {"dtype": "string", "_type": "Value"}}, {"name": "ctx", "type": {"feature": {"dtype": "string"}, "_type": "Sequence"}},
+                {"name": "rows", "type": [{"a": 1}]}, {"name": "d", "type": {"a": {"dtype": "int64"}}}]
+    assert survey.feature_types(features) == {"q": "string", "ctx": "Sequence", "rows": "list", "d": "struct"}
+
+
+def test_swebench_census_probe_is_consistent(probes):
+    census = probes["swebench_repos"]["result"]
+    assert census["rows"] == sum(v["instances"] for v in census["per_repo"].values()) == sum(census["instances_by_licence_family_guess"].values())
+    assert census["repos"] == len(census["per_repo"]) and census["repos"] >= 10
+
+
+def test_no_probe_named_in_the_register_failed(rows, probes):
+    named = {pid for r in rows for pid in r["probe"].split()}
+    assert named and all(probes[pid]["http_status"] in (200, 206) and probes[pid]["result"] is not None for pid in named)

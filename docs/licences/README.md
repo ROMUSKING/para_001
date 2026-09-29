@@ -1,6 +1,6 @@
 # Licence register (milestone DL)
 
-What this folder is: a checkable record of the licence and release terms of every dataset and frozen model the cross-domain track might use ([`docs/plans/cross-domain-plan.md`](../plans/cross-domain-plan.md), §8: "Every dataset and every frozen model gets a licence record before the first run"). The findings are in the dated survey notes, the first being [`survey-2026-09-29.md`](survey-2026-09-29.md).
+What this folder is: a checkable record of the licence and release terms of every dataset and frozen model the cross-domain track might use ([`docs/plans/cross-domain-plan.md`](../plans/cross-domain-plan.md), §8: "Every dataset and every frozen model gets a licence record before the first run"). The findings are in the dated survey notes: [pass 1](survey-2026-09-29.md) (GitHub-reachable sources only) and [pass 2](survey-2026-09-29-pass2.md) (after network access was widened).
 
 | File | Role |
 |---|---|
