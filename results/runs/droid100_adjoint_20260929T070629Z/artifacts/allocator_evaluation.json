@@ -1,0 +1,15 @@
+{
+  "adjoint_beats_random": false,
+  "hybrid_not_worse_than_best_component": false,
+  "metrics": {
+    "adjoint_regret": 0.03736689916984764,
+    "adjoint_top1": 0.1568862275449102,
+    "critic_regret": 0.03827881829110448,
+    "critic_top1": 0.15808383233532936,
+    "hybrid_regret": 0.03827881829110448,
+    "hybrid_top1": 0.15808383233532936,
+    "invocation_count": 0.0,
+    "random_regret": 0.021112282516178256
+  },
+  "passed": false
+}

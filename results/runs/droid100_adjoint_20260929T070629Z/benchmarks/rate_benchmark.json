@@ -1,0 +1,6 @@
+{
+  "codec": "zlib pilot byte count; not the final canonical coder",
+  "raw_bits": 1048576,
+  "compressed_bits": 302712,
+  "bits_per_candidate_scalar": 2.30950927734375
+}

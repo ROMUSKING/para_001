@@ -1,0 +1,113 @@
+{
+  "run_id": "droid100_adjoint_20260929T070629Z",
+  "status": {
+    "data": "PASS",
+    "dynamics": "PASS",
+    "allocation": "FAIL",
+    "tests": "FAIL",
+    "production_status": "BLOCKED",
+    "hardware_decision": "CONTINUE_L4: no measured hardware bottleneck."
+  },
+  "config_hash": "433e7473f00c795e812346de93bacad23d47d1bd25189f16205c8e2836affa87",
+  "data_manifest_hash": "109b3a871d7a2ad1c4c3b10e1a4d4b4b223a2228d684354c4d4b9174ea75950b",
+  "source_hash": "18d7cbb47a524e3c1309d23a172ffb7987d3d30cc4d45dbe0773bb14687205cf",
+  "best_dynamics_checkpoint": {
+    "path": "/content/drive/MyDrive/Colab Notebooks/AdjointRWM_Production/runs/droid100_adjoint_20260929T070629Z/checkpoints/best_dynamics.pt",
+    "sha256": "4b0f07177221ae63467bd0ce7f8ae97545e9fc92a27b3a0731551648709fcc3d"
+  },
+  "best_allocator_checkpoint": {
+    "path": "/content/drive/MyDrive/Colab Notebooks/AdjointRWM_Production/runs/droid100_adjoint_20260929T070629Z/checkpoints/best_allocator.pt",
+    "sha256": "95e1dab2eee371c3785a669cbeb60d5e30d12863511efab7c0be8792c875d1a2"
+  },
+  "dynamics_evaluation": {
+    "full_rmse": 0.1555880680680275,
+    "persistence_rmse": 0.22619297169148922,
+    "relative_improvement": 0.3121445511567958,
+    "required_margin": 0.02,
+    "passed": true,
+    "visual_cosine": 0.769251137971878
+  },
+  "allocator_evaluation": {
+    "metrics": {
+      "adjoint_regret": 0.03736689916984764,
+      "critic_regret": 0.03827881829110448,
+      "hybrid_regret": 0.03827881829110448,
+      "random_regret": 0.021112282516178256,
+      "adjoint_top1": 0.1568862275449102,
+      "critic_top1": 0.15808383233532936,
+      "hybrid_top1": 0.15808383233532936,
+      "invocation_count": 0.0
+    },
+    "adjoint_beats_random": false,
+    "hybrid_not_worse_than_best_component": false,
+    "passed": false
+  },
+  "systems_benchmark": {
+    "gpu": "NVIDIA L4",
+    "gpu_vram_gib": 22.0343017578125,
+    "selected_microbatch": 64,
+    "peak_training_vram_gib": 0.602226734161377,
+    "direct_critic": {
+      "p50_ms": 0.24063999950885773,
+      "p95_ms": 0.25809919834136963,
+      "p99_ms": 0.2733446499705315,
+      "mean_ms": 0.24121184080839156
+    },
+    "amortized_adjoint": {
+      "p50_ms": 0.28467200696468353,
+      "p95_ms": 0.3544032141566274,
+      "p99_ms": 0.5039206612110139,
+      "mean_ms": 0.29512576073408125
+    },
+    "exact_adjoint_teacher": {
+      "p50_ms": 15.344640254974365,
+      "p95_ms": 17.754152488708495,
+      "p99_ms": 17.81555980682373,
+      "mean_ms": 15.665054321289062
+    },
+    "task_success": "NOT_MEASURED",
+    "task_success_reason": "No external simulator or physical robot evaluation was attached to this offline dataset run."
+  },
+  "rate_benchmark": {
+    "codec": "zlib pilot byte count; not the final canonical coder",
+    "raw_bits": 1048576,
+    "compressed_bits": 302712,
+    "bits_per_candidate_scalar": 2.30950927734375
+  },
+  "test_results": [
+    {
+      "name": "data_contract",
+      "status": "PASS"
+    },
+    {
+      "name": "split_contract",
+      "status": "PASS"
+    },
+    {
+      "name": "future_shift_contract",
+      "status": "PASS"
+    },
+    {
+      "name": "model_finite",
+      "status": "PASS"
+    },
+    {
+      "name": "dynamics_gate",
+      "status": "PASS"
+    },
+    {
+      "name": "allocator_negative_control",
+      "status": "FAIL",
+      "error": "AssertionError()",
+      "traceback": "Traceback (most recent call last):\n  File \"/tmp/ipykernel_3577/2673317049.py\", line 10, in record_test\n    function()\n    ~~~~~~~~^^\n  File \"/tmp/ipykernel_3577/2673317049.py\", line 52, in test_allocator_negative_control\n    assert ALLOCATION_GATE['adjoint_beats_random']\n           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "name": "checkpoint_payload",
+      "status": "PASS"
+    },
+    {
+      "name": "checkpoint_roundtrip",
+      "status": "PASS"
+    }
+  ]
+}

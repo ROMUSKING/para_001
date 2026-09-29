@@ -1,0 +1,6 @@
+# Analysis + tests (CPU). Install with: pip install -e ".[dev]"
+numpy>=1.26
+pandas>=2.1
+pyarrow>=14
+nbformat>=5.9
+pytest>=8

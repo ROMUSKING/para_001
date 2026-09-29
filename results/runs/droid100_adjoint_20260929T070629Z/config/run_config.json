@@ -1,0 +1,47 @@
+{
+  "config": {
+    "allocator_learning_rate": 0.0001,
+    "allocator_steps": 750,
+    "baseline_improvement_margin": 0.02,
+    "candidate_cost_weight": 0.002,
+    "candidate_costs": [
+      1.0,
+      1.0,
+      1.5,
+      2.0
+    ],
+    "checkpoint_interval": 250,
+    "context_len": 8,
+    "d_model": 512,
+    "dataset_data_dir": "gs://gresearch/robotics",
+    "dataset_name": "droid_100",
+    "dropout": 0.1,
+    "dynamics_steps": 1500,
+    "embedding_batch_size": 64,
+    "eval_interval": 100,
+    "frame_stride": 2,
+    "gradient_clip": 1.0,
+    "horizon": 4,
+    "image_size": 128,
+    "learning_rate": 0.0003,
+    "max_episodes": 100,
+    "microbatch_candidates": [
+      8,
+      16,
+      32,
+      64
+    ],
+    "num_refinement_candidates": 4,
+    "rate_beta": 0.002,
+    "seed": 20260928,
+    "transformer_ff": 2048,
+    "transformer_heads": 8,
+    "transformer_layers": 6,
+    "visual_embedding_dim_per_camera": 512,
+    "warmup_steps": 100,
+    "weight_decay": 0.05,
+    "window_stride": 2
+  },
+  "config_sha256": "433e7473f00c795e812346de93bacad23d47d1bd25189f16205c8e2836affa87",
+  "run_id": "droid100_adjoint_20260929T070629Z"
+}

@@ -1,0 +1,26 @@
+{
+  "gpu": "NVIDIA L4",
+  "gpu_vram_gib": 22.0343017578125,
+  "selected_microbatch": 64,
+  "peak_training_vram_gib": 0.602226734161377,
+  "direct_critic": {
+    "p50_ms": 0.24063999950885773,
+    "p95_ms": 0.25809919834136963,
+    "p99_ms": 0.2733446499705315,
+    "mean_ms": 0.24121184080839156
+  },
+  "amortized_adjoint": {
+    "p50_ms": 0.28467200696468353,
+    "p95_ms": 0.3544032141566274,
+    "p99_ms": 0.5039206612110139,
+    "mean_ms": 0.29512576073408125
+  },
+  "exact_adjoint_teacher": {
+    "p50_ms": 15.344640254974365,
+    "p95_ms": 17.754152488708495,
+    "p99_ms": 17.81555980682373,
+    "mean_ms": 15.665054321289062
+  },
+  "task_success": "NOT_MEASURED",
+  "task_success_reason": "No external simulator or physical robot evaluation was attached to this offline dataset run."
+}

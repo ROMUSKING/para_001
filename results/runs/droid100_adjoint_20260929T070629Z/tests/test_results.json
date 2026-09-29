@@ -1,0 +1,36 @@
+[
+  {
+    "name": "data_contract",
+    "status": "PASS"
+  },
+  {
+    "name": "split_contract",
+    "status": "PASS"
+  },
+  {
+    "name": "future_shift_contract",
+    "status": "PASS"
+  },
+  {
+    "name": "model_finite",
+    "status": "PASS"
+  },
+  {
+    "name": "dynamics_gate",
+    "status": "PASS"
+  },
+  {
+    "name": "allocator_negative_control",
+    "status": "FAIL",
+    "error": "AssertionError()",
+    "traceback": "Traceback (most recent call last):\n  File \"/tmp/ipykernel_3577/2673317049.py\", line 10, in record_test\n    function()\n    ~~~~~~~~^^\n  File \"/tmp/ipykernel_3577/2673317049.py\", line 52, in test_allocator_negative_control\n    assert ALLOCATION_GATE['adjoint_beats_random']\n           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+  },
+  {
+    "name": "checkpoint_payload",
+    "status": "PASS"
+  },
+  {
+    "name": "checkpoint_roundtrip",
+    "status": "PASS"
+  }
+]

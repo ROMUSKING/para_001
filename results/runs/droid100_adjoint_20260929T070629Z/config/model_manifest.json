@@ -1,0 +1,11 @@
+{
+  "action_dim": 7,
+  "class": "AdjointRecursiveWorldModel",
+  "d_model": 512,
+  "recursive_candidates": 4,
+  "shared_refiner": true,
+  "state_dim": 14,
+  "trainable_parameters": 27360798,
+  "visual_dim": 1024,
+  "visual_target": "frozen ResNet-18 ImageNet weights"
+}

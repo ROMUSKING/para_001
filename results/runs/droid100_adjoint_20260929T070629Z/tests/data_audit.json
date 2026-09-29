@@ -1,0 +1,19 @@
+{
+  "action_dim": 7,
+  "real_image_payloads_verified": true,
+  "split_counts": {
+    "test": 10,
+    "train": 80,
+    "validation": 10
+  },
+  "split_disjointness_verified": true,
+  "state_dim": 14,
+  "state_keys": [
+    "cartesian_position",
+    "gripper_position",
+    "joint_position"
+  ],
+  "status": "PASS",
+  "synthetic_fallback_used": false,
+  "valid_episode_count": 100
+}

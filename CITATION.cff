@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite it as below."
+title: "Adjoint-Guided Recursive Rate-Distortion World Models (AdjointRWM)"
+authors:
+  - name: "romusking"
+repository-code: "https://github.com/romusking/para_001"
+license: MIT
+version: 0.1.0
+date-released: 2026-09-29

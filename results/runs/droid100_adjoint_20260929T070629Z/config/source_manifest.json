@@ -1,0 +1,7 @@
+{
+  "data_dir": "gs://gresearch/robotics",
+  "dataset": "droid_100",
+  "format": "RLDS / TensorFlow Datasets",
+  "purpose": "Official 100-trajectory DROID prototyping sample",
+  "synthetic_fallback_allowed": false
+}

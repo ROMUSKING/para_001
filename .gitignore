@@ -216,3 +216,16 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# --- AdjointRWM ---------------------------------------------------------
+# Large binaries live on Google Drive (see docs/DRIVE_INVENTORY.csv)
+*.pt
+*.pth
+*.ckpt
+*.npz
+!results/**/normalisation.npz
+# Colab / local caches
+adjoint_rwm_cache/
+adjoint_rwm_work/
+wandb/
+runs_local/

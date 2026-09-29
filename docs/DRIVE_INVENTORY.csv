@@ -1,0 +1,60 @@
+drive_file_id,name,type,size_bytes,modified_utc,status,repo_path,note
+1Lou7MbB7oXmHhJVDJ2MxB_WqIxmEhxI3,AdjointRWM_A100_Production_Pilot.ipynb,colab,158857,2026-09-29T07:21:44Z,primary,notebooks/01-production/AdjointRWM_Production_Pilot.ipynb,Source rebuilt from text export; executed original with outputs stays on Drive
+1u-NEmqUqxs5sZxfI_yrq_Gclnk60bHsc,AdjointRWM_A100_Production_Pilot.ipynb,ipynb,1192,2026-09-28T23:51:23Z,ignore,,1 KB stub duplicate
+16ECpUvNM8DDmj42s8F2QYwWZ_1WN3nPh,para_0_0_1.ipynb,colab,1309221,2026-09-28T23:05:03Z,archive,notebooks/archive/para_0_0_1.ipynb,Non-evidential; see legacy audit
+1C8VZFO3loz7XVjWG9S9Kx2ItP0GZM8C8,General_Signal_Filtering_End_to_End_Benchmark (6).ipynb,colab,124046,2026-09-29T07:47:52Z,archive,notebooks/archive/General_Signal_Filtering_Benchmark_PARTIAL.md,Only truncated source excerpt in repo; v6 is latest
+1LxtpA57kG1jPeon0tHlh9r_H3uhqzUoz,General_Signal_Filtering_End_to_End_Benchmark (5).ipynb,colab,108758,2026-09-28T12:56:35Z,superseded,,
+1rayuhxxrAsvFQZ6UviFTKI8qrGL-lyYb,General_Signal_Filtering_End_to_End_Benchmark (4).ipynb,colab,42378,2026-09-28T12:51:57Z,superseded,,
+1HZj9DV2_aENjweABxTZ-HMfobw-RtUXn,General_Signal_Filtering_End_to_End_Benchmark (3).ipynb,colab,123731,2026-09-28T12:44:17Z,superseded,,
+1BWm8y791OjFQyA3c8RjtGlDSL4ZaWGuy,General_Signal_Filtering_End_to_End_Benchmark (2).ipynb,colab,105159,2026-09-28T12:26:26Z,superseded,,
+1yUwyJZyUIBPwnVTDyR9sRWTG8uDHLgxK,General_Signal_Filtering_End_to_End_Benchmark (1).ipynb,colab,105272,2026-09-28T11:59:09Z,superseded,,
+1z7euWH6LZ-vf13Imn5MSfXvFvdAc0gPp,General_Signal_Filtering_End_to_End_Benchmark.ipynb,colab,107803,2026-09-28T11:19:07Z,superseded,,
+1zVXmUI3eq8U1AtElw1tuljs1zItVm3S3,StageA_Deep_Neural_Adjoint_World_Model (3).ipynb,colab,17584,2026-09-28T10:42:49Z,to-review,,Latest StageA copy; not yet reviewed
+1Yv9ewJUXvyC62K5yZ3WKcoaqgv_2KXzq,StageA_Deep_Neural_Adjoint_World_Model (3).ipynb,colab,20301,2026-09-26T11:45:43Z,superseded,,
+1-1vWM_i3G2dWTTIl83z3TFlOvBk3QgBi,StageA_Deep_Neural_Adjoint_World_Model (2).ipynb,colab,14105,2026-09-26T11:30:40Z,superseded,,
+1aQtoC5oscAZeJSRM1gScYW3PLwmpKQMU,StageA_Deep_Neural_Adjoint_World_Model (1).ipynb,colab,18452,2026-09-26T11:26:56Z,superseded,,
+1RzPSrcPBHkbmvTPCrzX0_LnJCccrBphK,StageA_Deep_Neural_Adjoint_World_Model.ipynb,colab,18880,2026-09-26T10:12:42Z,superseded,,
+1vE0epJwJOIuyPqVtkOxnQGnF-LKiZ6Uq,StageA_Deep_Neural_Adjoint_World_Model (2).ipynb,colab,25724,2026-09-26T08:35:11Z,superseded,,
+1Oxd2e_UkCNwMQsvFzjwmJeA282r4a6KY,StageA_Deep_Neural_Adjoint_World_Model (1).ipynb,colab,25114,2026-09-26T08:19:27Z,superseded,,
+1NZAaDXD5fKm1rzDCfzrzqKry1y4Cqumk,StageA_Deep_Neural_Adjoint_World_Model.ipynb,colab,25370,2026-09-26T08:13:30Z,superseded,,
+1lD87HK1Uv8AYdR0YUhbKSV8qHk-QvXuQ,Stage0_LQTree_Benchmark.ipynb,colab,63107,2026-09-26T12:09:11Z,to-review,,Latest Stage 0; bring into notebooks/00-stage0 (roadmap M4)
+1O3TxQ_w6bbWb0kqywNPRGjeio-Kpx-J5,Stage0_LQTree_Benchmark (4).ipynb,colab,78051,2026-09-25T16:54:19Z,superseded,,
+1F-K8Pe-s35XZFDH3l5tZ3yg5RwyIKd0-,Stage0_LQTree_Benchmark (3).ipynb,colab,78008,2026-09-25T16:39:06Z,superseded,,
+1oKNysc_bAQWCm9ogf0pHere9oppMyV_S,Stage0_LQTree_Benchmark (2).ipynb,colab,78053,2026-09-25T16:25:30Z,superseded,,
+1vFUXPZqf_S90jgB1bcLgDOtRyq6KCQpe,Stage0_LQTree_Benchmark (1).ipynb,colab,30876,2026-09-25T15:22:40Z,superseded,,
+1aOaWM4fg1vnX2iLpki4PTkr6KEVBDzrs,Stage0_LQTree_Benchmark.ipynb,colab,30684,2026-09-25T13:40:11Z,superseded,,
+1DI8hlXlo0yXFHDMQUdkFKTEDTGmV6yLv,adjoint_guided_recursive_world_model_research_plan (5).md,markdown,319298,2026-09-24T13:37:30Z,primary,docs/research-plan/adjoint_guided_recursive_world_model_research_plan.md,
+1_MuQKNiWpXJvsiZde1deNF0RkLY2Q0_d,adjoint_guided_recursive_world_model_research_plan.pdf,pdf,2147296,2026-09-25T11:29:01Z,drive-only,,PDF render of the plan; markdown is the source of truth
+1wZLq2mFrS-t6mtQCYEZdrXbNbuCiIZkU,Copy of adjoint_guided_recursive_world_model_research_plan.pdf,pdf,2147296,2026-09-28T13:17:34Z,ignore,,Duplicate
+18XE3Wf8wvOAN8xKQUE9GOp7zVCFXiZf2,adjoint_guided_recursive_world_models_paper.md,markdown,8371,2026-09-28T19:14:16Z,primary,papers/drafts/adjoint_guided_recursive_world_models_paper.md,See papers/drafts/REVIEW.md
+1vHJS7kdFqJxomm2RSjnPFtfaVbF1Obq2,runs/droid100_adjoint_20260929T070629Z/,folder,,2026-09-29T07:06:33Z,primary,results/runs/droid100_adjoint_20260929T070629Z/,Pilot run directory
+1PCIjb57N-AxCuDMMa3-3ifrikeOhxKm9,run_config.json,json,1145,2026-09-29T09:01:08Z,copied,results/runs/droid100_adjoint_20260929T070629Z/config/run_config.json,
+10JIDe6F5dPM80OHYIKVB38feDWAnXYjx,environment.json,json,427,2026-09-29T09:01:08Z,copied,results/runs/droid100_adjoint_20260929T070629Z/config/environment.json,
+1a7-Br9QdfQ_D84pCX_BA8ZRTE5VQ9Sbh,model_manifest.json,json,268,2026-09-29T07:07:52Z,copied,results/runs/droid100_adjoint_20260929T070629Z/config/model_manifest.json,
+1pF5Zk7Le4HViqm1VCXJQBvxGbj1UmrHT,source_manifest.json,json,215,2026-09-29T07:06:41Z,copied,results/runs/droid100_adjoint_20260929T070629Z/config/source_manifest.json,
+1rZ7OaR9kshghXtql_raG23Ib79TjGC5Q,legacy_teacher_manifest.json,json,288,2026-09-29T09:01:08Z,copied,results/runs/droid100_adjoint_20260929T070629Z/config/legacy_teacher_manifest.json,
+1pr8UTEuot4LiUDCQyodD5Qtcxwc_qC7D,data_manifest.json,json,44571,2026-09-29T07:07:46Z,drive-only,,Per-episode manifest; hash in acceptance report
+14FSoYSST3bUztfMdk_cF_6R7rUC7Bucw,normalisation.npz,npz,1198,2026-09-29T07:07:52Z,drive-only,,
+1NfzPNrsg2tF0DuYp3wFgL9M0w9AleWtJ,pip_freeze.txt,text,14079,2026-09-29T09:01:08Z,drive-only,,Exact Colab environment
+1jclSL3qJjiQX1iDSV3RkvgIivPT7lung,tfds_builder_info.txt,text,2803,2026-09-29T07:06:45Z,drive-only,,
+1l6ASywzYWUdNkLPMOKN7onTo3B9TA6UA,data_audit.json,json,378,2026-09-29T07:07:52Z,copied,results/runs/droid100_adjoint_20260929T070629Z/tests/data_audit.json,
+1KWCvewxjwmprX-8byFjHTNoWry5S6pG_,test_results.json,json,911,2026-09-29T07:21:28Z,copied,results/runs/droid100_adjoint_20260929T070629Z/tests/test_results.json,Rebuilt from acceptance report
+14gibG2e4yaDhXY148tnGv6oY7hiZo0Fu,dynamics_evaluation.json,json,728,2026-09-29T07:17:38Z,copied,results/runs/droid100_adjoint_20260929T070629Z/artifacts/dynamics_evaluation.json,
+1ORbtp-qSj2rFCR5Hr-OKAyz5FmH7cMzz,allocator_evaluation.json,json,441,2026-09-29T07:21:28Z,copied,results/runs/droid100_adjoint_20260929T070629Z/artifacts/allocator_evaluation.json,
+1xTvuxQAXUa9F5Bg9zk6ihXBeILMOieDS,allocation_traces.parquet,parquet,31386,2026-09-29T07:21:28Z,copied,results/runs/droid100_adjoint_20260929T070629Z/artifacts/allocation_traces.parquet,
+1Hh97A5P-Yk-WuEsLcgc4gdZsnNaKl3dy,systems_benchmark.json,json,793,2026-09-29T07:21:29Z,copied,results/runs/droid100_adjoint_20260929T070629Z/benchmarks/systems_benchmark.json,Rebuilt from acceptance report
+1ATWx4Q5_RCbdQtj8B-TqkTcbsKqPgBza,rate_benchmark.json,json,170,2026-09-29T07:21:29Z,copied,results/runs/droid100_adjoint_20260929T070629Z/benchmarks/rate_benchmark.json,Rebuilt from acceptance report
+1Wv_aMQu_RBY-U3Qusk32N2NW7tAqMDfD,microbatch_training_benchmark.csv,csv,329,2026-09-29T07:07:56Z,copied,results/runs/droid100_adjoint_20260929T070629Z/benchmarks/microbatch_training_benchmark.csv,
+(path in report),checkpoints/best_dynamics.pt,pt,,2026-09-29,drive-only,,sha256 4b0f07177221ae63467bd0ce7f8ae97545e9fc92a27b3a0731551648709fcc3d
+(path in report),checkpoints/best_allocator.pt,pt,,2026-09-29,drive-only,,sha256 95e1dab2eee371c3785a669cbeb60d5e30d12863511efab7c0be8792c875d1a2
+1nPU_cgSW6BrP7phopU74WaWorIefDITz,runs/droid100_adjoint_20260929T090015Z/,folder,,2026-09-29T09:00:22Z,in-progress,,Second pilot run started 09:00 UTC; not yet included
+1sWb05c3tE3DjLp1cuSSsATpiZeZHJwqN,Phase_N3_Logs/optimized_adjoint_teacher.pt,pt,70765,2026-09-28T18:54:20Z,drive-only,,"sha256 507e06694887e11d15696cc986a5079f96ae66cdadb31b37f08d0a17ed8cd70e; legacy, read-only"
+1EfqNCMmBOJ2d7qayMB82JFhRHuZsUGkD,phase_n3_optimization_run.json,json,259,2026-09-28T18:54:18Z,legacy,results/legacy/phase_logs/phase_n3_optimization_run.json,Non-evidential
+1WvUphZx65lbzRAdNcObDUd1wXyvolVMQ,phase_n8_deployment_assurance.json,json,456,2026-09-28T18:49:31Z,legacy,results/legacy/phase_logs/phase_n8_deployment_assurance.json,Non-evidential
+1wpjLvt23yiaRk3YhFpRZ-pNCfFfDJY4f,phase_n9_replication_release.json,json,538,2026-09-28T18:54:34Z,legacy,results/legacy/phase_logs/phase_n9_replication_release.json,Non-evidential
+1Bh4Qh7rl4EIh3fPqHT66CsVBS-dq6D6T,phase_n10_embodied_telemetry.json,json,552,2026-09-28T19:01:22Z,legacy,results/legacy/phase_logs/phase_n10_embodied_telemetry.json,Non-evidential
+1XjxNJM3SqBATGN8_p8-AEznc4F4eWXYa,swm_production_checkpoint.pt,pt,285588555,2026-09-28T23:04:41Z,drive-only,,From para_0_0_1 (SWM); not used
+1A2Maq8HlBDzN32Ac1UEhL0of7tEGFscG,swm_production_checkpoint.pt,pt,285656475,2026-09-28T22:09:04Z,drive-only,,From para_0_0_1 (SWM); not used
+1ecRlObW3wYWmHm4ZCRWV-Mgupuk5suz8,swm_production_checkpoint.pt,pt,285756315,2026-09-28T21:35:52Z,drive-only,,From para_0_0_1 (SWM); not used
+1G1mry7SqzqBuJ5z9mSTYDUhewGycgcDG,swm_production_checkpoint.pt,pt,285756443,2026-09-28T21:09:25Z,drive-only,,From para_0_0_1 (SWM); not used
+1PXkzlRAxFYFjTgCnEME5YF-kH2QI5QSw,swm_pilot_checkpoint.pt,pt,286237294,2026-09-28T20:20:20Z,drive-only,,From para_0_0_1 (SWM); not used

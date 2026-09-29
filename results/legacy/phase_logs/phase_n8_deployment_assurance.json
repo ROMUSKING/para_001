@@ -1,0 +1,15 @@
+{
+    "phase": "Phase N8",
+    "configuration": {
+        "bounds_threshold": 4.5,
+        "device_context": "cuda"
+    },
+    "evaluation_outcomes": {
+        "normal_path_executed": "NEURAL_LATENT_ACTIVE",
+        "normal_run_loss": 0.00828453967577674,
+        "anomalous_path_executed": "ANALYTICAL_RESCUE (UNSAFE_OOD/SAFE)",
+        "anomalous_run_loss": 9824.92064061988,
+        "total_interceptions": 1
+    },
+    "verification_status": "SUCCESS"
+}
