@@ -20,9 +20,12 @@ The core question: can a recursive world model decide where to spend representat
 | Pilot v2: fixed allocation contract + rival allocators (E2.1/E2.2 = B2) | ⏳ notebook ready, **not run** | [plan §5](docs/plans/rival-benchmark-plan.md) |
 | Benchmark vs rival world models (B1: DreamerV3-, TD-MPC2-, DINO-WM-, V-JEPA 2-AC-style) | ⏳ notebook ready, **not run** | [plan](docs/plans/rival-benchmark-plan.md) |
 | Cross-domain (Track D), D4-0: adaptive time stepping, an exact-adjoint reference domain (analytic, in-repo) | correctness ✅ · rate-budget opportunity ✅ · **equal-compute payoff ❌**: plain uniform refinement beats every adaptive policy at equal total compute, so D4-1 stays closed | [note](docs/research-notes/2026-09-29-d4-0-adaptive-time-stepping.md), [run](results/runs/d4_time_stepping_20260929T162518Z/) |
+| Cross-domain (Track D), D4-0b: where adaptive allocation pays at equal compute (validation-only design study) | pass-based marking does not rescue adaptivity at the real scoring price on the smooth family; it pays only in the most localised family, where the cheap residual score does as well as the co-state; the frozen D4-1 rule is met in **2 of 9 cells, both at hypothetical scoring prices**, so D4-1 stays closed at the real ledger and D4-2 is next | [note](docs/research-notes/2026-09-29-d4-0b-where-adaptivity-pays.md), [run](results/runs/d4_0b_adaptivity_20260929T174347Z/) |
 | Analytic correctness on LQTree (N1) | ⏳ not started as a gate | — |
 | Task success / planning | not measured | — |
 | Hardware | stay on L4 (pilot peak 0.6 GiB) | [operator brief](docs/production/colab_l4_operator_brief.md) |
+
+**Recommended next steps** are in [roadmap §2.1](docs/plans/roadmap.md): E1.1 opportunity audit first, then pilot v2 (B2); D4-2 on CPU in parallel; the rival benchmark (B1) is a different question and not on the critical path.
 
 **Why the allocator failed:** both learned allocators only ever picked candidates 0 and 2. The oracle preferred 1 or 3 on 65 % of test windows. Earlier runs (`Run_V2`, the SWM "DROID subset" pilot, `para_0_0_1` and the T4 P0 diagnostics) were audited and are **not evidence**; see [`docs/audits/`](docs/audits/).
 

@@ -437,6 +437,11 @@ def test_d4_0b_table_script_reads_a_run_directory(tmp_path):
     table = module.real_ledger_table(data["summary"])
     assert len(table.splitlines()) == 2 + 9 and "| sharper | 1% |" in table and "0.50 [0.37, 0.67]" in table
     assert "×0.25" in module.what_if_table(data["summary"]) and "| sharp | ×0.25 | True | False | False |" in module.cells_table(data["report"])
+    # The frozen rule as code: every CI below 0 passes, and it needs two *adjacent* targets.
+    rebuilt = {(c["family"], c["scoring_price_scale"]): c for c in module.frozen_rule_cells(data["summary"])}
+    assert len(rebuilt) == 9 and all(c["candidate_regime_for_d4_1"] for c in rebuilt.values())
+    assert module.two_adjacent([True, True, False]) and module.two_adjacent([False, True, True])
+    assert not module.two_adjacent([True, False, True]) and not module.two_adjacent([True])
 
 
 def test_interpolated_compute_to_target_brackets_the_pass_values(domain, instances):

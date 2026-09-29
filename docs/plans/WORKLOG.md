@@ -21,6 +21,23 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 
 ---
 
+## 2026-09-29 19:20 (BST) · Claude Code (web) · D4-0b, D4-2, recommendation
+
+- **Changed:**
+  - Added pass-based (batch) allocation, work-precision evaluation, scoring-price what-ifs and a three-family localisation sweep to `adjointrwm.domains` (32 domain tests), the D4-0b notebook, `scripts/d4_0b_tables.py` and `scripts/d4_0b_interpolation.py`.
+  - Imported `results/runs/d4_0b_adaptivity_20260929T174347Z/` (result) and `…T173428Z/` (first execution, superseded). Wrote `docs/research-notes/2026-09-29-d4-0b-where-adaptivity-pays.md`.
+  - Added roadmap §2.1 (recommended sequence, stop-losses) and the D4-2 milestone; updated the cross-domain plan, README and notebooks index.
+- **Verified:**
+  - Second run reproduced from a clean worktree at the same commit: eight result files byte-identical, the rest differ only in the run id (run README).
+  - The 14 imported files match the source directory by SHA-256; the config hash re-derives.
+  - Every number in the note's tables and prose was checked against `scripts/d4_0b_tables.py` output; the run's own report is reproduced by the rule code inside the script (asserted).
+  - `pytest -q`: 135 passed.
+- **Result:** no candidate regime at the real scoring price; the frozen rule is met only for `sharp` at hypothetical prices ×0.25 and ×0. All tuned `θ` are at the grid edge (0.95). Post-hoc interpolation weakens the `sharper` co-state result and adds `smooth` ×0 as a marginal cell that the interpolation bias (≤ 6.1 %) cannot exclude.
+- **Open:** D4-2 design (measured price of a learned scorer, higher-dimensional system, wider `θ` grid on the tuning family only). E1.1 and B2 are still waiting to be run on Colab. Roman's open questions: DL timing, whether D1 waits for DL.
+- **Next:** run E1.1 on Colab; start D4-2 on CPU. Do not read the test family (seed 2002) until a D4-2 or D4-1 design is frozen.
+
+---
+
 ## 2026-09-29 17:40 (BST) · Claude Code (web) · D4-0, DL
 
 - **Decision recorded (Roman):** D4 first; the other domains wait for research into permissively licensed content and testing. Added milestone DL (licence survey) and D4-0b to the plan and roadmap.

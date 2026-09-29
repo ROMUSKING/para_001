@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-09-29 (g): D4-0b design study, robustness check and recommended sequence
+
+- **Batch (pass) allocation** in `adjointrwm.domains`: `apply_batch`/`batch_cost` on the domain (a pass of `k` refinements costs `n + k − j_min` CN steps), `BatchPolicy`, `run_batch_policy`, `uniform_pass_policy`, `marking_policy` (Dörfler marking on the residual, goal-local or co-state score), work-precision evaluation (`evaluate_work_precision`, `work_precision_summary`), scoring-price what-ifs, and three localisation families (`smooth`, `sharp`, `sharper`). 32 domain tests.
+- **`interpolated_compute_to_target`**: removes the pass quantisation of compute-to-target (a post-hoc robustness check, applied to every policy).
+- **Scripts:** `scripts/d4_0b_tables.py` prints every table in the D4-0b note from committed run files (and re-applies the frozen rule to the interpolated summary); `scripts/d4_0b_interpolation.py` writes the robustness diagnostics.
+- **New notebook `notebooks/04-domains/d4_0b_where_adaptivity_pays.ipynb`** (validation-only; the test family is never generated).
+- **Runs imported:** `results/runs/d4_0b_adaptivity_20260929T174347Z/` (the result; reproduced from a clean checkout) and `…T173428Z/` (first execution, superseded: its marking-fraction grid was truncated).
+- **Result (validation only):** at the real scoring price pass-based marking does not rescue adaptivity on `smooth`, pays only in `sharper` where the residual score does at least as well as the co-state score, and the frozen rule is met in 2 of 9 cells, both `sharp` at hypothetical prices (×0.25, ×0). Every tuned marking fraction is at the top of its grid. See `docs/research-notes/2026-09-29-d4-0b-where-adaptivity-pays.md`.
+- **Roadmap §2.1:** recommended sequence (E1.1 → B2; D4-2 → D4-1 on CPU in parallel; B1 off the critical path; DL and other domains deferred), stop-losses, and what would change it.
+- **Tests:** 135 (was 123).
+
 ## 2026-09-29 (f): D4-0 run, ledger fix and equal-compute check; cross-domain decision recorded
 
 - **Decision recorded (Roman):** D4 first; the other domains are subject to future research into permissively licensed content and testing. The plan gains a licence survey milestone (DL); D1–D3, ERP and any amendment of N6 wait for it.

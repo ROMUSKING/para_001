@@ -1,0 +1,8 @@
+{
+  "batch_equals_sequential": true,
+  "error_representation_on_batch_grids": true,
+  "max_reference_diff": 3.764022427077407e-11,
+  "max_representation_abs_diff": 8.881784197001252e-16,
+  "passed": true,
+  "reference_converged": true
+}

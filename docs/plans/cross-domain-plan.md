@@ -1,6 +1,6 @@
 # Plan: generalising the allocator across domains (Track D)
 
-**Written:** 2026-09-29 · **Status:** D4 is the first domain (decided by Roman, 2026-09-29); the others are deferred (§1); D4-0 is run and imported (see the [note](../research-notes/2026-09-29-d4-0-adaptive-time-stepping.md)): the equal-compute condition failed, so D4-1 is closed and D4-0b is next · **Owner:** Roman
+**Written:** 2026-09-29 · **Status:** D4 is the first domain (decided by Roman, 2026-09-29); the others are deferred (§1); D4-0 is run and imported (see the [note](../research-notes/2026-09-29-d4-0-adaptive-time-stepping.md)): the equal-compute condition failed, so D4-1 is closed; D4-0b (validation-only design study) is run and imported (see its [note](../research-notes/2026-09-29-d4-0b-where-adaptivity-pays.md)): no candidate regime at the real scoring price, two at hypothetical prices, so D4-1 stays closed at the real ledger and D4-2 is next · **Owner:** Roman
 **Source:** Roman's domain-portfolio brief (chat, 2026-09-29), reconciled here with the governing plan · **Code:** `src/adjointrwm/domains/` · **Notebook:** [`04-domains/d4_adaptive_time_stepping.ipynb`](../../notebooks/04-domains/d4_adaptive_time_stepping.ipynb)
 
 ## 0. Thesis
@@ -164,6 +164,7 @@ domain adapter -> canonical hierarchical state -> shared candidate/effect interf
   - *Equal total compute* (fixed levels 1000–8000 CN steps, frozen before the test family was read): each deployable policy against plain uniform refinement. Uniform refinement spends nothing on scoring, so it gets many more refinements.
   - Preview on the validation family (no test data): uniform refinement was ahead of every adaptive policy at equal compute, so **D4-1 opens only if the co-state policy beats uniform at equal compute on validation (CI below 0 at two adjacent levels)**. The plan's rate-budget gate alone is not enough, because comprehensive plan §2.3 requires matched `C_total`.
   - If the equal-compute check fails, the next step is a compute-efficient scoring scheme (mark many intervals per pass, incremental estimates, or a learned amortised scorer) validated at equal compute, not the learned-vs-critic comparison.
+  - **D4-0b outcome** (validation only, [note](../research-notes/2026-09-29-d4-0b-where-adaptivity-pays.md)): pass-based marking does not make adaptive refinement pay at the real scoring price on the `smooth` family. It pays at the real price only in the most localised family (`sharper`), and there the residual score does at least as well as the co-state score. The frozen rule (co-state beats uniform, residual and goal-local at two adjacent targets) is met in 2 of 9 cells, both `sharp` at hypothetical scoring prices (×0.25 and ×0), where the co-state needs 9–29 % less compute than the residual score in point estimate. So D4-1 does not open at the real ledger; it may open for `sharp` once a learned scorer's price is *measured* at ×0.25 or less (D4-2).
 - **Caveat.** Here the discrete co-state is cheap and exact, so the adjoint arm is "Mode A" (computed), not amortised. The H2-relevant question is D4-1: a learned direct critic against a co-state-featured critic, both learned (plan §5.5 factorial).
 
 ### D2: LLM context tree (next; Tier P)
@@ -241,8 +242,9 @@ All metrics are lower-is-better, and each domain also keeps its native metric.
 |---|---|---|---|
 | D0 | This plan; `adjointrwm.domains` (interface, runner, metrics); D4 domain with exact tests | `harness/check.py` passes | Done (this change) |
 | D4-0 | `04-domains/d4_adaptive_time_stepping.ipynb`: correctness, rate-budget opportunity, weighting comparison, equal-compute check | Run directory imported; note written, including any failed gate | Done: correctness ✅, rate-budget opportunity ✅, equal-compute payoff ❌ (see the research note) |
-| D4-1 | Learned direct critic vs co-state-featured critic on D4, 5 seeds | Rung-1 gate; §0A.3 exit class | Closed unless the equal-compute condition passes (§5) |
-| D4-0b | A compute-efficient scoring scheme validated at equal compute | Equal-compute payoff on validation | **Next** |
+| D4-0b | Pass-based (batch) allocation and a localisation sweep, validated at equal compute on validation only | Run imported; note written | Done: correctness ✅; 0 of 3 families pay for the co-state at the real price; 2 of 9 cells are candidates, both at hypothetical prices (sharp ×0.25, ×0) ([note](../research-notes/2026-09-29-d4-0b-where-adaptivity-pays.md)) |
+| D4-2 | Price a learned, amortised scorer at its measured cost in the D4 ledger; higher-dimensional system; one factor varied at a time; wider `θ` grid (tuning family only) | Regime and price frozen before validation is read; run imported; note written | **Next (CPU)** |
+| D4-1 | Learned direct critic vs co-state-featured critic on D4, 5 seeds | Rung-1 gate; §0A.3 exit class | Closed at the real ledger; may open for a regime that D4-2 shows at scoring price ≤ ×0.25 (§5) |
 | DL | Licence survey of permissively licensed data and models for D1–D3 and Tier 2 domains | Per-source licence, redistribution and release terms recorded; a small usability test per candidate | **Next for the other domains (Roman's decision)** |
 | D2-0, D1-0, D3-0 | LLM-context, sensor-stream and graph domain cards and adapters | Rung-0 gate | Deferred until DL |
 | DX | Shared allocator, leave-one-domain-out, negative transfer | Rungs 2–3; confirmatory only in N6 | Waits for ≥ 3 specialists and the N2 exit class |
@@ -253,5 +255,5 @@ All metrics are lower-is-better, and each domain also keeps its native metric.
 
 **Open:**
 
-1. Should the licence survey (DL) be run next, or after D4-1 / D4-0b?
+1. Should the licence survey (DL) be run next, or after D4-2 / D4-1?
 2. Should sensor streams (D1) also wait for DL? This plan assumes yes, because they need a public dataset with a licence.
