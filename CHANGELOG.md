@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-09-29 (b): documentation update and roadmap
+
+- Imported these documents:
+  - `docs/research-plan/adjoint_guided_comprehensive_research_plan.md`, the cross-domain N0–N9 protocol, now the governing plan
+  - `docs/production/production_training_plan.md` (P0–P11)
+  - `docs/production/colab_l4_operator_brief.md`
+- Imported two outside audits into `docs/audits/`:
+  - `Run_V2` (Ailerons)
+  - the SWM "DROID subset" pilot (seeded-random surrogate)
+- Moved the legacy notebook audit into `docs/audits/` and added `docs/audits/README.md`, an evidence register.
+- Rewrote `docs/plans/roadmap.md`. It now has:
+  - two tracks: research N0–N3 and embodied engineering E1–E3
+  - the G-H2 decision gate
+  - the production P-stages split into "start now" and "gated"
+  - hardware policy, publication tracks, risks and open questions
+- Rewrote `README.md` and added the `docs/README.md` index.
+- Rewrote `.gitignore`. It now excludes weights, tensors, archives, Colab caches, profiler traces and credentials, and it re-includes small run artefacts under `results/runs/`.
+- The paper draft upload was byte-identical to `papers/drafts/`, so nothing changed there.
+
 ## 2026-09-29: repository created
 
 - Imported from Google Drive:

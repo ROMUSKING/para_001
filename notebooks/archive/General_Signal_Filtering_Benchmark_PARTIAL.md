@@ -1,4 +1,4 @@
-> **Archived excerpt, not evidence.** This is a truncated text export of `General_Signal_Filtering_End_to_End_Benchmark`, covering the cells up to the model definitions. The full notebook (v6, Drive ID `1C8VZFO3loz7XVjWG9S9Kx2ItP0GZM8C8`) stays on Drive. The comparison has confounds: unequal information, mislabelled baselines, and an "adjoint head" that is not a co-state. See `docs/research-notes/2026-09-29-legacy-notebook-audit.md` §2.
+> **Archived excerpt, not evidence.** This is a truncated text export of `General_Signal_Filtering_End_to_End_Benchmark`, covering the cells up to the model definitions. The full notebook (v6, Drive ID `1C8VZFO3loz7XVjWG9S9Kx2ItP0GZM8C8`) stays on Drive. The comparison has confounds: unequal information, mislabelled baselines, and an "adjoint head" that is not a co-state. See `docs/audits/2026-09-29_legacy_notebook_audit.md` §2.
 
 # End-to-End General Signal Filtering & Scaling Benchmark
 ## From Hardware Bootstrap to Multi-Task Training, Capacity Sizing & Baseline Evaluation
