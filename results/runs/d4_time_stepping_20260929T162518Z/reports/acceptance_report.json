@@ -1,0 +1,365 @@
+{
+  "claim_boundary": "Analytic benchmark generated in-repo (frozen seeds). The co-state is computed exactly from the known model (Mode A); no learned arms, so no H2 statement follows. exact_tau_adjoint and one_step_oracle are privileged diagnostics.",
+  "config_hash": "9a6ec9e927b6a8520d1b5f41da8ae2b06320ad5ba4c30976727f5513fb550d85",
+  "correctness": {
+    "error_representation": true,
+    "max_reference_diff": 3.1032953984322376e-12,
+    "max_representation_abs_diff": 1.2434497875801753e-14,
+    "passed": true,
+    "reference_converged": true
+  },
+  "d4_1_opens": false,
+  "equal_compute_gate_validation": {
+    "adjoint_beats_uniform_at_two_adjacent_levels": false,
+    "levels": [
+      1000.0,
+      2000.0,
+      4000.0,
+      8000.0
+    ],
+    "levels_where_adjoint_beats_uniform": [],
+    "rule": "CI of mean(J_adjoint - J_uniform) below 0 at two adjacent compute levels (validation family)"
+  },
+  "milestone": "D4-0",
+  "opportunity_gate_validation": {
+    "definition": "area(J_uniform - J_best_known) >= 0.15 * area(J_uniform) over B = 0..max_steps, validation family",
+    "fixed_area": 72.88563784407245,
+    "fraction_of_instances_passing": 0.975,
+    "min_relative": 0.15,
+    "oracle_headroom_area": 33.28964276633315,
+    "passes": true,
+    "policies_in_best_known": [
+      "adjoint",
+      "exact_tau_adjoint",
+      "goal_local",
+      "one_step_oracle",
+      "random",
+      "residual",
+      "uniform"
+    ],
+    "relative_headroom": 0.4567380316757493
+  },
+  "repo_commit": "be9c6ed36a0e6ce7df331254a87b353e2987a9a1",
+  "run_id": "d4_time_stepping_20260929T162518Z",
+  "test_equal_compute": {
+    "1000.0": {
+      "differences": {
+        "adjoint - goal_local": {
+          "ci_high": -0.12883562583737998,
+          "ci_low": -0.3615732785913106,
+          "estimate": -0.2399246258491537,
+          "reading": "adjoint lower objective"
+        },
+        "adjoint - residual": {
+          "ci_high": -0.07596351836471346,
+          "ci_low": -0.2933050825585269,
+          "estimate": -0.17637447639112774,
+          "reading": "adjoint lower objective"
+        },
+        "adjoint - uniform": {
+          "ci_high": 0.9284353672543743,
+          "ci_low": 0.3564181354242556,
+          "estimate": 0.6178522619239664,
+          "reading": "uniform lower objective"
+        },
+        "goal_local - uniform": {
+          "ci_high": 1.221437234393948,
+          "ci_low": 0.5483812270411156,
+          "estimate": 0.8577768877731199,
+          "reading": "uniform lower objective"
+        },
+        "residual - uniform": {
+          "ci_high": 1.1432420434557886,
+          "ci_low": 0.4976348831742153,
+          "estimate": 0.7942267383150939,
+          "reading": "uniform lower objective"
+        }
+      },
+      "mean_actions": {
+        "adjoint": 12.55,
+        "goal_local": 15.975,
+        "random": 46.5,
+        "residual": 16.0,
+        "uniform": 52.0
+      },
+      "mean_objective": {
+        "adjoint": 0.8861006010261356,
+        "goal_local": 1.126025226875289,
+        "random": 1.2065700139756097,
+        "residual": 1.0624750774172633,
+        "uniform": 0.2682483391021693
+      }
+    },
+    "2000.0": {
+      "differences": {
+        "adjoint - goal_local": {
+          "ci_high": -0.06144826511577821,
+          "ci_low": -0.2233623756316387,
+          "estimate": -0.13074724776505814,
+          "reading": "adjoint lower objective"
+        },
+        "adjoint - residual": {
+          "ci_high": -0.028794232256460776,
+          "ci_low": -0.13077508180408223,
+          "estimate": -0.08036023874143865,
+          "reading": "adjoint lower objective"
+        },
+        "adjoint - uniform": {
+          "ci_high": 0.4659514436383329,
+          "ci_low": 0.1593968142495194,
+          "estimate": 0.30024448939951753,
+          "reading": "uniform lower objective"
+        },
+        "goal_local - uniform": {
+          "ci_high": 0.6117201408082146,
+          "ci_low": 0.2702683982345741,
+          "estimate": 0.43099173716457573,
+          "reading": "uniform lower objective"
+        },
+        "residual - uniform": {
+          "ci_high": 0.5516380753782785,
+          "ci_low": 0.23176989491181632,
+          "estimate": 0.3806047281409562,
+          "reading": "uniform lower objective"
+        }
+      },
+      "mean_actions": {
+        "adjoint": 21.275,
+        "goal_local": 26.7,
+        "random": 71.0,
+        "residual": 26.6,
+        "uniform": 72.0
+      },
+      "mean_objective": {
+        "adjoint": 0.5356173180950048,
+        "goal_local": 0.666364565860063,
+        "random": 0.9153322361582731,
+        "residual": 0.6159775568364434,
+        "uniform": 0.23537282869548717
+      }
+    },
+    "4000.0": {
+      "differences": {
+        "adjoint - goal_local": {
+          "ci_high": -0.023682826142802947,
+          "ci_low": -0.08428758303406855,
+          "estimate": -0.054274341227931885,
+          "reading": "adjoint lower objective"
+        },
+        "adjoint - residual": {
+          "ci_high": 0.019141912419418764,
+          "ci_low": -0.05866116547743174,
+          "estimate": -0.022194608556493987,
+          "reading": "no detectable difference"
+        },
+        "adjoint - uniform": {
+          "ci_high": 0.3544618430245518,
+          "ci_low": 0.1307308206404478,
+          "estimate": 0.23308224503317737,
+          "reading": "uniform lower objective"
+        },
+        "goal_local - uniform": {
+          "ci_high": 0.4033945958321939,
+          "ci_low": 0.18703539639824313,
+          "estimate": 0.28735658626110927,
+          "reading": "uniform lower objective"
+        },
+        "residual - uniform": {
+          "ci_high": 0.359615643310304,
+          "ci_low": 0.1649839190065305,
+          "estimate": 0.25527685358967134,
+          "reading": "uniform lower objective"
+        }
+      },
+      "mean_actions": {
+        "adjoint": 34.125,
+        "goal_local": 42.15,
+        "random": 108.75,
+        "residual": 42.125,
+        "uniform": 121.0
+      },
+      "mean_objective": {
+        "adjoint": 0.30052791100735304,
+        "goal_local": 0.35480225223528505,
+        "random": 0.7076162575607439,
+        "residual": 0.3227225195638471,
+        "uniform": 0.06744566597417573
+      }
+    },
+    "8000.0": {
+      "differences": {
+        "adjoint - goal_local": {
+          "ci_high": -0.03428093213526778,
+          "ci_low": -0.06582058466375869,
+          "estimate": -0.049327759471664,
+          "reading": "adjoint lower objective"
+        },
+        "adjoint - residual": {
+          "ci_high": -0.0021648062971254354,
+          "ci_low": -0.026990999873362273,
+          "estimate": -0.014828851982918254,
+          "reading": "adjoint lower objective"
+        },
+        "adjoint - uniform": {
+          "ci_high": 0.14694642911484254,
+          "ci_low": 0.04925291291377207,
+          "estimate": 0.0936255052291553,
+          "reading": "uniform lower objective"
+        },
+        "goal_local - uniform": {
+          "ci_high": 0.20691478463357538,
+          "ci_low": 0.08938882594905603,
+          "estimate": 0.1429532647008193,
+          "reading": "uniform lower objective"
+        },
+        "residual - uniform": {
+          "ci_high": 0.15721430139540452,
+          "ci_low": 0.06625416839032033,
+          "estimate": 0.10845435721207355,
+          "reading": "uniform lower objective"
+        }
+      },
+      "mean_actions": {
+        "adjoint": 53.275,
+        "goal_local": 65.0,
+        "random": 163.375,
+        "residual": 64.925,
+        "uniform": 160.0
+      },
+      "mean_objective": {
+        "adjoint": 0.15320267636410914,
+        "goal_local": 0.20253043583577318,
+        "random": 0.4713445033872475,
+        "residual": 0.16803152834702745,
+        "uniform": 0.05957717113495388
+      }
+    }
+  },
+  "test_paired_aurc_differences": {
+    "adjoint - goal_local": {
+      "ci_high": -10.465440685779576,
+      "ci_low": -20.79693418171386,
+      "confidence": 0.95,
+      "estimate": -15.274646402296478,
+      "num_episodes": 40,
+      "num_windows": 40,
+      "reading": "adjoint lower AURC",
+      "statistic": "mean(AURC_adjoint - AURC_goal_local) over instances"
+    },
+    "adjoint - residual": {
+      "ci_high": -8.295485090958978,
+      "ci_low": -17.09161712213778,
+      "confidence": 0.95,
+      "estimate": -12.408688558824178,
+      "num_episodes": 40,
+      "num_windows": 40,
+      "reading": "adjoint lower AURC",
+      "statistic": "mean(AURC_adjoint - AURC_residual) over instances"
+    },
+    "adjoint - uniform": {
+      "ci_high": -21.43861826771361,
+      "ci_low": -38.11424055611805,
+      "confidence": 0.95,
+      "estimate": -29.461414614806205,
+      "num_episodes": 40,
+      "num_windows": 40,
+      "reading": "adjoint lower AURC",
+      "statistic": "mean(AURC_adjoint - AURC_uniform) over instances"
+    },
+    "exact_tau_adjoint - adjoint": {
+      "ci_high": -0.21031100887968182,
+      "ci_low": -1.9967603572581591,
+      "confidence": 0.95,
+      "estimate": -1.0070547505400893,
+      "num_episodes": 40,
+      "num_windows": 40,
+      "reading": "exact_tau_adjoint lower AURC",
+      "statistic": "mean(AURC_exact_tau_adjoint - AURC_adjoint) over instances"
+    },
+    "goal_local - residual": {
+      "ci_high": 4.503089737470364,
+      "ci_low": 1.5142549491793451,
+      "confidence": 0.95,
+      "estimate": 2.865957843472299,
+      "num_episodes": 40,
+      "num_windows": 40,
+      "reading": "residual lower AURC",
+      "statistic": "mean(AURC_goal_local - AURC_residual) over instances"
+    },
+    "residual - uniform": {
+      "ci_high": -12.156131473616556,
+      "ci_low": -22.53154448802738,
+      "confidence": 0.95,
+      "estimate": -17.052726055982028,
+      "num_episodes": 40,
+      "num_windows": 40,
+      "reading": "residual lower AURC",
+      "statistic": "mean(AURC_residual - AURC_uniform) over instances"
+    }
+  },
+  "test_policies": {
+    "adjoint": {
+      "deployable": true,
+      "mean_adaptive_gain_area_vs_uniform": 29.461414614806205,
+      "mean_aurc_vs_best_known": 1.8356249933266113,
+      "mean_decision_compute_at_B_max": 5688.0,
+      "mean_final_regret": 0.01268751091793228,
+      "median_fraction_of_oracle_advantage_at_B_max": 0.9994910961917999,
+      "undefined_fractions": 1
+    },
+    "exact_tau_adjoint": {
+      "deployable": false,
+      "mean_adaptive_gain_area_vs_uniform": 30.468469365346294,
+      "mean_aurc_vs_best_known": 0.8285702427865219,
+      "mean_decision_compute_at_B_max": 0.0,
+      "mean_final_regret": 0.004855628337468212,
+      "median_fraction_of_oracle_advantage_at_B_max": 0.9995758073522326,
+      "undefined_fractions": 1
+    },
+    "goal_local": {
+      "deployable": true,
+      "mean_adaptive_gain_area_vs_uniform": 14.18676821250973,
+      "mean_aurc_vs_best_known": 17.11027139562309,
+      "mean_decision_compute_at_B_max": 3792.0,
+      "mean_final_regret": 0.11620754010012395,
+      "median_fraction_of_oracle_advantage_at_B_max": 0.05806196320977971,
+      "undefined_fractions": 1
+    },
+    "one_step_oracle": {
+      "deployable": false,
+      "mean_adaptive_gain_area_vs_uniform": 28.804889122406387,
+      "mean_aurc_vs_best_known": 2.4921504857264294,
+      "mean_decision_compute_at_B_max": 0.0,
+      "mean_final_regret": 0.0860321597136667,
+      "median_fraction_of_oracle_advantage_at_B_max": 0.9754353948605095,
+      "undefined_fractions": 1
+    },
+    "random": {
+      "deployable": true,
+      "mean_adaptive_gain_area_vs_uniform": -25.318373767951893,
+      "mean_aurc_vs_best_known": 56.61541337608471,
+      "mean_decision_compute_at_B_max": 0.0,
+      "mean_final_regret": 1.032619059257265,
+      "median_fraction_of_oracle_advantage_at_B_max": -8.124298167879562,
+      "undefined_fractions": 1
+    },
+    "residual": {
+      "deployable": true,
+      "mean_adaptive_gain_area_vs_uniform": 17.052726055982028,
+      "mean_aurc_vs_best_known": 14.244313552150789,
+      "mean_decision_compute_at_B_max": 3792.0,
+      "mean_final_regret": 0.09893383587234358,
+      "median_fraction_of_oracle_advantage_at_B_max": 0.20478179326979443,
+      "undefined_fractions": 1
+    },
+    "uniform": {
+      "deployable": true,
+      "mean_adaptive_gain_area_vs_uniform": 0.0,
+      "mean_aurc_vs_best_known": 31.29703960813282,
+      "mean_decision_compute_at_B_max": 0.0,
+      "mean_final_regret": 0.09962875936912038,
+      "median_fraction_of_oracle_advantage_at_B_max": 0.0,
+      "undefined_fractions": 1
+    }
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "paired_aurc_differences": {
+    "adjoint - goal_local": {
+      "ci_high": -3.582326705216165,
+      "ci_low": -12.742024708339551,
+      "confidence": 0.95,
+      "estimate": -7.551809907429143,
+      "num_episodes": 40,
+      "num_windows": 40,
+      "reading": "adjoint lower AURC",
+      "statistic": "mean(AURC_adjoint - AURC_goal_local) over instances"
+    },
+    "adjoint - residual": {
+      "ci_high": -2.215682058604198,
+      "ci_low": -9.634772237138876,
+      "confidence": 0.95,
+      "estimate": -5.391494622488255,
+      "num_episodes": 40,
+      "num_windows": 40,
+      "reading": "adjoint lower AURC",
+      "statistic": "mean(AURC_adjoint - AURC_residual) over instances"
+    },
+    "adjoint - uniform": {
+      "ci_high": -4.443697443655734,
+      "ci_low": -13.621227066550922,
+      "confidence": 0.95,
+      "estimate": -8.616264464629008,
+      "num_episodes": 40,
+      "num_windows": 40,
+      "reading": "adjoint lower AURC",
+      "statistic": "mean(AURC_adjoint - AURC_uniform) over instances"
+    },
+    "exact_tau_adjoint - adjoint": {
+      "ci_high": 0.03261082511447515,
+      "ci_low": -2.7363440921652975,
+      "confidence": 0.95,
+      "estimate": -1.2489103088310824,
+      "num_episodes": 40,
+      "num_windows": 40,
+      "reading": "no detectable difference",
+      "statistic": "mean(AURC_exact_tau_adjoint - AURC_adjoint) over instances"
+    },
+    "goal_local - residual": {
+      "ci_high": 4.149992156075023,
+      "ci_low": 0.5206306297069684,
+      "confidence": 0.95,
+      "estimate": 2.1603152849408866,
+      "num_episodes": 40,
+      "num_windows": 40,
+      "reading": "residual lower AURC",
+      "statistic": "mean(AURC_goal_local - AURC_residual) over instances"
+    },
+    "residual - uniform": {
+      "ci_high": -0.38800413836436204,
+      "ci_low": -6.2761172072646705,
+      "confidence": 0.95,
+      "estimate": -3.224769842140753,
+      "num_episodes": 40,
+      "num_windows": 40,
+      "reading": "residual lower AURC",
+      "statistic": "mean(AURC_residual - AURC_uniform) over instances"
+    }
+  },
+  "policies": {
+    "adjoint": {
+      "deployable": true,
+      "mean_adaptive_gain_area_vs_uniform": 8.616264464629008,
+      "mean_aurc_vs_best_known": 10.662007829826818,
+      "mean_decision_compute_at_B_max": 5688.0,
+      "mean_final_regret": 0.08391222014309839,
+      "median_fraction_of_oracle_advantage_at_B_max": 0.021244543562283967,
+      "undefined_fractions": 3
+    },
+    "exact_tau_adjoint": {
+      "deployable": false,
+      "mean_adaptive_gain_area_vs_uniform": 9.865174773460092,
+      "mean_aurc_vs_best_known": 9.413097520995738,
+      "mean_decision_compute_at_B_max": 0.0,
+      "mean_final_regret": 0.0802462355071145,
+      "median_fraction_of_oracle_advantage_at_B_max": 0.0,
+      "undefined_fractions": 3
+    },
+    "goal_local": {
+      "deployable": true,
+      "mean_adaptive_gain_area_vs_uniform": 1.064454557199866,
+      "mean_aurc_vs_best_known": 18.213817737255958,
+      "mean_decision_compute_at_B_max": 3792.0,
+      "mean_final_regret": 0.12413644285408951,
+      "median_fraction_of_oracle_advantage_at_B_max": -0.8386919299522011,
+      "undefined_fractions": 3
+    },
+    "one_step_oracle": {
+      "deployable": false,
+      "mean_adaptive_gain_area_vs_uniform": 19.125712263311858,
+      "mean_aurc_vs_best_known": 0.1525600311439685,
+      "mean_decision_compute_at_B_max": 0.0,
+      "mean_final_regret": 0.0029267635755684247,
+      "median_fraction_of_oracle_advantage_at_B_max": 1.0,
+      "undefined_fractions": 3
+    },
+    "random": {
+      "deployable": true,
+      "mean_adaptive_gain_area_vs_uniform": -13.675138090632355,
+      "mean_aurc_vs_best_known": 32.95341038508818,
+      "mean_decision_compute_at_B_max": 0.0,
+      "mean_final_regret": 0.5483682946323001,
+      "median_fraction_of_oracle_advantage_at_B_max": -9.367866940732034,
+      "undefined_fractions": 3
+    },
+    "residual": {
+      "deployable": true,
+      "mean_adaptive_gain_area_vs_uniform": 3.224769842140753,
+      "mean_aurc_vs_best_known": 16.053502452315076,
+      "mean_decision_compute_at_B_max": 3792.0,
+      "mean_final_regret": 0.12136986025123067,
+      "median_fraction_of_oracle_advantage_at_B_max": -1.0399034026105318,
+      "undefined_fractions": 3
+    },
+    "uniform": {
+      "deployable": true,
+      "mean_adaptive_gain_area_vs_uniform": 0.0,
+      "mean_aurc_vs_best_known": 19.278272294455824,
+      "mean_decision_compute_at_B_max": 0.0,
+      "mean_final_regret": 0.07776669991862772,
+      "median_fraction_of_oracle_advantage_at_B_max": 0.0,
+      "undefined_fractions": 3
+    }
+  }
+}

@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-09-29 (f): D4-0 run, ledger fix and equal-compute check; cross-domain decision recorded
+
+- **Decision recorded (Roman):** D4 first; the other domains are subject to future research into permissively licensed content and testing. The plan gains a licence survey milestone (DL); D1–D3, ERP and any amendment of N6 wait for it.
+- **Ledger fix (`adjointrwm.domains.linear_ode`).** A refinement is now charged the CN steps it forces the solver to redo (`n + 1 − j`), not 1. Found by auditing the ledger against the plan's matched-`C_total` rule, before any D4 run was committed.
+- **Equal-compute analysis.** `run_policy(compute_budget=…)`, `evaluate_at_compute`, `objective_at_compute` and `compute_level_summary`, with tests. The D4-0 notebook compares deployable policies at fixed compute levels (1000–8000 CN steps). D4-1 now opens only if the co-state beats uniform refinement at equal compute on validation; this is stricter than the plan's rate-budget gate, and was added after a validation-only preview.
+- **Runs imported:**
+  - `results/runs/d4_time_stepping_20260929T162518Z/`: the main D4-0 run, at a clean commit, reproduced byte for byte from a separate clean checkout.
+  - `…T162914Z/`: an exploratory variant with the signed QoI error as objective.
+- **Result:** correctness ✅, rate-budget opportunity ✅, **equal-compute payoff ❌**. At equal refinement count, co-state weighting beats unweighted and goal-projected weighting on all 40 test instances. At equal total compute, plain uniform refinement beats every adaptive policy at every level. D4-1 stays closed. See `docs/research-notes/2026-09-29-d4-0-adaptive-time-stepping.md`.
+- **Tests:** 123 (was 119).
+
 ## 2026-09-29 (e): cross-domain track and the D4 reference domain
 
 - **Plan.** Added `docs/plans/cross-domain-plan.md` (Track D). It turns Roman's domain-portfolio brief into a programme reconciled with the governing plan:

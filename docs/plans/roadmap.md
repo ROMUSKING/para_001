@@ -40,7 +40,7 @@ PRODUCTION PROMOTION           BLOCKED
 HARDWARE                       STAY ON L4 (pilot peak 0.6 GiB)
 PILOT V2 (E2.1/E2.2 = B2)      NOTEBOOK READY, NOT RUN
 RIVAL-MODEL BENCHMARK (B1)     NOTEBOOK READY, NOT RUN
-CROSS-DOMAIN (TRACK D)         D4 FIRST (DECIDED); OTHER DOMAINS DEFERRED PENDING LICENCE RESEARCH
+CROSS-DOMAIN (TRACK D)         D4 FIRST (DECIDED); D4-0 DONE, D4-1 CLOSED (no equal-compute payoff); OTHER DOMAINS DEFERRED PENDING LICENCE RESEARCH
 ```
 
 ---
@@ -116,9 +116,9 @@ Dates assume a start of Mon 29 Sep 2026 and one person working part-time on Cola
 | ID | Deliverable | Done when | Status (2026-09-29) |
 |---|---|---|---|
 | D0 | Plan; `adjointrwm.domains` (interface, runner, ledgers, metrics); D4 reference domain with exact tests | `harness/check.py` passes | Done |
-| D4-0 | `04-domains/d4_adaptive_time_stepping.ipynb` on CPU: correctness, rate-budget opportunity, weighting comparison, equal-compute check | Run imported, note written | Run and imported |
-| D4-1 | Learned direct critic vs co-state-featured critic on D4, 5 seeds | Rung-1 gate, §0A.3 exit class | Closed unless the equal-compute condition passes |
-| D4-0b | Compute-efficient scoring scheme validated at equal compute | Equal-compute payoff on validation | Proposed if D4-1 stays closed |
+| D4-0 | `04-domains/d4_adaptive_time_stepping.ipynb` on CPU: correctness, rate-budget opportunity, weighting comparison, equal-compute check | Run imported, note written | Done: correctness ✅, rate-budget opportunity ✅, equal-compute payoff ❌ ([note](../research-notes/2026-09-29-d4-0-adaptive-time-stepping.md)) |
+| D4-1 | Learned direct critic vs co-state-featured critic on D4, 5 seeds | Rung-1 gate, §0A.3 exit class | Closed until D4-0b passes the equal-compute condition |
+| D4-0b | Compute-efficient scoring scheme validated at equal compute | Equal-compute payoff on validation | **Next** |
 | DL | Licence survey of permissively licensed data and models for the other domains | Per-source licence and release terms; small usability test | Next for the other domains |
 | D2-0, D1-0, D3-0 | LLM-context, sensor-stream and graph domain cards and adapters (Tier P) | Rung-0 gate | Deferred until DL |
 | DX | Shared allocator, leave-one-domain-out, negative-transfer guard | Rungs 2–3; confirmatory only in N6 | Waits for ≥ 3 specialists and the N2 exit class |

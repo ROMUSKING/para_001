@@ -1,6 +1,6 @@
 # Plan: generalising the allocator across domains (Track D)
 
-**Written:** 2026-09-29 · **Status:** D4 is the first domain (decided by Roman, 2026-09-29); the others are deferred (§1); D4-0 has not been committed as a run yet · **Owner:** Roman
+**Written:** 2026-09-29 · **Status:** D4 is the first domain (decided by Roman, 2026-09-29); the others are deferred (§1); D4-0 is run and imported (see the [note](../research-notes/2026-09-29-d4-0-adaptive-time-stepping.md)): the equal-compute condition failed, so D4-1 is closed and D4-0b is next · **Owner:** Roman
 **Source:** Roman's domain-portfolio brief (chat, 2026-09-29), reconciled here with the governing plan · **Code:** `src/adjointrwm/domains/` · **Notebook:** [`04-domains/d4_adaptive_time_stepping.ipynb`](../../notebooks/04-domains/d4_adaptive_time_stepping.ipynb)
 
 ## 0. Thesis
@@ -240,9 +240,9 @@ All metrics are lower-is-better, and each domain also keeps its native metric.
 | ID | Deliverable | Done when | Status (2026-09-29) |
 |---|---|---|---|
 | D0 | This plan; `adjointrwm.domains` (interface, runner, metrics); D4 domain with exact tests | `harness/check.py` passes | Done (this change) |
-| D4-0 | `04-domains/d4_adaptive_time_stepping.ipynb`: correctness, rate-budget opportunity, weighting comparison, equal-compute check | Run directory imported; note written, including any failed gate | Run and imported (see the research note) |
+| D4-0 | `04-domains/d4_adaptive_time_stepping.ipynb`: correctness, rate-budget opportunity, weighting comparison, equal-compute check | Run directory imported; note written, including any failed gate | Done: correctness ✅, rate-budget opportunity ✅, equal-compute payoff ❌ (see the research note) |
 | D4-1 | Learned direct critic vs co-state-featured critic on D4, 5 seeds | Rung-1 gate; §0A.3 exit class | Closed unless the equal-compute condition passes (§5) |
-| D4-0b | A compute-efficient scoring scheme validated at equal compute | Equal-compute payoff on validation | Proposed if D4-1 stays closed |
+| D4-0b | A compute-efficient scoring scheme validated at equal compute | Equal-compute payoff on validation | **Next** |
 | DL | Licence survey of permissively licensed data and models for D1–D3 and Tier 2 domains | Per-source licence, redistribution and release terms recorded; a small usability test per candidate | **Next for the other domains (Roman's decision)** |
 | D2-0, D1-0, D3-0 | LLM-context, sensor-stream and graph domain cards and adapters | Rung-0 gate | Deferred until DL |
 | DX | Shared allocator, leave-one-domain-out, negative transfer | Rungs 2–3; confirmatory only in N6 | Waits for ≥ 3 specialists and the N2 exit class |

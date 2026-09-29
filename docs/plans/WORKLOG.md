@@ -21,6 +21,26 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 
 ---
 
+## 2026-09-29 17:40 (BST) · Claude Code (web) · D4-0, DL
+
+- **Decision recorded (Roman):** D4 first; the other domains wait for research into permissively licensed content and testing. Added milestone DL (licence survey) and D4-0b to the plan and roadmap.
+- **Changed:**
+  - Fixed the D4 action ledger: a refinement is charged the re-solve it causes. The first D4 execution had charged 1 step (never committed).
+  - Added equal-compute evaluation (`run_policy(compute_budget=…)`, `evaluate_at_compute`, `compute_level_summary`) and a stricter D4-1 opening rule.
+  - Ran and imported D4-0: `results/runs/d4_time_stepping_20260929T162518Z/` (main) and `…T162914Z/` (exploratory signed-error variant).
+  - Wrote `docs/research-notes/2026-09-29-d4-0-adaptive-time-stepping.md`.
+- **Result:** correctness ✅, rate-budget opportunity ✅, equal-compute payoff ❌. Co-state weighting wins at equal refinement count; plain uniform refinement wins at equal total compute, on both splits and under both objectives. D4-1 stays closed.
+- **Verified:**
+  - `pytest`: 123 passed.
+  - All hashes typed into the run READMEs were checked against the files.
+  - A clean re-execution of the same commit (a `git worktree`) reproduced every result file byte for byte.
+  - A programmatic claim check of the note against the committed files found three rounding typos, now fixed.
+  - The refinement-count artefacts are byte-identical to the first execution's.
+- **Open:**
+  - Whether to run DL next or after D4-0b, and whether D1 also waits for DL (roadmap Q8).
+  - D4-0b design: mark many intervals per scoring pass, incremental estimates, or a learned amortised scorer.
+- **Next:** D4-0b, validated at equal compute on validation with the test family unread. Carry the lesson to pilot v2: charge scoring costs and compare at matched compute.
+
 ## 2026-09-29 13:50 (BST) · Claude Code (web) · D0, D4-0
 
 - **Changed:** added Track D, cross-domain generalisation, from Roman's domain-portfolio brief:

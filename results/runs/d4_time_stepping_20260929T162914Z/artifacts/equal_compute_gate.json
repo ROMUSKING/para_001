@@ -1,0 +1,313 @@
+{
+  "adjoint_beats_uniform_at_two_adjacent_levels": false,
+  "levels": [
+    1000.0,
+    2000.0,
+    4000.0,
+    8000.0
+  ],
+  "levels_where_adjoint_beats_uniform": [],
+  "rule": "CI of mean(J_adjoint - J_uniform) below 0 at two adjacent compute levels (validation family)",
+  "summary": {
+    "1000.0": {
+      "differences": {
+        "adjoint - goal_local": {
+          "ci_high": 0.07946170544562385,
+          "ci_low": -0.10629225995944182,
+          "confidence": 0.95,
+          "estimate": -0.014228339375719181,
+          "num_episodes": 40,
+          "num_windows": 40,
+          "reading": "no detectable difference",
+          "statistic": "mean(J_adjoint - J_goal_local) over instances at equal compute"
+        },
+        "adjoint - residual": {
+          "ci_high": 0.13020831272295832,
+          "ci_low": -0.0605784121896723,
+          "confidence": 0.95,
+          "estimate": 0.03373140467748505,
+          "num_episodes": 40,
+          "num_windows": 40,
+          "reading": "no detectable difference",
+          "statistic": "mean(J_adjoint - J_residual) over instances at equal compute"
+        },
+        "adjoint - uniform": {
+          "ci_high": 0.8613572411447364,
+          "ci_low": 0.3141496053433298,
+          "confidence": 0.95,
+          "estimate": 0.5575772068942039,
+          "num_episodes": 40,
+          "num_windows": 40,
+          "reading": "uniform lower objective",
+          "statistic": "mean(J_adjoint - J_uniform) over instances at equal compute"
+        },
+        "goal_local - uniform": {
+          "ci_high": 0.8619904338778612,
+          "ci_low": 0.34211782080697706,
+          "confidence": 0.95,
+          "estimate": 0.5718055462699231,
+          "num_episodes": 40,
+          "num_windows": 40,
+          "reading": "uniform lower objective",
+          "statistic": "mean(J_goal_local - J_uniform) over instances at equal compute"
+        },
+        "residual - uniform": {
+          "ci_high": 0.7823676452001896,
+          "ci_low": 0.31592838293219183,
+          "confidence": 0.95,
+          "estimate": 0.5238458022167188,
+          "num_episodes": 40,
+          "num_windows": 40,
+          "reading": "uniform lower objective",
+          "statistic": "mean(J_residual - J_uniform) over instances at equal compute"
+        }
+      },
+      "mean_actions": {
+        "adjoint": 12.375,
+        "goal_local": 15.975,
+        "random": 46.5,
+        "residual": 15.975,
+        "uniform": 52.0
+      },
+      "mean_compute_spent": {
+        "adjoint": 940.975,
+        "goal_local": 963.15,
+        "random": 983.625,
+        "residual": 963.7,
+        "uniform": 966.0
+      },
+      "mean_objective": {
+        "adjoint": 0.6758128040027819,
+        "goal_local": 0.6900411433785011,
+        "random": 0.7352823013898362,
+        "residual": 0.6420813993252968,
+        "uniform": 0.118235597108578
+      }
+    },
+    "2000.0": {
+      "differences": {
+        "adjoint - goal_local": {
+          "ci_high": -0.018919478421339963,
+          "ci_low": -0.16909307284392863,
+          "confidence": 0.95,
+          "estimate": -0.09070145455887664,
+          "num_episodes": 40,
+          "num_windows": 40,
+          "reading": "adjoint lower objective",
+          "statistic": "mean(J_adjoint - J_goal_local) over instances at equal compute"
+        },
+        "adjoint - residual": {
+          "ci_high": -0.011968125884412841,
+          "ci_low": -0.13443293688675947,
+          "confidence": 0.95,
+          "estimate": -0.06924535747782795,
+          "num_episodes": 40,
+          "num_windows": 40,
+          "reading": "adjoint lower objective",
+          "statistic": "mean(J_adjoint - J_residual) over instances at equal compute"
+        },
+        "adjoint - uniform": {
+          "ci_high": 0.39351873536676973,
+          "ci_low": 0.11204649030730152,
+          "confidence": 0.95,
+          "estimate": 0.23254585206877562,
+          "num_episodes": 40,
+          "num_windows": 40,
+          "reading": "uniform lower objective",
+          "statistic": "mean(J_adjoint - J_uniform) over instances at equal compute"
+        },
+        "goal_local - uniform": {
+          "ci_high": 0.4744025083992038,
+          "ci_low": 0.19547075889315793,
+          "confidence": 0.95,
+          "estimate": 0.3232473066276523,
+          "num_episodes": 40,
+          "num_windows": 40,
+          "reading": "uniform lower objective",
+          "statistic": "mean(J_goal_local - J_uniform) over instances at equal compute"
+        },
+        "residual - uniform": {
+          "ci_high": 0.4532060213367584,
+          "ci_low": 0.17330748289815415,
+          "confidence": 0.95,
+          "estimate": 0.3017912095466036,
+          "num_episodes": 40,
+          "num_windows": 40,
+          "reading": "uniform lower objective",
+          "statistic": "mean(J_residual - J_uniform) over instances at equal compute"
+        }
+      },
+      "mean_actions": {
+        "adjoint": 21.125,
+        "goal_local": 26.425,
+        "random": 71.0,
+        "residual": 26.475,
+        "uniform": 72.0
+      },
+      "mean_compute_spent": {
+        "adjoint": 1937.975,
+        "goal_local": 1943.2,
+        "random": 1967.125,
+        "residual": 1943.05,
+        "uniform": 1996.0
+      },
+      "mean_objective": {
+        "adjoint": 0.3341882443267343,
+        "goal_local": 0.424889698885611,
+        "random": 0.5367401364055018,
+        "residual": 0.40343360180456217,
+        "uniform": 0.10164239225795861
+      }
+    },
+    "4000.0": {
+      "differences": {
+        "adjoint - goal_local": {
+          "ci_high": 0.00901582028376937,
+          "ci_low": -0.12380733283255875,
+          "confidence": 0.95,
+          "estimate": -0.05062979928139648,
+          "num_episodes": 40,
+          "num_windows": 40,
+          "reading": "no detectable difference",
+          "statistic": "mean(J_adjoint - J_goal_local) over instances at equal compute"
+        },
+        "adjoint - residual": {
+          "ci_high": 0.023052236655992656,
+          "ci_low": -0.03224461851847239,
+          "confidence": 0.95,
+          "estimate": -0.004305752998209955,
+          "num_episodes": 40,
+          "num_windows": 40,
+          "reading": "no detectable difference",
+          "statistic": "mean(J_adjoint - J_residual) over instances at equal compute"
+        },
+        "adjoint - uniform": {
+          "ci_high": 0.2628014554985641,
+          "ci_low": 0.0906854558464794,
+          "confidence": 0.95,
+          "estimate": 0.16775387068195366,
+          "num_episodes": 40,
+          "num_windows": 40,
+          "reading": "uniform lower objective",
+          "statistic": "mean(J_adjoint - J_uniform) over instances at equal compute"
+        },
+        "goal_local - uniform": {
+          "ci_high": 0.3634165237474165,
+          "ci_low": 0.10604133705648194,
+          "confidence": 0.95,
+          "estimate": 0.21838366996335018,
+          "num_episodes": 40,
+          "num_windows": 40,
+          "reading": "uniform lower objective",
+          "statistic": "mean(J_goal_local - J_uniform) over instances at equal compute"
+        },
+        "residual - uniform": {
+          "ci_high": 0.27262359107229023,
+          "ci_low": 0.09579639919125411,
+          "confidence": 0.95,
+          "estimate": 0.17205962368016364,
+          "num_episodes": 40,
+          "num_windows": 40,
+          "reading": "uniform lower objective",
+          "statistic": "mean(J_residual - J_uniform) over instances at equal compute"
+        }
+      },
+      "mean_actions": {
+        "adjoint": 34.25,
+        "goal_local": 42.225,
+        "random": 108.75,
+        "residual": 42.175,
+        "uniform": 121.0
+      },
+      "mean_compute_spent": {
+        "adjoint": 3909.925,
+        "goal_local": 3915.375,
+        "random": 3950.25,
+        "residual": 3917.3,
+        "uniform": 3981.0
+      },
+      "mean_objective": {
+        "adjoint": 0.19805885918014887,
+        "goal_local": 0.24868865846154548,
+        "random": 0.3949717962204723,
+        "residual": 0.20236461217835883,
+        "uniform": 0.03030498849819519
+      }
+    },
+    "8000.0": {
+      "differences": {
+        "adjoint - goal_local": {
+          "ci_high": -0.003936103367164529,
+          "ci_low": -0.0651303339564161,
+          "confidence": 0.95,
+          "estimate": -0.032134176936627575,
+          "num_episodes": 40,
+          "num_windows": 40,
+          "reading": "adjoint lower objective",
+          "statistic": "mean(J_adjoint - J_goal_local) over instances at equal compute"
+        },
+        "adjoint - residual": {
+          "ci_high": 0.013340902364730123,
+          "ci_low": -0.018157370128197035,
+          "confidence": 0.95,
+          "estimate": -0.00311848764852338,
+          "num_episodes": 40,
+          "num_windows": 40,
+          "reading": "no detectable difference",
+          "statistic": "mean(J_adjoint - J_residual) over instances at equal compute"
+        },
+        "adjoint - uniform": {
+          "ci_high": 0.13505580906312106,
+          "ci_low": 0.03781331460746256,
+          "confidence": 0.95,
+          "estimate": 0.07968147879985807,
+          "num_episodes": 40,
+          "num_windows": 40,
+          "reading": "uniform lower objective",
+          "statistic": "mean(J_adjoint - J_uniform) over instances at equal compute"
+        },
+        "goal_local - uniform": {
+          "ci_high": 0.19467430758053647,
+          "ci_low": 0.05461491170558471,
+          "confidence": 0.95,
+          "estimate": 0.11181565573648564,
+          "num_episodes": 40,
+          "num_windows": 40,
+          "reading": "uniform lower objective",
+          "statistic": "mean(J_goal_local - J_uniform) over instances at equal compute"
+        },
+        "residual - uniform": {
+          "ci_high": 0.13007141144554693,
+          "ci_low": 0.04581875286291256,
+          "confidence": 0.95,
+          "estimate": 0.08279996644838145,
+          "num_episodes": 40,
+          "num_windows": 40,
+          "reading": "uniform lower objective",
+          "statistic": "mean(J_residual - J_uniform) over instances at equal compute"
+        }
+      },
+      "mean_actions": {
+        "adjoint": 53.125,
+        "goal_local": 64.9,
+        "random": 163.375,
+        "residual": 65.025,
+        "uniform": 160.0
+      },
+      "mean_compute_spent": {
+        "adjoint": 7885.4,
+        "goal_local": 7885.65,
+        "random": 7930.5,
+        "residual": 7912.075,
+        "uniform": 7920.0
+      },
+      "mean_objective": {
+        "adjoint": 0.10578221601006983,
+        "goal_local": 0.13791639294669739,
+        "random": 0.2784035847842391,
+        "residual": 0.10890070365859321,
+        "uniform": 0.026100737210211767
+      }
+    }
+  }
+}

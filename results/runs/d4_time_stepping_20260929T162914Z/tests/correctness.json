@@ -1,0 +1,7 @@
+{
+  "error_representation": true,
+  "max_reference_diff": 3.1032953984322376e-12,
+  "max_representation_abs_diff": 1.2434497875801753e-14,
+  "passed": true,
+  "reference_converged": true
+}

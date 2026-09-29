@@ -19,7 +19,7 @@ The core question: can a recursive world model decide where to spend representat
 | Evidence-integrity reset (N0) | ⏳ in progress: pilot code lifted into `src/` with parity, causality, finite-difference and resume tests | [roadmap §3](docs/plans/roadmap.md) |
 | Pilot v2: fixed allocation contract + rival allocators (E2.1/E2.2 = B2) | ⏳ notebook ready, **not run** | [plan §5](docs/plans/rival-benchmark-plan.md) |
 | Benchmark vs rival world models (B1: DreamerV3-, TD-MPC2-, DINO-WM-, V-JEPA 2-AC-style) | ⏳ notebook ready, **not run** | [plan](docs/plans/rival-benchmark-plan.md) |
-| Cross-domain generalisation (Track D): D4 exact-adjoint reference domain | ⏳ domain and CPU notebook ready, **not run** | [plan](docs/plans/cross-domain-plan.md) |
+| Cross-domain (Track D), D4-0: adaptive time stepping, an exact-adjoint reference domain (analytic, in-repo) | correctness ✅ · rate-budget opportunity ✅ · **equal-compute payoff ❌**: plain uniform refinement beats every adaptive policy at equal total compute, so D4-1 stays closed | [note](docs/research-notes/2026-09-29-d4-0-adaptive-time-stepping.md), [run](results/runs/d4_time_stepping_20260929T162518Z/) |
 | Analytic correctness on LQTree (N1) | ⏳ not started as a gate | — |
 | Task success / planning | not measured | — |
 | Hardware | stay on L4 (pilot peak 0.6 GiB) | [operator brief](docs/production/colab_l4_operator_brief.md) |

@@ -1,0 +1,18 @@
+{
+  "definition": "area(J_uniform - J_best_known) >= 0.15 * area(J_uniform) over B = 0..max_steps, validation family",
+  "fixed_area": 33.704721245191266,
+  "fraction_of_instances_passing": 0.975,
+  "min_relative": 0.15,
+  "oracle_headroom_area": 23.658551865599044,
+  "passes": true,
+  "policies_in_best_known": [
+    "adjoint",
+    "exact_tau_adjoint",
+    "goal_local",
+    "one_step_oracle",
+    "random",
+    "residual",
+    "uniform"
+  ],
+  "relative_headroom": 0.7019358413763611
+}
