@@ -1,0 +1,2249 @@
+{
+  "note": "decision scales other than 1 are hypothetical re-pricings of the same traces",
+  "pairs": [
+    [
+      "adjoint",
+      "uniform_pass"
+    ],
+    [
+      "residual",
+      "uniform_pass"
+    ],
+    [
+      "goal_local",
+      "uniform_pass"
+    ],
+    [
+      "adjoint",
+      "residual"
+    ],
+    [
+      "adjoint",
+      "goal_local"
+    ]
+  ],
+  "selected_theta": {
+    "sharp/adjoint": 0.7,
+    "sharp/goal_local": 0.7,
+    "sharp/residual": 0.7,
+    "sharper/adjoint": 0.7,
+    "sharper/goal_local": 0.7,
+    "sharper/residual": 0.7,
+    "smooth/adjoint": 0.7,
+    "smooth/goal_local": 0.7,
+    "smooth/residual": 0.7
+  },
+  "summary": {
+    "sharp": {
+      "0": {
+        "gap1%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": -0.28558710315735836,
+              "ci_low": -0.575098035292105,
+              "confidence": 0.95,
+              "estimate": -0.4305892191245686,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.6501259152234304,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.9
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": -0.09504926650375237,
+              "ci_low": -0.3549067056616818,
+              "confidence": 0.95,
+              "estimate": -0.2201789916818578,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.8023751666278992,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.8
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -1.0346951603092733,
+              "ci_low": -1.4201130537624023,
+              "confidence": 0.95,
+              "estimate": -1.2384732765084032,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.28982636505498705,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 1.0
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.5776180085079078,
+              "ci_low": -1.018949280429323,
+              "confidence": 0.95,
+              "estimate": -0.8078840573838345,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.4458003569283678,
+              "reading": "goal_local needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.95
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.8099510929711496,
+              "ci_low": -1.2045109710185633,
+              "confidence": 0.95,
+              "estimate": -1.0182942848265453,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.361210537301429,
+              "reading": "residual needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.95
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 580.0,
+            "goal_local": 870.5,
+            "residual": 745.0,
+            "uniform_pass": 2016.0
+          }
+        },
+        "gap10%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": -0.1739030855340827,
+              "ci_low": -0.5648033877387316,
+              "confidence": 0.95,
+              "estimate": -0.367362662591241,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.6925584344583775,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.75
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": -0.11454150916401167,
+              "ci_low": -0.43444837574368156,
+              "confidence": 0.95,
+              "estimate": -0.2801989236508745,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.7556334131470273,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.8
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.8360110760391558,
+              "ci_low": -1.334661760547953,
+              "confidence": 0.95,
+              "estimate": -1.0921169153897043,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.33550550465428136,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 1.0
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.49410251586776605,
+              "ci_low": -0.9487108704576623,
+              "confidence": 0.95,
+              "estimate": -0.7247542527984634,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.4844436049886056,
+              "reading": "goal_local needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.95
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.5935016046865192,
+              "ci_low": -1.0269184137157967,
+              "confidence": 0.95,
+              "estimate": -0.8119179917388297,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.44400564985206725,
+              "reading": "residual needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.95
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 197.5,
+            "goal_local": 281.0,
+            "residual": 249.0,
+            "uniform_pass": 480.0
+          }
+        },
+        "gap3%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": -0.24225145154941233,
+              "ci_low": -0.5461598888880974,
+              "confidence": 0.95,
+              "estimate": -0.3929795361513849,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.6750425614135762,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.85
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": -0.037704483778775985,
+              "ci_low": -0.27870629693322924,
+              "confidence": 0.95,
+              "estimate": -0.15837741482200837,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.8535275872093615,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.7
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -1.115382091861408,
+              "ci_low": -1.5631518794504324,
+              "confidence": 0.95,
+              "estimate": -1.3414683632857922,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.26146146615743626,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 1.0
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.78089681321762,
+              "ci_low": -1.0936531899335094,
+              "confidence": 0.95,
+              "estimate": -0.9484888271344076,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.387325897806979,
+              "reading": "goal_local needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.95
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.9650684665442827,
+              "ci_low": -1.3900938084487076,
+              "confidence": 0.95,
+              "estimate": -1.1830909484637844,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.30633042220966,
+              "reading": "residual needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.95
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 371.0,
+            "goal_local": 536.0,
+            "residual": 460.0,
+            "uniform_pass": 1504.0
+          }
+        }
+      },
+      "0.25": {
+        "gap1%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": -0.08192466058102081,
+              "ci_low": -0.37683685216274776,
+              "confidence": 0.95,
+              "estimate": -0.22876508691190228,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.7955153885334385,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.75
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": 0.10796691093614161,
+              "ci_low": -0.14856921019548572,
+              "confidence": 0.95,
+              "estimate": -0.017520055774391398,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.9826325280111563,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.5
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.4783564030895204,
+              "ci_low": -0.8596062016323324,
+              "confidence": 0.95,
+              "estimate": -0.6786596610105807,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.5072964861474376,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.9
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.22672565093447067,
+              "ci_low": -0.6566800521641455,
+              "confidence": 0.95,
+              "estimate": -0.4498945740986784,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.6376953776879881,
+              "reading": "goal_local needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.8
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.4553984992085222,
+              "ci_low": -0.8411597311099321,
+              "confidence": 0.95,
+              "estimate": -0.6611396052361892,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.5162626634945654,
+              "reading": "residual needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.9
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 980.375,
+            "goal_local": 1246.0,
+            "residual": 1088.5,
+            "uniform_pass": 2016.0
+          }
+        },
+        "gap10%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": 0.07852845907162317,
+              "ci_low": -0.3339603420025771,
+              "confidence": 0.95,
+              "estimate": -0.1224593729201235,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.8847418486910907,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.55
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": 0.1168249462623178,
+              "ci_low": -0.20058305765802978,
+              "confidence": 0.95,
+              "estimate": -0.0454446469153265,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.9555724949932887,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.6
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.18589341720097674,
+              "ci_low": -0.6903102625085639,
+              "confidence": 0.95,
+              "estimate": -0.4461341702682322,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.6400978841951596,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.8
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.08536631146109555,
+              "ci_low": -0.554033409803816,
+              "confidence": 0.95,
+              "estimate": -0.3236747973481088,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.7234854835250942,
+              "reading": "goal_local needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.65
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.17947649145951075,
+              "ci_low": -0.6191632958571377,
+              "confidence": 0.95,
+              "estimate": -0.40068952335290575,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.669858004022662,
+              "reading": "residual needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.8
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 371.625,
+            "goal_local": 426.0,
+            "residual": 387.5,
+            "uniform_pass": 480.0
+          }
+        },
+        "gap3%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": -0.01960108074510651,
+              "ci_low": -0.3332830281959308,
+              "confidence": 0.95,
+              "estimate": -0.1745721652163553,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.8398162465212237,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.65
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": 0.1825837259885462,
+              "ci_low": -0.06786636779736538,
+              "confidence": 0.95,
+              "estimate": 0.0570074572944224,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.0586637051330068,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.45
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.5175571303783524,
+              "ci_low": -0.960963093385041,
+              "confidence": 0.95,
+              "estimate": -0.7422532865564989,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.47604005146535316,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.9
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.40389295729357827,
+              "ci_low": -0.71221008069739,
+              "confidence": 0.95,
+              "estimate": -0.5676811213401435,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.5668383452180844,
+              "reading": "goal_local needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.95
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.5836430367436539,
+              "ci_low": -1.0041015446765977,
+              "confidence": 0.95,
+              "estimate": -0.7992607438509213,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.44966125612622676,
+              "reading": "residual needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.95
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 646.5,
+            "goal_local": 818.25,
+            "residual": 670.75,
+            "uniform_pass": 1504.0
+          }
+        }
+      },
+      "1": {
+        "gap1%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": 0.0986293190188898,
+              "ci_low": -0.19767370676164212,
+              "confidence": 0.95,
+              "estimate": -0.046369296967886164,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.9546893332062886,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.55
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": 0.29282706172092887,
+              "ci_low": 0.03368199275604351,
+              "confidence": 0.95,
+              "estimate": 0.1646395802840889,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.1789681187723764,
+              "reading": "residual needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.3
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.3445518781177546,
+              "ci_low": -0.039604865572792025,
+              "confidence": 0.95,
+              "estimate": 0.1443172897233953,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.1552505995231002,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.45
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.4104122053633951,
+              "ci_low": -0.014102438116550254,
+              "confidence": 0.95,
+              "estimate": 0.19068658669128147,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.210080137423589,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.3
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.18189859104796618,
+              "ci_low": -0.1981673753881137,
+              "confidence": 0.95,
+              "estimate": -0.02032229056069359,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.9798828154284845,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.6
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 2102.0,
+            "goal_local": 2449.0,
+            "residual": 2185.0,
+            "uniform_pass": 2016.0
+          }
+        },
+        "gap10%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": 0.28201696985368735,
+              "ci_low": -0.1461790027945499,
+              "confidence": 0.95,
+              "estimate": 0.07544245919966408,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.0783611761676928,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.45
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": 0.3063414863622824,
+              "ci_low": -0.014336388750881118,
+              "confidence": 0.95,
+              "estimate": 0.14238334544406742,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.1530185682427012,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.45
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.7011425601601868,
+              "ci_low": 0.18781918416925986,
+              "confidence": 0.95,
+              "estimate": 0.43602138545168473,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.5465418678921283,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.25
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.6073688772245303,
+              "ci_low": 0.1222262533678769,
+              "confidence": 0.95,
+              "estimate": 0.3605789262520206,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.4341594468267747,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.3
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.524218323242027,
+              "ci_low": 0.07277972629225395,
+              "confidence": 0.95,
+              "estimate": 0.2936380400076173,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.34129831946175,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.3
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 848.0,
+            "goal_local": 839.0,
+            "residual": 757.0,
+            "uniform_pass": 480.0
+          }
+        },
+        "gap3%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": 0.1685832570032396,
+              "ci_low": -0.15376357232905985,
+              "confidence": 0.95,
+              "estimate": 0.01118440869144215,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.0112471880219223,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.5
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": 0.37031127776347955,
+              "ci_low": 0.10782889947050221,
+              "confidence": 0.95,
+              "estimate": 0.2387238254304223,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.2696278492358153,
+              "reading": "residual needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.2
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.33530813418715744,
+              "ci_low": -0.11198800655543151,
+              "confidence": 0.95,
+              "estimate": 0.10751851073934957,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.1135114724763961,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.5
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.2624891709034093,
+              "ci_low": -0.05113664259243087,
+              "confidence": 0.95,
+              "estimate": 0.09633410204790742,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.1011268912940175,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.45
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.08248069702474246,
+              "ci_low": -0.33310294339819563,
+              "confidence": 0.95,
+              "estimate": -0.13120531469107272,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.8770376871825983,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.6
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 1483.0,
+            "goal_local": 1549.5,
+            "residual": 1253.5,
+            "uniform_pass": 1504.0
+          }
+        }
+      }
+    },
+    "sharper": {
+      "0": {
+        "gap1%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": 0.11773415875522694,
+              "ci_low": -0.4948161985746495,
+              "confidence": 0.95,
+              "estimate": -0.18759518196565522,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.8289502133145662,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.55
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": 0.41557227566209076,
+              "ci_low": -0.1836102988421775,
+              "confidence": 0.95,
+              "estimate": 0.08625236813427443,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.0900813954025488,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.45
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -1.928885246582299,
+              "ci_low": -2.653018038478112,
+              "confidence": 0.95,
+              "estimate": -2.302894122828659,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.09996910179101877,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 1.0
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -1.89138945409266,
+              "ci_low": -2.325511606009353,
+              "confidence": 0.95,
+              "estimate": -2.1152989408630036,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.12059723272317076,
+              "reading": "goal_local needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 1.0
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -2.1567789208967167,
+              "ci_low": -2.620420910329462,
+              "confidence": 0.95,
+              "estimate": -2.3891464909629336,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.09170792402534478,
+              "reading": "residual needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 1.0
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 2086.5,
+            "goal_local": 2586.0,
+            "residual": 2096.5,
+            "uniform_pass": 32736.0
+          }
+        },
+        "gap10%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": -0.1418476962932903,
+              "ci_low": -0.5171610273619258,
+              "confidence": 0.95,
+              "estimate": -0.3265542981437918,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.7214052030216923,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.7
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": -0.047491655105453355,
+              "ci_low": -0.4945052091859032,
+              "confidence": 0.95,
+              "estimate": -0.28042031739035445,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.7554661391574049,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.75
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -1.4972770760182608,
+              "ci_low": -2.2243553428741714,
+              "confidence": 0.95,
+              "estimate": -1.851982335388375,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.1569257782542317,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 1.0
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -1.1812456621183074,
+              "ci_low": -1.855106350033339,
+              "confidence": 0.95,
+              "estimate": -1.5254280372445834,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.21752792688066186,
+              "reading": "goal_local needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.95
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -1.2407671272013479,
+              "ci_low": -1.9149301606985298,
+              "confidence": 0.95,
+              "estimate": -1.571562017998021,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.20772046571042338,
+              "reading": "residual needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 1.0
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 1148.0,
+            "goal_local": 1388.5,
+            "residual": 1347.0,
+            "uniform_pass": 8160.0
+          }
+        },
+        "gap3%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": 0.07620833246489517,
+              "ci_low": -0.46026335872217444,
+              "confidence": 0.95,
+              "estimate": -0.2036773111881224,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.8157255542318103,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.65
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": 0.31294414044254115,
+              "ci_low": -0.3751528295535709,
+              "confidence": 0.95,
+              "estimate": -0.056329795176706644,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.9452273530590551,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.65
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -1.6245474106001485,
+              "ci_low": -2.4635902025499696,
+              "confidence": 0.95,
+              "estimate": -2.063196713299471,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.12704718662534034,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.95
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -1.5900771726315186,
+              "ci_low": -2.1066809901372037,
+              "confidence": 0.95,
+              "estimate": -1.8595194021113493,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.1557474642865441,
+              "reading": "goal_local needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 1.0
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -1.7552649567185243,
+              "ci_low": -2.2522368809561466,
+              "confidence": 0.95,
+              "estimate": -2.006866918122765,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.1344091304744571,
+              "reading": "residual needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 1.0
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 1628.5,
+            "goal_local": 1894.5,
+            "residual": 1983.0,
+            "uniform_pass": 16352.0
+          }
+        }
+      },
+      "0.25": {
+        "gap1%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": 0.31358351489219793,
+              "ci_low": -0.23117401527381526,
+              "confidence": 0.95,
+              "estimate": 0.034892053925383505,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.03550792375075,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.5
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": 0.5720935361746734,
+              "ci_low": -0.012222476726052648,
+              "confidence": 0.95,
+              "estimate": 0.24882041915977315,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.2825116978602327,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.4
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -1.2492176342347228,
+              "ci_low": -1.8998280454548844,
+              "confidence": 0.95,
+              "estimate": -1.5801168591048813,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.20595102954562777,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.95
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -1.3994921806425626,
+              "ci_low": -1.8249040371932512,
+              "confidence": 0.95,
+              "estimate": -1.615008913030265,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.1988888977301547,
+              "reading": "goal_local needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 1.0
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -1.60064658782657,
+              "ci_low": -2.0572450612383393,
+              "confidence": 0.95,
+              "estimate": -1.8289372782646545,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.16058413337612473,
+              "reading": "residual needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 1.0
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 4343.25,
+            "goal_local": 4603.0,
+            "residual": 3540.75,
+            "uniform_pass": 32736.0
+          }
+        },
+        "gap10%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": 0.08287876323277836,
+              "ci_low": -0.2683508708967317,
+              "confidence": 0.95,
+              "estimate": -0.08868078166381865,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.9151376556728118,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.5
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": 0.17037338977518315,
+              "ci_low": -0.26756729995032746,
+              "confidence": 0.95,
+              "estimate": -0.053602333134087576,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.9478089437811396,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.65
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.7758952302066473,
+              "ci_low": -1.4713022050871523,
+              "confidence": 0.95,
+              "estimate": -1.1179311376206786,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.3269555213670675,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.95
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.685276213287543,
+              "ci_low": -1.358034083334087,
+              "confidence": 0.95,
+              "estimate": -1.0292503559568598,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.35727468904848964,
+              "reading": "goal_local needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.9
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.7304984185546418,
+              "ci_low": -1.4117129933497814,
+              "confidence": 0.95,
+              "estimate": -1.0643288044865913,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.344959312224601,
+              "reading": "residual needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.95
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 2700.625,
+            "goal_local": 2406.75,
+            "residual": 2312.5,
+            "uniform_pass": 8160.0
+          }
+        },
+        "gap3%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": 0.2816821281841589,
+              "ci_low": -0.22164095093958033,
+              "confidence": 0.95,
+              "estimate": 0.018246192385360117,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.0184136712199494,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.5
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": 0.4965099181976003,
+              "ci_low": -0.16735186345233766,
+              "confidence": 0.95,
+              "estimate": 0.1419695771910062,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.1525415844511526,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.45
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.9274985761475392,
+              "ci_low": -1.7010459518498455,
+              "confidence": 0.95,
+              "estimate": -1.3249430762055359,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.265818090032589,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.95
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -1.080974849396052,
+              "ci_low": -1.5888494841581768,
+              "confidence": 0.95,
+              "estimate": -1.343189268590896,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.2610119026722881,
+              "reading": "goal_local needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.95
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -1.219333939233538,
+              "ci_low": -1.7146057080665087,
+              "confidence": 0.95,
+              "estimate": -1.4669126533965422,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.23063644177244433,
+              "reading": "residual needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 1.0
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 3400.75,
+            "goal_local": 3250.0,
+            "residual": 3447.0,
+            "uniform_pass": 16352.0
+          }
+        }
+      },
+      "1": {
+        "gap1%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": 0.4533516531513011,
+              "ci_low": -0.06827238089829185,
+              "confidence": 0.95,
+              "estimate": 0.18595472922515902,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.2043677364828453,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.45
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": 0.6768301942663488,
+              "ci_low": 0.09461944373219053,
+              "confidence": 0.95,
+              "estimate": 0.35708776703491746,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.4291612975990948,
+              "reading": "residual needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.3
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.3448234933346108,
+              "ci_low": -0.9588490237438798,
+              "confidence": 0.95,
+              "estimate": -0.6567779596974155,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.5185193360629842,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.9
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.6256971257255685,
+              "ci_low": -1.0577197084840968,
+              "confidence": 0.95,
+              "estimate": -0.8427326889225745,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.4305324033149818,
+              "reading": "goal_local needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.95
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.7765265035878739,
+              "ci_low": -1.24788656522966,
+              "confidence": 0.95,
+              "estimate": -1.0138657267323328,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.36281372643806237,
+              "reading": "residual needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 1.0
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 11502.0,
+            "goal_local": 10654.0,
+            "residual": 8278.5,
+            "uniform_pass": 32736.0
+          }
+        },
+        "gap10%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": 0.23797876826729247,
+              "ci_low": -0.09980581020563867,
+              "confidence": 0.95,
+              "estimate": 0.07480634824049459,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.077675436931834,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.45
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": 0.32831721706111877,
+              "ci_low": -0.1190947632819501,
+              "confidence": 0.95,
+              "estimate": 0.10113541710272492,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.1064264606848566,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.35
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.15072666576720667,
+              "ci_low": -0.5300583623019551,
+              "confidence": 0.95,
+              "estimate": -0.18430397530924197,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.8316829543153852,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.55
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.08970787421398155,
+              "ci_low": -0.5942588741727353,
+              "confidence": 0.95,
+              "estimate": -0.25911032354973657,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.7717378774848994,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.65
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.0517756800447089,
+              "ci_low": -0.6413218900836033,
+              "confidence": 0.95,
+              "estimate": -0.28543939241196686,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.7516838975457886,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.55
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 7280.5,
+            "goal_local": 5547.0,
+            "residual": 5590.0,
+            "uniform_pass": 8160.0
+          }
+        },
+        "gap3%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": 0.42169345306559947,
+              "ci_low": -0.07317109153924795,
+              "confidence": 0.95,
+              "estimate": 0.164155400092326,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.1783974239332642,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.4
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": 0.6252495724107688,
+              "ci_low": -0.04047822224521648,
+              "confidence": 0.95,
+              "estimate": 0.27085174853466465,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.3110806863431612,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.4
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.020159646416895154,
+              "ci_low": -0.7572759576656481,
+              "confidence": 0.95,
+              "estimate": -0.3942876758521362,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.674160088763891,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.7
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.29242903407678605,
+              "ci_low": -0.8060838046856956,
+              "confidence": 0.95,
+              "estimate": -0.5584430759444622,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.5720990856494527,
+              "reading": "goal_local needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.8
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": -0.4119082830597135,
+              "ci_low": -0.9217246516778019,
+              "confidence": 0.95,
+              "estimate": -0.6651394243868008,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.5142018304336738,
+              "reading": "residual needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.9
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 9056.0,
+            "goal_local": 7453.0,
+            "residual": 7543.0,
+            "uniform_pass": 16352.0
+          }
+        }
+      }
+    },
+    "smooth": {
+      "0": {
+        "gap1%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": -0.23290355929445286,
+              "ci_low": -0.4502963611568884,
+              "confidence": 0.95,
+              "estimate": -0.33993897654535515,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.7118137587719126,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.95
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": -0.1481881701600809,
+              "ci_low": -0.39070298033114303,
+              "confidence": 0.95,
+              "estimate": -0.26418314030465734,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.7678329056269573,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.9
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.14304530361847095,
+              "ci_low": -0.19009917737319565,
+              "confidence": 0.95,
+              "estimate": -0.023791176010483372,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.9764896029228801,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.45
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.463535923841584,
+              "ci_low": 0.1756596838023646,
+              "confidence": 0.95,
+              "estimate": 0.3161478005348718,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.3718329982938389,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.1
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.37729171178655535,
+              "ci_low": 0.10045131388950283,
+              "confidence": 0.95,
+              "estimate": 0.24039196429417395,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.2717475322649123,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.15
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 485.0,
+            "goal_local": 598.5,
+            "residual": 596.5,
+            "uniform_pass": 480.0
+          }
+        },
+        "gap10%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": -0.29557275833209745,
+              "ci_low": -0.5813377860917528,
+              "confidence": 0.95,
+              "estimate": -0.43728734800013386,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.6457858394776774,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.9
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": -0.27356277860246925,
+              "ci_low": -0.5688257659850423,
+              "confidence": 0.95,
+              "estimate": -0.41843265889244047,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.6580774437640027,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.9
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.1889952508313021,
+              "ci_low": -0.17947887290682762,
+              "confidence": 0.95,
+              "estimate": 0.007753328122149327,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.0077834630021587,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.55
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.5449283814863654,
+              "ci_low": 0.33418522471134654,
+              "confidence": 0.95,
+              "estimate": 0.44504067612228315,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.5605536718136637,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.1
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.5299922856718362,
+              "ci_low": 0.30499862967681485,
+              "confidence": 0.95,
+              "estimate": 0.42618598701458976,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.5314055701984617,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.1
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 111.5,
+            "goal_local": 159.0,
+            "residual": 162.0,
+            "uniform_pass": 96.0
+          }
+        },
+        "gap3%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": -0.31492761912605344,
+              "ci_low": -0.49915637129675566,
+              "confidence": 0.95,
+              "estimate": -0.4087423373625361,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.6644854233332383,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.95
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": -0.23408084781555613,
+              "ci_low": -0.40515922476824484,
+              "confidence": 0.95,
+              "estimate": -0.3186528923975595,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.7271278971289208,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 1.0
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.17342464092335447,
+              "ci_low": -0.11652273128979135,
+              "confidence": 0.95,
+              "estimate": 0.02658942074360393,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.0269460734375664,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.45
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.5425442613864314,
+              "ci_low": 0.3296003794881892,
+              "confidence": 0.95,
+              "estimate": 0.43533175810613994,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.5454756980012105,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.0
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.4799842959095479,
+              "ci_low": 0.2149653760802041,
+              "confidence": 0.95,
+              "estimate": 0.34524231314116344,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.4123321048366921,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.05
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 225.0,
+            "goal_local": 367.5,
+            "residual": 323.0,
+            "uniform_pass": 224.0
+          }
+        }
+      },
+      "0.25": {
+        "gap1%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": -0.09194317775365547,
+              "ci_low": -0.2896121447978793,
+              "confidence": 0.95,
+              "estimate": -0.1901838496422236,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.8268071117774919,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.7
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": -0.0029347344024062806,
+              "ci_low": -0.22421553045626147,
+              "confidence": 0.95,
+              "estimate": -0.10983547672119962,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.895981532990572,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.6
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.5884068446354404,
+              "ci_low": 0.2744202924217147,
+              "confidence": 0.95,
+              "estimate": 0.43166079378034644,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.5398127125158358,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.2
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.7693463308835249,
+              "ci_low": 0.48135574036915557,
+              "confidence": 0.95,
+              "estimate": 0.6218446434225701,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.8623602658732645,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.05
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.6783131329734206,
+              "ci_low": 0.4011756316984285,
+              "confidence": 0.95,
+              "estimate": 0.541496270501546,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.7185763945115133,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.05
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 770.0,
+            "goal_local": 809.5,
+            "residual": 804.5,
+            "uniform_pass": 480.0
+          }
+        },
+        "gap10%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": -0.1314676129104226,
+              "ci_low": -0.37291302760717,
+              "confidence": 0.95,
+              "estimate": -0.2533445359789298,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.7762004067819996,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.7
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": -0.10528257278559008,
+              "ci_low": -0.3534812342663404,
+              "confidence": 0.95,
+              "estimate": -0.22955048965955074,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.7948908338570722,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.75
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.661345731634848,
+              "ci_low": 0.3485019909108969,
+              "confidence": 0.95,
+              "estimate": 0.5039282246580591,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.6552105555897674,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.05
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.8591055653759845,
+              "ci_low": 0.6458788296533908,
+              "confidence": 0.95,
+              "estimate": 0.7572727606369887,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 2.1324525742675142,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.0
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.8380464754640008,
+              "ci_low": 0.6126823160091339,
+              "confidence": 0.95,
+              "estimate": 0.7334787143176098,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 2.082311790611725,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.05
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 174.875,
+            "goal_local": 216.25,
+            "residual": 220.5,
+            "uniform_pass": 96.0
+          }
+        },
+        "gap3%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": -0.15753605003039625,
+              "ci_low": -0.3327425496114639,
+              "confidence": 0.95,
+              "estimate": -0.24679348240732316,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.7813020294857295,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.85
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": -0.0779768846505053,
+              "ci_low": -0.23051027612701266,
+              "confidence": 0.95,
+              "estimate": -0.15278058911329487,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.8583180254717456,
+              "reading": "adjoint needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.8
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.6350122903198184,
+              "ci_low": 0.3612099325174292,
+              "confidence": 0.95,
+              "estimate": 0.49664000557411914,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.64319087267699,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.1
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.8505688088379874,
+              "ci_low": 0.6373821899443214,
+              "confidence": 0.95,
+              "estimate": 0.7434334879814423,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 2.103144252368799,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.0
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 0.7843730900477556,
+              "ci_low": 0.5194404250309584,
+              "confidence": 0.95,
+              "estimate": 0.649420594687414,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.9144312759525999,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.0
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 362.5,
+            "goal_local": 498.25,
+            "residual": 437.0,
+            "uniform_pass": 224.0
+          }
+        }
+      },
+      "1": {
+        "gap1%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": 0.05928032060227473,
+              "ci_low": -0.1257421408081588,
+              "confidence": 0.95,
+              "estimate": -0.03286934435968023,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.9676649822178041,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.55
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": 0.15310044012026597,
+              "ci_low": -0.05222762752506505,
+              "confidence": 0.95,
+              "estimate": 0.05314883016204579,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.0545865877329126,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.35
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 1.3193970101008445,
+              "ci_low": 1.0196874760906494,
+              "confidence": 0.95,
+              "estimate": 1.171245746980833,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 3.2260089272505863,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.0
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 1.3509046153112596,
+              "ci_low": 1.0637511988882595,
+              "confidence": 0.95,
+              "estimate": 1.2041150913405132,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 3.333807657126182,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.0
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 1.2548795010303686,
+              "ci_low": 0.9779053688321343,
+              "confidence": 0.95,
+              "estimate": 1.118096916818787,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 3.0590270773172525,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.0
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 1625.0,
+            "goal_local": 1445.5,
+            "residual": 1428.5,
+            "uniform_pass": 480.0
+          }
+        },
+        "gap10%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": 0.03847042944387797,
+              "ci_low": -0.18141532155139817,
+              "confidence": 0.95,
+              "estimate": -0.07206798961898278,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.9304676315208297,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.5
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": 0.07080794138629151,
+              "ci_low": -0.1559058075333792,
+              "confidence": 0.95,
+              "estimate": -0.042336595815451794,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.9585470833290982,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.45
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 1.418694341030358,
+              "ci_low": 1.1416134156711761,
+              "confidence": 0.95,
+              "estimate": 1.2753835654898804,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 3.5800743397484647,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.0
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 1.451488800755316,
+              "ci_low": 1.235275706792633,
+              "confidence": 0.95,
+              "estimate": 1.3474515551088633,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 3.8476076098390535,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.0
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 1.4234666272795182,
+              "ci_low": 1.1961062145019632,
+              "confidence": 0.95,
+              "estimate": 1.3177201613053324,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 3.7348967014897454,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.0
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 365.0,
+            "goal_local": 388.5,
+            "residual": 396.0,
+            "uniform_pass": 96.0
+          }
+        },
+        "gap3%": {
+          "differences": {
+            "adjoint / goal_local": {
+              "both_unreached": 0,
+              "ci_high": 0.007862032274845826,
+              "ci_low": -0.16583099333287155,
+              "confidence": 0.95,
+              "estimate": -0.07982710240558259,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 0.9232759647807139,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_goal_local)) to reach the target",
+              "win_rate": 0.6
+            },
+            "adjoint / residual": {
+              "both_unreached": 0,
+              "ci_high": 0.08806892927059372,
+              "ci_low": -0.05451308665394678,
+              "confidence": 0.95,
+              "estimate": 0.018971407514923787,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 1.0191525080979318,
+              "reading": "no detectable difference",
+              "statistic": "mean(log(compute_adjoint / compute_residual)) to reach the target",
+              "win_rate": 0.4
+            },
+            "adjoint / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 1.382080679534062,
+              "ci_low": 1.1175787025837547,
+              "confidence": 0.95,
+              "estimate": 1.248799026360721,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 3.486153663697107,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_adjoint / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.0
+            },
+            "goal_local / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 1.4357155177650276,
+              "ci_low": 1.22237555746879,
+              "confidence": 0.95,
+              "estimate": 1.3286261287663037,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 3.7758522875932323,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_goal_local / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.0
+            },
+            "residual / uniform_pass": {
+              "both_unreached": 0,
+              "ci_high": 1.3650208951998166,
+              "ci_low": 1.1001967000893806,
+              "confidence": 0.95,
+              "estimate": 1.2298276188457973,
+              "num_episodes": 20,
+              "num_windows": 20,
+              "ratio_of_geometric_means": 3.4206398316218616,
+              "reading": "uniform_pass needs less compute",
+              "statistic": "mean(log(compute_residual / compute_uniform_pass)) to reach the target",
+              "win_rate": 0.0
+            }
+          },
+          "fraction_reached": {
+            "adjoint": 1.0,
+            "goal_local": 1.0,
+            "residual": 1.0,
+            "uniform_pass": 1.0
+          },
+          "median_compute": {
+            "adjoint": 759.0,
+            "goal_local": 891.5,
+            "residual": 779.0,
+            "uniform_pass": 224.0
+          }
+        }
+      }
+    }
+  }
+}
