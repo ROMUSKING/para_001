@@ -1,0 +1,40 @@
+{
+  "_comment": "Adapter map for harness/sync.py. Sources of truth: AGENTS.md (root + nested), .agents/skills/, harness/mcp.json. Everything listed here is GENERATED. Tools that natively read AGENTS.md and .agents/skills (Codex, Antigravity, OpenCode, Gemini CLI via .gemini/settings.json, Cursor) need no generated copies. Verified paths and sources: harness/README.md.",
+
+  "instruction_sources": ["AGENTS.md", "notebooks/AGENTS.md", "results/AGENTS.md"],
+
+  "instruction_targets": [
+    {
+      "tool": "claude-code",
+      "filename": "CLAUDE.md",
+      "mode": "import",
+      "extra": "## Claude Code specifics\n\n- Claude Code reads `CLAUDE.md`, not `AGENTS.md`, so this file imports it. Skills are mirrored into `.claude/skills/` from `.agents/skills/`; invoke them as `/import-run`, `/audit-run`, etc.\n- `.claude/settings.json` holds permissions and a PreToolUse hook (`harness/hooks/protect_paths.py`) that blocks edits to immutable and generated paths.\n"
+    }
+  ],
+
+  "skills_source": ".agents/skills",
+  "skills_targets": [
+    {"tool": "claude-code", "dir": ".claude/skills"}
+  ],
+
+  "command_targets": [
+    {
+      "tool": "antigravity",
+      "dir": ".agents/workflows",
+      "template": "---\ndescription: {description}\n---\n\nFollow the procedure in `.agents/skills/{name}/SKILL.md` step by step. Obey the hard rules in `AGENTS.md`.\n"
+    },
+    {
+      "tool": "opencode",
+      "dir": ".opencode/commands",
+      "template": "---\ndescription: {description}\n---\n\nFollow the procedure in `.agents/skills/{name}/SKILL.md` step by step. Obey the hard rules in `AGENTS.md`.\n\n$ARGUMENTS\n"
+    }
+  ],
+
+  "mcp_source": "harness/mcp.json",
+  "mcp_targets": [
+    {"tool": "claude-code", "path": ".mcp.json", "format": "claude"},
+    {"tool": "gemini-cli", "path": ".gemini/settings.json", "format": "gemini"},
+    {"tool": "opencode", "path": "opencode.json", "format": "opencode-merge"},
+    {"tool": "codex", "path": ".codex/config.toml", "format": "codex-toml"}
+  ]
+}

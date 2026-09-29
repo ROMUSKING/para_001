@@ -1,26 +1,22 @@
-name: tests
+name: checks
 
 on:
   push:
   pull_request:
 
 jobs:
-  pytest:
+  harness-check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - run: pip install -e ".[dev]"
-      - run: pytest -q
-      - name: Notebooks are valid and output-free
-        run: |
-          python - <<'EOF'
-          import glob, nbformat
-          for path in glob.glob("notebooks/**/*.ipynb", recursive=True):
-              nb = nbformat.read(path, as_version=4)
-              nbformat.validate(nb)
-              assert not any(c.get("outputs") for c in nb.cells if c.cell_type == "code"), path
-              print("ok", path)
-          EOF
+      - name: Definition of done (tests, notebooks, harness drift, links, size/secrets, immutability)
+        env:
+          # PRs are compared with their base branch; pushes with the previous commit.
+          HARNESS_BASE_REF: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || (github.event.before != '0000000000000000000000000000000000000000' && github.event.before || '') }}
+        run: python harness/check.py

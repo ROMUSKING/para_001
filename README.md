@@ -45,6 +45,8 @@ notebooks/
   archive/                  Earlier notebooks, kept for provenance only
 src/adjointrwm/             Tested code lifted out of notebooks (allocation analysis so far)
 scripts/                    CLI tools (analyze_allocation_traces.py)
+harness/                    Cross-tool agent harness: sync, checks, hooks (see AGENTS.md)
+.agents/skills/             Portable agent skills shared by all coding agents
 tests/                      pytest suite: CPU only, no GPU or dataset needed
 results/
   runs/<run_id>/            Per-run config, logs, evaluations, traces, figures, checkpoint hashes
@@ -90,6 +92,15 @@ These are condensed from the operator brief and the comprehensive plan:
 5. **A result counts only through a gate artefact:** a committed run directory, config hash, raw tables and a CI. Negative results, ties and aborted runs are reported, not replaced.
 6. **Terminology:** only call something a "co-state" if it is supervised by or derived from ∂J/∂state (research plan §15.2).
 7. **Hardware:** stay on L4 until a profiler or a held-out gain says otherwise. Unused VRAM is not a reason to upgrade.
+
+## Working with AI agents
+
+Coding agents (Claude Code, Codex, Antigravity/`agy`, OpenCode, Gemini CLI, Cursor) share one harness:
+
+- **[`AGENTS.md`](AGENTS.md):** the instructions every agent follows.
+- **`.agents/skills/`:** reusable procedures.
+- **[`harness/`](harness/README.md):** keeps the per-tool files in sync and defines "done" (`python harness/check.py`).
+- **[`docs/plans/WORKLOG.md`](docs/plans/WORKLOG.md):** the handoff log agents read first and append to last.
 
 ## Contributing workflow
 

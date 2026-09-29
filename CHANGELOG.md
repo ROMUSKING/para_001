@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-09-29 (c): cross-tool agent harness
+
+- Added `AGENTS.md` (root, `notebooks/`, `results/`) as the single instruction source for Claude Code, Codex, Antigravity/`agy`, OpenCode, Gemini CLI and Cursor.
+- Added five portable skills in `.agents/skills/`: `import-run`, `audit-run`, `claim-check`, `notebook-hygiene` and `research-note`.
+- Added `harness/`:
+  - `sync.py`: generates the Claude Code adapters and slash-command shims from `manifest.json`, including MCP fan-out.
+  - `check.py`: the definition of done, also run in CI.
+  - `hooks/protect_paths.py`: blocks edits to immutable run artefacts, dated audits and generated files.
+  - `README.md`: design notes and a tool matrix checked against each tool's docs.
+- Added `.claude/settings.json`, `opencode.json` and `.gemini/settings.json` with permission guardrails.
+- Added `docs/plans/WORKLOG.md`, an append-only handoff log.
+- CI now runs `harness/check.py` with immutability checks against the base ref.
+
 ## 2026-09-29 (b): documentation update and roadmap
 
 - Imported these documents:

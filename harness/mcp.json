@@ -1,0 +1,4 @@
+{
+  "_comment": "Canonical MCP server list, shared by every agent. Each entry is either stdio {command, args, env} or remote {url, headers}. Use env-var NAMES only; never put secrets here. harness/sync.py writes the tool-specific files, and does nothing while this list is empty.",
+  "servers": {}
+}
