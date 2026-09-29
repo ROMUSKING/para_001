@@ -36,6 +36,7 @@ The GPU training pipeline runs **only in Google Colab** (`notebooks/01-productio
 | `notebooks/` | Colab notebooks | See `notebooks/AGENTS.md` |
 | `results/runs/<run_id>/` | Imported run artefacts | **Immutable once committed.** See `results/AGENTS.md` |
 | `docs/research-notes/` | Evidence-backed findings | Named `YYYY-MM-DD-<slug>.md`; must cite a run ID and config hash |
+| `docs/licences/` | Licence register for datasets and frozen models (evidence fetched by `scripts/licence_survey.py`) | A source is cleared only by a row whose evidence URLs were fetched; `tests/test_licences.py` enforces it |
 | `docs/audits/` | Why things are *not* evidence | Append-only: add new files, never edit dated ones |
 | `docs/research-plan/`, `docs/production/` | Protocols and briefs | Change them only on explicit instruction; log deviations in `prereg/deviation_log.yaml` |
 | `papers/` | Drafts + `REVIEW.md` | Every claim must trace to a gate artefact |

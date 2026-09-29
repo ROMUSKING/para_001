@@ -21,6 +21,21 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 
 ---
 
+## 2026-09-29 20:40 (BST) · Claude Code (web) · DL
+
+- **Decision (Roman):** licence survey first, then the rest.
+- **Changed:**
+  - Added `docs/licences/` (register of 53 sources, fetched evidence, structure-only probes, survey note), `scripts/licence_survey.py` and `tests/test_licences.py`. Updated the cross-domain plan, roadmap, README, docs index, AGENTS map and changelog.
+  - Answered the diff-size question: 33,561 of 43,388 lines added on the branch against `main` were committed run artefacts (mostly pretty-printed `instances.json`), but only 2.84 MB in 76 files.
+- **Verified:**
+  - Every row that claims a read points at a URL recorded with HTTP status 200 (`tests/test_licences.py`); the Llama clauses and the QuALITY licence counts were re-checked against the fetched text and data.
+  - `pytest -q`: 143 passed. `python harness/check.py --base origin/main`: 7/7.
+- **Result:** 4 `adopt`, 10 `adopt_with_conditions`, 3 `avoid`, 36 `unverified`. Hugging Face, UCI, Zenodo, PhysioNet, Kaggle, TPC and others are blocked by the sandbox network policy, so no checkpoint card and no non-GitHub dataset page was read.
+- **Open:** pass 2 needs those hosts reachable (Environment settings, Network access) or a Colab run of `python scripts/licence_survey.py snapshot` and `probe`. QuALITY's annotation licence is unstated. D3's graph domain is undecided.
+- **Next:** unblock the hosts, re-run the snapshot, update the 14 `unread` rows by hand, then decide D2-0 and D1-0 candidates. D4-2 (CPU) does not depend on this.
+
+---
+
 ## 2026-09-29 19:20 (BST) · Claude Code (web) · D4-0b, D4-2, recommendation
 
 - **Changed:**

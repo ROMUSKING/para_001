@@ -6,6 +6,7 @@
 | [`research-plan/`](research-plan/) | Preregistration-style research protocols | [`adjoint_guided_comprehensive_research_plan.md`](research-plan/adjoint_guided_comprehensive_research_plan.md) (governing) |
 | [`production/`](production/) | Production training plan and the Colab L4 operator rules | [`colab_l4_operator_brief.md`](production/colab_l4_operator_brief.md) (read before running anything) |
 | [`research-notes/`](research-notes/) | Dated findings from runs that count as evidence | [`2026-09-29-droid100-pilot-findings.md`](research-notes/2026-09-29-droid100-pilot-findings.md) |
+| [`licences/`](licences/) | Licence register for datasets and frozen models: `register.csv`, the fetched evidence, usability probes and dated survey notes | [`README.md`](licences/README.md), [`survey-2026-09-29.md`](licences/survey-2026-09-29.md) |
 | [`audits/`](audits/) | Checks of runs and notebooks that don't count as evidence, and why | [`README.md`](audits/README.md) |
 | [`DRIVE_INVENTORY.csv`](DRIVE_INVENTORY.csv) | Every relevant Google Drive file: ID, size, status, repo path | — |
 

@@ -75,7 +75,8 @@ This is a recommendation for Roman to accept or change, not a decision. It order
 2. **B2 = E2.1 + E2.2 next (Colab L4).** Pilot v2 with the fixed evaluation contract and five paired seeds is the real-data H2 test. **B1 (rival world models) is a different question** (which substrate predicts best) and a result there says nothing about H2, so it is not on the critical path. Run it after B2, or in parallel when L4 time is free; the dynamics gate already passed once (single seed).
 3. **In parallel on CPU: D4-2, then D4-1 if it opens.** D4 is the one place where the exact answer is known and a run costs minutes. D4-0 and D4-0b show that exact co-state scoring does not pay for itself at the real price. The co-state can only matter through amortisation, which is H2's premise, so the experiment that decides it is a *learned* scorer priced at its measured cost against a matched direct critic. D4-2 measures that price. D4-1 then compares a co-state-featured critic with a direct critic in a regime where adaptivity pays.
 4. **Size D4-1 for the headroom that exists.** With the exact co-state at scoring price ×0.25 or ×0, the co-state needed 9–29 % less compute than the residual score in `sharp` (point estimates, D4-0b note §3.4). A learned direct critic cannot lose more than that to a co-state-featured one, so D4-1 must be powered for effects of at most that size.
-5. **Defer:** the licence survey (DL) and the other domains (Roman's decision), production P5+ until G-H2, N6, and any GPU larger than the L4 without a profiler or held-out-gain justification.
+5. **Defer:** the other domains until DL pass 2 (Roman's decision), production P5+ until G-H2, N6, and any GPU larger than the L4 without a profiler or held-out-gain justification.
+6. **Roman's decision (2026-09-29, after this recommendation): the licence survey (DL) comes first, then the rest.** Pass 1 is done. Pass 2 needs the blocked hosts reachable, so the steps above are unchanged and can proceed while access is arranged.
 
 **Stop-losses.**
 
@@ -138,8 +139,8 @@ Dates assume a start of Mon 29 Sep 2026 and one person working part-time on Cola
 | D4-0b | Pass-based allocation and a localisation sweep, validation only | Run imported, note written | Done: at the real price adaptivity pays only in the most localised family and the residual score does as well as the co-state; the frozen rule is met in 2 of 9 cells, both at hypothetical prices ([note](../research-notes/2026-09-29-d4-0b-where-adaptivity-pays.md)) |
 | D4-2 | Learned amortised scorer priced at its measured cost; higher-dimensional system; one factor varied at a time; wider `θ` grid | Regime and price frozen before validation is read; note written | **Next (CPU)** |
 | D4-1 | Learned direct critic vs co-state-featured critic on D4, 5 seeds | Rung-1 gate, §0A.3 exit class | Closed at the real ledger; may open for a regime D4-2 shows at scoring price ≤ ×0.25 |
-| DL | Licence survey of permissively licensed data and models for the other domains | Per-source licence and release terms; small usability test | Next for the other domains |
-| D2-0, D1-0, D3-0 | LLM-context, sensor-stream and graph domain cards and adapters (Tier P) | Rung-0 gate | Deferred until DL |
+| DL | Licence survey of permissively licensed data and models for the other domains | Per-source licence and release terms; small usability test | **Pass 1 done** (GitHub-reachable sources: 53 sources, 4 `adopt`, 10 `adopt_with_conditions`, 3 `avoid`, 36 `unverified`); pass 2 needs network access to Hugging Face, UCI, Zenodo and others ([survey](../licences/survey-2026-09-29.md)) |
+| D2-0, D1-0, D3-0 | LLM-context, sensor-stream and graph domain cards and adapters (Tier P) | Rung-0 gate | Deferred until DL pass 2 |
 | DX | Shared allocator, leave-one-domain-out, negative-transfer guard | Rungs 2–3; confirmatory only in N6 | Waits for ≥ 3 specialists and the N2 exit class |
 
 **Progress on existing rows (2026-09-29, not yet run on Colab):**
@@ -235,4 +236,4 @@ Every sentence in a submission maps to a gate artefact through a claim matrix (p
 5. **Rival benchmark endpoint:** normalised-state RMSE (the pilot's gate metric, assumed) or native-unit RMSE of one state group as the B1 primary endpoint?
 6. **TD-MPC2 input:** information-matched 8-frame stack (assumed) or the faithful single frame as the primary TD-MPC2 arm?
 7. **B4:** run the released V-JEPA 2-AC checkpoint at all, given possible DROID train/test contamination and a ViT-g encoder on L4?
-8. **Track D:** decided 2026-09-29: D4 first, the other domains subject to future research into permissively licensed content and testing. Still open: run the licence survey (DL) next, or after D4-2 / D4-1? Do sensor streams (D1) also wait for DL?
+8. **Track D:** decided 2026-09-29: D4 first, the other domains subject to future research into permissively licensed content and testing. Decided later the same day: licence survey (DL) first, then the rest. Still open: do sensor streams (D1) also wait for DL pass 2? (This roadmap assumes yes.)

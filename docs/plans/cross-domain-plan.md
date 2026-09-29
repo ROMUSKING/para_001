@@ -245,15 +245,17 @@ All metrics are lower-is-better, and each domain also keeps its native metric.
 | D4-0b | Pass-based (batch) allocation and a localisation sweep, validated at equal compute on validation only | Run imported; note written | Done: correctness ✅; 0 of 3 families pay for the co-state at the real price; 2 of 9 cells are candidates, both at hypothetical prices (sharp ×0.25, ×0) ([note](../research-notes/2026-09-29-d4-0b-where-adaptivity-pays.md)) |
 | D4-2 | Price a learned, amortised scorer at its measured cost in the D4 ledger; higher-dimensional system; one factor varied at a time; wider `θ` grid (tuning family only) | Regime and price frozen before validation is read; run imported; note written | **Next (CPU)** |
 | D4-1 | Learned direct critic vs co-state-featured critic on D4, 5 seeds | Rung-1 gate; §0A.3 exit class | Closed at the real ledger; may open for a regime that D4-2 shows at scoring price ≤ ×0.25 (§5) |
-| DL | Licence survey of permissively licensed data and models for D1–D3 and Tier 2 domains | Per-source licence, redistribution and release terms recorded; a small usability test per candidate | **Next for the other domains (Roman's decision)** |
-| D2-0, D1-0, D3-0 | LLM-context, sensor-stream and graph domain cards and adapters | Rung-0 gate | Deferred until DL |
+| DL | Licence survey of permissively licensed data and models for D1–D3 and Tier 2 domains | Per-source licence, redistribution and release terms recorded; a small usability test per candidate | **Pass 1 done (GitHub-reachable sources only):** 53 sources, 4 `adopt`, 10 `adopt_with_conditions`, 3 `avoid`, 36 `unverified`; Hugging Face, UCI, Zenodo, PhysioNet and other hosts are blocked here, so no checkpoint or dataset card was read ([survey](../licences/survey-2026-09-29.md), [register](../licences/register.csv)). **Pass 2 needs network access to those hosts** |
+| D2-0, D1-0, D3-0 | LLM-context, sensor-stream and graph domain cards and adapters | Rung-0 gate | Deferred until DL pass 2 clears a frozen model and a dataset for each (candidates: D1 SMD, D2 MuSiQue and a Qwen3 checkpoint; D3 undecided) |
 | DX | Shared allocator, leave-one-domain-out, negative transfer | Rungs 2–3; confirmatory only in N6 | Waits for ≥ 3 specialists and the N2 exit class |
 
 ## 10. Decisions and open questions
 
 **Decided (Roman, 2026-09-29):** D4 first. The rest is subject to future research into permissively licensed content and testing. This closes the former questions on the first experiment, D3, D2's model and data, ERP data, and amending N6: none of them is acted on until the licence survey (DL) reports.
 
+**Decided (Roman, 2026-09-29, later):** licence survey first, then the rest.
+
 **Open:**
 
-1. Should the licence survey (DL) be run next, or after D4-2 / D4-1?
+1. ~~Should the licence survey (DL) be run next, or after D4-2 / D4-1?~~ Decided by Roman (2026-09-29): licence survey first, then the rest. Pass 1 is done; pass 2 waits for network access to the blocked hosts.
 2. Should sensor streams (D1) also wait for DL? This plan assumes yes, because they need a public dataset with a licence.

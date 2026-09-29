@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-29 (h): licence survey, pass 1 (milestone DL)
+
+- **Roman's decision:** licence survey first, then the rest.
+- **New `docs/licences/`:** `register.csv` (53 sources across D1, D2, D3, the query-planning alternative and Tier 2; the licence as read, what it covers, a verification level, evidence URLs, gaps, a verdict), `evidence.jsonl` (per-URL status, size, SHA-256, retrieval time and licence lines; no texts), `probes.jsonl` (structure-only usability tests of data that is reachable), and `survey-2026-09-29.md`.
+- **New `scripts/licence_survey.py`** (`snapshot`, `probe`; standard library only, so it also runs on Colab) and `tests/test_licences.py` (8 tests): a row that claims a read must point at fetched evidence, and `adopt` requires a permissive licence for the asset itself, not just for its code.
+- **Result:** 4 `adopt`, 10 `adopt_with_conditions`, 3 `avoid`, 36 `unverified`. The sandbox blocks Hugging Face, UCI, Zenodo, PhysioNet and other hosts, so no model checkpoint card and no non-GitHub dataset page was read; pass 2 needs those hosts reachable. QuALITY's articles are under Project Gutenberg, OANC and CC BY 4.0 licences, but its annotations have no stated licence.
+- **Tests:** 143 (was 135).
+
 ## 2026-09-29 (g): D4-0b design study, robustness check and recommended sequence
 
 - **Batch (pass) allocation** in `adjointrwm.domains`: `apply_batch`/`batch_cost` on the domain (a pass of `k` refinements costs `n + k − j_min` CN steps), `BatchPolicy`, `run_batch_policy`, `uniform_pass_policy`, `marking_policy` (Dörfler marking on the residual, goal-local or co-state score), work-precision evaluation (`evaluate_work_precision`, `work_precision_summary`), scoring-price what-ifs, and three localisation families (`smooth`, `sharp`, `sharper`). 32 domain tests.
