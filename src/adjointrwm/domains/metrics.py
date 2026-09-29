@@ -134,3 +134,36 @@ def compute_level_summary(frame: pd.DataFrame, pairs: Sequence[tuple[str, str]],
             entry["differences"][f"{a} - {b}"] = ci
         out[float(level)] = entry
     return out
+
+
+def work_precision_summary(frame: pd.DataFrame, pairs: Sequence[tuple[str, str]], compute_cap: float,
+                           num_resamples: int = 10_000, seed: int = 0) -> dict:
+    """Compare policies by the compute they need to reach a target (from ``evaluate_work_precision``).
+
+    Result: ``{scale: {target: {...}}}``. Per scale and target and pair ``(a, b)``: the
+    instance-bootstrap CI of ``mean(log(compute_a / compute_b))`` (negative = ``a`` needs less
+    compute), the ratio of geometric means, and the win rate. A target not reached within the cap
+    counts as ``compute_cap``, which understates that policy's true compute (so the comparison is
+    conservative against its rival); censored counts are reported. Scales other than 1 are what-ifs.
+    """
+    if "decision_scale" not in frame:
+        frame = frame.assign(decision_scale=1.0)
+    data = frame.assign(reached=np.isfinite(frame["compute"]), compute=frame["compute"].clip(upper=compute_cap))
+    per = data.groupby(["decision_scale", "instance", "policy", "target"], as_index=False).agg(
+        compute=("compute", "mean"), reached=("reached", "mean"))
+    out = {}
+    for (scale, target), block in per.groupby(["decision_scale", "target"]):
+        wide = block.pivot_table(index="instance", columns="policy", values="compute")
+        reached = block.pivot_table(index="instance", columns="policy", values="reached")
+        entry = {"median_compute": wide.median().to_dict(), "fraction_reached": reached.mean().to_dict(), "differences": {}}
+        for a, b in pairs:
+            frame_ab = pd.DataFrame({"episode_id": wide.index.astype(str), "a": np.log(wide[a].to_numpy()), "b": np.log(wide[b].to_numpy())})
+            ci = episode_bootstrap_ci(frame_ab, "a", baseline="b", num_resamples=num_resamples, seed=seed)
+            ci["statistic"] = f"mean(log(compute_{a} / compute_{b})) to reach the target"
+            ci["ratio_of_geometric_means"] = float(np.exp(ci["estimate"]))
+            ci["win_rate"] = float((wide[a] < wide[b]).mean())
+            ci["both_unreached"] = int(((reached[a] == 0) & (reached[b] == 0)).sum())
+            ci["reading"] = f"{a} needs less compute" if ci["ci_high"] < 0 else f"{b} needs less compute" if ci["ci_low"] > 0 else "no detectable difference"
+            entry["differences"][f"{a} / {b}"] = ci
+        out.setdefault(f"{scale:g}", {})[str(target)] = entry
+    return out

@@ -4,7 +4,17 @@ See docs/plans/cross-domain-plan.md. ``linear_ode`` is D4, the exact-adjoint ref
 """
 
 from .base import ACTION_KINDS, AllocationDomain, Candidate, Cost, CostWeights, DomainSpec
-from .linear_ode import AdaptiveTimeSteppingDomain, LinearODEInstance, Pulse, d4_policies, sample_instances
+from .linear_ode import (
+    FAMILIES,
+    AdaptiveTimeSteppingDomain,
+    LinearODEInstance,
+    Pulse,
+    d4_policies,
+    marking_policy,
+    sample_family,
+    sample_instances,
+    uniform_pass_policy,
+)
 from .metrics import (
     BEST_KNOWN,
     absolute_adaptive_gain,
@@ -18,23 +28,31 @@ from .metrics import (
     regret_curve,
     transfer_summary,
     with_best_known,
+    work_precision_summary,
 )
 from .runner import (
+    BatchPolicy,
     Policy,
     PolicyContext,
     Trace,
+    compute_to_target,
     evaluate_at_compute,
     evaluate_policies,
+    evaluate_work_precision,
     exhaustive_oracle_curve,
     objective_at_compute,
     one_step_oracle,
     random_policy,
+    run_any,
+    run_batch_policy,
     run_policy,
 )
 
 __all__ = [
     "ACTION_KINDS",
     "BEST_KNOWN",
+    "BatchPolicy",
+    "FAMILIES",
     "AdaptiveTimeSteppingDomain",
     "AllocationDomain",
     "Candidate",
@@ -50,11 +68,14 @@ __all__ = [
     "aurc",
     "aurc_table",
     "compute_level_summary",
+    "compute_to_target",
     "d4_policies",
     "evaluate_at_compute",
     "evaluate_policies",
+    "evaluate_work_precision",
     "exhaustive_oracle_curve",
     "fraction_of_oracle_advantage",
+    "marking_policy",
     "objective_at_compute",
     "one_step_oracle",
     "opportunity_over_budgets",
@@ -62,8 +83,13 @@ __all__ = [
     "policy_curves",
     "random_policy",
     "regret_curve",
+    "run_any",
+    "run_batch_policy",
     "run_policy",
+    "sample_family",
     "sample_instances",
     "transfer_summary",
+    "uniform_pass_policy",
     "with_best_known",
+    "work_precision_summary",
 ]

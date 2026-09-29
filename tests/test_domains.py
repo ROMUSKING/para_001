@@ -277,3 +277,132 @@ def test_spec_validation_and_checksum():
     with pytest.raises(ValueError):
         Candidate("x", "teleport", 0)
     assert Cost(1, 2, 3, 4).weighted(CostWeights(1, 1, 1, 1)) == 10
+
+
+# --- pass-based (batch) semantics and work-precision evaluation (D4-0b) --------------------
+
+from adjointrwm.domains import (  # noqa: E402
+    BatchPolicy,
+    compute_to_target,
+    evaluate_work_precision,
+    marking_policy,
+    run_batch_policy,
+    sample_family,
+    uniform_pass_policy,
+    work_precision_summary,
+)
+from adjointrwm.domains.linear_ode import _select_dorfler  # noqa: E402
+
+
+def test_batch_application_equals_sequential_application(domain, instances):
+    inst = instances[0]
+    state = domain.initial_state(inst)
+    picked = [domain.legal_candidates(state)[j] for j in (1, 4, 5)]
+    batch = domain.apply_batch(state, picked)
+    sequential = state
+    for candidate in picked:
+        sequential = domain.apply(sequential, candidate)
+    assert batch.nodes == sequential.nodes
+    np.testing.assert_allclose(batch.y, sequential.y, rtol=1e-12, atol=1e-14)
+
+
+def test_batch_cost_is_one_resolve_and_matches_single_refinement(domain, instances):
+    state = domain.initial_state(instances[0])
+    n = len(state.nodes) - 1
+    candidates = domain.legal_candidates(state)
+    assert domain.batch_cost(state, [candidates[3]]) == candidates[3].cost
+    batch = domain.batch_cost(state, [candidates[2], candidates[6], candidates[5]])
+    assert batch.rate == 3.0 and batch.compute == float(n + 3 - 2)
+    assert batch.compute < sum(c.cost.compute for c in (candidates[2], candidates[5], candidates[6]))
+
+
+def test_dorfler_selection_is_minimal_and_reaches_theta():
+    scores = np.array([5.0, 1.0, 3.0, 0.5, 0.5])
+    chosen = _select_dorfler(scores, 0.6)
+    assert list(chosen) == [0, 2]  # 8 of 10 >= 6, and 5 alone is < 6
+    assert scores[chosen].sum() >= 0.6 * scores.sum()
+    assert scores[chosen[:-1]].sum() < 0.6 * scores.sum()
+    assert list(_select_dorfler(np.zeros(4), 0.5)) == [0]
+    assert len(_select_dorfler(scores, 1.0)) == len(scores)
+
+
+def test_uniform_pass_refines_every_longest_interval(domain, instances):
+    inst = instances[0]
+    trace = run_batch_policy(domain, inst, uniform_pass_policy(), 3)
+    assert [len(d) for d in trace.decisions] == [inst.initial_intervals, 2 * inst.initial_intervals, 4 * inst.initial_intervals]
+    assert trace.decision_cost[-1].compute == 0  # no scoring
+
+
+def test_marking_policies_use_the_same_scores_as_their_single_step_versions(domain, instances):
+    inst = instances[1]
+    state = domain.initial_state(inst)
+    candidates = domain.legal_candidates(state)
+    from adjointrwm.domains import PolicyContext
+
+    context = PolicyContext(observation=inst, instance=None, rng=np.random.default_rng(0))
+    single = {p.name: p for p in d4_policies()}
+    for kind in ("residual", "goal_local", "adjoint"):
+        top_single = int(np.argmax(single[kind].score(domain, state, candidates, context)))
+        picked = marking_policy(kind, 0.3).select(domain, state, candidates, context)
+        assert int(picked[0]) == top_single  # the first marked interval is the single-step choice (for adjoint: same |.| ordering)
+
+
+def test_marking_charges_scoring_once_per_pass(domain, instances):
+    inst = instances[0]
+    n0 = inst.initial_intervals
+    trace = run_batch_policy(domain, inst, marking_policy("adjoint", 0.5), 2)
+    assert trace.decision_cost[1].compute == 3 * n0
+    residual = run_batch_policy(domain, inst, marking_policy("residual", 0.5), 1)
+    assert residual.decision_cost[1].compute == 2 * n0
+
+
+def test_batch_runner_honours_budget_and_scoring_price(domain, instances):
+    inst = instances[0]
+    pol = marking_policy("adjoint", 0.5)
+    capped = run_batch_policy(domain, inst, pol, 30, compute_budget=600.0)
+    spent = [a.compute + d.compute for a, d in zip(capped.action_cost, capped.decision_cost)]
+    assert max(spent) <= 600.0 and capped.stopped_at is not None
+    cheap = run_batch_policy(domain, inst, pol, 30, compute_budget=600.0, decision_scale=0.0)
+    assert len(cheap.decisions) > len(capped.decisions)
+    with pytest.raises(ValueError):
+        run_batch_policy(domain, inst, BatchPolicy("bad", lambda d, s, c, x: []), 1)
+
+
+def test_compute_to_target_and_scoring_what_if(domain, instances):
+    inst = instances[0]
+    trace = run_batch_policy(domain, inst, marking_policy("adjoint", 0.5), 6)
+    j = trace.objective
+    target = 0.5 * (j[0] + j[3])  # reached at pass >= 1
+    first = next(i for i, v in enumerate(j) if v <= target)
+    full = compute_to_target(trace, target)
+    assert full == trace.action_cost[first].compute + trace.decision_cost[first].compute
+    assert compute_to_target(trace, target, decision_scale=0.0) == trace.action_cost[first].compute
+    assert compute_to_target(trace, -1.0) == float("inf")
+
+
+def test_work_precision_pipeline_and_censoring(domain, instances):
+    policies = [uniform_pass_policy(), marking_policy("adjoint", 0.5), marking_policy("residual", 0.5)]
+
+    def targets(d, inst):
+        j0 = d.objective(d.initial_state(inst), inst)
+        return {"gap50": 0.5 * j0, "gap5": 0.05 * j0}
+
+    frame = evaluate_work_precision(domain, instances[:2], policies, targets, compute_cap=2000.0, max_steps=12, decision_scales=(1.0, 0.0))
+    assert set(frame["decision_scale"]) == {0.0, 1.0} and set(frame["target"]) == {"gap50", "gap5"}
+    uni = frame[(frame.policy == "uniform_pass")]
+    assert (uni.groupby(["instance", "target"])["compute"].nunique() == 1).all()  # uniform has no scoring: price-independent
+    adj = frame[(frame.policy == "mark_adjoint_0.5")]
+    for (_, _), block in adj.groupby(["instance", "target"]):
+        assert block.set_index("decision_scale").loc[0.0, "compute"] <= block.set_index("decision_scale").loc[1.0, "compute"]
+    summary = work_precision_summary(frame, [("mark_adjoint_0.5", "uniform_pass")], compute_cap=2000.0, num_resamples=100)
+    assert set(summary) == {"0", "1"} and set(summary["1"]) == {"gap50", "gap5"}
+    entry = summary["1"]["gap50"]["differences"]["mark_adjoint_0.5 / uniform_pass"]
+    assert entry["num_episodes"] == 2 and entry["ratio_of_geometric_means"] > 0
+
+
+def test_families_are_named_and_the_smooth_one_is_the_d4_0_family():
+    assert sample_instances(1001, 5) == sample_family("smooth", 1001, 5)
+    sharp = sample_family("sharp", 7, 3)
+    assert sharp[0].n_fine == 16 * 2 ** 11
+    assert max(p.width for i in sharp for p in i.pulses) <= 0.004
+    assert min(p.width for i in sample_family("smooth", 7, 3) for p in i.pulses) >= 0.01

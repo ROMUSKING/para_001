@@ -44,6 +44,21 @@ class Policy:
 
 
 @dataclass
+class BatchPolicy:
+    """A pass-based policy: one scoring pass, then *several* candidates applied together.
+
+    ``select(domain, state, candidates, context) -> indices`` returns the positions in
+    ``candidates`` to apply in this pass. ``decision_cost`` is charged once per pass. The
+    domain's ``batch_cost`` charges the actions (one re-solve for the whole batch, not one each).
+    """
+
+    name: str
+    select: Callable
+    deployable: bool = True
+    decision_cost: Callable = field(default=lambda domain, state, candidates: Cost())
+
+
+@dataclass
 class Trace:
     policy: str
     deployable: bool
@@ -62,13 +77,15 @@ def run_policy(
     allow_stop: bool = False,
     seed: int = 0,
     compute_budget: float | None = None,
+    decision_scale: float = 1.0,
 ) -> Trace:
     """Run ``policy`` for up to ``max_steps`` actions.
 
     With ``compute_budget`` set, a step is taken only if the cumulative *compute* ledger (actions
     plus the cost of scoring) stays within the budget after it; otherwise the run ends with
     ``stopped_at`` set. This is how equal-compute comparisons are made: cheap policies simply
-    get more actions.
+    get more actions. ``decision_scale`` multiplies the scoring cost in that budget check only
+    (a what-if for cheaper scoring; the recorded ledger is never scaled).
     """
     state = domain.initial_state(instance)
     context = PolicyContext(
@@ -95,7 +112,7 @@ def run_policy(
             break
         chosen = candidates[best]
         if compute_budget is not None:
-            total = action_cost[-1].compute + decision_cost[-1].compute + chosen.cost.compute + spent.compute
+            total = action_cost[-1].compute + decision_scale * (decision_cost[-1].compute + spent.compute) + chosen.cost.compute
             if total > compute_budget:
                 stopped_at = step
                 break
@@ -109,6 +126,105 @@ def run_policy(
         action_cost.append(action_cost[-1])
         decision_cost.append(decision_cost[-1])
     return Trace(policy.name, policy.deployable, objective, action_cost, decision_cost, decisions, stopped_at)
+
+
+def run_batch_policy(
+    domain: AllocationDomain,
+    instance,
+    policy: BatchPolicy,
+    max_passes: int,
+    seed: int = 0,
+    compute_budget: float | None = None,
+    decision_scale: float = 1.0,
+) -> Trace:
+    """Run a pass-based policy. Trace entry ``i`` is the state after ``i`` passes."""
+    state = domain.initial_state(instance)
+    context = PolicyContext(observation=domain.observation(instance), instance=None if policy.deployable else instance,
+                            rng=np.random.default_rng(seed))
+    objective = [float(domain.objective(state, instance))]
+    action_cost, decision_cost = [Cost()], [Cost()]
+    decisions, stopped_at = [], None
+    for step in range(max_passes):
+        candidates = domain.legal_candidates(state)
+        if not candidates:
+            stopped_at = step
+            break
+        picked = [int(i) for i in policy.select(domain, state, candidates, context)]
+        if not picked or len(set(picked)) != len(picked) or not all(0 <= i < len(candidates) for i in picked):
+            raise ValueError(f"{policy.name} returned an invalid selection {picked}")
+        chosen = [candidates[i] for i in picked]
+        spent = policy.decision_cost(domain, state, candidates)
+        batch = domain.batch_cost(state, chosen)
+        if compute_budget is not None and action_cost[-1].compute + batch.compute + decision_scale * (decision_cost[-1].compute + spent.compute) > compute_budget:
+            stopped_at = step
+            break
+        state = domain.apply_batch(state, chosen)
+        decisions.append([c.id for c in chosen])
+        objective.append(float(domain.objective(state, instance)))
+        action_cost.append(action_cost[-1] + batch)
+        decision_cost.append(decision_cost[-1] + spent)
+    while len(objective) < max_passes + 1:
+        objective.append(objective[-1])
+        action_cost.append(action_cost[-1])
+        decision_cost.append(decision_cost[-1])
+    return Trace(policy.name, policy.deployable, objective, action_cost, decision_cost, decisions, stopped_at)
+
+
+def run_any(domain, instance, policy, max_steps: int, seed: int = 0, compute_budget: float | None = None,
+            decision_scale: float = 1.0) -> Trace:
+    if isinstance(policy, BatchPolicy):
+        return run_batch_policy(domain, instance, policy, max_steps, seed=seed, compute_budget=compute_budget,
+                                decision_scale=decision_scale)
+    return run_policy(domain, instance, policy, max_steps, seed=seed, compute_budget=compute_budget, decision_scale=decision_scale)
+
+
+def compute_to_target(trace: Trace, target: float, decision_scale: float = 1.0) -> float:
+    """Total compute at the first step whose objective is at most ``target``; ``inf`` if never.
+
+    ``decision_scale`` re-prices scoring (``1`` = as recorded, ``0`` = scoring is free); it is a
+    what-if computed from the same trace, since decisions never depend on costs.
+    """
+    for j, a, d in zip(trace.objective, trace.action_cost, trace.decision_cost):
+        if j <= target:
+            return float(a.compute + decision_scale * d.compute)
+    return float("inf")
+
+
+def evaluate_work_precision(
+    domain: AllocationDomain,
+    instances: Sequence,
+    policies: Sequence,
+    targets: Callable,
+    compute_cap: float,
+    max_steps: int,
+    random_draws: int = 8,
+    instance_id: Callable = lambda inst: getattr(inst, "name", repr(inst)),
+    decision_scales: Sequence[float] = (1.0,),
+) -> pd.DataFrame:
+    """Compute needed by each deployable policy to reach per-instance objective targets.
+
+    ``targets(domain, instance) -> {label: value}`` is evaluation-only (it may read privileged
+    quantities). A target not reached within ``compute_cap`` is recorded as ``inf`` (censored).
+    Each policy runs once, under the most permissive scoring price in ``decision_scales``; the
+    other prices are read off the same trace (decisions do not depend on costs). Scale ``1`` is
+    the real ledger; smaller scales are what-ifs and must be labelled as such.
+    """
+    rows = []
+    cheapest = min(decision_scales)
+    for instance in instances:
+        wanted = targets(domain, instance)
+        for policy in policies:
+            if not policy.deployable:
+                continue
+            for draw in range(random_draws if policy.name == "random" else 1):
+                trace = run_any(domain, instance, policy, max_steps, seed=draw, compute_budget=compute_cap, decision_scale=cheapest)
+                for scale in decision_scales:
+                    for label, value in wanted.items():
+                        c = compute_to_target(trace, value, decision_scale=scale)
+                        rows.append({"instance": instance_id(instance), "policy": policy.name, "draw": draw, "target": label,
+                                     "target_value": float(value), "decision_scale": float(scale),
+                                     "compute": c if c <= compute_cap else float("inf")})
+    return pd.DataFrame(rows)
 
 
 def objective_at_compute(trace: Trace, level: float) -> tuple[float, int, float]:
@@ -140,7 +256,7 @@ def evaluate_at_compute(
             if not policy.deployable:
                 continue
             for draw in range(random_draws if policy.name == "random" else 1):
-                trace = run_policy(domain, instance, policy, max_steps, seed=draw, compute_budget=max(levels))
+                trace = run_any(domain, instance, policy, max_steps, seed=draw, compute_budget=max(levels))
                 for level in levels:
                     objective, actions, spent = objective_at_compute(trace, level)
                     rows.append({"instance": instance_id(instance), "policy": policy.name, "draw": draw, "compute_level": float(level),

@@ -128,3 +128,17 @@ class AllocationDomain(ABC):
 
     def native_metrics(self, state, instance) -> dict:
         return {"objective": float(self.objective(state, instance))}
+
+    def batch_cost(self, state, candidates: list) -> Cost:
+        """Cost of applying several candidates in one pass. Default: they are independent."""
+        total = Cost()
+        for candidate in candidates:
+            total = total + candidate.cost
+        return total
+
+    def apply_batch(self, state, candidates: list):
+        """Apply several candidates chosen from the same state. Default: one after another
+        (valid whenever a candidate's ``target`` names the thing it changes, not a position)."""
+        for candidate in candidates:
+            state = self.apply(state, candidate)
+        return state

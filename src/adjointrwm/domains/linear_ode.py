@@ -42,7 +42,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from .base import AllocationDomain, Candidate, Cost, DomainSpec
-from .runner import Policy
+from .runner import BatchPolicy, Policy
 
 LOCAL_ERROR_REDUCTION = 0.75  # CN is second order: bisecting leaves ~1/4 of an interval's local error
 
@@ -233,6 +233,24 @@ class AdaptiveTimeSteppingDomain(AllocationDomain):
         nodes = tuple(sorted(set(state.nodes) | {(a + b) // 2}))
         return ODEState(state.instance, nodes, self.stepper(state.instance).solve(nodes))
 
+    def apply_batch(self, state, candidates):
+        """Bisect every chosen interval, then re-solve once."""
+        mids = {(a + b) // 2 for a, b in (c.target for c in candidates)}
+        nodes = tuple(sorted(set(state.nodes) | mids))
+        return ODEState(state.instance, nodes, self.stepper(state.instance).solve(nodes))
+
+    def batch_cost(self, state, candidates) -> Cost:
+        """One re-solve from the first refined interval to the end: ``n + k - j_min`` CN steps for ``k`` refinements
+        of ``n`` intervals (equal to ``n + 1 - j`` for a single refinement)."""
+        n = len(state.nodes) - 1
+        j_min = min(c.payload["interval"] for c in candidates)
+        return Cost(rate=float(len(candidates)), compute=float(n + len(candidates) - j_min))
+
+    def finest_objective(self, instance) -> float:
+        """Objective on the finest grid (uniform, every interval refined to the maximum depth). Evaluation only."""
+        nodes = tuple(range(instance.n_fine + 1))
+        return self.objective(ODEState(instance, nodes, self.stepper(instance).solve(nodes)), instance)
+
     def local_error_estimates(self, state) -> np.ndarray:
         """Step-doubling estimate ``tau_hat_j = 4/3 (two half steps - one full step)``; 2 extra steps each."""
         stepper, t = self.stepper(state.instance), state.instance.time_of(state.nodes)
@@ -339,6 +357,49 @@ def exact_tau_adjoint_policy() -> Policy:
     return Policy("exact_tau_adjoint", score, deployable=False)
 
 
+# ---- pass-based (batch) policies: one scoring pass, many refinements, one re-solve ----------
+
+def _select_dorfler(scores: np.ndarray, theta: float) -> np.ndarray:
+    """Smallest set of largest scores whose sum reaches ``theta`` of the total (at least one)."""
+    order = np.argsort(-scores, kind="stable")
+    total = float(scores.sum())
+    if total <= 0.0:
+        return order[:1]
+    reached = np.cumsum(scores[order]) >= theta * total
+    return order[: int(np.argmax(reached)) + 1]
+
+
+def uniform_pass_policy() -> BatchPolicy:
+    """Fixed rule, no scoring: refine every interval of the current maximum length (one full level)."""
+    def select(domain, state, candidates, context):
+        lengths = np.array([b - a for a, b in (c.target for c in candidates)])
+        return np.flatnonzero(lengths == lengths.max())
+    return BatchPolicy("uniform_pass", select)
+
+
+def marking_policy(kind: str, theta: float) -> BatchPolicy:
+    """Dorfler marking on ``kind`` scores: ``residual`` (``||tau_hat||``), ``goal_local`` (``|c^T tau_hat|``)
+    or ``adjoint`` (``|Lambda^T tau_hat|``). Scoring is charged once per pass (2n steps, 3n with the sweep)."""
+    if kind not in ("residual", "goal_local", "adjoint"):
+        raise ValueError(f"unknown marking kind {kind!r}")
+    if not 0.0 < theta <= 1.0:
+        raise ValueError("theta must be in (0, 1]")
+
+    def select(domain, state, candidates, context):
+        tau = domain.local_error_estimates(state)
+        if kind == "residual":
+            per_interval = np.linalg.norm(tau, axis=1)
+        elif kind == "goal_local":
+            per_interval = np.abs(tau @ np.asarray(state.instance.goal, dtype=float))
+        else:
+            per_interval = np.abs(np.einsum("jm,jm->j", domain.costate(state), tau))
+        scores = _interval_scores(candidates, per_interval)
+        return _select_dorfler(scores, theta)
+
+    cost = _estimate_and_sweep_cost if kind == "adjoint" else _estimate_cost
+    return BatchPolicy(f"mark_{kind}_{theta:g}", select, decision_cost=cost)
+
+
 def d4_policies() -> list[Policy]:
     from .runner import one_step_oracle, random_policy  # noqa: PLC0415
 
@@ -355,8 +416,25 @@ def _unit(rng, m):
     return tuple(float(x) for x in v / np.linalg.norm(v))
 
 
-def sample_instances(seed: int, count: int, initial_intervals: int = 16, max_depth: int = 7) -> list[LinearODEInstance]:
-    """A damped oscillator coupled to one scalar mode (decaying or growing), 2-4 forcing pulses."""
+FAMILIES = {
+    # name: (pulse width range, amplitude scale, default max_depth)
+    "smooth": ((0.01, 0.04), 1.0, 7),
+    "sharp": ((0.001, 0.004), 10.0, 11),   # localised features: uniform resolution is expensive
+    "sharper": ((0.0001, 0.0004), 100.0, 14),
+}
+
+
+def sample_family(name: str, seed: int, count: int, initial_intervals: int = 16) -> list["LinearODEInstance"]:
+    """Instances of a named family (``smooth`` is the D4-0 family, ``sharp`` has 10x narrower pulses)."""
+    widths, scale, depth = FAMILIES[name]
+    return sample_instances(seed, count, initial_intervals, depth, pulse_width=widths, amplitude_scale=scale)
+
+
+def sample_instances(seed: int, count: int, initial_intervals: int = 16, max_depth: int = 7,
+                     pulse_width: tuple = (0.01, 0.04), amplitude_scale: float = 1.0) -> list[LinearODEInstance]:
+    """A damped oscillator coupled to one scalar mode (decaying or growing), 2-4 forcing pulses.
+
+    The defaults reproduce the D4-0 family exactly (same random stream, same values)."""
     rng = np.random.default_rng(seed)
     out = []
     for i in range(count):
@@ -366,8 +444,8 @@ def sample_instances(seed: int, count: int, initial_intervals: int = 16, max_dep
         coupling = rng.uniform(-0.5, 0.5)
         a = ((0.0, 1.0, 0.0), (-omega ** 2, -2 * zeta * omega, coupling), (coupling, 0.0, growth))
         pulses = tuple(
-            Pulse(float(rng.uniform(0.05, 0.95)), float(rng.uniform(0.01, 0.04)),
-                  float(rng.choice([-1, 1]) * rng.uniform(5.0, 40.0)), _unit(rng, 3))
+            Pulse(float(rng.uniform(0.05, 0.95)), float(rng.uniform(*pulse_width)),
+                  float(rng.choice([-1, 1]) * rng.uniform(5.0, 40.0) * amplitude_scale), _unit(rng, 3))
             for _ in range(int(rng.integers(2, 5)))
         )
         out.append(LinearODEInstance(
