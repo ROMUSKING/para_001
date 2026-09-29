@@ -16,7 +16,9 @@ The core question: can a recursive world model decide where to spend representat
 | Dynamics beat persistence on held-out episodes | ✅ pass: RMSE 0.156 vs 0.226 (−31 %), single seed. Persistence still wins at one step ahead. | [findings §2.1](docs/research-notes/2026-09-29-droid100-pilot-findings.md) |
 | Allocation beats random | ❌ fail: adjoint 0.037, critic 0.038, one random draw 0.021 | [findings §2.2](docs/research-notes/2026-09-29-droid100-pilot-findings.md) |
 | **H2**: adjoint vs direct critic | ⚪ tie: −0.0009, 95 % CI [−0.0028, +0.0004] | [`trace_summary.json`](results/runs/droid100_adjoint_20260929T070629Z/artifacts/trace_summary.json) |
-| Evidence-integrity reset (N0) | ⏳ in progress | [roadmap §3](docs/plans/roadmap.md) |
+| Evidence-integrity reset (N0) | ⏳ in progress: pilot code lifted into `src/` with parity, causality, finite-difference and resume tests | [roadmap §3](docs/plans/roadmap.md) |
+| Pilot v2: fixed allocation contract + rival allocators (E2.1/E2.2 = B2) | ⏳ notebook ready, **not run** | [plan §5](docs/plans/rival-benchmark-plan.md) |
+| Benchmark vs rival world models (B1: DreamerV3-, TD-MPC2-, DINO-WM-, V-JEPA 2-AC-style) | ⏳ notebook ready, **not run** | [plan](docs/plans/rival-benchmark-plan.md) |
 | Analytic correctness on LQTree (N1) | ⏳ not started as a gate | — |
 | Task success / planning | not measured | — |
 | Hardware | stay on L4 (pilot peak 0.6 GiB) | [operator brief](docs/production/colab_l4_operator_brief.md) |
@@ -31,6 +33,7 @@ The core question: can a recursive world model decide where to spend representat
 docs/
   README.md                 Documentation index and conventions
   plans/roadmap.md          Future roadmap: tracks, milestones, gates, decision tree, open questions
+  plans/rival-benchmark-plan.md  Track B: rival world models and rival allocators, fairness contract
   research-plan/            Research protocols: comprehensive cross-domain plan (governing) + v5
   production/               Production training plan (gated) + Colab L4 operator brief (binding)
   research-notes/           Dated findings from runs that count as evidence
@@ -40,10 +43,12 @@ papers/
   drafts/                   Paper draft + REVIEW.md (claim-by-claim evidence check)
   related-work.bib          Bibliography (check entries before citing)
 notebooks/
-  01-production/            AdjointRWM_Production_Pilot.ipynb: main DROID pipeline (Colab GPU)
+  01-production/            Pilot v1 (provenance) and Pilot v2 (fixed allocation contract, rival allocators)
   02-diagnostics/           opportunity_audit.ipynb: run after the pilot, no retraining
+  03-benchmarks/            rival_world_models_droid100.ipynb: AdjointRWM vs rival world-model families
   archive/                  Earlier notebooks, kept for provenance only
-src/adjointrwm/             Tested code lifted out of notebooks (allocation analysis so far)
+src/adjointrwm/             Tested package the notebooks import: data contracts, metrics, world-model arms,
+                            resumable training runner, allocators, analysis
 scripts/                    CLI tools (analyze_allocation_traces.py)
 harness/                    Cross-tool agent harness: sync, checks, hooks (see AGENTS.md)
 .agents/skills/             Portable agent skills shared by all coding agents
@@ -64,6 +69,7 @@ Large binaries (checkpoints, tensors, executed notebooks with outputs) stay on G
 ```bash
 git clone https://github.com/romusking/para_001 && cd para_001
 pip install -e ".[dev]"
+pip install torch --index-url https://download.pytorch.org/whl/cpu   # optional: model/training tests
 pytest
 python scripts/analyze_allocation_traces.py \
   results/runs/droid100_adjoint_20260929T070629Z/artifacts/allocation_traces.parquet
@@ -77,7 +83,9 @@ python scripts/analyze_allocation_traces.py \
 4. In the same runtime, run `notebooks/02-diagnostics/opportunity_audit.ipynb`.
 5. Copy the small artefacts (JSON, CSV, parquet, figures) into `results/runs/<run_id>/` and add the checkpoint hashes to its README.
 
-> The notebooks in this repo were rebuilt from Colab text exports. The code is complete, but cell outputs aren't included; the executed originals are on Drive.
+The next runs are `notebooks/01-production/AdjointRWM_Production_Pilot_v2.ipynb` and `notebooks/03-benchmarks/rival_world_models_droid100.ipynb`. Both import the tested package from this repository (set `REPO_REF`), record its commit in the run config, and can be split across Colab sessions (`MAX_STEPS_PER_SESSION`, then `RESUME_RUN_ID`). Read [`docs/plans/rival-benchmark-plan.md`](docs/plans/rival-benchmark-plan.md) first.
+
+> Pilot v1, the opportunity audit and the archive notebooks were rebuilt from Colab text exports; their executed originals are on Drive. Pilot v2 and the rival benchmark were written in this repo and have not been executed on Colab yet (only a CPU dry run with stubbed data, which checks the code paths and is not evidence).
 
 ---
 

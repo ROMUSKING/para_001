@@ -38,6 +38,8 @@ REAL_DATA_ALLOCATION           FAIL (collapse; opportunity audit pending)
 H2 ADJOINT > DIRECT CRITIC     NO EVIDENCE either way
 PRODUCTION PROMOTION           BLOCKED
 HARDWARE                       STAY ON L4 (pilot peak 0.6 GiB)
+PILOT V2 (E2.1/E2.2 = B2)      NOTEBOOK READY, NOT RUN
+RIVAL-MODEL BENCHMARK (B1)     NOTEBOOK READY, NOT RUN
 ```
 
 ---
@@ -61,6 +63,7 @@ Later (wk 15-68) N4 selective invocation, N5 control, N6 joins, N7 latent, N8 ha
 
 - **Track R** answers the scientific question on benchmarks where the right answer is known.
 - **Track E** builds the real-data substrate (loader, splits, checkpoints, dynamics) that any production model needs, whatever H2 turns out to be. Track E never produces an adjoint-superiority claim by itself.
+- **Track B** benchmarks against rival models under an enforced fairness contract: rival world-model families for the Track E substrate (B1, B3) and rival allocators for H2 on DROID (B2 = E2.1/E2.2). See [`rival-benchmark-plan.md`](rival-benchmark-plan.md). A world-model result says nothing about H2.
 
 ---
 
@@ -94,6 +97,23 @@ Dates assume a start of Mon 29 Sep 2026 and one person working part-time on Cola
 | E2.2 | 5 paired seeds on DROID-100, reusing the frozen split | Adjoint − critic regret reported with an episode-cluster bootstrap CI; opportunity proxy on validation | E |
 
 **Decision after N1.** If the LQTree opportunity or correctness gates fail, stop and fix the benchmark or code before N2. A failure here is not a verdict on the adjoint hypothesis.
+
+### Track B: benchmarks against rival models (from week 0; details in [`rival-benchmark-plan.md`](rival-benchmark-plan.md))
+
+| ID | Deliverable | Done when | Status (2026-09-29) |
+|---|---|---|---|
+| B0 | Plan, tested package modules, two notebooks | `harness/check.py` passes; notebooks import the package | Done (this change) |
+| B1 | `03-benchmarks/rival_world_models_droid100.ipynb` on L4: AdjointRWM vs DreamerV3-, TD-MPC2-, DINO-WM-, V-JEPA 2-AC-style arms + persistence/ridge, 5 seeds | `COMPLETE`, fairness contract PASS, imported, research note with every classification | Not run |
+| B2 | `01-production/AdjointRWM_Production_Pilot_v2.ipynb`, 5 paired seeds (= E2.1 + E2.2) | Opportunity, critic-floor and adjoint − critic results per seed and pooled; note written | Not run |
+| B3 | B1 repeated on the E3.1 shard with scene/task/site splits | Confirmatory substrate comparison | Waits for E3.1 |
+| B4 | Released-checkpoint and encoder-swap arms (exploratory; V-JEPA 2-AC is DROID-trained, so contamination is possible) | Contamination status recorded | Optional |
+| B5 | Planning rivals in simulation (official TD-MPC2 code, CEM on ManiSkill3) | — | Gated on G-H2 and Phase II |
+
+**Progress on existing rows (2026-09-29, not yet run on Colab):**
+
+- **N0.1, partly done.** Data windows, split, normalisation, objective, the pilot model, exact co-state targets and evaluation now live in `src/adjointrwm/`. Tests cover split and window parity with the pilot, causality (predictions unchanged when future targets are replaced), exact co-state against float64 finite differences, and checkpoint round-trip. The pilot's parameter count is reproduced exactly (27,360,798, as in its `model_manifest.json`). Still open: v1 itself still inlines its code (it is kept for provenance).
+- **N0.3, CPU part done.** `tests/test_training.py` checks that pause-and-resume gives bit-identical weights to uninterrupted training. It found that creating a `DataLoader` iterator draws from the global RNG; the runner now uses a dedicated generator. v1 has no resume path, so no v1 result is affected. Still open: the same check on Colab with CUDA.
+- **E2.1, implemented, not run.** It is the pilot v2 notebook (B2). The one deviation from the E2.1 wording: the dynamics gate is evaluated on validation, not test, so the test split is read once.
 
 ### Then: weeks 5–18 (3 Nov – 1 Feb)
 
@@ -179,3 +199,6 @@ Every sentence in a submission maps to a gate artefact through a claim matrix (p
 2. **Data scale:** is streaming full DROID from `gs://gresearch/robotics` within your Colab storage and egress limits, or should E3 use BridgeData V2 first?
 3. **Governing plan:** should the comprehensive (cross-domain) plan formally supersede v5? This roadmap assumes yes.
 4. **Stage 0 notebooks:** which Drive copy of `Stage0_LQTree_Benchmark` is canonical? Six versions exist.
+5. **Rival benchmark endpoint:** normalised-state RMSE (the pilot's gate metric, assumed) or native-unit RMSE of one state group as the B1 primary endpoint?
+6. **TD-MPC2 input:** information-matched 8-frame stack (assumed) or the faithful single frame as the primary TD-MPC2 arm?
+7. **B4:** run the released V-JEPA 2-AC checkpoint at all, given possible DROID train/test contamination and a ViT-g encoder on L4?

@@ -2,7 +2,7 @@
 
 | Folder | What's inside | Start with |
 |---|---|---|
-| [`plans/`](plans/) | Roadmap: tracks, milestones, gates, open questions | [`roadmap.md`](plans/roadmap.md) |
+| [`plans/`](plans/) | Roadmap (tracks, milestones, gates, open questions), the rival-model benchmark plan, and the agent work log | [`roadmap.md`](plans/roadmap.md), then [`rival-benchmark-plan.md`](plans/rival-benchmark-plan.md) |
 | [`research-plan/`](research-plan/) | Preregistration-style research protocols | [`adjoint_guided_comprehensive_research_plan.md`](research-plan/adjoint_guided_comprehensive_research_plan.md) (governing) |
 | [`production/`](production/) | Production training plan and the Colab L4 operator rules | [`colab_l4_operator_brief.md`](production/colab_l4_operator_brief.md) (read before running anything) |
 | [`research-notes/`](research-notes/) | Dated findings from runs that count as evidence | [`2026-09-29-droid100-pilot-findings.md`](research-notes/2026-09-29-droid100-pilot-findings.md) |

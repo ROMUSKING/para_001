@@ -21,6 +21,32 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 
 ---
 
+## 2026-09-29 13:25 (BST) · Claude Code (web) · B0, E2.1, E2.2, N0.1, N0.3
+
+- **Changed:** added Track B, the benchmark against rival models. It has four parts:
+  - the plan, `docs/plans/rival-benchmark-plan.md`;
+  - two notebooks: `03-benchmarks/rival_world_models_droid100.ipynb` (B1) and `01-production/AdjointRWM_Production_Pilot_v2.ipynb` (B2 = E2.1/E2.2);
+  - the tested modules they import: `data`, `eval`, `models`, `training`, `allocators`, `features`, `benchmark` and `io`;
+  - updates to the roadmap, READMEs, CI (CPU torch) and `pyproject`.
+- **Verified:**
+  - `pytest`: 103 passed (56 passed and 3 modules skipped without torch). `python harness/check.py` passes.
+  - The lifted pilot model has 27,360,798 parameters, matching `model_manifest.json`. The stage-1 loss equals a verbatim copy of the pilot's.
+  - The exact co-state matches float64 finite differences.
+  - Pause-and-resume gives bit-identical weights. This test found a `DataLoader` RNG drift, now fixed.
+  - Both notebooks ran end to end on CPU with stubbed Colab/TFDS and random fixture episodes (code paths only, not evidence), including a run resumed over 5 sessions.
+  - Rival constants come from the official GitHub configs. arXiv was blocked from the sandbox.
+- **Open:**
+  - Nothing has run on real data or a GPU.
+  - Until this branch is merged, set `REPO_REF` in both notebooks to the branch name.
+  - The split-parity check needs the pilot's `data_manifest.json` on Drive; it is listed in `DRIVE_INVENTORY.csv`.
+  - Roadmap open questions 5–7 (endpoint, TD-MPC2 input, B4) need Roman's decision.
+  - The CUDA resume check is still to do.
+- **Next:**
+  1. E1.1: the opportunity audit on the v1 checkpoint. It is cheap and informs the B2 reading.
+  2. B2: run pilot v2.
+  3. B1: run the rival benchmark on L4.
+  4. Import each run with `/import-run`, then write the note with `/research-note`.
+
 ## 2026-09-29 11:30 (BST) · Claude (claude.ai agent) · harness
 
 - **Changed:** added the cross-tool agent harness:
