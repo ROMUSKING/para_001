@@ -190,15 +190,24 @@ def compute_to_target(trace: Trace, target: float, decision_scale: float = 1.0) 
     return float("inf")
 
 
-def interpolated_compute_to_target(trace: Trace, target: float, decision_scale: float = 1.0) -> float:
+INTERPOLATION_METHODS = ("staircase", "semilog", "loglog")
+
+
+def interpolated_compute_to_target(trace: Trace, target: float, decision_scale: float = 1.0, method: str = "semilog") -> float:
     """Like :func:`compute_to_target`, but interpolated between the last step above the target and the first below.
 
     Pass-based policies can stop only at whole passes, so their compute-to-target is quantised
-    (``uniform_pass`` doubles the grid per pass, i.e. up to a factor 2). This interpolates compute
-    linearly in ``log(objective)`` between the two bracketing steps, as if a partial pass cost a
-    proportional part of a full one. It is not realisable; it is a robustness check applied
-    symmetrically to every policy. Objectives must be positive.
+    (``uniform_pass`` doubles the grid per pass, i.e. up to a factor 2). Interpolation prices a partial
+    pass as a proportional part of a full one, sharing the interval in ``log(objective)``. It is not
+    realisable; it is applied symmetrically to every policy. Objectives must be positive.
+
+    ``method='semilog'``: compute is linear in ``log(objective)`` between the two steps; for a power-law
+    error this overstates a fractional pass's compute by up to 6.1 % for a doubling pass.
+    ``method='loglog'``: ``log(compute)`` is linear in ``log(objective)``, exact for a power law. Where the
+    earlier step cost nothing (``log 0``), it falls back to the semilog rule.
     """
+    if method not in ("semilog", "loglog"):
+        raise ValueError(f"method must be 'semilog' or 'loglog', not {method!r}")
     spent = [a.compute + decision_scale * d.compute for a, d in zip(trace.action_cost, trace.decision_cost)]
     for i, j in enumerate(trace.objective):
         if j <= target:
@@ -208,8 +217,17 @@ def interpolated_compute_to_target(trace: Trace, target: float, decision_scale: 
             if not (j_prev > target >= j > 0):
                 return float(spent[i])
             share = (np.log(j_prev) - np.log(target)) / (np.log(j_prev) - np.log(j))
+            if method == "loglog" and spent[i - 1] > 0 and spent[i] > 0:
+                return float(np.exp(np.log(spent[i - 1]) + share * (np.log(spent[i]) - np.log(spent[i - 1]))))
             return float(spent[i - 1] + share * (spent[i] - spent[i - 1]))
     return float("inf")
+
+
+def compute_by_method(trace: Trace, target: float, decision_scale: float, method: str) -> float:
+    """Compute to reach ``target`` under one of :data:`INTERPOLATION_METHODS`."""
+    if method == "staircase":
+        return compute_to_target(trace, target, decision_scale=decision_scale)
+    return interpolated_compute_to_target(trace, target, decision_scale=decision_scale, method=method)
 
 
 def evaluate_work_precision(
@@ -223,6 +241,7 @@ def evaluate_work_precision(
     instance_id: Callable = lambda inst: getattr(inst, "name", repr(inst)),
     decision_scales: Sequence[float] = (1.0,),
     interpolate: bool = False,
+    methods: Sequence[str] | None = None,
 ) -> pd.DataFrame:
     """Compute needed by each deployable policy to reach per-instance objective targets.
 
@@ -232,7 +251,13 @@ def evaluate_work_precision(
     other prices are read off the same trace (decisions do not depend on costs). Scale ``1`` is
     the real ledger; smaller scales are what-ifs and must be labelled as such. ``interpolate=True``
     uses :func:`interpolated_compute_to_target` (a robustness check, not a realisable cost).
+
+    ``methods`` (a subset of :data:`INTERPOLATION_METHODS`) prices every target under each method from the
+    *same* traces and adds a ``method`` column, so the primary analysis and its sensitivities cost one run;
+    it overrides ``interpolate``. Filter on ``method`` before summarising.
     """
+    if methods is not None and not set(methods) <= set(INTERPOLATION_METHODS):
+        raise ValueError(f"methods must be a subset of {INTERPOLATION_METHODS}")
     rows = []
     cheapest = min(decision_scales)
     for instance in instances:
@@ -244,10 +269,17 @@ def evaluate_work_precision(
                 trace = run_any(domain, instance, policy, max_steps, seed=draw, compute_budget=compute_cap, decision_scale=cheapest)
                 for scale in decision_scales:
                     for label, value in wanted.items():
-                        c = (interpolated_compute_to_target if interpolate else compute_to_target)(trace, value, decision_scale=scale)
-                        rows.append({"instance": instance_id(instance), "policy": policy.name, "draw": draw, "target": label,
-                                     "target_value": float(value), "decision_scale": float(scale),
-                                     "compute": c if c <= compute_cap else float("inf")})
+                        for method in (methods if methods is not None else (None,)):
+                            if method is None:
+                                c = (interpolated_compute_to_target if interpolate else compute_to_target)(trace, value, decision_scale=scale)
+                            else:
+                                c = compute_by_method(trace, value, scale, method)
+                            row = {"instance": instance_id(instance), "policy": policy.name, "draw": draw, "target": label,
+                                   "target_value": float(value), "decision_scale": float(scale),
+                                   "compute": c if c <= compute_cap else float("inf")}
+                            if method is not None:
+                                row["method"] = method
+                            rows.append(row)
     return pd.DataFrame(rows)
 
 

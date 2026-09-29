@@ -45,25 +45,27 @@ The initial mesh has 16 intervals. Families: scorer training (seed 4004, 30 inst
 | `residual` | step-doubling `‖τ̂‖` | `2n` (as D4-0b) |
 | `goal_local` | `|cᵀτ̂|` | `2n` |
 | `adjoint` | `|Λᵀτ̂|`, co-state by an on-mesh backward sweep | `3n` |
-| `indicator` | forcing quadrature discrepancy `‖h/6 (b_a + 4 b_m + b_b) − h/2 (b_a + b_b)‖` per interval | FLOPs / FLOPs per step |
-| `indicator_adjoint` | the same indicator weighted by a tabulated co-state, `|Λ(t_b)ᵀ d_j|` | FLOPs / FLOPs per step; the table is a one-off per-system cost, reported separately |
-| `amortised` | MLP prediction of `|Λ_{j+1}ᵀ τ_j|` from local features | FLOPs / FLOPs per step |
+| `indicator` | forcing quadrature discrepancy `‖d_j‖`, `d_j = h/6 (b_a + 4 b_m + b_b) − h/2 (b_a + b_b)`; **diagnostic only** (it cannot see the homogeneous error) | FLOPs / FLOPs per step |
+| `cheap` | `‖d_j‖ + ‖e_j‖`, `e_j` the solution-difference estimate `(h³/2)` times the third divided difference of the numerical solution over four nodes | FLOPs / FLOPs per step |
+| `cheap_adjoint` | `|Λ(t_b)ᵀ d_j| + |Λ(t_b)ᵀ e_j|` with a tabulated continuous co-state | FLOPs / FLOPs per step; the table is a one-off per-system cost, reported separately |
+| `amortised` | MLP prediction of `|Λ_{j+1}ᵀ τ_j|` from local features (no co-state input) | FLOPs / FLOPs per step |
 | `adjoint` at scale 0 (**reference, hypothetical**) | as `adjoint` with free scoring | 0; the ceiling that `amortised` tries to reach |
 
-`n` is the number of intervals before the pass. The `indicator` arms ignore the homogeneous part of the truncation error; that limitation is part of what is measured.
+`n` is the number of intervals before the pass. The forcing-only `indicator` ignores the homogeneous part of the truncation error and is expected to stall; it is kept as a diagnostic, and `cheap` adds the solution-difference estimate so that the non-learned baseline is competent.
 
 ## 5. Ledger (FLOPs)
 
-- **CN step:** `4 m²` (two matrix–vector products with cached operators) `+ 5 m` (combine) `+ 2 P (2 m + 8)` (two forcing evaluations for `P` pulses). The CN-step unit of D4-0 and D4-0b is kept, so every earlier number stays comparable; a scoring price is `FLOPs / flops_per_step`.
-- **Indicator:** per interval, two forcing evaluations (mid-point and one node; nodes are shared by neighbours), `8 m` for the discrepancy vector and its norm.
-- **Tabulated co-state weight:** `2 m` per interval for the dot product. One-off setup per system: `n_fine` backward steps.
-- **Amortised scorer:** indicator features plus `5 m` for the solution features, plus `2 (d_in H₁ + H₁ H₂ + H₂)` for the network, plus a constant for the logarithms.
-- **Training cost** is reported separately in CN steps: `3 ×` forward FLOPs `×` samples `×` epochs actually run. The **break-even** number of instances is training cost divided by the mean compute the scorer saves per instance against the best non-learned arm at the tightest target; it is reported only where that saving is positive.
+- **CN step:** `4 m²` (two matrix–vector products with cached operators) `+ 3 m` (combine) `+ 2 P (2 m + 8)` (two forcing evaluations for `P` pulses). The CN-step unit of D4-0 and D4-0b is kept, so every earlier number stays comparable; a scoring price is `FLOPs / flops_per_step`.
+- **Indicator:** per interval, two forcing evaluations (mid-point and one node; nodes are shared by neighbours), `8 m + 1` for the discrepancy vector and its norm.
+- **Solution-difference estimate:** `16 m + 1` per interval; `cheap` is the indicator plus this plus one addition.
+- **Tabulated co-state weight:** `2 m` per dot product (two for `cheap_adjoint`, charged on top of the norms, so conservative). One-off setup per system: `n_fine` backward matrix–vector products.
+- **Amortised scorer:** the indicator, three forcing norms (`6 m`), two solution norms (`5 m`), the difference estimate, eight logarithms, standardisation, and the network `2 (d_in H₁ + H₁ H₂ + H₂)` plus biases and tanh.
+- **One-off costs** are reported separately in CN steps: the tabulated co-state (`n_fine` backward products, per system) and the scorer's training (`3 ×` forward FLOPs `×` samples `×` epochs actually run; generating the exact labels needs reference solutions and is **not** charged, which understates the scorer's one-off cost). The **break-even** number of instances is the one-off cost divided by the mean compute the arm saves per instance against `uniform_pass` at the tightest target; it is reported only where that saving is positive.
 - Wall-clock timings of a step and of the scorer are printed as a sanity check and are **not** a claim (CPU sandbox).
 
 ## 6. Learned scorer
 
-Inputs (9): `log(h/T)`, `t_mid/T`, `log ‖b‖` at the two ends and the middle of the interval, `log` of the indicator, `log(‖y_b − y_a‖/h)`, `log ‖y_a‖` (all with a small floor), standardised on the training set. Target: `log10(|Λ_{j+1}ᵀ τ_j| + 1e-15)` with the exact co-state and the exact local error (privileged, used as supervision only). Network: 9 → 32 → 32 → 1, tanh, Adam, mean squared error, at most 300 epochs, early stopping on a held-out part of the training instances (split by instance). Trained on the meshes visited by `uniform_pass`, `residual`-marking and `adjoint`-marking at `θ = 0.85` on the training family. Deployment uses NumPy only, with the weights stored as JSON in the run folder.
+Inputs (9): `log(h/T)`, `t_mid/T`, `log ‖b‖` at the two ends and the middle of the interval, `log` of the indicator, `log(‖y_b − y_a‖/h)`, `log ‖y_a‖` and `log ‖e_j‖` (all with a small floor), standardised on the training set. No co-state enters as an input. Target: `log10(|Λ_{j+1}ᵀ τ_j| + 1e-15)` with the exact co-state and the exact local error (privileged, used as supervision only). Network: 9 → h → h → 1 with `h` ∈ {8, 16, 32} chosen per cell on the tuning family (at a fixed `θ = 0.95`; the price of a wider network is part of the trade-off), tanh, Adam (learning rate 3e-3), mean squared error, at most 200 epochs, early stopping (patience 20) on a held-out part of the training instances (split by instance). Trained on the meshes visited by `uniform_pass`, `residual`-marking and `adjoint`-marking at `θ = 0.85` on the training family. Deployment uses NumPy only, with the weights stored as JSON in the run folder.
 
 Because the goal is fixed per system, the target depends on `t` only through a fixed function, and the network sees `t_mid`. **This scorer is an amortised adjoint scorer (supervised by the adjoint-weighted error), not a direct critic.** Naming it a co-state scorer is licensed by AGENTS.md rule 4 because its supervision is derived from `∂J/∂state`; a direct critic trained on the realised gain is D4-1.
 
@@ -81,9 +83,9 @@ Because the goal is fixed per system, the target depends on `t` only through a f
 Each "beats" means the CI of `mean(log(compute_a / compute_b))` lies below 0 at **two adjacent targets** (log-log primary).
 
 - **R1, an amortised scorer pays:** `amortised` beats `uniform_pass`, at its FLOP price.
-- **R3, the co-state weighting helps a cheap estimator:** `indicator_adjoint` beats `indicator`, at their FLOP prices. (This is a non-learned matched pair: the same estimator with and without the co-state weight.)
+- **R3, the co-state weighting helps a cheap estimator:** `cheap_adjoint` beats `cheap`, at their FLOP prices. (This is a non-learned matched pair: the same estimator with and without the co-state weight.)
 - **D4-1 candidate cell:** R1 and R3 both hold. A candidate cell fixes the regime for a D4-1 design, which is gated separately and reads the test family once.
-- **Reported, not gated:** R2, the retained headroom `(log u − log a) / (log u − log f)` where `u`, `a`, `f` are the compute of `uniform_pass`, `amortised` and `adjoint` at scale 0 at the same target; the price ratio of `amortised` to the step-doubling scores; the training cost and break-even instances; the comparison of `amortised` with the two indicators.
+- **Reported, not gated:** R2, the retained headroom `(log u − log a) / (log u − log f)` where `u`, `a`, `f` are the compute of `uniform_pass`, `amortised` and `adjoint` at scale 0 at the same target; the price ratio of `amortised` to the step-doubling scores; the training cost and break-even instances; the comparison of `amortised` with `cheap` and `cheap_adjoint`; the forcing-only `indicator` as a diagnostic.
 
 ## 9. What D4-2 can and cannot support
 
@@ -107,4 +109,9 @@ Each "beats" means the CI of `mean(log(compute_a / compute_b))` lies below 0 at 
 
 ## 12. Changes after this plan was written
 
-(none yet; each change is dated and stated here, and any change after the validation family was read is called out as such)
+Each change is dated and stated here; any change after the validation family was read would be called out as such.
+
+- **2026-09-29, before any code ran:** the CN-step combine term is `3 m`, not `5 m`: the code adds two vectors, scales one and adds two (`3 m`); the plan's `5 m` overcounted.
+- **2026-09-29, after a dry run on the `base` cell's train and tuning families only (validation and test never generated):** (1) the forcing-only `indicator` never reached even the 10 % target (it ignores the homogeneous error), so `cheap` (indicator plus a solution-difference estimate) and `cheap_adjoint` were added as the competent non-learned arms, R3 now uses that pair, and `indicator` is a diagnostic; `indicator_adjoint` stays in the code but is not an arm. (2) The scorer gets a ninth input, the log of the difference estimate, so that it sees what `cheap` sees. (3) A 32-unit hidden layer cost more in scoring than it saved, so the hidden size is chosen per cell from {8, 16, 32} on the tuning family, and the training defaults became learning rate 3e-3, at most 200 epochs, patience 20. These choices came from tuning-family compute only.
+- **2026-09-29, before the real run:** a smoke test of the notebook with a tiny configuration (cells `m4` and `depth7`; 6, 3 and 4 instances; two `θ` values; hidden sizes 8 and 16; 12 to 15 passes) executed the validation stage for the first four validation instances of those two cells and printed the median compute of each arm, so **those numbers were seen**. They came from a different configuration than the real run, and no design choice was made or changed because of them. The smoke test found and fixed two notebook bugs (a hard-coded reference to the `m64` cell, and the wall-clock probe's key name). The real run regenerates everything with the full configuration.
+- **2026-09-29, before the real run:** the run manifest is `config/instances_manifest.json` (seeds, counts and SHA-256 hashes) plus `config/instances.parquet` and `config/systems.parquet` (full parameters), not one pretty-printed JSON listing every instance, which would add tens of thousands of lines to a diff. Existing runs are unchanged.

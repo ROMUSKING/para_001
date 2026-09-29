@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-29 (j): D4-2 code, tests and notebook
+
+- **`adjointrwm.domains.highdim`** (26 tests in `tests/test_highdim.py`): dense stable systems with a fixed goal, the seven one-factor cells, a FLOP ledger for scoring converted to CN steps, cheap solve-free estimators (forcing quadrature discrepancy; a third divided difference of the solution) with and without a tabulated continuous co-state, an amortised MLP scorer with NumPy training, Dörfler policies for each, `tune_theta`, and the frozen-rule helpers. The test family (seed 2002) cannot be generated.
+- **Runner:** log-log interpolation of compute-to-target (`method='loglog'`), and `evaluate_work_precision(methods=...)`, which prices every target under staircase, semilog and log-log from the same traces.
+- **New plan `docs/plans/d4-2-plan.md`** with its dated list of changes, including a disclosure that a smoke test printed validation numbers for four instances of two cells.
+- **New notebook `notebooks/04-domains/d4_2_flop_priced_scoring.ipynb`. Not run yet.**
+- **Tests:** 177 (was 151).
+
 ## 2026-09-29 (i): licence survey pass 2; `.gitattributes`
 
 - **`.gitattributes`:** `results/runs/**` is marked `linguist-generated`, so GitHub collapses the run-artefact diffs by default (they were 33,561 of 43,388 added lines on the branch). No file changes; `instances.json` is not compacted (Roman's decision).

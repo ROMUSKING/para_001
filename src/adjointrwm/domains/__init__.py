@@ -31,10 +31,12 @@ from .metrics import (
     work_precision_summary,
 )
 from .runner import (
+    INTERPOLATION_METHODS,
     BatchPolicy,
     Policy,
     PolicyContext,
     Trace,
+    compute_by_method,
     compute_to_target,
     evaluate_at_compute,
     evaluate_policies,
@@ -51,6 +53,8 @@ from .runner import (
 
 __all__ = [
     "ACTION_KINDS",
+    "INTERPOLATION_METHODS",
+    "compute_by_method",
     "BEST_KNOWN",
     "BatchPolicy",
     "FAMILIES",
