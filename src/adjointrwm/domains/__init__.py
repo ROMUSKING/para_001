@@ -10,6 +10,7 @@ from .metrics import (
     absolute_adaptive_gain,
     aurc,
     aurc_table,
+    compute_level_summary,
     fraction_of_oracle_advantage,
     opportunity_over_budgets,
     paired_aurc_difference,
@@ -18,7 +19,18 @@ from .metrics import (
     transfer_summary,
     with_best_known,
 )
-from .runner import Policy, PolicyContext, Trace, evaluate_policies, exhaustive_oracle_curve, one_step_oracle, random_policy, run_policy
+from .runner import (
+    Policy,
+    PolicyContext,
+    Trace,
+    evaluate_at_compute,
+    evaluate_policies,
+    exhaustive_oracle_curve,
+    objective_at_compute,
+    one_step_oracle,
+    random_policy,
+    run_policy,
+)
 
 __all__ = [
     "ACTION_KINDS",
@@ -37,10 +49,13 @@ __all__ = [
     "absolute_adaptive_gain",
     "aurc",
     "aurc_table",
+    "compute_level_summary",
     "d4_policies",
+    "evaluate_at_compute",
     "evaluate_policies",
     "exhaustive_oracle_curve",
     "fraction_of_oracle_advantage",
+    "objective_at_compute",
     "one_step_oracle",
     "opportunity_over_budgets",
     "paired_aurc_difference",

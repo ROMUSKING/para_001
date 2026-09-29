@@ -186,7 +186,8 @@ class AdaptiveTimeSteppingDomain(AllocationDomain):
         family="temporal",
         native_endpoint="|c^T y(T) - c^T y_N| (error in the quantity of interest)",
         candidate_kinds=("refine",),
-        cost_units={"rate": "stored states (one per new node)", "compute": "Crank-Nicolson steps",
+        cost_units={"rate": "stored states (one per new node)",
+                    "compute": "Crank-Nicolson steps: re-solve from the refined interval to the end, plus scoring cost",
                     "latency": "not measured", "query": "none"},
         oracle_support="exact",
         privilege={"model (A, forcing, y0, c), CN solution": "P0",
@@ -217,10 +218,14 @@ class AdaptiveTimeSteppingDomain(AllocationDomain):
         return ODEState(instance, nodes, self.stepper(instance).solve(nodes))
 
     def legal_candidates(self, state):
+        """``refine(j)`` bisects interval ``j``. Its compute cost is the number of CN steps that must be
+        re-solved: the two new half steps and every later step (an earlier error correction changes
+        the whole downstream solution), i.e. ``n + 1 - j`` for ``n`` intervals before the refinement."""
+        n = len(state.nodes) - 1
         out = []
         for j, (a, b) in enumerate(zip(state.nodes[:-1], state.nodes[1:])):
             if b - a >= 2:
-                out.append(Candidate(f"refine:{a}:{b}", "refine", (a, b), Cost(rate=1.0, compute=1.0), {"interval": j}))
+                out.append(Candidate(f"refine:{a}:{b}", "refine", (a, b), Cost(rate=1.0, compute=float(n + 1 - j)), {"interval": j}))
         return out
 
     def apply(self, state, candidate):

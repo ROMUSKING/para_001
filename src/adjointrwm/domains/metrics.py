@@ -110,3 +110,27 @@ def paired_aurc_difference(table: pd.DataFrame, policy_a: str, policy_b: str, nu
     out = episode_bootstrap_ci(frame, "a", baseline="b", num_resamples=num_resamples, seed=seed)
     out["statistic"] = f"mean(AURC_{policy_a} - AURC_{policy_b}) over instances"
     return out
+
+
+def compute_level_summary(frame: pd.DataFrame, pairs: Sequence[tuple[str, str]], num_resamples: int = 10_000, seed: int = 0) -> dict:
+    """Equal-compute comparison from :func:`~adjointrwm.domains.runner.evaluate_at_compute` output.
+
+    Per compute level: mean objective and actions per policy (random draws averaged), and for each
+    pair ``(a, b)`` the instance-bootstrap CI of ``mean(J_a - J_b)`` (negative = ``a`` better).
+    """
+    per = frame.groupby(["instance", "policy", "compute_level"], as_index=False).agg(
+        objective=("objective", "mean"), actions=("actions", "mean"), compute_spent=("compute_spent", "mean"))
+    out = {}
+    for level, block in per.groupby("compute_level"):
+        wide = block.pivot_table(index="instance", columns="policy", values="objective")
+        entry = {"mean_objective": wide.mean().to_dict(),
+                 "mean_actions": block.groupby("policy")["actions"].mean().to_dict(),
+                 "mean_compute_spent": block.groupby("policy")["compute_spent"].mean().to_dict(), "differences": {}}
+        for a, b in pairs:
+            data = pd.DataFrame({"episode_id": wide.index.astype(str), "a": wide[a].to_numpy(), "b": wide[b].to_numpy()})
+            ci = episode_bootstrap_ci(data, "a", baseline="b", num_resamples=num_resamples, seed=seed)
+            ci["statistic"] = f"mean(J_{a} - J_{b}) over instances at equal compute"
+            ci["reading"] = f"{a} lower objective" if ci["ci_high"] < 0 else f"{b} lower objective" if ci["ci_low"] > 0 else "no detectable difference"
+            entry["differences"][f"{a} - {b}"] = ci
+        out[float(level)] = entry
+    return out

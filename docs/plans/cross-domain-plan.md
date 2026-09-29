@@ -1,6 +1,6 @@
 # Plan: generalising the allocator across domains (Track D)
 
-**Written:** 2026-09-29 · **Status:** proposed; one reference domain implemented (D4), nothing run yet · **Owner:** Roman
+**Written:** 2026-09-29 · **Status:** D4 is the first domain (decided by Roman, 2026-09-29); the others are deferred (§1); D4-0 has not been committed as a run yet · **Owner:** Roman
 **Source:** Roman's domain-portfolio brief (chat, 2026-09-29), reconciled here with the governing plan · **Code:** `src/adjointrwm/domains/` · **Notebook:** [`04-domains/d4_adaptive_time_stepping.ipynb`](../../notebooks/04-domains/d4_adaptive_time_stepping.ipynb)
 
 ## 0. Thesis
@@ -47,11 +47,11 @@ What this plan adds:
 - Real-domain adapters (time series, text, graphs, event logs) are **Tier P** under §5.9.1. They "cannot replace the exact synthetic join benchmark".
 - Language enters "only through a frozen typed boundary with tokenization, encoder, context, latency, message, and rate costs" (N6). The LLM-context domain therefore uses a frozen LLM as its evaluator, and token counts go into the rate ledger.
 - In every domain, the primary comparison stays **adjoint vs a realised direct critic** (§2.3, §5.5.1). Beating a heuristic is not the claim.
-- **Conflict.** The brief ranks LLM context compression as the first major cross-domain experiment. The governing plan orders analytic correctness (N1), then matched joins (N2), then cross-domain work (N6).
-  - **Proposed resolution:** D4, an exact-adjoint simulation, comes first as the correctness anchor.
-  - D2, LLM context, is the first real-domain pilot. It is Tier P and exploratory, and may start after D4-0.
-  - No cross-domain claim is made before the N6 gate.
-  - Open question 1 asks Roman to confirm.
+- **Conflict, resolved.** The brief ranks LLM context compression as the first major cross-domain experiment. The governing plan orders analytic correctness (N1), then matched joins (N2), then cross-domain work (N6).
+  - **Decision (Roman, 2026-09-29): D4 first; "the rest subject to future research into permissively licenced content and testing".**
+  - Read as: D1 (sensor streams), D2 (LLM context), D3 (graph), ERP and every Tier 2–3 domain wait until a licence survey has found permissively licensed data or models and a small test has shown they are usable. Nothing here is built for them until then.
+  - The survey should record, per candidate source: licence text, redistribution terms, attribution requirements, and whether models trained on it can be released.
+  - No amendment to N6 is made; no cross-domain claim is made before the N6 gate.
 
 ## 2. Domain admission checklist
 
@@ -139,7 +139,11 @@ domain adapter -> canonical hierarchical state -> shared candidate/effect interf
 - **Objective:** the cancellation-free goal-oriented error `Σ_j |Λ_{j+1}ᵀ τ_{j+1}|`, an exact upper bound on the QoI error `|cᵀ(y(T) − y_N)|`, which is reported as a secondary metric. Lower is better.
   - Why not the QoI error itself: with signed local errors, a greedy oracle on `|cᵀ e_N|` won by finding lucky cancellations, not by allocating well (seen while building D4-0). The bound is the standard adaptivity target of dual-weighted-residual methods. `objective_kind='abs_error'` keeps the signed version available for sensitivity runs.
   - The exact solution comes from matrix-exponential propagation with 10-point Gauss–Legendre quadrature of the forcing on the finest grid.
-- **Ledger:** rate = stored states (one per new node); compute = solver steps, including the extra steps used to estimate local error; the co-state sweep is charged as backward steps.
+- **Ledger:** rate = stored states (one per new node). Compute = CN steps.
+  - `refine(j)` is charged the steps that must be re-solved, from the refined interval to the end (`n + 1 − j` for `n` intervals), because an early correction changes the whole downstream solution.
+  - Scoring is charged at every decision: 2 steps per interval for the step-doubling estimate, plus 1 per interval for the backward co-state sweep.
+  - Privileged references are not charged and are excluded from equal-compute comparisons.
+  - **History:** the first execution charged 1 step per refinement. The audit that found this is described in the research note and the run README.
 - **Policies in D4-0 (no learning):**
 
   | Policy | Uses | Deployable? |
@@ -155,6 +159,11 @@ domain adapter -> canonical hierarchical state -> shared candidate/effect interf
 
   The residual, goal-local and adjoint policies all use the same `τ̂`, so they differ only in how they weight it.
 - **Instances:** a parametric family generated in the repo, like `HJoinBench-0`: damped or oscillatory dynamics, possibly one growing mode, Gaussian forcing pulses, a goal vector, and frozen seeds. It is an analytic benchmark and is never presented as real data.
+- **Two comparisons, both reported.**
+  - *Equal refinement count* (`AURC` over `B = 0..48`): the declared rate-budget opportunity gate and the weighting comparison.
+  - *Equal total compute* (fixed levels 1000–8000 CN steps, frozen before the test family was read): each deployable policy against plain uniform refinement. Uniform refinement spends nothing on scoring, so it gets many more refinements.
+  - Preview on the validation family (no test data): uniform refinement was ahead of every adaptive policy at equal compute, so **D4-1 opens only if the co-state policy beats uniform at equal compute on validation (CI below 0 at two adjacent levels)**. The plan's rate-budget gate alone is not enough, because comprehensive plan §2.3 requires matched `C_total`.
+  - If the equal-compute check fails, the next step is a compute-efficient scoring scheme (mark many intervals per pass, incremental estimates, or a learned amortised scorer) validated at equal compute, not the learned-vs-critic comparison.
 - **Caveat.** Here the discrete co-state is cheap and exact, so the adjoint arm is "Mode A" (computed), not amortised. The H2-relevant question is D4-1: a learned direct critic against a co-state-featured critic, both learned (plan §5.5 factorial).
 
 ### D2: LLM context tree (next; Tier P)
@@ -231,16 +240,18 @@ All metrics are lower-is-better, and each domain also keeps its native metric.
 | ID | Deliverable | Done when | Status (2026-09-29) |
 |---|---|---|---|
 | D0 | This plan; `adjointrwm.domains` (interface, runner, metrics); D4 domain with exact tests | `harness/check.py` passes | Done (this change) |
-| D4-0 | `04-domains/d4_adaptive_time_stepping.ipynb`: correctness and opportunity on the frozen instance family | Run directory imported; note written, including a failed opportunity gate if that happens | Notebook ready, not run (CPU only, no GPU needed) |
-| D4-1 | Learned direct critic vs co-state-featured critic on D4, 5 seeds | Rung-1 gate; §0A.3 exit class | Waits for D4-0 |
-| D2-0 | LLM-context domain card, frozen evaluator, exact token ledger, small-context oracle | Rung-0 gate | Waits for open question 3 |
-| D1-0, D3-0 | Sensor-stream and graph domain cards and adapters | Rung-0 gate | Waits for data and licence choices |
+| D4-0 | `04-domains/d4_adaptive_time_stepping.ipynb`: correctness, rate-budget opportunity, weighting comparison, equal-compute check | Run directory imported; note written, including any failed gate | Run and imported (see the research note) |
+| D4-1 | Learned direct critic vs co-state-featured critic on D4, 5 seeds | Rung-1 gate; §0A.3 exit class | Closed unless the equal-compute condition passes (§5) |
+| D4-0b | A compute-efficient scoring scheme validated at equal compute | Equal-compute payoff on validation | Proposed if D4-1 stays closed |
+| DL | Licence survey of permissively licensed data and models for D1–D3 and Tier 2 domains | Per-source licence, redistribution and release terms recorded; a small usability test per candidate | **Next for the other domains (Roman's decision)** |
+| D2-0, D1-0, D3-0 | LLM-context, sensor-stream and graph domain cards and adapters | Rung-0 gate | Deferred until DL |
 | DX | Shared allocator, leave-one-domain-out, negative transfer | Rungs 2–3; confirmatory only in N6 | Waits for ≥ 3 specialists and the N2 exit class |
 
-## 10. Open questions for Roman
+## 10. Decisions and open questions
 
-1. **First experiment.** D4, the exact-adjoint simulation (assumed; consistent with the governing plan), or D2, LLM context (the brief's first pick)?
-2. **D3.** Code-repository context (assumed) or database query planning?
-3. **D2.** Which frozen LLM and which QA dataset(s)? They need an L4 fit and a recorded licence.
-4. **ERP.** Is there a de-identified dataset licensed for research? Otherwise ERP stays out of research runs.
-5. **Governing plan.** Should N6 be amended to name these domains? That needs your explicit instruction and a deviation-log entry.
+**Decided (Roman, 2026-09-29):** D4 first. The rest is subject to future research into permissively licensed content and testing. This closes the former questions on the first experiment, D3, D2's model and data, ERP data, and amending N6: none of them is acted on until the licence survey (DL) reports.
+
+**Open:**
+
+1. Should the licence survey (DL) be run next, or after D4-1 / D4-0b?
+2. Should sensor streams (D1) also wait for DL? This plan assumes yes, because they need a public dataset with a licence.

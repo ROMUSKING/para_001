@@ -61,7 +61,15 @@ def run_policy(
     max_steps: int,
     allow_stop: bool = False,
     seed: int = 0,
+    compute_budget: float | None = None,
 ) -> Trace:
+    """Run ``policy`` for up to ``max_steps`` actions.
+
+    With ``compute_budget`` set, a step is taken only if the cumulative *compute* ledger (actions
+    plus the cost of scoring) stays within the budget after it; otherwise the run ends with
+    ``stopped_at`` set. This is how equal-compute comparisons are made: cheap policies simply
+    get more actions.
+    """
     state = domain.initial_state(instance)
     context = PolicyContext(
         observation=domain.observation(instance),
@@ -86,6 +94,11 @@ def run_policy(
             stopped_at = step
             break
         chosen = candidates[best]
+        if compute_budget is not None:
+            total = action_cost[-1].compute + decision_cost[-1].compute + chosen.cost.compute + spent.compute
+            if total > compute_budget:
+                stopped_at = step
+                break
         state = domain.apply(state, chosen)
         decisions.append(chosen.id)
         objective.append(float(domain.objective(state, instance)))
@@ -96,6 +109,43 @@ def run_policy(
         action_cost.append(action_cost[-1])
         decision_cost.append(decision_cost[-1])
     return Trace(policy.name, policy.deployable, objective, action_cost, decision_cost, decisions, stopped_at)
+
+
+def objective_at_compute(trace: Trace, level: float) -> tuple[float, int, float]:
+    """``(objective, actions taken, compute spent)`` after the last step within ``level`` compute."""
+    spent = [a.compute + d.compute for a, d in zip(trace.action_cost, trace.decision_cost)]
+    step = max(i for i, c in enumerate(spent) if c <= level)  # spent is non-decreasing; index 0 costs 0
+    actions = len(trace.decisions) if step >= len(trace.decisions) else step
+    return trace.objective[step], actions, spent[step]
+
+
+def evaluate_at_compute(
+    domain: AllocationDomain,
+    instances: Sequence,
+    policies: Sequence[Policy],
+    levels: Sequence[float],
+    max_steps: int,
+    random_draws: int = 8,
+    instance_id: Callable = lambda inst: getattr(inst, "name", repr(inst)),
+) -> pd.DataFrame:
+    """Objective of each *deployable* policy at fixed total-compute levels (equal-compute comparison).
+
+    Privileged policies (oracles, exact teachers) are skipped: their scoring cost is not
+    charged here, so a compute-matched number for them would not be honest.
+    ``max_steps`` only caps the number of actions (a safety bound, not a budget).
+    """
+    rows = []
+    for instance in instances:
+        for policy in policies:
+            if not policy.deployable:
+                continue
+            for draw in range(random_draws if policy.name == "random" else 1):
+                trace = run_policy(domain, instance, policy, max_steps, seed=draw, compute_budget=max(levels))
+                for level in levels:
+                    objective, actions, spent = objective_at_compute(trace, level)
+                    rows.append({"instance": instance_id(instance), "policy": policy.name, "draw": draw, "compute_level": float(level),
+                                 "objective": objective, "actions": actions, "compute_spent": spent})
+    return pd.DataFrame(rows)
 
 
 # ---------------------------------------------------------------------------

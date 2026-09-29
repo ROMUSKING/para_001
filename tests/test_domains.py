@@ -21,10 +21,13 @@ from adjointrwm.domains import (
     Pulse,
     aurc,
     aurc_table,
+    compute_level_summary,
     d4_policies,
+    evaluate_at_compute,
     evaluate_policies,
     exhaustive_oracle_curve,
     fraction_of_oracle_advantage,
+    objective_at_compute,
     one_step_oracle,
     opportunity_over_budgets,
     paired_aurc_difference,
@@ -184,13 +187,55 @@ def test_exhaustive_oracle_bounds_the_one_step_oracle(domain):
     assert exhaustive[0] == pytest.approx(greedy[0])
 
 
+def test_refinement_is_charged_for_the_resolve_it_causes(domain, instances):
+    state = domain.initial_state(instances[0])
+    n = len(state.nodes) - 1
+    assert [c.cost.compute for c in domain.legal_candidates(state)] == [float(n + 1 - j) for j in range(n)]
+    assert all(c.cost.rate == 1.0 for c in domain.legal_candidates(state))
+    # Refining interval j really changes every later step, but no earlier one.
+    j = 3
+    child = domain.apply(state, domain.legal_candidates(state)[j])
+    assert np.array_equal(child.y[: j + 1], state.y[: j + 1])
+    assert not np.allclose(child.y[-1], state.y[-1])
+
+
 def test_decision_costs_are_charged(domain, instances):
     policies = {p.name: p for p in d4_policies()}
     trace = run_policy(domain, instances[0], policies["adjoint"], 2)
     n0 = instances[0].initial_intervals
     assert trace.decision_cost[1].compute == 3 * n0  # 2 estimate steps + 1 backward step per interval
-    assert trace.action_cost[2] == Cost(rate=2.0, compute=2.0)
+    assert trace.decision_cost[2].compute == 3 * n0 + 3 * (n0 + 1)
+    assert trace.action_cost[2].rate == 2.0 and trace.action_cost[2].compute > 2.0
     assert run_policy(domain, instances[0], policies["uniform"], 2).decision_cost[2].compute == 0
+
+
+def test_compute_budget_is_a_hard_cap_and_cheap_policies_get_more_actions(domain, instances):
+    policies = {p.name: p for p in d4_policies()}
+    budget = 400.0
+    traces = {name: run_policy(domain, instances[0], policies[name], 500, compute_budget=budget) for name in ("uniform", "adjoint")}
+    for trace in traces.values():
+        spent = [a.compute + d.compute for a, d in zip(trace.action_cost, trace.decision_cost)]
+        assert max(spent) <= budget and trace.stopped_at is not None
+    assert len(traces["uniform"].decisions) > 2 * len(traces["adjoint"].decisions)
+
+
+def test_objective_at_compute_reads_the_last_affordable_step(domain, instances):
+    trace = run_policy(domain, instances[0], {p.name: p for p in d4_policies()}["uniform"], 6)
+    spent = [a.compute + d.compute for a, d in zip(trace.action_cost, trace.decision_cost)]
+    objective, actions, used = objective_at_compute(trace, spent[3] + 0.5)
+    assert (objective, actions, used) == (trace.objective[3], 3, spent[3])
+    assert objective_at_compute(trace, 0.0) == (trace.objective[0], 0, 0.0)
+
+
+def test_equal_compute_evaluation_skips_privileged_policies_and_summarises(domain, instances):
+    policies = [p for p in d4_policies() if p.name in ("uniform", "random", "residual", "adjoint", "one_step_oracle")]
+    frame = evaluate_at_compute(domain, instances, policies, levels=[150.0, 600.0], max_steps=200, random_draws=2)
+    assert set(frame["policy"]) == {"uniform", "random", "residual", "adjoint"}
+    assert (frame["compute_spent"] <= frame["compute_level"]).all()
+    summary = compute_level_summary(frame, [("adjoint", "uniform")], num_resamples=200)
+    assert set(summary) == {150.0, 600.0}
+    assert summary[600.0]["mean_actions"]["uniform"] > summary[600.0]["mean_actions"]["adjoint"]
+    assert summary[600.0]["differences"]["adjoint - uniform"]["num_episodes"] == len(instances)
 
 
 # --- metrics -----------------------------------------------------------------------
