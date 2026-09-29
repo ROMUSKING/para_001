@@ -406,3 +406,50 @@ def test_families_are_named_and_the_smooth_one_is_the_d4_0_family():
     assert sharp[0].n_fine == 16 * 2 ** 11
     assert max(p.width for i in sharp for p in i.pulses) <= 0.004
     assert min(p.width for i in sample_family("smooth", 7, 3) for p in i.pulses) >= 0.01
+
+
+def test_d4_0b_table_script_reads_a_run_directory(tmp_path):
+    """The note's tables are generated from run files; the generator must run on a minimal run layout."""
+    import importlib.util
+    import json as _json
+    from pathlib import Path
+
+    spec = importlib.util.spec_from_file_location("d4_0b_tables", Path(__file__).resolve().parents[1] / "scripts" / "d4_0b_tables.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    def diff(a, b):
+        return {"estimate": -0.7, "ci_low": -1.0, "ci_high": -0.4, "ratio_of_geometric_means": math.exp(-0.7), "win_rate": 0.9,
+                "both_unreached": 0, "reading": f"{a} needs less compute"}
+
+    pairs = ["adjoint / uniform_pass", "residual / uniform_pass", "goal_local / uniform_pass", "adjoint / residual", "adjoint / goal_local"]
+    entry = {"median_compute": {p: 100.0 for p in module.POLICIES}, "fraction_reached": {p: 1.0 for p in module.POLICIES},
+             "differences": {k: diff(*k.split(" / ")) for k in pairs}}
+    summary = {"summary": {fam: {s: {t: entry for t in module.TARGETS} for s in ("1", "0.25", "0")} for fam in ("smooth", "sharp", "sharper")}}
+    (tmp_path / "artifacts").mkdir()
+    (tmp_path / "reports").mkdir()
+    (tmp_path / "artifacts/validation_summary.json").write_text(_json.dumps(summary))
+    (tmp_path / "artifacts/theta_tuning.csv").write_text("family,kind,selected\nsmooth,adjoint,0.95\n")
+    cells = [{"family": "sharp", "scoring_price_scale": 0.25, "adjoint_beats_uniform_two_adjacent_targets": True,
+              "adjoint_beats_residual_and_goal_local_two_adjacent_targets": False, "candidate_regime_for_d4_1": False}]
+    (tmp_path / "reports/acceptance_report.json").write_text(_json.dumps({"cells": cells}))
+    data = module.load(tmp_path)
+    table = module.real_ledger_table(data["summary"])
+    assert len(table.splitlines()) == 2 + 9 and "| sharper | 1% |" in table and "0.50 [0.37, 0.67]" in table
+    assert "×0.25" in module.what_if_table(data["summary"]) and "| sharp | ×0.25 | True | False | False |" in module.cells_table(data["report"])
+
+
+def test_interpolated_compute_to_target_brackets_the_pass_values(domain, instances):
+    from adjointrwm.domains import interpolated_compute_to_target
+
+    trace = run_batch_policy(domain, instances[0], uniform_pass_policy(), 5)
+    j = trace.objective
+    spent = [a.compute + d.compute for a, d in zip(trace.action_cost, trace.decision_cost)]
+    target = float(np.sqrt(j[2] * j[3]))  # geometric midpoint of two passes
+    plain, smooth = compute_to_target(trace, target), interpolated_compute_to_target(trace, target)
+    assert plain == spent[3] and spent[2] < smooth < spent[3]
+    assert smooth == pytest.approx(spent[2] + 0.5 * (spent[3] - spent[2]))
+    assert interpolated_compute_to_target(trace, j[2]) == pytest.approx(spent[2])          # exact hit: no interpolation
+    assert interpolated_compute_to_target(trace, j[0] * 2) == spent[0]                     # already below at the start
+    assert interpolated_compute_to_target(trace, -1.0) == float("inf")
+    assert interpolated_compute_to_target(trace, target, decision_scale=0.0) <= smooth

@@ -190,6 +190,28 @@ def compute_to_target(trace: Trace, target: float, decision_scale: float = 1.0) 
     return float("inf")
 
 
+def interpolated_compute_to_target(trace: Trace, target: float, decision_scale: float = 1.0) -> float:
+    """Like :func:`compute_to_target`, but interpolated between the last step above the target and the first below.
+
+    Pass-based policies can stop only at whole passes, so their compute-to-target is quantised
+    (``uniform_pass`` doubles the grid per pass, i.e. up to a factor 2). This interpolates compute
+    linearly in ``log(objective)`` between the two bracketing steps, as if a partial pass cost a
+    proportional part of a full one. It is not realisable; it is a robustness check applied
+    symmetrically to every policy. Objectives must be positive.
+    """
+    spent = [a.compute + decision_scale * d.compute for a, d in zip(trace.action_cost, trace.decision_cost)]
+    for i, j in enumerate(trace.objective):
+        if j <= target:
+            if i == 0:
+                return float(spent[0])
+            j_prev = trace.objective[i - 1]
+            if not (j_prev > target >= j > 0):
+                return float(spent[i])
+            share = (np.log(j_prev) - np.log(target)) / (np.log(j_prev) - np.log(j))
+            return float(spent[i - 1] + share * (spent[i] - spent[i - 1]))
+    return float("inf")
+
+
 def evaluate_work_precision(
     domain: AllocationDomain,
     instances: Sequence,
@@ -200,6 +222,7 @@ def evaluate_work_precision(
     random_draws: int = 8,
     instance_id: Callable = lambda inst: getattr(inst, "name", repr(inst)),
     decision_scales: Sequence[float] = (1.0,),
+    interpolate: bool = False,
 ) -> pd.DataFrame:
     """Compute needed by each deployable policy to reach per-instance objective targets.
 
@@ -207,7 +230,8 @@ def evaluate_work_precision(
     quantities). A target not reached within ``compute_cap`` is recorded as ``inf`` (censored).
     Each policy runs once, under the most permissive scoring price in ``decision_scales``; the
     other prices are read off the same trace (decisions do not depend on costs). Scale ``1`` is
-    the real ledger; smaller scales are what-ifs and must be labelled as such.
+    the real ledger; smaller scales are what-ifs and must be labelled as such. ``interpolate=True``
+    uses :func:`interpolated_compute_to_target` (a robustness check, not a realisable cost).
     """
     rows = []
     cheapest = min(decision_scales)
@@ -220,7 +244,7 @@ def evaluate_work_precision(
                 trace = run_any(domain, instance, policy, max_steps, seed=draw, compute_budget=compute_cap, decision_scale=cheapest)
                 for scale in decision_scales:
                     for label, value in wanted.items():
-                        c = compute_to_target(trace, value, decision_scale=scale)
+                        c = (interpolated_compute_to_target if interpolate else compute_to_target)(trace, value, decision_scale=scale)
                         rows.append({"instance": instance_id(instance), "policy": policy.name, "draw": draw, "target": label,
                                      "target_value": float(value), "decision_scale": float(scale),
                                      "compute": c if c <= compute_cap else float("inf")})
