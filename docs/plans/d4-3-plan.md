@@ -68,4 +68,5 @@ Compute to reach 10 %, 3 % and 1 % of the initial-to-finest objective gap, price
 
 ## 9. Changes after this plan was written
 
-_None yet. Each change will be dated here, and any change made after the validation family was read will be marked as such._
+- **2026-09-30, execution record:** no change was made to the frozen design, rules or grids between writing this plan and reading the validation family. A smoke test of the notebook with a tiny configuration ran first, fed the **train** family in place of validation (no validation instance was generated); it led to no change. The real run (`results/runs/d4_3_varying_goal_20260930T084725Z/`) generated the validation instances only after `reports/frozen_before_validation.json` was written. The test family was never generated. A reproduction from a clean worktree is described in the run's README.
+- **Changes after the validation family was read:** none.

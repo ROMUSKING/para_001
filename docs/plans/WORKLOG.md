@@ -21,6 +21,17 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 
 ---
 
+## 2026-09-30 13:10 (BST) · Claude Code (web) · D4-3, D1-0b, D4-1, Colab queue
+
+- **Decisions (Roman, 2026-09-30):** "redesign its objective (D1-0b), want the varying-goal check, proceed with all practical CPU experiments and flag when to switch to Colab"; the repo was made public so the Colab worker can clone it (the token-support patch was declined and is not committed).
+- **Changed:** imported runs `d4_3_varying_goal_20260930T084725Z` and `d1_0b_forecast_sensing_20260930T085746Z` (with READMEs and clean-worktree reproductions); research notes `2026-09-30-d4-3-varying-goal.md` and `2026-09-30-d1-0b-forecast-sensing.md`; roadmap, cross-domain plan, README (also repaired misplaced D4-0b/D4-2 links), notebooks README, plans §9/§10, CHANGELOG (n); **D4-1 plan written** (`docs/plans/d4-1-plan.md`), nothing trained yet.
+- **Results (from the run files, via `scripts/d4_3_tables.py` and `scripts/d1_0b_tables.py`):** D4-3: R3v and R4v hold together in `m4` and `m64` only (co-state weight saves 11 to 17 % and 8 to 18 % of `cheap`'s compute) and with the table charged per instance the goal-aware arm needs 2.1 to 50 times `cheap`'s compute. D1-0b: G0 passes on tuning (0.522) and by the point rule on validation, not robustly (0.298 [0.023, 0.743]); G1 passes with an unstable ratio (0.875 [0.295, 1.347]); neither deployable dynamic policy keeps any headroom, and the best static policy beats them.
+- **Verified:** `pytest -q` 279 passed before this entry's docs; the table scripts run on the imported folders and print exactly what the notes quote; reproductions: D4-3 11 of 18 files byte-identical, D1-0b 7 of 15 byte-identical, every other difference is a run id, a timestamp or a timing (READMEs).
+- **Open:** D4-1 implementation (critics module with hand-written backprop, tests, notebook, timing smoke on train/tuning only, freeze, run). Colab: the worker needs to be re-run from `main` now that the repo is public; first job `ops_smoke`, then the one-seed pilot v2 probe. Not started: D2-0, D3-0 (D2-0 needs an L4).
+- **Next:** build `src/adjointrwm/domains/critics.py` per the D4-1 plan §3-§6; do not read the validation family for any critic until `reports/frozen_before_validation.json` exists.
+
+---
+
 ## 2026-09-30 07:37 (BST) · Claude Code (web) · D1-0
 
 - **Decision (Roman, 2026-09-30):** "proceed as recommended": D4-1 stays closed, the D1/D2/D3 candidates are confirmed, E1.1 then B2 stay on the critical path (Colab; not runnable here).

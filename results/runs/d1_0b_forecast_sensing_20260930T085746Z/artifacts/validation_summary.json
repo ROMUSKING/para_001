@@ -1,0 +1,911 @@
+{
+  "runs": {
+    "h15_L60": {
+      "G0_passes": true,
+      "G0_robust": false,
+      "G1_passes": true,
+      "G1_robust": true,
+      "G1_vacuous": false,
+      "areas": {
+        "oracle_fidelity": 0.01366140012875056,
+        "recent_change": 0.25017163562504846,
+        "recent_change_weighted": 0.2620520615288496,
+        "reference": 0.01366140012875056,
+        "round_robin": 0.5068785075619837,
+        "top_sensitivity": 0.27515280802736475,
+        "top_volatility": 0.16538446984399666,
+        "top_weighted_volatility": 0.2273287385328475
+      },
+      "bootstrap": {
+        "areas_ci": {
+          "oracle_fidelity": [
+            0.000945220167237594,
+            0.03235171348947369
+          ],
+          "recent_change": [
+            -0.0072887596874680865,
+            0.7663986706362533
+          ],
+          "recent_change_weighted": [
+            -0.0009499694260809209,
+            0.6464917272080285
+          ],
+          "reference": [
+            0.000945220167237594,
+            0.03235171348947369
+          ],
+          "round_robin": [
+            0.03755069592820294,
+            1.3940512033992165
+          ],
+          "top_sensitivity": [
+            0.039400322757492647,
+            0.5781383897554221
+          ],
+          "top_volatility": [
+            -0.04173406287549087,
+            0.4858066121761912
+          ],
+          "top_weighted_volatility": [
+            -0.01978437495665441,
+            0.5601033969631148
+          ]
+        },
+        "endpoint_moves_ci": [
+          -0.02758879402572172,
+          0.5503075486048016
+        ],
+        "fixed": "top_weighted_volatility",
+        "headroom_ci": [
+          0.7496133716789862,
+          1.0617465229240155
+        ],
+        "num_resamples": 10000,
+        "paired_area_difference_ci": {
+          "oracle_fidelity - top_weighted_volatility": [
+            -0.5348955527281647,
+            0.023321441397505298
+          ],
+          "recent_change - top_weighted_volatility": [
+            -0.3543164245298959,
+            0.4337095164485588
+          ],
+          "recent_change_weighted - recent_change": [
+            -0.19411007839195235,
+            0.13548882273945
+          ],
+          "recent_change_weighted - top_sensitivity": [
+            -0.23067314594107952,
+            0.2681031256277148
+          ],
+          "recent_change_weighted - top_weighted_volatility": [
+            -0.31100766750754366,
+            0.33552107650868024
+          ],
+          "top_weighted_volatility - top_sensitivity": [
+            -0.2101625580177398,
+            0.17938326493642306
+          ],
+          "top_weighted_volatility - top_volatility": [
+            -0.02436365506074926,
+            0.20460643177861257
+          ]
+        },
+        "retained_ci": {
+          "recent_change": [
+            -3.91775639879294,
+            1.0417222445959293
+          ],
+          "recent_change_weighted": [
+            -4.480684858600627,
+            0.9853686953452417
+          ]
+        },
+        "seed": 0
+      },
+      "budgets": [
+        0,
+        1,
+        2,
+        4,
+        8,
+        12,
+        16,
+        24,
+        38
+      ],
+      "endpoint_moves": {
+        "mean": 0.20302666110097503,
+        "per_machine": {
+          "machine-1-2": 0.21828033369628178,
+          "machine-1-6": 0.054832299311392226,
+          "machine-2-2": 0.5218129984882088,
+          "machine-2-6": 0.07153453884268873,
+          "machine-3-1": -0.23561762770770855,
+          "machine-3-5": 0.08130242854277832,
+          "machine-3-9": 0.7090416565331841
+        }
+      },
+      "fidelity_areas": {
+        "oracle_fidelity": 0.06693023353318718,
+        "recent_change": 1.1926520893575623,
+        "recent_change_weighted": 1.1171297153556279,
+        "reference": 0.06693023353318718,
+        "round_robin": 2.283473796914825,
+        "top_sensitivity": 0.788136363671194,
+        "top_volatility": 0.7100575384243922,
+        "top_weighted_volatility": 0.860167751269989
+      },
+      "fixed": "top_weighted_volatility",
+      "horizon": 15,
+      "length": 60,
+      "machines": {
+        "machine-1-2": {
+          "windows": 392
+        },
+        "machine-1-6": {
+          "windows": 392
+        },
+        "machine-2-2": {
+          "windows": 393
+        },
+        "machine-2-6": {
+          "windows": 477
+        },
+        "machine-3-1": {
+          "windows": 476
+        },
+        "machine-3-5": {
+          "windows": 392
+        },
+        "machine-3-9": {
+          "windows": 476
+        }
+      },
+      "min_endpoint": 0.05,
+      "min_headroom": 0.15,
+      "per_machine_headroom": {
+        "machine-1-2": 0.9800374646908693,
+        "machine-1-6": 0.7330265383864242,
+        "machine-2-2": 0.9016614051002967,
+        "machine-2-6": 1.4147918353178022,
+        "machine-3-1": NaN,
+        "machine-3-5": 0.8514259598323815,
+        "machine-3-9": 0.9661202721386433
+      },
+      "relative_headroom": 0.9399046499051568,
+      "retained": {
+        "recent_change": -0.10690869864723776,
+        "recent_change_weighted": -0.1625111411755962
+      }
+    },
+    "h1_L60": {
+      "G0_passes": true,
+      "G0_robust": false,
+      "G1_passes": true,
+      "G1_robust": true,
+      "G1_vacuous": false,
+      "areas": {
+        "oracle_fidelity": 0.03305653818654435,
+        "recent_change": 0.2647403397964824,
+        "recent_change_weighted": 0.2805189462651326,
+        "reference": 0.03305653818654435,
+        "round_robin": 0.6764348408945259,
+        "top_sensitivity": 0.2839088201767411,
+        "top_volatility": 0.29387390474513664,
+        "top_weighted_volatility": 0.3171267129816907
+      },
+      "bootstrap": {
+        "areas_ci": {
+          "oracle_fidelity": [
+            0.013078330959617815,
+            0.06856238141439022
+          ],
+          "recent_change": [
+            -0.05494135797616921,
+            0.8348564977956993
+          ],
+          "recent_change_weighted": [
+            -0.005592143813733167,
+            0.7190648612176177
+          ],
+          "reference": [
+            0.013078330959617815,
+            0.06856238141439022
+          ],
+          "round_robin": [
+            0.05815136858208952,
+            1.7651374687619148
+          ],
+          "top_sensitivity": [
+            0.12233560937099085,
+            0.5362351198335096
+          ],
+          "top_volatility": [
+            -0.061070113073661676,
+            1.017146105690895
+          ],
+          "top_weighted_volatility": [
+            -0.040042808077921654,
+            1.0975678613652882
+          ]
+        },
+        "endpoint_moves_ci": [
+          -0.05107415854655813,
+          1.4195167853980049
+        ],
+        "fixed": "top_weighted_volatility",
+        "headroom_ci": [
+          0.47739833357593847,
+          1.2537801343617432
+        ],
+        "num_resamples": 10000,
+        "paired_area_difference_ci": {
+          "oracle_fidelity - top_weighted_volatility": [
+            -1.0375385522529426,
+            0.05668525545226304
+          ],
+          "recent_change - top_weighted_volatility": [
+            -0.8241034416937425,
+            0.3998186568938586
+          ],
+          "recent_change_weighted - recent_change": [
+            -0.17678515881018614,
+            0.10014263033792302
+          ],
+          "recent_change_weighted - top_sensitivity": [
+            -0.24110126356658282,
+            0.26073832681965603
+          ],
+          "recent_change_weighted - top_weighted_volatility": [
+            -0.7969425363422552,
+            0.31956814679239887
+          ],
+          "top_weighted_volatility - top_sensitivity": [
+            -0.21274432736915716,
+            0.6389079606381031
+          ],
+          "top_weighted_volatility - top_volatility": [
+            -0.07393586395832175,
+            0.11956766381254291
+          ]
+        },
+        "retained_ci": {
+          "recent_change": [
+            -3.2692157550724126,
+            1.257392489528234
+          ],
+          "recent_change_weighted": [
+            -3.909638849376628,
+            1.0556495449867798
+          ]
+        },
+        "seed": 0
+      },
+      "budgets": [
+        0,
+        1,
+        2,
+        4,
+        8,
+        12,
+        16,
+        24,
+        38
+      ],
+      "endpoint_moves": {
+        "mean": 0.42528627856223483,
+        "per_machine": {
+          "machine-1-2": 1.3542287370147768,
+          "machine-1-6": 0.2542442380659432,
+          "machine-2-2": 0.3808850097193195,
+          "machine-2-6": 0.19300727956317143,
+          "machine-3-1": -0.6632503740787992,
+          "machine-3-5": 0.12839866372310563,
+          "machine-3-9": 1.329490395928126
+        }
+      },
+      "fidelity_areas": {
+        "oracle_fidelity": 0.06509413176748012,
+        "recent_change": 0.5593263563316156,
+        "recent_change_weighted": 0.528336200346977,
+        "reference": 0.06509413176748012,
+        "round_robin": 1.132395036366402,
+        "top_sensitivity": 0.3967636911742543,
+        "top_volatility": 0.744821161391474,
+        "top_weighted_volatility": 0.7065643457742959
+      },
+      "fixed": "top_weighted_volatility",
+      "horizon": 1,
+      "length": 60,
+      "machines": {
+        "machine-1-2": {
+          "windows": 392
+        },
+        "machine-1-6": {
+          "windows": 392
+        },
+        "machine-2-2": {
+          "windows": 393
+        },
+        "machine-2-6": {
+          "windows": 477
+        },
+        "machine-3-1": {
+          "windows": 476
+        },
+        "machine-3-5": {
+          "windows": 392
+        },
+        "machine-3-9": {
+          "windows": 476
+        }
+      },
+      "min_endpoint": 0.05,
+      "min_headroom": 0.15,
+      "per_machine_headroom": {
+        "machine-1-2": 0.8517237121991178,
+        "machine-1-6": 0.759425382520396,
+        "machine-2-2": 0.94413550855795,
+        "machine-2-6": 0.6670893703686701,
+        "machine-3-1": NaN,
+        "machine-3-5": 0.7884174855679166,
+        "machine-3-9": 0.9623531413383564
+      },
+      "relative_headroom": 0.8957623661666972,
+      "retained": {
+        "recent_change": 0.18441349297928253,
+        "recent_change_weighted": 0.1288687442916433
+      }
+    },
+    "h5_L120": {
+      "G0_passes": true,
+      "G0_robust": true,
+      "G1_passes": true,
+      "G1_robust": false,
+      "G1_vacuous": false,
+      "areas": {
+        "oracle_fidelity": 0.03343765700083449,
+        "recent_change": 0.12667971168039582,
+        "recent_change_weighted": 0.16790483042337875,
+        "reference": 0.03343765700083449,
+        "round_robin": 0.4973179117580598,
+        "top_sensitivity": 0.15713983308633692,
+        "top_volatility": 0.13732169601574815,
+        "top_weighted_volatility": 0.08046608178208582
+      },
+      "bootstrap": {
+        "areas_ci": {
+          "oracle_fidelity": [
+            0.016058870040332702,
+            0.06479169724694404
+          ],
+          "recent_change": [
+            -0.011771738529542585,
+            0.32480396240915854
+          ],
+          "recent_change_weighted": [
+            -0.01736338845200893,
+            0.4329993789062686
+          ],
+          "reference": [
+            0.016058870040332702,
+            0.06479169724694404
+          ],
+          "round_robin": [
+            0.18573863512659575,
+            0.9405519597009506
+          ],
+          "top_sensitivity": [
+            0.0760577756561139,
+            0.2774317807727287
+          ],
+          "top_volatility": [
+            -0.028419219624933406,
+            0.4529437095537914
+          ],
+          "top_weighted_volatility": [
+            -0.06381671172387378,
+            0.304107599940167
+          ]
+        },
+        "endpoint_moves_ci": [
+          0.06906841708770622,
+          0.7646740297944262
+        ],
+        "fixed": "top_weighted_volatility",
+        "headroom_ci": [
+          -1.426897868339489,
+          2.9818260009004667
+        ],
+        "num_resamples": 10000,
+        "paired_area_difference_ci": {
+          "oracle_fidelity - top_weighted_volatility": [
+            -0.2522635659843762,
+            0.09072831178205838
+          ],
+          "recent_change - top_weighted_volatility": [
+            -0.13132440572258522,
+            0.159691592345301
+          ],
+          "recent_change_weighted - recent_change": [
+            -0.040688499196133945,
+            0.15378622246403903
+          ],
+          "recent_change_weighted - top_sensitivity": [
+            -0.11086572684742779,
+            0.20236870082742683
+          ],
+          "recent_change_weighted - top_weighted_volatility": [
+            -0.1269394446484996,
+            0.2700445329567688
+          ],
+          "top_weighted_volatility - top_sensitivity": [
+            -0.1848404863214554,
+            0.1111114216501389
+          ],
+          "top_weighted_volatility - top_volatility": [
+            -0.175759446266076,
+            0.007883875084029575
+          ]
+        },
+        "retained_ci": {
+          "recent_change": [
+            -11.251578584908488,
+            1.1576391180185193
+          ],
+          "recent_change_weighted": [
+            -13.413440732602949,
+            1.2471367680623853
+          ]
+        },
+        "seed": 0
+      },
+      "budgets": [
+        0,
+        1,
+        2,
+        4,
+        8,
+        12,
+        16,
+        24,
+        38
+      ],
+      "endpoint_moves": {
+        "mean": 0.3222080513550004,
+        "per_machine": {
+          "machine-1-2": 0.5958905018780294,
+          "machine-1-6": 0.18401955680010237,
+          "machine-2-2": 0.8411091419248842,
+          "machine-2-6": 0.6566686218144355,
+          "machine-3-1": -0.05717338552337899,
+          "machine-3-5": 0.1417186044312839,
+          "machine-3-9": -0.1067766818403537
+        }
+      },
+      "fidelity_areas": {
+        "oracle_fidelity": 0.07440427482099664,
+        "recent_change": 0.45195876718172073,
+        "recent_change_weighted": 0.48451783693119027,
+        "reference": 0.07440427482099664,
+        "round_robin": 0.9732115769505446,
+        "top_sensitivity": 0.3105427776397191,
+        "top_volatility": 0.6135384592489219,
+        "top_weighted_volatility": 0.46436549575307684
+      },
+      "fixed": "top_weighted_volatility",
+      "horizon": 5,
+      "length": 120,
+      "machines": {
+        "machine-1-2": {
+          "windows": 195
+        },
+        "machine-1-6": {
+          "windows": 195
+        },
+        "machine-2-2": {
+          "windows": 195
+        },
+        "machine-2-6": {
+          "windows": 237
+        },
+        "machine-3-1": {
+          "windows": 237
+        },
+        "machine-3-5": {
+          "windows": 195
+        },
+        "machine-3-9": {
+          "windows": 237
+        }
+      },
+      "min_endpoint": 0.05,
+      "min_headroom": 0.15,
+      "per_machine_headroom": {
+        "machine-1-2": 0.910409163166609,
+        "machine-1-6": 0.7397201969005794,
+        "machine-2-2": 0.7437498900056323,
+        "machine-2-6": 0.8725637995677037,
+        "machine-3-1": NaN,
+        "machine-3-5": 0.8207985354235167,
+        "machine-3-9": NaN
+      },
+      "relative_headroom": 0.5844502893605699,
+      "retained": {
+        "recent_change": -0.9826744168716839,
+        "recent_change_weighted": -1.8592744504628156
+      }
+    },
+    "h5_L30": {
+      "G0_passes": true,
+      "G0_robust": false,
+      "G1_passes": true,
+      "G1_robust": true,
+      "G1_vacuous": false,
+      "areas": {
+        "oracle_fidelity": 0.014576144323459423,
+        "recent_change": 0.1507156284721,
+        "recent_change_weighted": 0.15913883545150886,
+        "reference": 0.014576144323459423,
+        "round_robin": 0.35343418615258787,
+        "top_sensitivity": 0.11708000107902558,
+        "top_volatility": 0.08841285845393686,
+        "top_weighted_volatility": 0.08876358140445421
+      },
+      "bootstrap": {
+        "areas_ci": {
+          "oracle_fidelity": [
+            0.0012477534215232444,
+            0.036672747675116996
+          ],
+          "recent_change": [
+            -0.005657913855641375,
+            0.3796419423392569
+          ],
+          "recent_change_weighted": [
+            -0.010175109262317674,
+            0.3814367579458736
+          ],
+          "reference": [
+            0.0012477534215232444,
+            0.036672747675116996
+          ],
+          "round_robin": [
+            -0.009839687040782159,
+            0.8971164368010623
+          ],
+          "top_sensitivity": [
+            0.02328783443158062,
+            0.237392460680426
+          ],
+          "top_volatility": [
+            -0.04445427270195549,
+            0.2949181168295383
+          ],
+          "top_weighted_volatility": [
+            -0.03995141339548164,
+            0.2906369134862008
+          ]
+        },
+        "endpoint_moves_ci": [
+          -0.037992696816207636,
+          0.40678678344293306
+        ],
+        "fixed": "top_sensitivity",
+        "headroom_ci": [
+          0.7941415475912567,
+          0.9762338835925616
+        ],
+        "num_resamples": 10000,
+        "paired_area_difference_ci": {
+          "oracle_fidelity - top_sensitivity": [
+            -0.20938826951545123,
+            -0.02108485105142835
+          ],
+          "recent_change - top_sensitivity": [
+            -0.040098968082227765,
+            0.15987164275599428
+          ],
+          "recent_change_weighted - recent_change": [
+            -0.05723742776416704,
+            0.0837381389199602
+          ],
+          "recent_change_weighted - top_sensitivity": [
+            -0.0443404323923924,
+            0.16698424313621849
+          ],
+          "top_weighted_volatility - top_sensitivity": [
+            -0.11509763589227388,
+            0.14438899028607127
+          ],
+          "top_weighted_volatility - top_volatility": [
+            -0.046145833261497474,
+            0.053959362220050704
+          ]
+        },
+        "retained_ci": {
+          "recent_change": [
+            -0.9469741804432015,
+            1.3455801240348997
+          ],
+          "recent_change_weighted": [
+            -1.1272247166105436,
+            1.508317666544707
+          ]
+        },
+        "seed": 0
+      },
+      "budgets": [
+        0,
+        1,
+        2,
+        4,
+        8,
+        12,
+        16,
+        24,
+        38
+      ],
+      "endpoint_moves": {
+        "mean": 0.14627029332021754,
+        "per_machine": {
+          "machine-1-2": 0.2667899367950128,
+          "machine-1-6": 0.03694730102280818,
+          "machine-2-2": 0.598447492089661,
+          "machine-2-6": -0.11252944914163725,
+          "machine-3-1": -0.05360499828492009,
+          "machine-3-5": 0.05418623255286455,
+          "machine-3-9": 0.23365553820773363
+        }
+      },
+      "fidelity_areas": {
+        "oracle_fidelity": 0.0694308153809078,
+        "recent_change": 0.6010665838733231,
+        "recent_change_weighted": 0.6036380049520671,
+        "reference": 0.0694308153809078,
+        "round_robin": 1.375921874401781,
+        "top_sensitivity": 0.4155152154589402,
+        "top_volatility": 0.6467824335550347,
+        "top_weighted_volatility": 0.5788897149410397
+      },
+      "fixed": "top_sensitivity",
+      "horizon": 5,
+      "length": 30,
+      "machines": {
+        "machine-1-2": {
+          "windows": 787
+        },
+        "machine-1-6": {
+          "windows": 787
+        },
+        "machine-2-2": {
+          "windows": 788
+        },
+        "machine-2-6": {
+          "windows": 956
+        },
+        "machine-3-1": {
+          "windows": 954
+        },
+        "machine-3-5": {
+          "windows": 787
+        },
+        "machine-3-9": {
+          "windows": 955
+        }
+      },
+      "min_endpoint": 0.05,
+      "min_headroom": 0.15,
+      "per_machine_headroom": {
+        "machine-1-2": 0.9640031508367348,
+        "machine-1-6": 0.7886813342125649,
+        "machine-2-2": 0.795871428298359,
+        "machine-2-6": 1.3594682718563067,
+        "machine-3-1": 0.8473313676242409,
+        "machine-3-5": 0.7498623730340316,
+        "machine-3-9": 0.8839087260487025
+      },
+      "relative_headroom": 0.8755026973938875,
+      "retained": {
+        "recent_change": -0.32814011548153704,
+        "recent_change_weighted": -0.4103146525772008
+      }
+    },
+    "h5_L60": {
+      "G0_passes": true,
+      "G0_robust": false,
+      "G1_passes": true,
+      "G1_robust": true,
+      "G1_vacuous": false,
+      "areas": {
+        "oracle_fidelity": 0.023842080224185793,
+        "recent_change": 0.22959987193411205,
+        "recent_change_weighted": 0.20622952441608006,
+        "reference": 0.023842080224185793,
+        "round_robin": 0.5741308718856853,
+        "top_sensitivity": 0.1692655572341053,
+        "top_volatility": 0.19081779703530918,
+        "top_weighted_volatility": 0.1900420742889874
+      },
+      "bootstrap": {
+        "areas_ci": {
+          "oracle_fidelity": [
+            0.007241660696456273,
+            0.05084396690521942
+          ],
+          "recent_change": [
+            -0.03361592284535174,
+            0.6901885627978585
+          ],
+          "recent_change_weighted": [
+            -0.023169452759565248,
+            0.5309276575043914
+          ],
+          "reference": [
+            0.007241660696456273,
+            0.05084396690521942
+          ],
+          "round_robin": [
+            0.03210241554825882,
+            1.5489800921461394
+          ],
+          "top_sensitivity": [
+            0.043904607663121376,
+            0.34405947458997305
+          ],
+          "top_volatility": [
+            -0.032423393784316565,
+            0.5911412995571704
+          ],
+          "top_weighted_volatility": [
+            -0.029915270754134898,
+            0.5505196032620245
+          ]
+        },
+        "endpoint_moves_ci": [
+          0.023270912496611597,
+          0.7432557267275453
+        ],
+        "fixed": "top_weighted_volatility",
+        "headroom_ci": [
+          0.29459533285331063,
+          1.3469672337895617
+        ],
+        "num_resamples": 10000,
+        "paired_area_difference_ci": {
+          "oracle_fidelity - top_weighted_volatility": [
+            -0.5149303731637228,
+            0.042370217465775864
+          ],
+          "recent_change - top_weighted_volatility": [
+            -0.37146410398996077,
+            0.39395258811940853
+          ],
+          "recent_change_weighted - recent_change": [
+            -0.20181304669785008,
+            0.06331709626764943
+          ],
+          "recent_change_weighted - top_sensitivity": [
+            -0.09036267439435831,
+            0.223215356299112
+          ],
+          "recent_change_weighted - top_weighted_volatility": [
+            -0.3458369787060586,
+            0.2563985931761128
+          ],
+          "top_weighted_volatility - top_sensitivity": [
+            -0.12448943395046091,
+            0.3398253340785235
+          ],
+          "top_weighted_volatility - top_volatility": [
+            -0.06844944598603195,
+            0.09301813625334962
+          ]
+        },
+        "retained_ci": {
+          "recent_change": [
+            -5.544151336889502,
+            1.2770762353771163
+          ],
+          "recent_change_weighted": [
+            -5.036758535283883,
+            1.1802663621038305
+          ]
+        },
+        "seed": 0
+      },
+      "budgets": [
+        0,
+        1,
+        2,
+        4,
+        8,
+        12,
+        16,
+        24,
+        38
+      ],
+      "endpoint_moves": {
+        "mean": 0.2982998938833345,
+        "per_machine": {
+          "machine-1-2": 0.5057005300814059,
+          "machine-1-6": 0.08407959509879717,
+          "machine-2-2": 0.7461009810095587,
+          "machine-2-6": 0.16121471784871075,
+          "machine-3-1": -0.17438278783136127,
+          "machine-3-5": 0.0993734085400818,
+          "machine-3-9": 0.6660128124361487
+        }
+      },
+      "fidelity_areas": {
+        "oracle_fidelity": 0.06828379231613053,
+        "recent_change": 0.6507939932359929,
+        "recent_change_weighted": 0.5611889674523017,
+        "reference": 0.06828379231613053,
+        "round_robin": 1.389293051615432,
+        "top_sensitivity": 0.37976899088381794,
+        "top_volatility": 0.6385703277054574,
+        "top_weighted_volatility": 0.5867019901454195
+      },
+      "fixed": "top_weighted_volatility",
+      "horizon": 5,
+      "length": 60,
+      "machines": {
+        "machine-1-2": {
+          "windows": 392
+        },
+        "machine-1-6": {
+          "windows": 392
+        },
+        "machine-2-2": {
+          "windows": 393
+        },
+        "machine-2-6": {
+          "windows": 477
+        },
+        "machine-3-1": {
+          "windows": 476
+        },
+        "machine-3-5": {
+          "windows": 392
+        },
+        "machine-3-9": {
+          "windows": 476
+        }
+      },
+      "min_endpoint": 0.05,
+      "min_headroom": 0.15,
+      "per_machine_headroom": {
+        "machine-1-2": 0.9555733220092606,
+        "machine-1-6": 0.7345731118911456,
+        "machine-2-2": 0.7787919804636637,
+        "machine-2-6": 0.8376252595878321,
+        "machine-3-1": NaN,
+        "machine-3-5": 0.8009490089327772,
+        "machine-3-9": 0.957550479932028
+      },
+      "relative_headroom": 0.8745431488611815,
+      "retained": {
+        "recent_change": -0.23801323139458727,
+        "recent_change_weighted": -0.09739741699858999
+      }
+    }
+  },
+  "validation_machines": [
+    "machine-1-2",
+    "machine-1-6",
+    "machine-2-2",
+    "machine-2-6",
+    "machine-3-1",
+    "machine-3-5",
+    "machine-3-9"
+  ],
+  "wall_clock_seconds": {
+    "h15_L60": 9.4,
+    "h1_L60": 13.2,
+    "h5_L120": 13.6,
+    "h5_L30": 10.9,
+    "h5_L60": 11.9
+  }
+}

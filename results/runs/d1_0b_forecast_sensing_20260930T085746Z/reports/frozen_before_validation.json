@@ -1,0 +1,27 @@
+{
+  "G0_tuning_primary": true,
+  "best_fixed": {
+    "h15_L60": "top_weighted_volatility",
+    "h1_L60": "top_weighted_volatility",
+    "h5_L120": "top_weighted_volatility",
+    "h5_L30": "top_sensitivity",
+    "h5_L60": "top_weighted_volatility"
+  },
+  "config_sha256": "d3fd72720addd367e9dd9b2ac717211d45d92b9c3634be0dfcabc326cc50d82f",
+  "forecaster": {
+    "floor": 0.05,
+    "primary_horizon": 5,
+    "ridge": 1.0
+  },
+  "rules": {
+    "G-VOI": "descriptive: paired area differences",
+    "G0": "endpoint-moves statistic r >= 0.05 (point estimate); robust if the 95 % interval lower bound is too",
+    "G1": "relative headroom of the oracle over the best fixed allocation >= 0.15; vacuous if G0 fails",
+    "G2": "descriptive: retained fractions",
+    "G3": "correctness on real tuning windows"
+  },
+  "sha256": "23d6b37d3d579be85079662048f022bb29bcea56d7f07c33985dbe38757e0696",
+  "stage_b_run": true,
+  "tuning_manifest_sha256": "8692ee22edaaf86278bb8acb6d59b9a900918e5fabf0b652367f54a9a2569a46",
+  "written_utc": "2026-09-30T08:58:07.823635+00:00"
+}

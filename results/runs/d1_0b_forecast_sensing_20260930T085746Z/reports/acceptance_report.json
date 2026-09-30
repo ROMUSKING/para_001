@@ -1,0 +1,282 @@
+{
+  "G0_tuning_primary": true,
+  "best_fixed": {
+    "h15_L60": "top_weighted_volatility",
+    "h1_L60": "top_weighted_volatility",
+    "h5_L120": "top_weighted_volatility",
+    "h5_L30": "top_sensitivity",
+    "h5_L60": "top_weighted_volatility"
+  },
+  "by_setting": {
+    "h15_L60": {
+      "G0_passes": true,
+      "G0_robust": false,
+      "G1_passes": true,
+      "G1_robust": true,
+      "G1_vacuous": false,
+      "endpoint_ci": [
+        -0.02758879402572172,
+        0.5503075486048016
+      ],
+      "endpoint_moves": 0.20302666110097503,
+      "fixed": "top_weighted_volatility",
+      "headroom_ci": [
+        0.7496133716789862,
+        1.0617465229240155
+      ],
+      "relative_headroom": 0.9399046499051568
+    },
+    "h1_L60": {
+      "G0_passes": true,
+      "G0_robust": false,
+      "G1_passes": true,
+      "G1_robust": true,
+      "G1_vacuous": false,
+      "endpoint_ci": [
+        -0.05107415854655813,
+        1.4195167853980049
+      ],
+      "endpoint_moves": 0.42528627856223483,
+      "fixed": "top_weighted_volatility",
+      "headroom_ci": [
+        0.47739833357593847,
+        1.2537801343617432
+      ],
+      "relative_headroom": 0.8957623661666972
+    },
+    "h5_L120": {
+      "G0_passes": true,
+      "G0_robust": true,
+      "G1_passes": true,
+      "G1_robust": false,
+      "G1_vacuous": false,
+      "endpoint_ci": [
+        0.06906841708770622,
+        0.7646740297944262
+      ],
+      "endpoint_moves": 0.3222080513550004,
+      "fixed": "top_weighted_volatility",
+      "headroom_ci": [
+        -1.426897868339489,
+        2.9818260009004667
+      ],
+      "relative_headroom": 0.5844502893605699
+    },
+    "h5_L30": {
+      "G0_passes": true,
+      "G0_robust": false,
+      "G1_passes": true,
+      "G1_robust": true,
+      "G1_vacuous": false,
+      "endpoint_ci": [
+        -0.037992696816207636,
+        0.40678678344293306
+      ],
+      "endpoint_moves": 0.14627029332021754,
+      "fixed": "top_sensitivity",
+      "headroom_ci": [
+        0.7941415475912567,
+        0.9762338835925616
+      ],
+      "relative_headroom": 0.8755026973938875
+    },
+    "h5_L60": {
+      "G0_passes": true,
+      "G0_robust": false,
+      "G1_passes": true,
+      "G1_robust": true,
+      "G1_vacuous": false,
+      "endpoint_ci": [
+        0.023270912496611597,
+        0.7432557267275453
+      ],
+      "endpoint_moves": 0.2982998938833345,
+      "fixed": "top_weighted_volatility",
+      "headroom_ci": [
+        0.29459533285331063,
+        1.3469672337895617
+      ],
+      "relative_headroom": 0.8745431488611815
+    }
+  },
+  "claim_boundary": "Exploratory Rung-0 study on SMD machines with non-learned policies and a frozen linear forecaster. The oracle is a privileged greedy selection that sees the window states but not the forecast targets. No learned critic and no co-state are involved, so no H2 statement follows. Policy computation is not charged.",
+  "config_hash": "d3fd72720addd367e9dd9b2ac717211d45d92b9c3634be0dfcabc326cc50d82f",
+  "correctness": {
+    "budget_38_is_full_observation_for_every_policy": true,
+    "deployable_policies_ignore_the_window_after_the_snapshot": true,
+    "fetch_refuses_a_test_machine": true,
+    "fidelity_incremental_update_matches_direct": true,
+    "fidelity_incremental_update_max_abs_difference": {
+      "backward": 7.105427357601002e-15,
+      "forward": 7.105427357601002e-15
+    },
+    "fidelity_is_zero_at_full_observation": true,
+    "forecaster_reproduces_the_ridge_solution": true,
+    "machine_used": "machine-1-1",
+    "native_loss_at_full_observation_equals_a_direct_computation": true,
+    "passed": true,
+    "split_is_a_partition": true
+  },
+  "forecaster": {
+    "floor": 0.05,
+    "primary_horizon": 5,
+    "ridge": 1.0
+  },
+  "frozen_sha256": "23d6b37d3d579be85079662048f022bb29bcea56d7f07c33985dbe38757e0696",
+  "milestone": "D1-0b (exploratory Rung-0 redesign)",
+  "repo_commit": "2b3bb994530527667b52a02a402b1ca6d4e6b157",
+  "run_id": "d1_0b_forecast_sensing_20260930T085746Z",
+  "stage_a": {
+    "h15_L60": {
+      "best_fixed": "top_weighted_volatility",
+      "endpoint_moves_mean": 0.22722576395674007,
+      "endpoint_moves_per_machine": {
+        "machine-1-1": -0.15246337070975688,
+        "machine-1-5": 0.42115312047859654,
+        "machine-2-1": 0.25888666035283636,
+        "machine-2-5": 0.34006145953202777,
+        "machine-2-9": 0.39364599971246894,
+        "machine-3-4": 0.008208447313317404,
+        "machine-3-8": 0.32108803101769046
+      },
+      "fixed_areas": {
+        "round_robin": 0.36766513686487645,
+        "top_sensitivity": 0.17096069149438645,
+        "top_volatility": 0.22442261381583498,
+        "top_weighted_volatility": 0.1601827187907492
+      },
+      "windows": {
+        "machine-1-1": 472,
+        "machine-1-5": 393,
+        "machine-2-1": 392,
+        "machine-2-5": 392,
+        "machine-2-9": 476,
+        "machine-3-4": 392,
+        "machine-3-8": 476
+      }
+    },
+    "h1_L60": {
+      "best_fixed": "top_weighted_volatility",
+      "endpoint_moves_mean": 1.0178499045483764,
+      "endpoint_moves_per_machine": {
+        "machine-1-1": 0.3451792818349786,
+        "machine-1-5": 0.52421687904979,
+        "machine-2-1": 0.781444774051618,
+        "machine-2-5": 2.7404837827494255,
+        "machine-2-9": 1.5043499936547153,
+        "machine-3-4": 0.03944296151724971,
+        "machine-3-8": 1.1898316589808575
+      },
+      "fixed_areas": {
+        "round_robin": 1.3371429959968422,
+        "top_sensitivity": 0.6749586744290331,
+        "top_volatility": 0.9878195816235651,
+        "top_weighted_volatility": 0.5591340932950447
+      },
+      "windows": {
+        "machine-1-1": 472,
+        "machine-1-5": 393,
+        "machine-2-1": 392,
+        "machine-2-5": 392,
+        "machine-2-9": 476,
+        "machine-3-4": 392,
+        "machine-3-8": 476
+      }
+    },
+    "h5_L120": {
+      "best_fixed": "top_weighted_volatility",
+      "endpoint_moves_mean": 1.0268604125129066,
+      "endpoint_moves_per_machine": {
+        "machine-1-1": 1.0676463605404982,
+        "machine-1-5": 0.9984153256418067,
+        "machine-2-1": 0.5837313078847105,
+        "machine-2-5": 1.919836031682858,
+        "machine-2-9": 1.4159285233959769,
+        "machine-3-4": 0.0658257334606713,
+        "machine-3-8": 1.136639604983824
+      },
+      "fixed_areas": {
+        "round_robin": 0.9861174030295065,
+        "top_sensitivity": 0.475927271439578,
+        "top_volatility": 0.5100223259516389,
+        "top_weighted_volatility": 0.4264048759048299
+      },
+      "windows": {
+        "machine-1-1": 235,
+        "machine-1-5": 195,
+        "machine-2-1": 195,
+        "machine-2-5": 195,
+        "machine-2-9": 237,
+        "machine-3-4": 195,
+        "machine-3-8": 237
+      }
+    },
+    "h5_L30": {
+      "best_fixed": "top_sensitivity",
+      "endpoint_moves_mean": 0.30319410771091465,
+      "endpoint_moves_per_machine": {
+        "machine-1-1": 0.4188531936704862,
+        "machine-1-5": 0.498914444467066,
+        "machine-2-1": 0.2603583423705847,
+        "machine-2-5": 0.4128396817328676,
+        "machine-2-9": 0.2580681325554118,
+        "machine-3-4": 0.006090496240554974,
+        "machine-3-8": 0.2672344629394314
+      },
+      "fixed_areas": {
+        "round_robin": 0.39830811466189103,
+        "top_sensitivity": 0.19059519069114547,
+        "top_volatility": 0.2896278099465727,
+        "top_weighted_volatility": 0.22164349940686115
+      },
+      "windows": {
+        "machine-1-1": 947,
+        "machine-1-5": 788,
+        "machine-2-1": 787,
+        "machine-2-5": 787,
+        "machine-2-9": 955,
+        "machine-3-4": 787,
+        "machine-3-8": 954
+      }
+    },
+    "h5_L60": {
+      "best_fixed": "top_weighted_volatility",
+      "endpoint_moves_mean": 0.5217870731480823,
+      "endpoint_moves_per_machine": {
+        "machine-1-1": 0.2601403893734686,
+        "machine-1-5": 0.6619423102517291,
+        "machine-2-1": 0.2725250901061133,
+        "machine-2-5": 1.2697276020759283,
+        "machine-2-9": 0.6227411921213216,
+        "machine-3-4": 0.013439416865844062,
+        "machine-3-8": 0.5519935112421711
+      },
+      "fixed_areas": {
+        "round_robin": 0.557374254070212,
+        "top_sensitivity": 0.26868158677222176,
+        "top_volatility": 0.34932279685054574,
+        "top_weighted_volatility": 0.2650357015909597
+      },
+      "windows": {
+        "machine-1-1": 472,
+        "machine-1-5": 393,
+        "machine-2-1": 392,
+        "machine-2-5": 392,
+        "machine-2-9": 476,
+        "machine-3-4": 392,
+        "machine-3-8": 476
+      }
+    }
+  },
+  "stage_b_run": true,
+  "test_machines_downloaded": false,
+  "validation_machines": [
+    "machine-1-2",
+    "machine-1-6",
+    "machine-2-2",
+    "machine-2-6",
+    "machine-3-1",
+    "machine-3-5",
+    "machine-3-9"
+  ]
+}

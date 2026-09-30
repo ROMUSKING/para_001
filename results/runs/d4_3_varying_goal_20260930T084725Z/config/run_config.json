@@ -1,0 +1,135 @@
+{
+  "cells": {
+    "amp1": {
+      "amplitude_scale": 1.0,
+      "m": 32,
+      "max_depth": 9,
+      "name": "amp1",
+      "pulse_width": [
+        0.001,
+        0.004
+      ]
+    },
+    "base": {
+      "amplitude_scale": 10.0,
+      "m": 32,
+      "max_depth": 9,
+      "name": "base",
+      "pulse_width": [
+        0.001,
+        0.004
+      ]
+    },
+    "depth11": {
+      "amplitude_scale": 10.0,
+      "m": 32,
+      "max_depth": 11,
+      "name": "depth11",
+      "pulse_width": [
+        0.001,
+        0.004
+      ]
+    },
+    "depth7": {
+      "amplitude_scale": 10.0,
+      "m": 32,
+      "max_depth": 7,
+      "name": "depth7",
+      "pulse_width": [
+        0.001,
+        0.004
+      ]
+    },
+    "m4": {
+      "amplitude_scale": 10.0,
+      "m": 4,
+      "max_depth": 9,
+      "name": "m4",
+      "pulse_width": [
+        0.001,
+        0.004
+      ]
+    },
+    "m64": {
+      "amplitude_scale": 10.0,
+      "m": 64,
+      "max_depth": 9,
+      "name": "m64",
+      "pulse_width": [
+        0.001,
+        0.004
+      ]
+    },
+    "wide": {
+      "amplitude_scale": 10.0,
+      "m": 32,
+      "max_depth": 9,
+      "name": "wide",
+      "pulse_width": [
+        0.01,
+        0.04
+      ]
+    }
+  },
+  "config": {
+    "bootstrap_resamples": 10000,
+    "cap_in_finest_grids": 2.0,
+    "cells": [
+      "base",
+      "m4",
+      "m64",
+      "wide",
+      "amp1",
+      "depth7",
+      "depth11"
+    ],
+    "cheap_arms": [
+      "cheap",
+      "cheap_adjoint"
+    ],
+    "decision_scales": [
+      1.0,
+      0.0
+    ],
+    "gap_fractions": [
+      0.1,
+      0.03,
+      0.01
+    ],
+    "max_passes": 40,
+    "methods": [
+      "loglog",
+      "semilog",
+      "staircase"
+    ],
+    "primary_method": "loglog",
+    "step_doubling_arms": [
+      "residual",
+      "goal_local",
+      "adjoint"
+    ],
+    "thetas": [
+      0.5,
+      0.7,
+      0.85,
+      0.95,
+      0.98,
+      0.995
+    ],
+    "tuning_instances": 10,
+    "validation_instances": 20
+  },
+  "config_sha256": "cfe1545d2bdf65f16326dc9bcebad9458828b260724fd1283c41591e38a75457",
+  "family_seeds": {
+    "train": 4004,
+    "tuning": 3003,
+    "validation": 1001
+  },
+  "goal_stream_offset": 10000,
+  "notebook": "notebooks/04-domains/d4_3_varying_goal.ipynb",
+  "plan": "docs/plans/d4-3-plan.md",
+  "repo_commit": "35c2daa98a98a5fe0d2d44c73bc43ad8f3aba45d",
+  "repo_dirty": false,
+  "run_id": "d4_3_varying_goal_20260930T084725Z",
+  "test_family_read": false
+}

@@ -1,0 +1,101 @@
+{
+  "config_sha256": "cfe1545d2bdf65f16326dc9bcebad9458828b260724fd1283c41591e38a75457",
+  "pairs": [
+    [
+      "cheap",
+      "uniform_pass"
+    ],
+    [
+      "cheap_adjoint",
+      "uniform_pass"
+    ],
+    [
+      "cheap_adjoint_setup",
+      "uniform_pass"
+    ],
+    [
+      "adjoint",
+      "uniform_pass"
+    ],
+    [
+      "residual",
+      "uniform_pass"
+    ],
+    [
+      "goal_local",
+      "uniform_pass"
+    ],
+    [
+      "cheap_adjoint",
+      "cheap"
+    ],
+    [
+      "cheap_adjoint_setup",
+      "cheap"
+    ],
+    [
+      "goal_local",
+      "residual"
+    ],
+    [
+      "adjoint",
+      "residual"
+    ],
+    [
+      "adjoint_free",
+      "uniform_pass"
+    ],
+    [
+      "adjoint_free",
+      "cheap_adjoint"
+    ]
+  ],
+  "primary_method": "loglog",
+  "rules": {
+    "R3v": "cheap_adjoint beats cheap at two adjacent targets (primary method log-log)",
+    "R4v": "cheap_adjoint beats uniform_pass at two adjacent targets",
+    "beats": "CI of mean log compute ratio below 0",
+    "candidate_for_d4_1": "R3v and R4v",
+    "cheap_adjoint_setup": "reported, not gated"
+  },
+  "selected_theta": {
+    "amp1/adjoint": 0.995,
+    "amp1/cheap": 0.995,
+    "amp1/cheap_adjoint": 0.95,
+    "amp1/goal_local": 0.995,
+    "amp1/residual": 0.995,
+    "base/adjoint": 0.95,
+    "base/cheap": 0.85,
+    "base/cheap_adjoint": 0.85,
+    "base/goal_local": 0.95,
+    "base/residual": 0.85,
+    "depth11/adjoint": 0.95,
+    "depth11/cheap": 0.85,
+    "depth11/cheap_adjoint": 0.85,
+    "depth11/goal_local": 0.95,
+    "depth11/residual": 0.85,
+    "depth7/adjoint": 0.95,
+    "depth7/cheap": 0.85,
+    "depth7/cheap_adjoint": 0.85,
+    "depth7/goal_local": 0.95,
+    "depth7/residual": 0.85,
+    "m4/adjoint": 0.95,
+    "m4/cheap": 0.85,
+    "m4/cheap_adjoint": 0.95,
+    "m4/goal_local": 0.95,
+    "m4/residual": 0.85,
+    "m64/adjoint": 0.98,
+    "m64/cheap": 0.7,
+    "m64/cheap_adjoint": 0.95,
+    "m64/goal_local": 0.95,
+    "m64/residual": 0.85,
+    "wide/adjoint": 0.995,
+    "wide/cheap": 0.995,
+    "wide/cheap_adjoint": 0.995,
+    "wide/goal_local": 0.995,
+    "wide/residual": 0.995
+  },
+  "sha256": "6a66d322ba40964a60b48115566203bbdd93d510fa1e3ce74c377a4f4b2af2fa",
+  "tuning_manifest_sha256": "6c6bbfa2b2a9b288a3a494eae36a9572c32a7b29d0f71815038058b44e403b71",
+  "written_utc": "2026-09-30T08:53:33.266204+00:00"
+}
