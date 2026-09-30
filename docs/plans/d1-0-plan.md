@@ -29,8 +29,8 @@
 
 - **Machines.** 28 machines in three groups: `machine-1-1 … 1-8`, `machine-2-1 … 2-9`, `machine-3-1 … 3-11`, in that order, indexed `0 … 27`. **Split by machine, before windowing:** index mod 4 = 0 → **tuning** (7 machines); = 1 → **validation** (7); = 2 or 3 → **test** (14 machines, never downloaded or read).
 - **Streams.** Each machine has a training stream (normal behaviour), a test stream and per-minute labels for the test stream. The detector is fitted on the training stream only. Windows are taken from the test stream. Labels are used only for the secondary endpoint.
-- **Standardisation.** `z = (x − μ) / max(σ, 0.01)` with `μ, σ` from the machine's training stream (the floor guards constant channels).
-- **Detector.** Mahalanobis score `s(z) = zᵀ P z`, `P = ((1 − λ) Σ + λ diag Σ + 10⁻⁶ I)⁻¹`, `Σ` the covariance of `z` on the training stream, **`λ = 0.1`**. Alarm threshold `τ` = the 0.995 quantile of `s` on the training stream. Neither `λ` nor the quantile is tuned.
+- **Standardisation.** `z = (x − μ) / max(σ, f)` with `μ, σ` from the machine's training stream and a floor `f` that guards near-constant channels. **`f` is chosen on the tuning machines** (§3, detector).
+- **Detector.** Mahalanobis score `s(z) = zᵀ P z`, `P = ((1 − λ) Σ + λ diag Σ + ρ I)⁻¹`, `Σ` the covariance of `z` on the training stream, **`λ = 0.1`**. Alarm threshold `τ` = the 0.995 quantile of `s` on the training stream. `λ` and the quantile are fixed. **The floor `f ∈ {0.01, 0.05}` and the ridge `ρ ∈ {10⁻⁶, 10⁻², 10⁻¹}` are chosen on the seven tuning machines** as the pair with the highest mean per-machine F1 of the fully observed detector against the test labels at `τ` (labels are used here on tuning machines only; validation labels are read only for the secondary endpoint). The choice is frozen before any validation machine is downloaded.
 - **Windows.** Length **`L = 60`** minutes, non-overlapping, tiled from the start of the test stream; a final partial window is dropped; **windows 0 and 1 are dropped** (their policies would lack two previous snapshots). Window `w` starts at `t0 = wL`. The snapshot `z_{t0}` observes all 38 channels.
 - **Sensing.** An unopened channel is held at its snapshot value for the rest of the window; an opened channel is observed at every minute. The loss covers `t = t0 + 1 … t0 + L − 1`. Targets are in the future of the decision (comprehensive plan rule 5), and windows are independent given the data.
 - **Budgets.** `k ∈ {0, 1, 2, 4, 8, 12, 16, 24, 38}` channels opened per window. `k = 38` observes everything (`J = 0`); `k = 0` is hold only.
@@ -78,7 +78,7 @@ Each deployable policy ranks the 38 channels from P0 information and opens the t
 - `scripts/fetch_smd.py` downloads only tuning and validation machines to `~/adjointrwm_data/smd/`, writes `manifest.json` (URL, size, SHA-256, retrieval time per file), and refuses test machines.
 - `src/adjointrwm/domains/sensor.py` and `tests/test_sensor.py`: the loader, detector, windows, policies, oracle and gate.
 - `notebooks/04-domains/d1_0_sensor_opportunity.ipynb` (CPU): manifest, G3 checks, tuning machines (best fixed), then validation, then the report. Run directory `results/runs/d1_0_sensor_opportunity_<UTC>/`, imported with a README; research note `docs/research-notes/2026-09-30-d1-0-sensor-opportunity.md`.
-- The tuning machines are used for one choice only (the best fixed family). Nothing else is tuned.
+- The tuning machines are used for two choices only: the detector's `(f, ρ)` and the best fixed family. Nothing else is tuned.
 
 ## 9. Risks and limits
 
@@ -92,5 +92,7 @@ Each deployable policy ranks the 38 channels from P0 information and opens the t
 ## 10. Changes after this plan was written
 
 - **2026-09-30, before any code:** the file format was checked on one **tuning** machine (`machine-1-1`): a comma-separated file of 38 columns, 28,479 rows in each of the training and test streams, and 9.5 % of its test minutes labelled anomalous, in segments of 400 to 700 minutes plus a few short ones. No validation machine had been downloaded. The interpretation labels are not used by any policy or measure, so they are not fetched by the run.
+
+- **2026-09-30, before any code, still before any validation machine was downloaded:** with the originally written detector (`f = 0.01`, `ρ = 10⁻⁶`) the same tuning machine gave a covariance condition number of 1.4 × 10⁷ (8 of its 38 channels have zero training variance), and the detector alarmed on 35.5 % of the minutes that carry no anomaly label in that machine's test stream. A near-degenerate channel then dominates the score, which would turn the allocation problem into "watch the constant channels". The floor and the ridge are therefore chosen on the tuning machines from the small grid above, by the detector's own F1. The numbers came from a quick probe of that one machine (`f, ρ` = 0.01, 10⁻⁶; 0.01, 10⁻²; 0.01, 10⁻¹; 0.05, 10⁻⁶; 0.05, 10⁻²; 0.05, 10⁻¹ gave alarm rates on normal minutes of 35.5, 30.0, 12.5, 35.5, 6.0 and 4.4 %); the grid is not narrowed by them, and the run recomputes the choice on all seven tuning machines.
 
 Each later change will be dated here, and any change made after a validation machine was read will be marked as such.
