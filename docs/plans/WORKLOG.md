@@ -21,6 +21,15 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 
 ---
 
+## 2026-09-30 18:10 (BST) · Claude Code (web) · Colab worker
+
+- **Changed:** on Roman's request ("terminate on no job or idle run") the worker now also kills a running job that shows no sign of life (no new file in its run directories and GPU utilisation under 5 %) for 20 minutes, records it as `stalled`, and exits; with the immediate exit on an empty inbox (earlier today) both conditions end the worker and, through the notebook, release the runtime. `colab_jobs.ActivityWatch`, `gpu_utilization`, `kill_kernel`, `run_job_notebook(stall_seconds)`, `run_worker(max_stall_seconds)`, `--max-stall-minutes`, `MAX_STALL_MINUTES`; handoff §5; CHANGELOG (s).
+- **Verified:** `pytest tests/test_colab_jobs.py` 71 passed three times in a row, including a real ipykernel that is killed about 4 s after it last wrote a file (status `stalled`, `first.txt` kept, `never.txt` not written, executed-notebook output kept). Not verified: the watch on Colab itself (real `nvidia-smi` sampling, Drive FUSE scan time, runtime release after a stall).
+- **Open:** the 20-minute default is a choice, not a measurement; no pilot stage has been timed for its longest quiet stretch. `b2-probe-seed0-r3` is still in the inbox; nothing has started it.
+- **Next:** Roman restarts the worker from the branch notebook; read `results/b2-probe-seed0-r3` when the worker exits.
+
+---
+
 ## 2026-09-30 17:45 (BST) · Claude Code (web) · Colab worker, B2 probe
 
 - **Changed:** `colab_jobs.run_worker` reports progress while a job runs (log line and `worker_status.json` every 2 minutes: elapsed time and the newest file under the job's new run directories), `--progress-minutes` in `scripts/colab_worker.py`, a *Progress* paragraph in `colab_worker.ipynb`, handoff §5, CHANGELOG (r).

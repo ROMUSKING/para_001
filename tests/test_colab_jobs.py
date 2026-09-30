@@ -392,7 +392,7 @@ def test_format_duration_and_newest_run_activity(tmp_path):
     os.utime(newer, (1060.0, 1060.0))
     (runs / "old_run" / "y.txt").write_text("not counted: the run existed before the job")
     activity = cj.newest_run_activity(runs, before, now=lambda: 1100.0)
-    assert activity == {"run_id": "new_run", "file": "dynamics/latest.pt", "age_seconds": 40.0, "files": 2}
+    assert activity == {"run_id": "new_run", "file": "dynamics/latest.pt", "age_seconds": 40.0, "files": 2, "mtime": 1060.0}
     assert cj.newest_run_activity(runs, before, now=lambda: 900.0)["age_seconds"] == 0.0         # a clock that is behind a file is clamped, not negative
     assert cj.newest_run_activity(tmp_path / "nope", set()) is None
 
@@ -444,6 +444,108 @@ def test_progress_reporting_is_off_when_the_interval_is_zero_and_the_cli_exposes
     assert cj.DEFAULT_PROGRESS_SECONDS == 120.0 and inspect.signature(cj.run_worker).parameters["progress_seconds"].default == 120.0
     helped = subprocess.run([sys.executable, str(ROOT / "scripts/colab_worker.py"), "--help"], capture_output=True, text=True)
     assert helped.returncode == 0 and "--progress-minutes" in helped.stdout
+
+
+def test_activity_watch_counts_new_files_and_gpu_load_as_life_and_nothing_else():
+    watch = cj.ActivityWatch(0.0, 600.0)
+    assert not watch.stalled(600.0) and watch.stalled(600.1) and watch.idle_seconds(700.0) == 700.0
+    watch.observe(300.0, newest_mtime=250.0)                                        # a first file counts
+    assert watch.last_active == 300.0
+    watch.observe(400.0, newest_mtime=250.0)                                        # the same file again does not
+    watch.observe(410.0, newest_mtime=200.0)                                        # an older one does not
+    assert watch.last_active == 300.0 and not watch.stalled(900.0) and watch.stalled(900.1)
+    watch.observe(500.0, gpu_percent=cj.GPU_ACTIVE_PERCENT - 0.1)                   # an idle GPU does not
+    watch.observe(510.0, gpu_percent=None)                                          # no nvidia-smi does not
+    assert watch.last_active == 300.0
+    watch.observe(520.0, gpu_percent=cj.GPU_ACTIVE_PERCENT)
+    assert watch.last_active == 520.0
+    watch.observe(530.0, newest_mtime=260.0)                                        # a newer file does
+    assert watch.last_active == 530.0
+    off = cj.ActivityWatch(0.0, 0)
+    assert not off.stalled(10**9)
+
+
+def test_gpu_utilization_takes_the_busiest_gpu_and_is_none_without_nvidia_smi(monkeypatch):
+    class Done:
+        def __init__(self, out, code=0):
+            self.stdout, self.returncode = out, code
+
+    monkeypatch.setattr(cj.subprocess, "run", lambda *a, **k: Done("3\n87\n"))
+    assert cj.gpu_utilization() == 87.0
+    monkeypatch.setattr(cj.subprocess, "run", lambda *a, **k: Done("", 9))
+    assert cj.gpu_utilization() is None
+
+    def missing(*a, **k):
+        raise FileNotFoundError("nvidia-smi")
+
+    monkeypatch.setattr(cj.subprocess, "run", missing)
+    assert cj.gpu_utilization() is None
+
+
+def tiny_origin(tmp_path, body):
+    origin = tmp_path / "origin"
+    (origin / "notebooks" / "05-ops").mkdir(parents=True)
+    allow = {"version": 1, "max_timeout_hours": 1, "notebooks": {TINY: {"gpu": [], "default_hours": 0.05, "max_hours": 0.1, "overrides": {}}}}
+    (origin / cj.ALLOWLIST_RELPATH).write_text(json.dumps(allow))
+    nbformat.write(new_notebook(cells=[new_code_cell(body)]), origin / TINY)
+    sh(origin, "git", "init", "-q", "-b", "main")
+    sh(origin, "git", "add", "-A")
+    sh(origin, "git", "-c", "user.name=t", "-c", "user.email=t@t", "commit", "-q", "-m", "init")
+    return origin, sh(origin, "git", "rev-parse", "HEAD"), allow
+
+
+def test_an_idle_job_is_killed_and_reported_as_stalled_with_its_partial_output_kept(tmp_path, monkeypatch):
+    pytest.importorskip("nbclient")
+    pytest.importorskip("ipykernel")
+    import time
+
+    body = ("import os, time\nfrom pathlib import Path\nrun = Path(os.environ['TINY_RUNS']) / 'quiet_run'\nrun.mkdir(parents=True)\n"
+            "(run / 'first.txt').write_text('started')\nprint('started', flush=True)\ntime.sleep(300)\n(run / 'never.txt').write_text('late')")
+    origin, commit, allow = tiny_origin(tmp_path, body)
+    runs = tmp_path / "runs"
+    runs.mkdir()
+    monkeypatch.setenv("TINY_RUNS", str(runs))
+    spec = cj.make_job(TINY, commit, allow, job_id="quiet-job", timeout_hours=0.05)
+    results = tmp_path / "results"
+    began = time.monotonic()
+    outcome = cj.run_job_notebook(spec, allow["notebooks"][TINY], results, repo_dir=tmp_path / "work", repo_url=str(origin), runs_root=runs,
+                                  stall_seconds=4, sample_seconds=0.2, scan_seconds=0.2, gpu_fn=lambda: None)
+    assert outcome.status == "stalled" and "no new file" in outcome.reason and "GPU" in outcome.reason
+    assert time.monotonic() - began < 120                                              # far below the 300 s the notebook would have slept
+    assert (runs / "quiet_run" / "first.txt").exists() and not (runs / "quiet_run" / "never.txt").exists()
+    assert [r["run_id"] for r in outcome.runs] == ["quiet_run"] and not outcome.runs[0]["complete"]
+    executed = nbformat.read(results / "executed_notebook.ipynb", 4)
+    assert any("started" in o.get("text", "") for c in executed.cells for o in c.get("outputs", []))
+
+
+def test_the_worker_stops_after_a_stalled_job_and_leaves_the_rest_of_the_inbox(tmp_path):
+    q, clock, kw = worker(tmp_path)
+    put(q, "01.json", job(job_id="quiet"))
+    put(q, "02.json", job(job_id="later"))
+    calls = []
+
+    def stalls(spec, entry, results):
+        calls.append(spec["job_id"])
+        results.mkdir(parents=True, exist_ok=True)
+        return cj.RunOutcome("stalled", "no sign of life", [], None)
+
+    results = cj.run_worker(q, tmp_path / "repo", "url", tmp_path / "runs", runner=stalls, **kw)
+    assert calls == ["quiet"] and [r["status"] for r in results] == ["stalled"]
+    assert [p.name for p in q.pending()] == ["02.json"]
+    assert json.loads((q.root / "worker_status.json").read_text())["state"] == "stopped"
+    assert json.loads((q.results_dir("quiet") / "result.json").read_text())["status"] == "stalled"
+
+
+def test_stall_watch_is_on_by_default_and_the_cli_and_notebook_expose_it():
+    import inspect
+
+    assert cj.DEFAULT_STALL_MINUTES == 20.0 and inspect.signature(cj.run_worker).parameters["max_stall_seconds"].default == 1200.0
+    assert inspect.signature(cj.run_job_notebook).parameters["stall_seconds"].default == 0.0          # direct callers opt in
+    helped = subprocess.run([sys.executable, str(ROOT / "scripts/colab_worker.py"), "--help"], capture_output=True, text=True)
+    assert helped.returncode == 0 and "--max-stall-minutes" in helped.stdout
+    nb = json.loads((ROOT / "notebooks/05-ops/colab_worker.ipynb").read_text())
+    code = "\n".join("".join(c["source"]) for c in nb["cells"] if c["cell_type"] == "code")
+    assert "MAX_STALL_MINUTES = 20" in code and "--max-stall-minutes" in code
 
 
 def test_worker_once_stops_when_the_inbox_is_empty_and_honours_a_stop_file(tmp_path):
