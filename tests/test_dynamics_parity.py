@@ -125,3 +125,52 @@ def test_the_mask_mode_does_not_change_the_parameters_so_a_pilot_v1_checkpoint_l
     batch = tiny_batch()
     with torch.no_grad():
         assert torch.equal(single.predict(batch)["state_mean"], subset.predict(batch)["state_mean"])      # same parameters, same prediction mode, same output
+
+
+# ---- a pilot v1 checkpoint must load into the src model and predict identically --------------------------------------------------------------
+# The pilot's weights were saved from the model class defined inside notebooks/01-production/AdjointRWM_Production_Pilot.ipynb. The diagnostic loads them into
+# adjointrwm.models.AdjointRecursiveWorldModel with strict=True, and the repository's own test only compares parameter counts. Here the notebook's class is
+# extracted from the committed notebook, built with random weights, and compared with the src model (random fixtures, not data).
+
+def pilot_model_class():
+    import json
+    import re
+    from pathlib import Path
+    from types import SimpleNamespace
+
+    import torch.nn as nn
+
+    notebook = json.loads((Path(__file__).resolve().parents[1] / "notebooks/01-production/AdjointRWM_Production_Pilot.ipynb").read_text())
+    source = next("".join(cell["source"]) for cell in notebook["cells"] if cell["cell_type"] == "code" and "class AdjointRecursiveWorldModel(nn.Module):" in "".join(cell["source"]))
+    start = source.index("class MLP(nn.Module):")
+    end = source.index("state_dim = DATA_MANIFEST['state_dim']")
+    namespace = {"torch": torch, "nn": nn}
+    exec(compile(source[start:end], "<pilot notebook: model definition>", "exec"), namespace)   # noqa: S102 - the repository's own committed notebook
+    assert re.search(r"class AdjointRecursiveWorldModel", source[start:end])
+    return namespace["AdjointRecursiveWorldModel"], SimpleNamespace
+
+
+def test_the_pilot_notebook_model_and_the_src_model_have_the_same_parameters_and_the_same_predictions():
+    Pilot, Namespace = pilot_model_class()
+    config = Namespace(d_model=32, horizon=3, num_refinement_candidates=4, context_len=4, transformer_heads=2, transformer_ff=64, transformer_layers=1, dropout=0.1,
+                       candidate_costs=(1.0, 1.0, 1.5, 2.0))
+    torch.manual_seed(7)
+    pilot = Pilot(3, 2, 6, config).eval()
+    ours = tiny_model(prediction_mode="base")
+    assert list(pilot.state_dict()) == list(ours.state_dict())                                  # same parameter names, same order
+    assert [tuple(v.shape) for v in pilot.state_dict().values()] == [tuple(v.shape) for v in ours.state_dict().values()]
+    ours.load_state_dict(pilot.state_dict(), strict=True)                                        # exactly what the diagnostic does with the real checkpoint
+    batch = tiny_batch()
+    with torch.no_grad():
+        latent = pilot.encode_context(batch["context_visual"], batch["context_state"], batch["context_action"])
+        effects = pilot.candidate_effects(latent)
+        expected = {"base": pilot.rollout(latent, batch["future_actions"]), "full": pilot.rollout(latent + effects.sum(dim=1), batch["future_actions"])}
+        import dataclasses
+
+        for mode in ("base", "full"):
+            ours.config = dataclasses.replace(ours.config, prediction_mode=mode)
+            got = ours.predict(batch)
+            for key in ("state_mean", "state_logvar", "visual"):
+                assert torch.allclose(got[key], expected[mode][key], atol=1e-6, rtol=1e-5), (mode, key)
+    with torch.no_grad():
+        assert not torch.allclose(expected["base"]["state_mean"], expected["full"]["state_mean"])   # the two modes are distinguishable, so the comparison above is not vacuous
