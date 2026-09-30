@@ -2,7 +2,7 @@
 
 ## 2026-09-30 (k): D4-2 run imported; D4-1 stays closed
 
-- **Run `results/runs/d4_2_flop_scoring_20260929T233556Z/` imported** (24 files, about 1.6 MB, with README). Research note `docs/research-notes/2026-09-30-d4-2-flop-priced-scoring.md`. Frozen rules: R1 holds in 3 of 7 cells, R3 in 1, none has both, so **no D4-1 candidate cell**; a non-learned cheap estimator does at least as well as the learned scorer in every cell. Validation only; the test family was never generated. A clean-checkout re-execution was still running at commit time; its comparison will be added to the run folder as `reproduction.md`.
+- **Run `results/runs/d4_2_flop_scoring_20260929T233556Z/` imported** (24 files, about 1.6 MB, with README). Research note `docs/research-notes/2026-09-30-d4-2-flop-priced-scoring.md`. Frozen rules: R1 holds in 3 of 7 cells, R3 in 1, none has both, so **no D4-1 candidate cell**; a non-learned cheap estimator does at least as well as the learned scorer in every cell. Validation only; the test family was never generated. A clean-checkout re-execution at the same commit gave byte-identical scorers, tuning and validation files (`reproduction.md` in the run folder).
 - **`scripts/d4_2_tables.py`** prints every table in the note from the run files and re-applies R1 and R3 under each interpolation method (asserts the primary method equals the run's report).
 - **Docs:** roadmap, cross-domain plan, README and notebooks README updated; D4-3 (varying goal, non-learned pair) proposed and waiting for Roman; plan §12 records the killed first launch.
 - **Tests:** 178 (was 177).

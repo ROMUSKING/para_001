@@ -261,7 +261,7 @@ The wall-clock figures in §5 are in `tests/correctness.json` under `wall_clock_
 - At those prices, adaptive refinement with a cheap non-learned estimator needs less compute than uniform refinement in the narrow-pulse cells at the tighter targets, and does not in the `wide` and `amp1` cells (§3.3).
 - A small learned scorer adds nothing over the cheap estimator in any cell of this family, and costs thousands of instances to repay its training (§3.3, §3.4, §3.6).
 - The co-state weight helps the cheap estimator in `m` = 64 only, by about 10 %, and not in the cells where the learned scorer pays (§3.5).
-- The frozen rules yield no D4-1 candidate cell. **Whether the run reproduces from a clean checkout is not yet established:** a re-execution from a clean `git worktree` was still running when this note was committed; its file-by-file comparison will be added to the run folder as `reproduction.md` (run README, Reproducibility).
+- The frozen rules yield no D4-1 candidate cell. The run reproduces from a clean checkout on the same machine: every scorer file, the tuning and validation tables and the manifest are byte-identical between two executions at the same commit, and the other files differ only in run id, a timestamp or a timing ([`reproduction.md`](../../results/runs/d4_2_flop_scoring_20260929T233556Z/reproduction.md); one repetition, same machine and thread count).
 
 **Does not support:**
 
