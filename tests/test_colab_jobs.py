@@ -419,7 +419,7 @@ def test_progress_ticker_ticks_while_the_block_runs_survives_a_failing_tick_and_
 
 def test_a_running_job_reports_elapsed_time_and_its_newest_file_to_the_log_and_worker_status(tmp_path):
     lines = []
-    q, clock, kw = worker(tmp_path, once=True, log=lines.append, progress_seconds=0.02)
+    q, clock, kw = worker(tmp_path, once=True, log=lines.append, progress_seconds=0.02, gpu_util_fn=lambda: 42.0)
     put(q, "01.json", job(job_id="slow-job"))
     runs, seen = tmp_path / "runs", {}
 
@@ -435,6 +435,8 @@ def test_a_running_job_reports_elapsed_time_and_its_newest_file_to_the_log_and_w
     progress = [line for line in lines if "still running" in line]
     assert progress and "01.json: still running" in progress[0] and "newest file run_a/dynamics/latest.pt written" in progress[0]
     assert seen["state"] == "running 01.json" and seen["newest_run_activity"]["file"] == "dynamics/latest.pt" and "job_elapsed_seconds" in seen
+    assert "GPU 42 %" in progress[0] and "no cell started yet" in progress[0]                      # a fake runner starts no cell
+    assert seen["gpu_utilization_percent"] == 42.0 and seen["current_cell"] is None
     assert [r["status"] for r in results] == ["ok"] and json.loads((q.root / "worker_status.json").read_text())["state"] == "stopped"
     assert "newest_run_activity" not in json.loads((q.root / "worker_status.json").read_text())
 
@@ -488,7 +490,8 @@ def tiny_origin(tmp_path, body):
     (origin / "notebooks" / "05-ops").mkdir(parents=True)
     allow = {"version": 1, "max_timeout_hours": 1, "notebooks": {TINY: {"gpu": [], "default_hours": 0.05, "max_hours": 0.1, "overrides": {}}}}
     (origin / cj.ALLOWLIST_RELPATH).write_text(json.dumps(allow))
-    nbformat.write(new_notebook(cells=[new_code_cell(body)]), origin / TINY)
+    bodies = [body] if isinstance(body, str) else list(body)
+    nbformat.write(new_notebook(cells=[new_code_cell(b) for b in bodies]), origin / TINY)
     sh(origin, "git", "init", "-q", "-b", "main")
     sh(origin, "git", "add", "-A")
     sh(origin, "git", "-c", "user.name=t", "-c", "user.email=t@t", "commit", "-q", "-m", "init")
@@ -547,6 +550,144 @@ def test_the_script_ignores_the_legacy_idle_hours_flag_so_an_old_notebook_cannot
     assert json.loads((drive / "jobs" / "worker_status.json").read_text())["settings"]["max_idle_seconds"] == 0.0
 
 
+def test_cell_title_skips_rules_and_shortens():
+    assert cj.cell_title("# ====\n# 4. Stage 1 per seed\n# ====\nx = 1") == "4. Stage 1 per seed"
+    assert cj.cell_title("\n\nimport os") == "import os"
+    assert cj.cell_title("# ===\n# ---\n") == "(empty cell)" and cj.cell_title("") == "(empty cell)"
+    shortened = cj.cell_title("x" * 100)
+    assert len(shortened) == 72 and shortened.endswith("…")
+
+
+def test_job_tracker_logs_cells_and_describes_the_current_one():
+    clock, lines = Clock(), []
+    tracker = cj.JobTracker("j.json", lines.append, clock)
+    assert tracker.snapshot() is None and tracker.describe() == "no cell started yet"
+    tracker.cell_start(4, 9, "# ====\n# 4. Stage 1")
+    clock.now += 376
+    assert tracker.snapshot() == {"cell": 5, "of": 9, "title": "4. Stage 1", "seconds": 376}
+    assert tracker.describe() == "cell 5/9 (4. Stage 1) for 6m16s"
+    tracker.cell_end(4, True)
+    tracker.cell_end(4, False)
+    assert lines == ["j.json: cell 5/9 started: 4. Stage 1", "j.json: cell 5/9 finished after 6m16s", "j.json: cell 5/9 FAILED after 6m16s"]
+
+
+def test_the_tracker_follows_the_cells_of_a_real_job_and_a_failing_cell_is_logged_once(tmp_path):
+    pytest.importorskip("nbclient")
+    pytest.importorskip("ipykernel")
+    bodies = ["# ====\n# one: fine\nprint('ok')", "# ====\n# two: fails\nraise ValueError('boom')", "print('never runs')"]
+    origin, commit, allow = tiny_origin(tmp_path, bodies)
+    runs = tmp_path / "runs"
+    runs.mkdir()
+    lines = []
+    tracker = cj.JobTracker("j", lines.append)
+    outcome = cj.run_job_notebook(cj.make_job(TINY, commit, allow, job_id="cells-job", timeout_hours=0.05), allow["notebooks"][TINY], tmp_path / "results",
+                                  repo_dir=tmp_path / "work", repo_url=str(origin), runs_root=runs, tracker=tracker)
+    assert outcome.status == "failed" and "boom" in outcome.reason
+    starts = [line for line in lines if " started: " in line]
+    assert [line.split(" started: ")[0] for line in starts] == ["j: cell 1/4", "j: cell 2/4", "j: cell 3/4"] and "one: fine" in starts[1] and "two: fails" in starts[2]
+    assert any(line.startswith("j: cell 2/4 finished after") for line in lines) and any(line.startswith("j: cell 3/4 FAILED after") for line in lines)
+    assert not any(line.startswith("j: cell 3/4 finished") for line in lines) and not any("cell 4/4" in line for line in lines)
+    assert tracker.snapshot()["cell"] == 3                                               # the failing cell is the one the job stopped in
+
+
+def test_the_worker_says_why_it_exited(tmp_path):
+    def exit_of(name, jobs=(), runner=None, **changes):
+        lines = []
+        q, clock, kw = worker(tmp_path / name, log=lines.append, **changes)
+        for i, spec in enumerate(jobs):
+            put(q, f"{i}.json", spec)
+        cj.run_worker(q, tmp_path / "repo", "url", tmp_path / "runs", runner=runner or outcome_runner([]), **kw)
+        status = json.loads((q.root / "worker_status.json").read_text())
+        assert status["state"] == "stopped" and f"exiting: {status['exit_reason']}" in lines
+        return status["exit_reason"]
+
+    assert exit_of("a", max_idle_seconds=0) == "the inbox is empty"
+    assert exit_of("b", max_idle_seconds=120) == "the inbox has been empty for more than 2 min"
+    assert exit_of("c", once=True) == "once: the inbox is empty"
+    assert exit_of("d", jobs=[job(job_id="too-long", timeout_hours=0.2)], max_session_seconds=60) == "the next job would exceed the session budget"
+
+    def stalls(spec, entry, results):
+        results.mkdir(parents=True, exist_ok=True)
+        return cj.RunOutcome("stalled", "idle", [], None)
+
+    def interrupted(spec, entry, results):
+        results.mkdir(parents=True, exist_ok=True)
+        return cj.RunOutcome("interrupted", "signal", [], None)
+
+    assert exit_of("e", jobs=[job(job_id="quiet-one")], runner=stalls) == "job stalled"
+    assert exit_of("f", jobs=[job(job_id="cut-short")], runner=interrupted) == "job interrupted"
+    q, clock, kw = worker(tmp_path / "g")
+    (q.root / "STOP").write_text("")
+    cj.run_worker(q, tmp_path / "repo", "url", tmp_path / "runs", runner=outcome_runner([]), **kw)
+    assert json.loads((q.root / "worker_status.json").read_text())["exit_reason"] == "STOP file found"
+
+
+linux_only = pytest.mark.skipif(not sys.platform.startswith("linux"), reason="uses /proc and POSIX signals")
+
+
+def start_worker_process(tmp_path, *extra, env=None):
+    drive = tmp_path / "drive"
+    command = [sys.executable, str(ROOT / "scripts/colab_worker.py"), "--drive-root", str(drive), "--repo-dir", str(tmp_path / "work"),
+               "--repo-url", str(tmp_path / "origin"), *extra]
+    return drive, subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, env=env or os.environ.copy())
+
+
+@linux_only
+def test_sigterm_to_an_idle_worker_stops_it_cleanly_and_records_why(tmp_path):
+    import signal
+
+    drive, process = start_worker_process(tmp_path, "--max-idle-minutes", "10", "--poll-seconds", "30")
+    status_path = drive / "jobs" / "worker_status.json"
+
+    def idle():
+        try:
+            return json.loads(status_path.read_text()).get("state") == "idle"
+        except (OSError, ValueError):
+            return False
+
+    try:
+        assert wait_until(idle, 60)
+        process.send_signal(signal.SIGTERM)
+        out, _ = process.communicate(timeout=30)
+    finally:
+        if process.poll() is None:
+            process.kill()
+    assert process.returncode == 0 and "exiting: terminated by SIGTERM" in out
+    status = json.loads(status_path.read_text())
+    assert status["state"] == "stopped" and status["exit_reason"] == "terminated by SIGTERM"
+
+
+@linux_only
+def test_sigterm_during_a_job_shuts_its_kernel_down_records_it_and_does_not_start_the_next_job(tmp_path):
+    import signal
+
+    pytest.importorskip("nbclient")
+    pytest.importorskip("ipykernel")
+    body = ("import os, time\nfrom pathlib import Path\nrun = Path(os.environ['TINY_RUNS']) / 'sleepy'\nrun.mkdir(parents=True)\n"
+            "(run / 'started.txt').write_text(str(os.getpid()))\ntime.sleep(600)")
+    origin, commit, allow = tiny_origin(tmp_path, body)
+    inbox = tmp_path / "drive" / "jobs" / "inbox"
+    inbox.mkdir(parents=True)
+    (inbox / "1-sleep.json").write_text(json.dumps(cj.make_job(TINY, commit, allow, job_id="sleepy-1", timeout_hours=0.05)))
+    (inbox / "2-next.json").write_text(json.dumps(cj.make_job(TINY, commit, allow, job_id="never-started", timeout_hours=0.05)))
+    drive, process = start_worker_process(tmp_path, "--max-stall-minutes", "0", env=dict(os.environ, TINY_RUNS=str(tmp_path / "drive" / "runs")))
+    started = drive / "runs" / "sleepy" / "started.txt"
+    try:
+        assert wait_until(lambda: started.exists() and started.read_text().strip().isdigit(), 120)
+        kernel_pid = int(started.read_text())
+        process.send_signal(signal.SIGTERM)
+        out, _ = process.communicate(timeout=60)
+    finally:
+        if process.poll() is None:
+            process.kill()
+    result = json.loads((drive / "jobs" / "results" / "sleepy-1" / "result.json").read_text())
+    assert result["status"] == "interrupted" and "SIGTERM" in result["reason"]
+    assert "exiting: job interrupted" in out
+    assert (inbox / "2-next.json").exists() and not (drive / "jobs" / "results" / "never-started").exists()      # the next job was not started
+    assert wait_until(lambda: not Path(f"/proc/{kernel_pid}").exists(), 15)                                       # the kernel is gone
+    assert json.loads((drive / "jobs" / "worker_status.json").read_text())["exit_reason"] == "job interrupted"
+
+
 def test_stall_watch_is_on_by_default_and_the_cli_and_notebook_expose_it():
     import inspect
 
@@ -557,6 +698,8 @@ def test_stall_watch_is_on_by_default_and_the_cli_and_notebook_expose_it():
     nb = json.loads((ROOT / "notebooks/05-ops/colab_worker.ipynb").read_text())
     code = "\n".join("".join(c["source"]) for c in nb["cells"] if c["cell_type"] == "code")
     assert "MAX_STALL_MINUTES = 20" in code and "--max-stall-minutes" in code
+    assert "process.kill()" in code and code.index("finally:") < code.index("runtime.unassign()")           # the release runs after any way out except a manual interrupt
+    assert "handle_signals=True" in (ROOT / "scripts/colab_worker.py").read_text()
 
 
 def test_worker_once_stops_when_the_inbox_is_empty_and_honours_a_stop_file(tmp_path):

@@ -21,6 +21,16 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 
 ---
 
+## 2026-09-30 20:10 (BST) · Claude Code (web) · Colab worker
+
+- **Changed:** on Roman's request (log the running job so a long job is not mistaken for a hung one; terminate properly when no job is running) `colab_jobs`: `JobTracker`, per-cell log lines, cell and GPU in the progress line and status, `exit_reason`, signal handling (`WorkerStopped`, `arm_stop_handlers`, `signalled`), `process_job` records `interrupted`; `colab_worker.py` passes `handle_signals=True`; the worker notebook's interrupt and release path; handoff §5; CHANGELOG (v).
+- **Found:** a real termination bug. With a job running, SIGTERM to the worker process only made nbclient shut the kernel down (job `failed`, `AssertionError`), and the worker then started the next queued job; 40 s after the signal it was still running (local test with the real script, real kernel, a second job queued; scripts in the scratchpad, not committed). This may matter for the earlier unexplained polling and for what the notebook's Interrupt did, but no link is shown.
+- **Verified:** 78 tests pass, 8 full runs in a row; the two real-process signal tests fail when the fix is removed (`signalled()` forced false: job `failed` not `interrupted`; `handle_signals` dropped: exit code −15 and no `exiting:` line). A local run through the real script printed the new lines (cell start and finish, progress with cell and elapsed time, `exiting: the inbox is empty`).
+- **Not verified:** any of this on Colab; `GPU n/a` was all a local run could show, so the Colab `GPU` percentage is untested.
+- **Open:** unchanged (B2 decisions in the audit; nothing queued). The new worker behaviour is on the branch, not `main`.
+
+---
+
 ## 2026-09-30 19:10 (BST) · Claude Code (web) · Colab worker (correction)
 
 - **Correction:** the 18:30 entry and handoff §5 said or implied the worker kept polling after the failed job because the Colab notebook was an old copy. That was an inference and it is **not supported**: the notebook Roman uploaded (`colab_worker.ipynb`) equals the repository copy in all three cells, the metadata and the cell IDs, and it has never been executed; with its arguments the worker exits within seconds of a failed job when run locally (real `scripts/colab_worker.py`, local origin repo, a notebook that raises; exit code 0 after 4.9 s, status `stopped`; script kept at `scratchpad/repro_worker_after_failed_job.py`, not committed). Which notebook copy the 16:53 session ran is unknown. Handoff §5 and CHANGELOG (t) reworded.

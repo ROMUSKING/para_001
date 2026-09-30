@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-09-30 (v): the worker logs the running job and terminates properly
+
+- **Running-job log:** `JobTracker` (nbclient cell hooks) logs each cell's start, finish and failure; the progress line now names the running cell and its elapsed time and shows GPU utilisation (`gpu_utilization`, `run_worker(gpu_util_fn=…)`); `worker_status.json` gains `current_cell` and `gpu_utilization_percent`.
+- **Exit reason:** the worker logs `exiting: <reason>` and records `exit_reason` in `worker_status.json` for every way it can end.
+- **Bug fixed, found by a local test:** nbclient replaces the worker's SIGINT/SIGTERM handlers while a notebook runs and only shuts the kernel down, so SIGTERM mid-job failed the job and the worker carried on to the next queued job (still running 40 s after the signal). `run_worker(handle_signals=True)` (set by `scripts/colab_worker.py`) arms `WorkerStopped` handlers and re-arms them after every job; a signal during a job is recorded as `interrupted` (detected through nbclient's own cleanup future) and the worker exits without starting the next job; a signal while idle writes `stopped` and exits.
+- **`notebooks/05-ops/colab_worker.ipynb`:** the interrupt path waits 90 s then kills the worker; the release (`drive.flush_and_unmount()` then `runtime.unassign()`) now runs in the `finally` block after any exit except a manual interrupt, and still happens if the Drive flush raises.
+- **Tests:** 6 new tests in `tests/test_colab_jobs.py` (78 in the file): cell titles, the tracker, a real job whose failing cell is logged once, the exit reasons, and two real-process tests (SIGTERM while idle, SIGTERM during a job: kernel gone, result `interrupted`, next job untouched). Both process tests were checked to fail when the fix is removed (mutation), and the file passed 8 full runs in a row.
+- **Not verified:** the worker on Colab itself (the `GPU` percentage, the release after a stalled or interrupted job, how Colab's Interrupt button reaches the worker).
+
 ## 2026-09-30 (u): the worker prints and records the limits it runs with
 
 - **Why:** after the failed B2 probe job the worker kept polling for about 20 minutes (status `idle`, last poll 17:22:58 UTC) although the current notebook passes `--max-idle-minutes 0`. The notebook Roman uploaded afterwards is identical to `notebooks/05-ops/colab_worker.ipynb` (cells, metadata, cell IDs; never executed), and run locally with its arguments against a failing job the worker exits in about 5 seconds. I had attributed the polling to an old notebook copy; that is **not shown**, and is withdrawn as a stated cause. The cause is open.
