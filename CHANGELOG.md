@@ -1,9 +1,14 @@
 # Changelog
 
+## 2026-09-30 (u): the worker prints and records the limits it runs with
+
+- **Why:** after the failed B2 probe job the worker kept polling for about 20 minutes (status `idle`, last poll 17:22:58 UTC) although the current notebook passes `--max-idle-minutes 0`. The notebook Roman uploaded afterwards is identical to `notebooks/05-ops/colab_worker.ipynb` (cells, metadata, cell IDs; never executed), and run locally with its arguments against a failing job the worker exits in about 5 seconds. I had attributed the polling to an old notebook copy; that is **not shown**, and is withdrawn as a stated cause. The cause is open.
+- **`scripts/colab_worker.py`:** prints `limits: idle … | stall … | progress … | session budget …` at start. **`adjointrwm.colab_jobs.run_worker`:** `worker_status.json` carries a `settings` object (`max_idle_seconds`, `max_stall_seconds`, `progress_seconds`, `poll_seconds`, `once`). Tests: two existing tests extended (72 in the file).
+
 ## 2026-09-30 (t): the one-seed B2 probe ran; seed 0 failed the dynamics gate
 
 - **Result (audit `docs/audits/2026-09-30_b2_probe_seed0_dynamics_gate_audit.md`):** job `b2-probe-seed0-r3` (pilot v2, seed 0, L4, run `droid100_adjoint_v2_20260930T165409Z`): the dynamics gate on validation **failed** (model RMSE 0.2125, persistence 0.1886, −12.7 % against a required +2 %). Allocator training is blocked for a failed seed by design, so there are no traces and no H2 evidence. The run then crashed at `pd.concat(TRACES)` in the notebook's report path (empty list): incomplete, no `acceptance_report.json`. The values were read from Drive through the connector, not imported byte for byte.
-- **`scripts/colab_worker.py`:** `--max-idle-hours` is ignored with a printed warning (an old copy of the worker notebook passes it; honouring it kept the worker polling for hours after the job). 1 new test (72 in `tests/test_colab_jobs.py`).
+- **`scripts/colab_worker.py`:** `--max-idle-hours` is ignored with a printed warning (an old copy of the worker notebook passes it; honouring it would keep a worker polling for hours). Whether that is why the worker kept polling on 2026-09-30 is not established (see (u)). 1 new test (72 in `tests/test_colab_jobs.py`).
 - **Docs:** README and roadmap status rows for B2; audits README.
 - **Not changed:** the pilot v2 notebook. Its failed-gate report path needs a decision (new notebook version) first; see the audit.
 

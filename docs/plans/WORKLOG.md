@@ -21,6 +21,14 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 
 ---
 
+## 2026-09-30 19:10 (BST) · Claude Code (web) · Colab worker (correction)
+
+- **Correction:** the 18:30 entry and handoff §5 said or implied the worker kept polling after the failed job because the Colab notebook was an old copy. That was an inference and it is **not supported**: the notebook Roman uploaded (`colab_worker.ipynb`) equals the repository copy in all three cells, the metadata and the cell IDs, and it has never been executed; with its arguments the worker exits within seconds of a failed job when run locally (real `scripts/colab_worker.py`, local origin repo, a notebook that raises; exit code 0 after 4.9 s, status `stopped`; script kept at `scratchpad/repro_worker_after_failed_job.py`, not committed). Which notebook copy the 16:53 session ran is unknown. Handoff §5 and CHANGELOG (t) reworded.
+- **Changed:** `colab_worker.py` prints its effective limits at start and `worker_status.json` records them under `settings`, so the next live status shows what the worker uses (CHANGELOG (u)).
+- **Open:** the cause of the 20-minute polling after job `b2-probe-seed0-r3`. Candidates: an older notebook copy passing `--max-idle-hours` in that session (consistent with the earlier stale cell pasted before the r3 job), or a Colab-specific behaviour not reproduced locally. The next real session will show which, through the `limits:` line and `settings`.
+
+---
+
 ## 2026-09-30 18:30 (BST) · Claude Code (web) · B2 probe, Colab worker
 
 - **Changed:** audit `docs/audits/2026-09-30_b2_probe_seed0_dynamics_gate_audit.md` (and its row in the audits README); B2 status rows in README and roadmap; handoff §5 (first real probe result, stale worker notebook); `scripts/colab_worker.py` ignores `--max-idle-hours` with a warning (1 new test, 72 in the file); CHANGELOG (t).

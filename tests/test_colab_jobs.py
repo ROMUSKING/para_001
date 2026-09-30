@@ -330,6 +330,7 @@ def test_worker_processes_jobs_in_order_then_idles_out_and_reports_stopped(tmp_p
     assert calls == ["first", "second"] and [r["status"] for r in results] == ["ok", "ok"]
     status = json.loads((q.root / "worker_status.json").read_text())
     assert status["state"] == "stopped" and status["jobs_done"] == 2 and status["worker_commit"] == "w" * 40 and clock.now >= 100
+    assert status["settings"] == {"max_idle_seconds": 100, "max_stall_seconds": 1200.0, "progress_seconds": 120.0, "poll_seconds": 10, "once": False}   # the limits the worker actually runs with
 
 
 def test_idle_limit_helper_prefers_minutes_then_hours_then_the_immediate_exit_default():
@@ -542,6 +543,8 @@ def test_the_script_ignores_the_legacy_idle_hours_flag_so_an_old_notebook_cannot
                            "--max-idle-hours", "6"], capture_output=True, text=True, timeout=120)
     assert done.returncode == 0, done.stderr
     assert "--max-idle-hours 6 is ignored" in done.stdout and "idle limit is 0 min" in done.stdout and "0 job(s) handled" in done.stdout
+    assert "limits: idle 0 min (0: exit as soon as the inbox is empty) | stall 20 min (0: off) | progress every 2 min | session budget 10 h" in done.stdout
+    assert json.loads((drive / "jobs" / "worker_status.json").read_text())["settings"]["max_idle_seconds"] == 0.0
 
 
 def test_stall_watch_is_on_by_default_and_the_cli_and_notebook_expose_it():

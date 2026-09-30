@@ -44,8 +44,11 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true", help="validate waiting jobs and report what would run; run nothing")
     args = parser.parse_args()
     if args.max_idle_hours is not None:
-        print(f"warning: --max-idle-hours {args.max_idle_hours:g} is ignored (it comes from an old copy of the worker notebook; open the current one from GitHub). "
+        print(f"warning: --max-idle-hours {args.max_idle_hours:g} is ignored (an old worker notebook passes it; open the current one from GitHub). "
               f"The idle limit is {args.max_idle_minutes if args.max_idle_minutes is not None else cj.DEFAULT_IDLE_MINUTES:g} min.", flush=True)
+    idle_minutes = args.max_idle_minutes if args.max_idle_minutes is not None else cj.DEFAULT_IDLE_MINUTES
+    print(f"limits: idle {idle_minutes:g} min (0: exit as soon as the inbox is empty) | stall {args.max_stall_minutes:g} min (0: off) | "
+          f"progress every {args.progress_minutes:g} min | session budget {args.max_session_hours:g} h", flush=True)
     here = Path(__file__).resolve().parents[1]
     try:
         commit = subprocess.run(["git", "-C", str(here), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip() or None

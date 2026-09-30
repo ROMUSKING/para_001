@@ -666,11 +666,12 @@ def run_worker(queue: JobQueue, repo_dir: Path, repo_url: str, runs_root: Path, 
     results: list[dict] = []
 
     beat_lock = threading.Lock()            # the progress thread and the loop both write worker_status.json
+    settings = {"max_idle_seconds": max_idle_seconds, "max_stall_seconds": max_stall_seconds, "progress_seconds": progress_seconds, "poll_seconds": poll_seconds, "once": once}
 
     def beat(state: str, **extra) -> None:
         with beat_lock:
             queue.heartbeat({**info, "state": state, "started_utc": started_utc, "last_poll_utc": utcnow(), "jobs_done": len(results), "dry_run": dry_run,
-                             "session_budget_hours": max_session_seconds / 3600, **extra})
+                             "session_budget_hours": max_session_seconds / 3600, "settings": settings, **extra})
 
     while True:
         if queue.stop_requested():
