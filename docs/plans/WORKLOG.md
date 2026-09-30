@@ -21,6 +21,15 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 
 ---
 
+## 2026-09-30 17:45 (BST) · Claude Code (web) · Colab worker, B2 probe
+
+- **Changed:** `colab_jobs.run_worker` reports progress while a job runs (log line and `worker_status.json` every 2 minutes: elapsed time and the newest file under the job's new run directories), `--progress-minutes` in `scripts/colab_worker.py`, a *Progress* paragraph in `colab_worker.ipynb`, handoff §5, CHANGELOG (r).
+- **Verified:** `ops-smoke-006` (Drive `jobs/results/ops-smoke-006`, run `ops_smoke_20260930T162307Z`, L4): `tfds has load` False before the pinned install, True after (`tensorflow-metadata` 1.21.0 to 1.17.3); `tensorflow_datasets.public_api` imports. `b2-probe-seed0-r2` then read the data, wrote the cache and logged dynamics training for seed 0 to step 500 (last `validation_rmse` 0.2246) before a `KeyboardInterrupt` at 16:28:01 UTC (`result.json`: status `failed`). `pytest tests/test_colab_jobs.py`: 66 passed.
+- **Open:** the interrupted job produced no gate or result; its partial run directory (`droid100_adjoint_v2_20260930T162339Z`) is not evidence and was not resumed. Whether the interrupt was manual is inferred, not known.
+- **Next:** resubmit the one-seed B2 probe as a new job, pinned to a pushed commit, after the worker is restarted with the progress line.
+
+---
+
 ## 2026-09-30 17:30 (BST) · Claude Code (web) · D4-1, Colab worker
 
 - **Changed:** `reproduction.md` added to `results/runs/d4_1_learned_critics_20260930T122312Z/`; the Colab worker now exits when the inbox has been empty for 5 minutes and its notebook flushes Drive and releases the runtime (`colab_jobs.idle_limit_seconds`, `scripts/colab_worker.py --max-idle-minutes`, `WORKER_REF`; 3 new tests; CHANGELOG (q), handoff §5).

@@ -365,6 +365,87 @@ def test_worker_notebook_and_script_agree_on_the_idle_exit_and_release_the_runti
     assert helped.returncode == 0 and "--max-idle-minutes" in helped.stdout
 
 
+def wait_until(condition, seconds=5.0):
+    import time
+
+    end = time.monotonic() + seconds
+    while time.monotonic() < end:
+        if condition():
+            return True
+        time.sleep(0.01)
+    return condition()
+
+
+def test_format_duration_and_newest_run_activity(tmp_path):
+    assert cj.format_duration(0) == "0m00s" and cj.format_duration(75) == "1m15s" and cj.format_duration(3725) == "1h02m05s" and cj.format_duration(-3) == "0m00s"
+    runs = tmp_path / "runs"
+    (runs / "old_run").mkdir(parents=True)
+    (runs / "old_run" / "x.txt").write_text("x")
+    before = cj.list_runs(runs)
+    assert cj.newest_run_activity(runs, before) is None                       # no new run directory yet
+    (runs / "new_run" / "dynamics").mkdir(parents=True)
+    (runs / "new_run" / "empty_dir").mkdir()
+    older, newer = runs / "new_run" / "a.json", runs / "new_run" / "dynamics" / "latest.pt"
+    older.write_text("{}")
+    newer.write_text("w")
+    os.utime(older, (1000.0, 1000.0))
+    os.utime(newer, (1060.0, 1060.0))
+    (runs / "old_run" / "y.txt").write_text("not counted: the run existed before the job")
+    activity = cj.newest_run_activity(runs, before, now=lambda: 1100.0)
+    assert activity == {"run_id": "new_run", "file": "dynamics/latest.pt", "age_seconds": 40.0, "files": 2}
+    assert cj.newest_run_activity(runs, before, now=lambda: 900.0)["age_seconds"] == 0.0         # a clock that is behind a file is clamped, not negative
+    assert cj.newest_run_activity(tmp_path / "nope", set()) is None
+
+
+def test_progress_ticker_ticks_while_the_block_runs_survives_a_failing_tick_and_stops_at_exit():
+    ticks, errors = [], []
+
+    def tick():
+        ticks.append(1)
+        if len(ticks) == 2:
+            raise RuntimeError("drive hiccup")
+
+    with cj.ProgressTicker(0.01, tick, on_error=errors.append):
+        assert wait_until(lambda: len(ticks) >= 4)
+    settled = len(ticks)
+    assert wait_until(lambda: True) and len(ticks) == settled                               # stopped at exit
+    assert errors == ["progress report failed: RuntimeError: drive hiccup"]
+    off = []
+    with cj.ProgressTicker(0, lambda: off.append(1)) as ticker:
+        assert ticker._thread is None
+    assert off == []
+
+
+def test_a_running_job_reports_elapsed_time_and_its_newest_file_to_the_log_and_worker_status(tmp_path):
+    lines = []
+    q, clock, kw = worker(tmp_path, once=True, log=lines.append, progress_seconds=0.02)
+    put(q, "01.json", job(job_id="slow-job"))
+    runs, seen = tmp_path / "runs", {}
+
+    def slow(spec, entry, results):
+        (runs / "run_a" / "dynamics").mkdir(parents=True)
+        (runs / "run_a" / "dynamics" / "latest.pt").write_text("w")
+        assert wait_until(lambda: any("still running" in line for line in lines))
+        seen.update(json.loads((q.root / "worker_status.json").read_text()))
+        results.mkdir(parents=True, exist_ok=True)
+        return cj.RunOutcome("ok", "done", [], None)
+
+    results = cj.run_worker(q, tmp_path / "repo", "url", runs, runner=slow, **kw)
+    progress = [line for line in lines if "still running" in line]
+    assert progress and "01.json: still running" in progress[0] and "newest file run_a/dynamics/latest.pt written" in progress[0]
+    assert seen["state"] == "running 01.json" and seen["newest_run_activity"]["file"] == "dynamics/latest.pt" and "job_elapsed_seconds" in seen
+    assert [r["status"] for r in results] == ["ok"] and json.loads((q.root / "worker_status.json").read_text())["state"] == "stopped"
+    assert "newest_run_activity" not in json.loads((q.root / "worker_status.json").read_text())
+
+
+def test_progress_reporting_is_off_when_the_interval_is_zero_and_the_cli_exposes_it():
+    import inspect
+
+    assert cj.DEFAULT_PROGRESS_SECONDS == 120.0 and inspect.signature(cj.run_worker).parameters["progress_seconds"].default == 120.0
+    helped = subprocess.run([sys.executable, str(ROOT / "scripts/colab_worker.py"), "--help"], capture_output=True, text=True)
+    assert helped.returncode == 0 and "--progress-minutes" in helped.stdout
+
+
 def test_worker_once_stops_when_the_inbox_is_empty_and_honours_a_stop_file(tmp_path):
     q, clock, kw = worker(tmp_path, once=True)
     assert cj.run_worker(q, tmp_path / "repo", "url", tmp_path / "runs", runner=outcome_runner([]), **kw) == [] and clock.now == 0

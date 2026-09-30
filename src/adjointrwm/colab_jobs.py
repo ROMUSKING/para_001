@@ -22,6 +22,7 @@ import re
 import shutil
 import subprocess
 import sys
+import threading
 import time
 import traceback
 from dataclasses import dataclass, field
@@ -33,6 +34,7 @@ ALLOWLIST_RELPATH = "notebooks/05-ops/allowlist.json"
 TRUSTED_REF = "origin/main"
 DEFAULT_DRIVE_ROOT = "/content/drive/MyDrive/Colab Notebooks/AdjointRWM_Production"
 DEFAULT_IDLE_MINUTES = 5.0      # a worker with an empty inbox exits after this long (covers Drive sync lag and a follow-up job); 0 means "exit once the inbox is empty"
+DEFAULT_PROGRESS_SECONDS = 120.0  # a running job prints one progress line (and refreshes worker_status.json) this often; 0 turns it off
 QUEUE_DIRS = ("inbox", "running", "done", "results")
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 JOB_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{2,63}$")
@@ -488,15 +490,78 @@ def run_job_notebook(spec: Mapping, entry: Mapping, results_dir: Path, *, repo_d
     return RunOutcome(status, reason, collect_runs(runs_root, before, results_dir), executed_name)
 
 
+# ---- progress while a job runs ------------------------------------------------------------------------------------------
+
+def format_duration(seconds: float) -> str:
+    seconds = max(0, int(round(seconds)))
+    hours, rest = divmod(seconds, 3600)
+    minutes, secs = divmod(rest, 60)
+    return f"{hours}h{minutes:02d}m{secs:02d}s" if hours else f"{minutes}m{secs:02d}s"
+
+
+def newest_run_activity(runs_root: Path, before: set[str], *, now: Callable[[], float] = time.time, limit: int = 20000) -> dict | None:
+    """The most recently written file under the run directories created since ``before``: ``{run_id, file, age_seconds, files}``, or ``None`` if there is none yet."""
+    best: tuple[float, str, str] | None = None
+    files = 0
+    for run_id in sorted(list_runs(runs_root) - before):
+        for path in Path(runs_root, run_id).rglob("*"):
+            if files >= limit:
+                break
+            try:
+                if not path.is_file():
+                    continue
+                mtime = path.stat().st_mtime
+            except OSError:          # a file that vanishes or is mid-sync is not progress evidence either way
+                continue
+            files += 1
+            if best is None or mtime > best[0]:
+                best = (mtime, run_id, path.relative_to(Path(runs_root, run_id)).as_posix())
+    if best is None:
+        return None
+    return {"run_id": best[1], "file": best[2], "age_seconds": max(0.0, now() - best[0]), "files": files}
+
+
+class ProgressTicker:
+    """Calls ``tick()`` every ``interval`` seconds on a daemon thread while the ``with`` block runs (never at entry; ``interval <= 0`` disables it).
+
+    A tick that raises is logged through ``on_error`` and does not stop the ticker or the job."""
+
+    def __init__(self, interval: float, tick: Callable[[], None], on_error: Callable[[str], None] = lambda message: None):
+        self.interval, self.tick, self.on_error = float(interval), tick, on_error
+        self._stop = threading.Event()
+        self._thread: threading.Thread | None = None
+
+    def _run(self) -> None:
+        while not self._stop.wait(self.interval):
+            try:
+                self.tick()
+            except Exception as error:  # noqa: BLE001 - progress reporting must never take a job down
+                self.on_error(f"progress report failed: {type(error).__name__}: {error}")
+
+    def __enter__(self) -> "ProgressTicker":
+        if self.interval > 0:
+            self._thread = threading.Thread(target=self._run, name="job-progress", daemon=True)
+            self._thread.start()
+        return self
+
+    def __exit__(self, *exc) -> None:
+        self._stop.set()
+        if self._thread is not None:
+            self._thread.join(timeout=10)
+
+
 # ---- the worker loop ------------------------------------------------------------------------------------------------------
 
+
 def run_worker(queue: JobQueue, repo_dir: Path, repo_url: str, runs_root: Path, *, poll_seconds: float = 30.0, max_idle_seconds: float = DEFAULT_IDLE_MINUTES * 60,
-               max_session_seconds: float = 10 * 3600, once: bool = False, dry_run: bool = False,
+               max_session_seconds: float = 10 * 3600, once: bool = False, dry_run: bool = False, progress_seconds: float = DEFAULT_PROGRESS_SECONDS,
                runner: Callable[[Mapping, Mapping, Path], RunOutcome] | None = None, allowlist_loader: Callable[[], Mapping] | None = None,
                sleep: Callable[[float], None] = time.sleep, clock: Callable[[], float] = time.time, log: Callable[[str], None] = print,
                gpu_name_fn: Callable[[], str] = gpu_name, worker_commit: str | None = None) -> list[dict]:
     """Poll the inbox and process jobs one at a time until idle too long, the session budget would be exceeded, a ``STOP`` file appears, or (``once``)
-    the inbox is empty. The allow-list is re-read from ``origin/main`` for every job. ``dry_run`` validates and reports without running."""
+    the inbox is empty. The allow-list is re-read from ``origin/main`` for every job. ``dry_run`` validates and reports without running.
+    While a job runs, every ``progress_seconds`` the worker logs how long it has run and which file the job wrote last, and records the same in
+    ``worker_status.json``, so a multi-hour job that prints nothing is distinguishable from a hung one."""
     queue.ensure()
     info = worker_info(worker_commit)
     info["worker_id"] = f"{platform.node()}-{os.getpid()}"
@@ -507,9 +572,12 @@ def run_worker(queue: JobQueue, repo_dir: Path, repo_url: str, runs_root: Path, 
     run = runner or (lambda spec, entry, results: run_job_notebook(spec, entry, results, repo_dir=repo_dir, repo_url=repo_url, runs_root=runs_root))
     results: list[dict] = []
 
-    def beat(state: str) -> None:
-        queue.heartbeat({**info, "state": state, "started_utc": started_utc, "last_poll_utc": utcnow(), "jobs_done": len(results), "dry_run": dry_run,
-                         "session_budget_hours": max_session_seconds / 3600})
+    beat_lock = threading.Lock()            # the progress thread and the loop both write worker_status.json
+
+    def beat(state: str, **extra) -> None:
+        with beat_lock:
+            queue.heartbeat({**info, "state": state, "started_utc": started_utc, "last_poll_utc": utcnow(), "jobs_done": len(results), "dry_run": dry_run,
+                             "session_budget_hours": max_session_seconds / 3600, **extra})
 
     while True:
         if queue.stop_requested():
@@ -534,7 +602,18 @@ def run_worker(queue: JobQueue, repo_dir: Path, repo_url: str, runs_root: Path, 
                 results.append(outcome)
                 queue.move(path, "done")
             else:
-                result = process_job(queue, path, allow, run, gpu_name_fn=gpu_name_fn, info=info)
+                before, job_started = list_runs(runs_root), clock()
+
+                def report(job_file: str = path.name, before: set[str] = before, job_started: float = job_started) -> None:
+                    activity = newest_run_activity(runs_root, before)
+                    elapsed = clock() - job_started
+                    where = (f"newest file {activity['run_id']}/{activity['file']} written {format_duration(activity['age_seconds'])} ago ({activity['files']} files)"
+                             if activity else "no run directory yet")
+                    log(f"{job_file}: still running, {format_duration(elapsed)} elapsed; {where}")
+                    beat(f"running {job_file}", job_elapsed_seconds=round(elapsed), newest_run_activity=activity)
+
+                with ProgressTicker(progress_seconds, report, on_error=log):
+                    result = process_job(queue, path, allow, run, gpu_name_fn=gpu_name_fn, info=info)
                 log(f"{path.name}: {result['status']} {result.get('reason', '')[:200]}")
                 results.append(result)
             last_work = clock()
