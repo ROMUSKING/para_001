@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-30 (t): the one-seed B2 probe ran; seed 0 failed the dynamics gate
+
+- **Result (audit `docs/audits/2026-09-30_b2_probe_seed0_dynamics_gate_audit.md`):** job `b2-probe-seed0-r3` (pilot v2, seed 0, L4, run `droid100_adjoint_v2_20260930T165409Z`): the dynamics gate on validation **failed** (model RMSE 0.2125, persistence 0.1886, −12.7 % against a required +2 %). Allocator training is blocked for a failed seed by design, so there are no traces and no H2 evidence. The run then crashed at `pd.concat(TRACES)` in the notebook's report path (empty list): incomplete, no `acceptance_report.json`. The values were read from Drive through the connector, not imported byte for byte.
+- **`scripts/colab_worker.py`:** `--max-idle-hours` is ignored with a printed warning (an old copy of the worker notebook passes it; honouring it kept the worker polling for hours after the job). 1 new test (72 in `tests/test_colab_jobs.py`).
+- **Docs:** README and roadmap status rows for B2; audits README.
+- **Not changed:** the pilot v2 notebook. Its failed-gate report path needs a decision (new notebook version) first; see the audit.
+
 ## 2026-09-30 (s): the Colab worker stops an idle job and exits
 
 - **`adjointrwm.colab_jobs`:** `ActivityWatch`, `gpu_utilization`, `kill_kernel`; `run_job_notebook(stall_seconds=...)` runs a watcher thread that kills the kernel when the job has shown no sign of life (no new file in its run directories, GPU utilisation under 5 %) for that long, and returns status `stalled` with the partial output kept. `run_worker(max_stall_seconds=1200)` turns it on for real jobs and, after a `stalled` job, exits without starting the next one (later jobs stay in the inbox). **`scripts/colab_worker.py`:** `--max-stall-minutes` (default 20; 0 off). **`notebooks/05-ops/colab_worker.ipynb`:** `MAX_STALL_MINUTES = 20`; the notebook then flushes Drive and releases the runtime as after any self-exit.

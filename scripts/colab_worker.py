@@ -33,7 +33,8 @@ def main() -> int:
     parser.add_argument("--poll-seconds", type=float, default=30.0)
     parser.add_argument("--max-idle-minutes", type=float, default=None,
                         help=f"exit after the inbox has been empty this long (default {cj.DEFAULT_IDLE_MINUTES:g}; 0 exits as soon as the inbox is empty)")
-    parser.add_argument("--max-idle-hours", type=float, default=None, help="the same in hours (kept for old callers; --max-idle-minutes wins)")
+    parser.add_argument("--max-idle-hours", type=float, default=None,
+                        help="IGNORED (an old worker notebook passes it, and honouring it kept a worker polling for hours); use --max-idle-minutes")
     parser.add_argument("--progress-minutes", type=float, default=cj.DEFAULT_PROGRESS_SECONDS / 60,
                         help="while a job runs, print a progress line (elapsed time, newest file the job wrote) this often; 0 turns it off")
     parser.add_argument("--max-stall-minutes", type=float, default=cj.DEFAULT_STALL_MINUTES,
@@ -42,6 +43,9 @@ def main() -> int:
     parser.add_argument("--once", action="store_true", help="process the jobs that are waiting, then exit")
     parser.add_argument("--dry-run", action="store_true", help="validate waiting jobs and report what would run; run nothing")
     args = parser.parse_args()
+    if args.max_idle_hours is not None:
+        print(f"warning: --max-idle-hours {args.max_idle_hours:g} is ignored (it comes from an old copy of the worker notebook; open the current one from GitHub). "
+              f"The idle limit is {args.max_idle_minutes if args.max_idle_minutes is not None else cj.DEFAULT_IDLE_MINUTES:g} min.", flush=True)
     here = Path(__file__).resolve().parents[1]
     try:
         commit = subprocess.run(["git", "-C", str(here), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip() or None
@@ -50,7 +54,7 @@ def main() -> int:
     queue = cj.JobQueue(args.drive_root / "jobs")
     print(f"worker commit {commit} | jobs {queue.root} | runs {args.drive_root / 'runs'} | repo {args.repo_dir}", flush=True)
     results = cj.run_worker(queue, args.repo_dir, args.repo_url, args.drive_root / "runs", poll_seconds=args.poll_seconds,
-                            max_idle_seconds=cj.idle_limit_seconds(args.max_idle_minutes, args.max_idle_hours), max_session_seconds=args.max_session_hours * 3600,
+                            max_idle_seconds=cj.idle_limit_seconds(args.max_idle_minutes), max_session_seconds=args.max_session_hours * 3600,
                             once=args.once, dry_run=args.dry_run, progress_seconds=args.progress_minutes * 60, max_stall_seconds=args.max_stall_minutes * 60, worker_commit=commit,
                             log=lambda line: print(line, flush=True))
     print(f"{len(results)} job(s) handled", flush=True)

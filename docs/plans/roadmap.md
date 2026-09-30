@@ -38,7 +38,7 @@ REAL_DATA_ALLOCATION           FAIL (collapse; opportunity audit pending)
 H2 ADJOINT > DIRECT CRITIC     NO EVIDENCE either way
 PRODUCTION PROMOTION           BLOCKED
 HARDWARE                       STAY ON L4 (pilot peak 0.6 GiB)
-PILOT V2 (E2.1/E2.2 = B2)      NOTEBOOK READY, NOT RUN
+PILOT V2 (E2.1/E2.2 = B2)      ONE-SEED PROBE: DYNAMICS GATE FAILED (audit 2026-09-30)
 RIVAL-MODEL BENCHMARK (B1)     NOTEBOOK READY, NOT RUN
 CROSS-DOMAIN (TRACK D)         D4 FIRST (DECIDED); D4-0, D4-0b DONE; D4-2 DONE; D4-3 DONE (varying goal: R3v and R4v both hold in `m4` and `m64`, exact co-state unaffordable per instance); D4-1 DONE (no learned critic pays at the real price; the co-state critic does not beat the direct critic; `m4`: teacher-only value at a hypothetical price, `m64`: inconclusive); D1-0 DONE (proxy loss), D1-0b DONE (native forecast loss: no deployable policy keeps the headroom; D1-1 not designed); D2-0, D3-0 NOT STARTED
 ```
@@ -126,7 +126,7 @@ Dates assume a start of Mon 29 Sep 2026 and one person working part-time on Cola
 |---|---|---|---|
 | B0 | Plan, tested package modules, two notebooks | `harness/check.py` passes; notebooks import the package | Done (this change) |
 | B1 | `03-benchmarks/rival_world_models_droid100.ipynb` on L4: AdjointRWM vs DreamerV3-, TD-MPC2-, DINO-WM-, V-JEPA 2-AC-style arms + persistence/ridge, 5 seeds | `COMPLETE`, fairness contract PASS, imported, research note with every classification | Not run |
-| B2 | `01-production/AdjointRWM_Production_Pilot_v2.ipynb`, 5 paired seeds (= E2.1 + E2.2) | Opportunity, critic-floor and adjoint − critic results per seed and pooled; note written | Not run |
+| B2 | `01-production/AdjointRWM_Production_Pilot_v2.ipynb`, 5 paired seeds (= E2.1 + E2.2) | Opportunity, critic-floor and adjoint − critic results per seed and pooled; note written | One-seed probe 2026-09-30: seed 0 failed the dynamics gate on validation, run incomplete ([audit](../audits/2026-09-30_b2_probe_seed0_dynamics_gate_audit.md)); five-seed run not started |
 | B3 | B1 repeated on the E3.1 shard with scene/task/site splits | Confirmatory substrate comparison | Waits for E3.1 |
 | B4 | Released-checkpoint and encoder-swap arms (exploratory; V-JEPA 2-AC is DROID-trained, so contamination is possible) | Contamination status recorded | Optional |
 | B5 | Planning rivals in simulation (official TD-MPC2 code, CEM on ManiSkill3) | — | Gated on G-H2 and Phase II |
