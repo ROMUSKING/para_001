@@ -360,7 +360,7 @@ def test_worker_notebook_and_script_agree_on_the_idle_exit_and_release_the_runti
     code = "\n".join("".join(c["source"]) for c in nb["cells"] if c["cell_type"] == "code")
     ast.parse(code)
     assert "--max-idle-minutes" in code and "MAX_IDLE_MINUTES = 0" in code and "DISCONNECT_WHEN_DONE = True" in code
-    assert code.index("drive.flush_and_unmount()") < code.index("runtime.unassign()")            # Drive is flushed before the VM is released
+    assert code.index("drive.flush_and_unmount()") < code.rindex("runtime.unassign()")           # Drive is flushed before the VM is released
     assert "except KeyboardInterrupt" in code                                                    # an interrupt keeps the runtime
     helped = subprocess.run([sys.executable, str(Path(__file__).resolve().parents[1] / "scripts/colab_worker.py"), "--help"], capture_output=True, text=True)
     assert helped.returncode == 0 and "--max-idle-minutes" in helped.stdout
@@ -698,8 +698,10 @@ def test_stall_watch_is_on_by_default_and_the_cli_and_notebook_expose_it():
     nb = json.loads((ROOT / "notebooks/05-ops/colab_worker.ipynb").read_text())
     code = "\n".join("".join(c["source"]) for c in nb["cells"] if c["cell_type"] == "code")
     assert "MAX_STALL_MINUTES = 20" in code and "--max-stall-minutes" in code
-    assert "process.kill()" in code and code.index("finally:") < code.index("runtime.unassign()")           # the release runs after any way out except a manual interrupt
+    assert "process.kill()" in code and code.index("finally:") < code.rindex("runtime.unassign()")           # the release runs after any way out except a manual interrupt
     assert "handle_signals=True" in (ROOT / "scripts/colab_worker.py").read_text()
+    assert nb["metadata"]["colab"]["gpuType"] == "L4"                                                      # Colab is asked for an L4, not its default T4
+    assert "REQUIRED_GPU = 'L4'" in code and code.index("REQUIRED_GPU not in gpu_line") < code.index("runtime.unassign()") < code.index("MAX_IDLE_MINUTES")   # a wrong GPU is released at once
 
 
 def test_worker_once_stops_when_the_inbox_is_empty_and_honours_a_stop_file(tmp_path):

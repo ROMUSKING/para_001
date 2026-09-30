@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-30 (w): worker notebook reconciled with the Colab-saved copy; it needs an L4
+
+- **Reconciled** `notebooks/05-ops/colab_worker.ipynb` with Roman's "Created using Colab" save (`c1d8c78`, which reformatted the JSON and added `gpuType: L4` and `machine_shape: hm` to the metadata): Colab's formatting and metadata kept, the log/termination cells from (v) applied on top. The cell sources of the Colab save were identical to the repository's before (v).
+- **L4 guard:** the setup cell sets `REQUIRED_GPU = 'L4'`; on any other GPU (Colab's default is a T4) it prints why, releases the runtime with `runtime.unassign()` and stops, instead of billing a runtime the pilot jobs would refuse to run on (their allow-list entries name L4, A100 and H100). `''` turns the check off. The notebook metadata asks Colab for an L4.
+- **Test:** the notebook test now checks the L4 metadata and the guard, and finds the final release call.
+
 ## 2026-09-30 (v): the worker logs the running job and terminates properly
 
 - **Running-job log:** `JobTracker` (nbclient cell hooks) logs each cell's start, finish and failure; the progress line now names the running cell and its elapsed time and shows GPU utilisation (`gpu_utilization`, `run_worker(gpu_util_fn=…)`); `worker_status.json` gains `current_cell` and `gpu_utilization_percent`.
