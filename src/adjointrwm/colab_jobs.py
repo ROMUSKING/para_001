@@ -609,8 +609,8 @@ def run_worker(queue: JobQueue, repo_dir: Path, repo_url: str, runs_root: Path, 
                     elapsed = clock() - job_started
                     where = (f"newest file {activity['run_id']}/{activity['file']} written {format_duration(activity['age_seconds'])} ago ({activity['files']} files)"
                              if activity else "no run directory yet")
+                    beat(f"running {job_file}", job_elapsed_seconds=round(elapsed), newest_run_activity=activity)   # the status first: a visible log line implies it is on disk
                     log(f"{job_file}: still running, {format_duration(elapsed)} elapsed; {where}")
-                    beat(f"running {job_file}", job_elapsed_seconds=round(elapsed), newest_run_activity=activity)
 
                 with ProgressTicker(progress_seconds, report, on_error=log):
                     result = process_job(queue, path, allow, run, gpu_name_fn=gpu_name_fn, info=info)
