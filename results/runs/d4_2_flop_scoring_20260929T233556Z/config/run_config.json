@@ -1,0 +1,170 @@
+{
+  "cells": {
+    "amp1": {
+      "amplitude_scale": 1.0,
+      "m": 32,
+      "max_depth": 9,
+      "name": "amp1",
+      "pulse_width": [
+        0.001,
+        0.004
+      ]
+    },
+    "base": {
+      "amplitude_scale": 10.0,
+      "m": 32,
+      "max_depth": 9,
+      "name": "base",
+      "pulse_width": [
+        0.001,
+        0.004
+      ]
+    },
+    "depth11": {
+      "amplitude_scale": 10.0,
+      "m": 32,
+      "max_depth": 11,
+      "name": "depth11",
+      "pulse_width": [
+        0.001,
+        0.004
+      ]
+    },
+    "depth7": {
+      "amplitude_scale": 10.0,
+      "m": 32,
+      "max_depth": 7,
+      "name": "depth7",
+      "pulse_width": [
+        0.001,
+        0.004
+      ]
+    },
+    "m4": {
+      "amplitude_scale": 10.0,
+      "m": 4,
+      "max_depth": 9,
+      "name": "m4",
+      "pulse_width": [
+        0.001,
+        0.004
+      ]
+    },
+    "m64": {
+      "amplitude_scale": 10.0,
+      "m": 64,
+      "max_depth": 9,
+      "name": "m64",
+      "pulse_width": [
+        0.001,
+        0.004
+      ]
+    },
+    "wide": {
+      "amplitude_scale": 10.0,
+      "m": 32,
+      "max_depth": 9,
+      "name": "wide",
+      "pulse_width": [
+        0.01,
+        0.04
+      ]
+    }
+  },
+  "config": {
+    "bootstrap_resamples": 10000,
+    "cap_in_finest_grids": 2.0,
+    "cells": [
+      "base",
+      "m4",
+      "m64",
+      "wide",
+      "amp1",
+      "depth7",
+      "depth11"
+    ],
+    "cheap_arms": [
+      "indicator",
+      "cheap",
+      "cheap_adjoint"
+    ],
+    "decision_scales": [
+      1.0,
+      0.0
+    ],
+    "gap_fractions": [
+      0.1,
+      0.03,
+      0.01
+    ],
+    "hidden_selection_theta": 0.95,
+    "hidden_sizes": [
+      8,
+      16,
+      32
+    ],
+    "max_passes": 40,
+    "methods": [
+      "loglog",
+      "semilog",
+      "staircase"
+    ],
+    "primary_method": "loglog",
+    "scorer_max_passes": 40,
+    "scorer_max_samples": 200000,
+    "scorer_per_state": 256,
+    "scorer_seed": 0,
+    "scorer_training_theta": 0.85,
+    "step_doubling_arms": [
+      "residual",
+      "goal_local",
+      "adjoint"
+    ],
+    "thetas": [
+      0.5,
+      0.7,
+      0.85,
+      0.95,
+      0.98,
+      0.995
+    ],
+    "train_instances": 30,
+    "tuning_instances": 10,
+    "validation_instances": 20
+  },
+  "config_sha256": "2ab9e44685312fbf39b43ebe96a254229a1074dcd17623e47adba156283d88b4",
+  "domain_spec": {
+    "candidate_kinds": [
+      "refine"
+    ],
+    "cost_units": {
+      "compute": "Crank-Nicolson steps: re-solve from the refined interval to the end, plus scoring cost",
+      "latency": "not measured",
+      "query": "none",
+      "rate": "stored states (one per new node)"
+    },
+    "data_source": "generated analytic benchmark: adjointrwm.domains.linear_ode.sample_instances with frozen seeds",
+    "domain_id": "d4_adaptive_time_stepping",
+    "family": "temporal",
+    "licence": "n/a (generated in this repository)",
+    "native_endpoint": "|c^T y(T) - c^T y_N| (error in the quantity of interest)",
+    "notes": "",
+    "oracle_support": "exact",
+    "privilege": {
+      "exact solution y(t)": "teacher/oracle only (computational privilege)",
+      "model (A, forcing, y0, c), CN solution": "P0"
+    }
+  },
+  "domain_spec_sha256": "3aecf7854e470f51d654050c208a2534300755ad5d68d49613436c99b151f7d5",
+  "family_seeds": {
+    "train": 4004,
+    "tuning": 3003,
+    "validation": 1001
+  },
+  "notebook": "notebooks/04-domains/d4_2_flop_priced_scoring.ipynb",
+  "plan": "docs/plans/d4-2-plan.md",
+  "repo_commit": "b139a33a17ae54376e1f4fe8a701eab80ad2da55",
+  "repo_dirty": false,
+  "run_id": "d4_2_flop_scoring_20260929T233556Z",
+  "test_family_read": false
+}

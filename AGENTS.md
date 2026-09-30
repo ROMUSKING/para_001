@@ -10,7 +10,7 @@ This repo is research on **adjoint-guided recursive world models (AdjointRWM)**.
 
 It is a **research** repo. Correctness of evidence matters more than speed, and a wrong-but-plausible number does more harm than no number.
 
-- **Status and plan:** read `README.md`, then `docs/plans/roadmap.md`. Milestone IDs there (N0.1, E2.1, …) name the work items.
+- **Status and plan:** read `README.md`, then `docs/plans/roadmap.md`. Milestone IDs there (N0.1, E2.1, B1, …) name the work items. Benchmarks against rival models (Track B) follow `docs/plans/rival-benchmark-plan.md`; other domains (Track D) follow `docs/plans/cross-domain-plan.md`.
 - **Governing protocol:** `docs/research-plan/adjoint_guided_comprehensive_research_plan.md`. It is ~390 KB, so grep it rather than reading it whole.
 - **What counts as evidence:** `docs/audits/README.md` and `docs/research-notes/`.
 
@@ -18,8 +18,9 @@ It is a **research** repo. Correctness of evidence matters more than speed, and 
 
 ```bash
 pip install -e ".[dev]"            # once per environment
+pip install torch --index-url https://download.pytorch.org/whl/cpu   # model/training/allocator tests; skipped without torch
 python harness/check.py            # definition of done: tests + notebooks + harness drift + links + immutability
-pytest -q                          # unit tests only (CPU, <5 s)
+pytest -q                          # unit tests only (CPU, about 5 s with torch)
 python harness/sync.py             # regenerate CLAUDE.md, .claude/skills/, workflow/command shims after editing AGENTS.md or .agents/
 python scripts/analyze_allocation_traces.py <traces.parquet> --num-candidates 4
 ```
@@ -30,11 +31,12 @@ The GPU training pipeline runs **only in Google Colab** (`notebooks/01-productio
 
 | Path | Contents | Rules |
 |---|---|---|
-| `src/adjointrwm/` | Tested Python package | Every new function gets a test in `tests/` |
+| `src/adjointrwm/` | Tested Python package: data contracts, metrics, world-model arms, training runner, allocators, domain-neutral allocation layer (`domains/`) | Every new function gets a test in `tests/`; notebooks import it |
 | `scripts/` | CLIs over `src/` | Thin wrappers; logic belongs in `src/` |
 | `notebooks/` | Colab notebooks | See `notebooks/AGENTS.md` |
 | `results/runs/<run_id>/` | Imported run artefacts | **Immutable once committed.** See `results/AGENTS.md` |
 | `docs/research-notes/` | Evidence-backed findings | Named `YYYY-MM-DD-<slug>.md`; must cite a run ID and config hash |
+| `docs/licences/` | Licence register for datasets and frozen models (evidence fetched by `scripts/licence_survey.py`) | A source is cleared only by a row whose evidence URLs were fetched; `tests/test_licences.py` enforces it |
 | `docs/audits/` | Why things are *not* evidence | Append-only: add new files, never edit dated ones |
 | `docs/research-plan/`, `docs/production/` | Protocols and briefs | Change them only on explicit instruction; log deviations in `prereg/deviation_log.yaml` |
 | `papers/` | Drafts + `REVIEW.md` | Every claim must trace to a gate artefact |

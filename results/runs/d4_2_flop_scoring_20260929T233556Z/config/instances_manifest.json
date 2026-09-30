@@ -1,0 +1,220 @@
+{
+  "amp1": {
+    "system_seed": 7032,
+    "system_sha256": "c799b4fc40b069810666547ab0098f85249c58fcf9554db634d89335d9e029a0",
+    "train": {
+      "count": 30,
+      "names": [
+        "d4_2_amp1_train_000",
+        "d4_2_amp1_train_029"
+      ],
+      "seed": 4004,
+      "sha256": "4a57dfd9ca1af67e2c0476f5c8dfb1dedb856e1530fa102ac7d016e2f528296c"
+    },
+    "tuning": {
+      "count": 10,
+      "names": [
+        "d4_2_amp1_tuning_000",
+        "d4_2_amp1_tuning_009"
+      ],
+      "seed": 3003,
+      "sha256": "bc9123af68434722c65d246864c3a6dee3a416b90fb3430b7ee18939e3188b19"
+    },
+    "validation": {
+      "count": 20,
+      "names": [
+        "d4_2_amp1_validation_000",
+        "d4_2_amp1_validation_019"
+      ],
+      "seed": 1001,
+      "sha256": "238f67456fe3ef93dd8518c2772646ab54f090c5a4b33a8e4b6d78320c773b1c"
+    }
+  },
+  "base": {
+    "system_seed": 7032,
+    "system_sha256": "c799b4fc40b069810666547ab0098f85249c58fcf9554db634d89335d9e029a0",
+    "train": {
+      "count": 30,
+      "names": [
+        "d4_2_base_train_000",
+        "d4_2_base_train_029"
+      ],
+      "seed": 4004,
+      "sha256": "ab375478b27e7f079c0618c4ed8d1367df818fc699fa75796cc2d9c96d53fff8"
+    },
+    "tuning": {
+      "count": 10,
+      "names": [
+        "d4_2_base_tuning_000",
+        "d4_2_base_tuning_009"
+      ],
+      "seed": 3003,
+      "sha256": "dc065919af367d341e92ec0f26a5e2ec6996f4acc2fcc39e923dfc2a37f594f2"
+    },
+    "validation": {
+      "count": 20,
+      "names": [
+        "d4_2_base_validation_000",
+        "d4_2_base_validation_019"
+      ],
+      "seed": 1001,
+      "sha256": "a932a8bcd53154a04ecf831dd6a6fb26806370e1870d00d997c1e1184e244def"
+    }
+  },
+  "depth11": {
+    "system_seed": 7032,
+    "system_sha256": "c799b4fc40b069810666547ab0098f85249c58fcf9554db634d89335d9e029a0",
+    "train": {
+      "count": 30,
+      "names": [
+        "d4_2_depth11_train_000",
+        "d4_2_depth11_train_029"
+      ],
+      "seed": 4004,
+      "sha256": "ef5e3212e716e215e06c6774e2da024acef264ea06f2c91808e3fc47dace3982"
+    },
+    "tuning": {
+      "count": 10,
+      "names": [
+        "d4_2_depth11_tuning_000",
+        "d4_2_depth11_tuning_009"
+      ],
+      "seed": 3003,
+      "sha256": "6b3dbb668f9e6379c01e61b6ecda198ecf1caf42eeaa0795f8e87250641a996f"
+    },
+    "validation": {
+      "count": 20,
+      "names": [
+        "d4_2_depth11_validation_000",
+        "d4_2_depth11_validation_019"
+      ],
+      "seed": 1001,
+      "sha256": "7a5df817ca6eef5343502f88d7273909125e2038c2ab3248f214743f433149f7"
+    }
+  },
+  "depth7": {
+    "system_seed": 7032,
+    "system_sha256": "c799b4fc40b069810666547ab0098f85249c58fcf9554db634d89335d9e029a0",
+    "train": {
+      "count": 30,
+      "names": [
+        "d4_2_depth7_train_000",
+        "d4_2_depth7_train_029"
+      ],
+      "seed": 4004,
+      "sha256": "699026cb00106ae207b5419bf97ceba9260ba762a27aa87c80fa517ec297f370"
+    },
+    "tuning": {
+      "count": 10,
+      "names": [
+        "d4_2_depth7_tuning_000",
+        "d4_2_depth7_tuning_009"
+      ],
+      "seed": 3003,
+      "sha256": "3956aed7e67c81141106b9f1e47243a314d094968299321387b6d227dfd8492e"
+    },
+    "validation": {
+      "count": 20,
+      "names": [
+        "d4_2_depth7_validation_000",
+        "d4_2_depth7_validation_019"
+      ],
+      "seed": 1001,
+      "sha256": "a442d515c47f3e8eda69854f81cbcdfe2cc0b9cf2d29eb4435c59f22e84eb2f5"
+    }
+  },
+  "m4": {
+    "system_seed": 7004,
+    "system_sha256": "5d5d1bf8f95d623320d643f38350bdfee12008a3a3795f703b3d55db249ebb6a",
+    "train": {
+      "count": 30,
+      "names": [
+        "d4_2_m4_train_000",
+        "d4_2_m4_train_029"
+      ],
+      "seed": 4004,
+      "sha256": "c257f89f29e0a33f5bb8bee9387d8cffb5f3321ea49288eba5a814cccc9e528b"
+    },
+    "tuning": {
+      "count": 10,
+      "names": [
+        "d4_2_m4_tuning_000",
+        "d4_2_m4_tuning_009"
+      ],
+      "seed": 3003,
+      "sha256": "3e4f0265aa9541d20c9216aa5ba7ba87d0e125f3f8943b1e612c0134bfd1746a"
+    },
+    "validation": {
+      "count": 20,
+      "names": [
+        "d4_2_m4_validation_000",
+        "d4_2_m4_validation_019"
+      ],
+      "seed": 1001,
+      "sha256": "03f2a26747562886f17a4938ef3e61a474fed5f21e967b20857a83f475cd0728"
+    }
+  },
+  "m64": {
+    "system_seed": 7064,
+    "system_sha256": "cf99314b8ddf189526d9e8c82f84845ab33d82f9cb9407405d6fae064361dfbb",
+    "train": {
+      "count": 30,
+      "names": [
+        "d4_2_m64_train_000",
+        "d4_2_m64_train_029"
+      ],
+      "seed": 4004,
+      "sha256": "d4292f133ac384f82bbc7fc830255b2fab05fae691b10841ef381fa239bddb94"
+    },
+    "tuning": {
+      "count": 10,
+      "names": [
+        "d4_2_m64_tuning_000",
+        "d4_2_m64_tuning_009"
+      ],
+      "seed": 3003,
+      "sha256": "e477213c2f009dcf4d1c7a560f42cac1d7fd267b591e6e8e225d2b73c6082ea6"
+    },
+    "validation": {
+      "count": 20,
+      "names": [
+        "d4_2_m64_validation_000",
+        "d4_2_m64_validation_019"
+      ],
+      "seed": 1001,
+      "sha256": "4245791bce404f8ac44ff4699035e7435841a58e24c66dd5a7ac6884a46c17a4"
+    }
+  },
+  "sha256": "946ebca80c23f4b14c86d3ca6ccf7b2d2b48d344a228291966505dfda36509d7",
+  "wide": {
+    "system_seed": 7032,
+    "system_sha256": "c799b4fc40b069810666547ab0098f85249c58fcf9554db634d89335d9e029a0",
+    "train": {
+      "count": 30,
+      "names": [
+        "d4_2_wide_train_000",
+        "d4_2_wide_train_029"
+      ],
+      "seed": 4004,
+      "sha256": "50c507daa5af8b5a086a31c22aeba60102a33afd296ff545a73f5d286be4a1d4"
+    },
+    "tuning": {
+      "count": 10,
+      "names": [
+        "d4_2_wide_tuning_000",
+        "d4_2_wide_tuning_009"
+      ],
+      "seed": 3003,
+      "sha256": "371e97206e13ee424e3e7b28722ea549053838378b79f9aecb833f42aa46ba9f"
+    },
+    "validation": {
+      "count": 20,
+      "names": [
+        "d4_2_wide_validation_000",
+        "d4_2_wide_validation_019"
+      ],
+      "seed": 1001,
+      "sha256": "16ebe216b20aac073e5ebab60ecede7e92894f58047dd4dcded3fe24263f9d24"
+    }
+  }
+}

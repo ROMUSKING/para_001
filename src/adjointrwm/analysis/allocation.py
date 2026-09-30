@@ -255,3 +255,95 @@ def compare_distributions(train_gain: np.ndarray, test_gain: np.ndarray) -> Mapp
         out[f"{name}_oracle_share"] = (np.bincount(gain.argmax(axis=1), minlength=k) / len(gain)).tolist()
         out[f"{name}_mean_gain"] = gain.mean(axis=0).tolist()
     return out
+
+
+# ---------------------------------------------------------------------------
+# Pilot v2 traces: full gain matrix with a hold option (docs/plans/rival-benchmark-plan.md §5)
+# ---------------------------------------------------------------------------
+
+def gain_matrix(traces: pd.DataFrame) -> np.ndarray:
+    """``exact_gain[N, K+1]`` from ``gain_0 .. gain_K`` trace columns (``gain_0`` = hold)."""
+    columns = sorted((c for c in traces.columns if c.startswith("gain_")), key=lambda c: int(c.split("_")[1]))
+    if not columns:
+        raise ValueError("traces have no gain_<k> columns")
+    return traces[columns].to_numpy(dtype=float)
+
+
+def policy_regret_frame(traces: pd.DataFrame) -> pd.DataFrame:
+    """Per-window regret of every policy, computed from the gains alone (method-blind).
+
+    Learned policies come from ``<name>_choice`` columns. Fixed policies are added here:
+    ``always_hold``, ``always_c<k>`` and ``random_expected`` (the exact expectation of uniform
+    choice, not a single draw).
+    """
+    gains = gain_matrix(traces)
+    n, k = gains.shape
+    best = gains.max(axis=1)
+    out = {"episode_id": traces["episode_id"].to_numpy()}
+    for column in traces.columns:
+        if column.endswith("_choice") and column != "oracle_choice":
+            choice = traces[column].to_numpy(dtype=int)
+            out[column[: -len("_choice")]] = best - gains[np.arange(n), choice]
+    out["always_hold"] = best - gains[:, 0]
+    for j in range(1, k):
+        out[f"always_c{j}"] = best - gains[:, j]
+    out["random_expected"] = (best[:, None] - gains).mean(axis=1)
+    return pd.DataFrame(out)
+
+
+def summarize_policies(
+    traces: pd.DataFrame,
+    candidate_costs: Sequence[float] | None = None,
+    pairs: Sequence[tuple[str, str]] = (
+        ("adjoint", "critic"),
+        ("adjoint_randomized", "adjoint"),
+        ("critic", "random_expected"),
+        ("critic", "uncertainty"),
+        ("hybrid", "critic"),
+        ("exact_costate", "adjoint"),
+    ),
+    num_resamples: int = 10_000,
+    seed: int = 0,
+) -> dict:
+    """Regret table, choice shares, paired episode-bootstrap CIs and the opportunity audit."""
+    gains = gain_matrix(traces)
+    k = gains.shape[1]
+    regrets = policy_regret_frame(traces)
+    oracle = gains.argmax(axis=1)
+    table = {}
+    for policy in [c for c in regrets.columns if c != "episode_id"]:
+        entry = {"mean_regret": float(regrets[policy].mean()),
+                 "ci": episode_bootstrap_ci(regrets, policy, num_resamples=num_resamples, seed=seed)}
+        if f"{policy}_choice" in traces:
+            choice = traces[f"{policy}_choice"].to_numpy(dtype=int)
+            entry["top1"] = float((choice == oracle).mean())
+            entry["choice_share"] = (np.bincount(choice, minlength=k) / len(choice)).round(4).tolist()
+        table[policy] = entry
+    paired = {}
+    for a, b in pairs:
+        if a in regrets and b in regrets:
+            paired[f"{a}-{b}"] = episode_bootstrap_ci(regrets, a, baseline=b, num_resamples=num_resamples, seed=seed)
+    return {
+        "num_windows": int(len(traces)),
+        "num_episodes": int(traces["episode_id"].nunique()),
+        "num_options": k,
+        "oracle_share": (np.bincount(oracle, minlength=k) / len(oracle)).round(4).tolist(),
+        "policies": table,
+        "paired_differences": paired,
+        "opportunity": opportunity_audit(gains, candidate_costs).to_dict(),
+    }
+
+
+def critic_realization_floor(validation_summary: Mapping) -> dict:
+    """Plan §5.5.1 floor on validation: the critic must beat expected-random and uncertainty-only.
+
+    Uses point estimates of mean regret (lower is better). If the floor fails, H2 on this
+    benchmark is ``UNDER_REALIZED`` (inconclusive), whatever the adjoint does.
+    """
+    policies = validation_summary["policies"]
+    critic = policies["critic"]["mean_regret"]
+    checks = {
+        "beats_random_expected": critic < policies["random_expected"]["mean_regret"],
+        "beats_uncertainty": "uncertainty" in policies and critic < policies["uncertainty"]["mean_regret"],
+    }
+    return {**checks, "passed": all(checks.values()), "critic_mean_regret": critic}

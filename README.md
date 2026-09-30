@@ -16,10 +16,19 @@ The core question: can a recursive world model decide where to spend representat
 | Dynamics beat persistence on held-out episodes | ✅ pass: RMSE 0.156 vs 0.226 (−31 %), single seed. Persistence still wins at one step ahead. | [findings §2.1](docs/research-notes/2026-09-29-droid100-pilot-findings.md) |
 | Allocation beats random | ❌ fail: adjoint 0.037, critic 0.038, one random draw 0.021 | [findings §2.2](docs/research-notes/2026-09-29-droid100-pilot-findings.md) |
 | **H2**: adjoint vs direct critic | ⚪ tie: −0.0009, 95 % CI [−0.0028, +0.0004] | [`trace_summary.json`](results/runs/droid100_adjoint_20260929T070629Z/artifacts/trace_summary.json) |
-| Evidence-integrity reset (N0) | ⏳ in progress | [roadmap §3](docs/plans/roadmap.md) |
+| Evidence-integrity reset (N0) | ⏳ in progress: pilot code lifted into `src/` with parity, causality, finite-difference and resume tests | [roadmap §3](docs/plans/roadmap.md) |
+| Pilot v2: fixed allocation contract + rival allocators (E2.1/E2.2 = B2) | ⏳ notebook ready, **not run** | [plan §5](docs/plans/rival-benchmark-plan.md) |
+| Benchmark vs rival world models (B1: DreamerV3-, TD-MPC2-, DINO-WM-, V-JEPA 2-AC-style) | ⏳ notebook ready, **not run** | [plan](docs/plans/rival-benchmark-plan.md) |
+| Cross-domain (Track D), D4-0: adaptive time stepping, an exact-adjoint reference domain (analytic, in-repo) | correctness ✅ · rate-budget opportunity ✅ · **equal-compute payoff ❌**: plain uniform refinement beats every adaptive policy at equal total compute, so D4-1 stays closed | [note](docs/research-notes/2026-09-29-d4-0-adaptive-time-stepping.md), [run](results/runs/d4_time_stepping_20260929T162518Z/) |
+| Cross-domain (Track D), D4-0b: where adaptive allocation pays at equal compute (validation-only design study) | pass-based marking does not rescue adaptivity at the real scoring price on the smooth family; it pays only in the most localised family, where the cheap residual score does as well as the co-state; the frozen D4-1 rule is met in **2 of 9 cells, both at hypothetical scoring prices**, so D4-1 stays closed at the real ledger |
+| Cross-domain (Track D), D4-2: FLOP-priced scoring on a higher-dimensional system (validation-only design study) | correctness ✅ · a small learned scorer beats uniform refinement in 3 of 7 cells, **but a non-learned cheap estimator does at least as well in every cell**; the co-state weight helps that estimator in 1 cell (`m` = 64, about 10 %), never where the learned scorer pays, so **no D4-1 candidate cell** | [note](docs/research-notes/2026-09-30-d4-2-flop-priced-scoring.md), [run](results/runs/d4_2_flop_scoring_20260929T233556Z/) | [note](docs/research-notes/2026-09-29-d4-0b-where-adaptivity-pays.md), [run](results/runs/d4_0b_adaptivity_20260929T174347Z/) |
+| Cross-domain (Track D), D1-0: sensing allocation on the Server Machine Dataset (Rung-0 gate, validation machines only) | correctness ✅ · opportunity gate ✅ robust (headroom 0.920 [0.886, 0.949] against the best fixed allocation, privileged reference) · non-learned deployable policies keep 0.42–0.49 of it · **but labelled detection F1 does not improve with sensing (0.259 hold, 0.192 full observation), so the proxy loss does not track the task**; no H2 statement | [note](docs/research-notes/2026-09-30-d1-0-sensor-opportunity.md), [run](results/runs/d1_0_sensor_opportunity_20260930T062900Z/) |
+| Cross-domain (Track D), DL: licence survey for the other domains | pass 2 done (59 sources: 17 `adopt`, 12 `adopt_with_conditions`, 5 `avoid`, 25 `unverified`): licence-cleared candidates exist for D1, D2 and D3 (code-repository context); query planning is closed by IMDb's non-commercial terms | [pass 2](docs/licences/survey-2026-09-29-pass2.md), [register](docs/licences/register.csv) |
 | Analytic correctness on LQTree (N1) | ⏳ not started as a gate | — |
 | Task success / planning | not measured | — |
 | Hardware | stay on L4 (pilot peak 0.6 GiB) | [operator brief](docs/production/colab_l4_operator_brief.md) |
+
+**Recommended next steps** are in [roadmap §2.1](docs/plans/roadmap.md): E1.1 opportunity audit first, then pilot v2 (B2); D4-2 is done and leaves D4-1 closed (a varying-goal check, D4-3, is proposed and waits for Roman); the rival benchmark (B1) is a different question and not on the critical path.
 
 **Why the allocator failed:** both learned allocators only ever picked candidates 0 and 2. The oracle preferred 1 or 3 on 65 % of test windows. Earlier runs (`Run_V2`, the SWM "DROID subset" pilot, `para_0_0_1` and the T4 P0 diagnostics) were audited and are **not evidence**; see [`docs/audits/`](docs/audits/).
 
@@ -31,6 +40,8 @@ The core question: can a recursive world model decide where to spend representat
 docs/
   README.md                 Documentation index and conventions
   plans/roadmap.md          Future roadmap: tracks, milestones, gates, decision tree, open questions
+  plans/rival-benchmark-plan.md  Track B: rival world models and rival allocators, fairness contract
+  plans/cross-domain-plan.md     Track D: generalising the allocator to other domains (text, signals, graphs, simulation, ...)
   research-plan/            Research protocols: comprehensive cross-domain plan (governing) + v5
   production/               Production training plan (gated) + Colab L4 operator brief (binding)
   research-notes/           Dated findings from runs that count as evidence
@@ -40,10 +51,13 @@ papers/
   drafts/                   Paper draft + REVIEW.md (claim-by-claim evidence check)
   related-work.bib          Bibliography (check entries before citing)
 notebooks/
-  01-production/            AdjointRWM_Production_Pilot.ipynb: main DROID pipeline (Colab GPU)
+  01-production/            Pilot v1 (provenance) and Pilot v2 (fixed allocation contract, rival allocators)
   02-diagnostics/           opportunity_audit.ipynb: run after the pilot, no retraining
+  03-benchmarks/            rival_world_models_droid100.ipynb: AdjointRWM vs rival world-model families
+  04-domains/               d4_adaptive_time_stepping.ipynb: first cross-domain reference domain (CPU)
   archive/                  Earlier notebooks, kept for provenance only
-src/adjointrwm/             Tested code lifted out of notebooks (allocation analysis so far)
+src/adjointrwm/             Tested package the notebooks import: data contracts, metrics, world-model arms,
+                            resumable training runner, allocators, analysis, domain-neutral allocation layer
 scripts/                    CLI tools (analyze_allocation_traces.py)
 harness/                    Cross-tool agent harness: sync, checks, hooks (see AGENTS.md)
 .agents/skills/             Portable agent skills shared by all coding agents
@@ -64,6 +78,7 @@ Large binaries (checkpoints, tensors, executed notebooks with outputs) stay on G
 ```bash
 git clone https://github.com/romusking/para_001 && cd para_001
 pip install -e ".[dev]"
+pip install torch --index-url https://download.pytorch.org/whl/cpu   # optional: model/training tests
 pytest
 python scripts/analyze_allocation_traces.py \
   results/runs/droid100_adjoint_20260929T070629Z/artifacts/allocation_traces.parquet
@@ -77,7 +92,9 @@ python scripts/analyze_allocation_traces.py \
 4. In the same runtime, run `notebooks/02-diagnostics/opportunity_audit.ipynb`.
 5. Copy the small artefacts (JSON, CSV, parquet, figures) into `results/runs/<run_id>/` and add the checkpoint hashes to its README.
 
-> The notebooks in this repo were rebuilt from Colab text exports. The code is complete, but cell outputs aren't included; the executed originals are on Drive.
+The next runs are `notebooks/01-production/AdjointRWM_Production_Pilot_v2.ipynb` and `notebooks/03-benchmarks/rival_world_models_droid100.ipynb`. Both import the tested package from this repository (set `REPO_REF`), record its commit in the run config, and can be split across Colab sessions (`MAX_STEPS_PER_SESSION`, then `RESUME_RUN_ID`). Read [`docs/plans/rival-benchmark-plan.md`](docs/plans/rival-benchmark-plan.md) first.
+
+> Pilot v1, the opportunity audit and the archive notebooks were rebuilt from Colab text exports; their executed originals are on Drive. Pilot v2 and the rival benchmark were written in this repo and have not been executed on Colab yet (only a CPU dry run with stubbed data, which checks the code paths and is not evidence).
 
 ---
 

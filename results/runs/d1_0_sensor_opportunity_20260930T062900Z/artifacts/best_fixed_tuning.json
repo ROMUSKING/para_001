@@ -1,0 +1,24 @@
+{
+  "areas": {
+    "120": {
+      "round_robin": 0.6832477630199337,
+      "top_volatility": 0.6151499045547112,
+      "top_weighted_volatility": 0.6806817221158926
+    },
+    "30": {
+      "round_robin": 0.6043356959543162,
+      "top_volatility": 0.5152057229240943,
+      "top_weighted_volatility": 0.5487914284534022
+    },
+    "60": {
+      "round_robin": 0.6256319185618233,
+      "top_volatility": 0.6163967859615208,
+      "top_weighted_volatility": 0.6267288822725524
+    }
+  },
+  "selected": {
+    "120": "top_volatility",
+    "30": "top_volatility",
+    "60": "top_volatility"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "config": {
+    "bootstrap_resamples": 10000,
+    "compute_levels": [
+      1000.0,
+      2000.0,
+      4000.0,
+      8000.0
+    ],
+    "compute_max_actions": 2032,
+    "delta_oracle_min": 1e-08,
+    "initial_intervals": 16,
+    "instances_per_family": 40,
+    "max_depth": 7,
+    "max_steps": 48,
+    "objective_kind": "bound",
+    "opportunity_min_relative": 0.15,
+    "random_draws": 8,
+    "test_seed": 2002,
+    "validation_seed": 1001
+  },
+  "config_sha256": "9a6ec9e927b6a8520d1b5f41da8ae2b06320ad5ba4c30976727f5513fb550d85",
+  "domain_spec": {
+    "candidate_kinds": [
+      "refine"
+    ],
+    "cost_units": {
+      "compute": "Crank-Nicolson steps: re-solve from the refined interval to the end, plus scoring cost",
+      "latency": "not measured",
+      "query": "none",
+      "rate": "stored states (one per new node)"
+    },
+    "data_source": "generated analytic benchmark: adjointrwm.domains.linear_ode.sample_instances with frozen seeds",
+    "domain_id": "d4_adaptive_time_stepping",
+    "family": "temporal",
+    "licence": "n/a (generated in this repository)",
+    "native_endpoint": "|c^T y(T) - c^T y_N| (error in the quantity of interest)",
+    "notes": "",
+    "oracle_support": "exact",
+    "privilege": {
+      "exact solution y(t)": "teacher/oracle only (computational privilege)",
+      "model (A, forcing, y0, c), CN solution": "P0"
+    }
+  },
+  "domain_spec_sha256": "3aecf7854e470f51d654050c208a2534300755ad5d68d49613436c99b151f7d5",
+  "notebook": "notebooks/04-domains/d4_adaptive_time_stepping.ipynb",
+  "repo_commit": "be9c6ed36a0e6ce7df331254a87b353e2987a9a1",
+  "repo_dirty": false,
+  "run_id": "d4_time_stepping_20260929T162518Z"
+}

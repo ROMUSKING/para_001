@@ -38,6 +38,9 @@ REAL_DATA_ALLOCATION           FAIL (collapse; opportunity audit pending)
 H2 ADJOINT > DIRECT CRITIC     NO EVIDENCE either way
 PRODUCTION PROMOTION           BLOCKED
 HARDWARE                       STAY ON L4 (pilot peak 0.6 GiB)
+PILOT V2 (E2.1/E2.2 = B2)      NOTEBOOK READY, NOT RUN
+RIVAL-MODEL BENCHMARK (B1)     NOTEBOOK READY, NOT RUN
+CROSS-DOMAIN (TRACK D)         D4 FIRST (DECIDED); D4-0, D4-0b DONE; D4-2 DONE; D4-1 STAYS CLOSED (no D4-2 cell satisfies both frozen rules); D1-0 DONE (G1 passes on a fidelity proxy that does not track the labelled endpoint; D1-1 not opened); D2-0, D3-0 NOT STARTED
 ```
 
 ---
@@ -61,6 +64,27 @@ Later (wk 15-68) N4 selective invocation, N5 control, N6 joins, N7 latent, N8 ha
 
 - **Track R** answers the scientific question on benchmarks where the right answer is known.
 - **Track E** builds the real-data substrate (loader, splits, checkpoints, dynamics) that any production model needs, whatever H2 turns out to be. Track E never produces an adjoint-superiority claim by itself.
+- **Track D** generalises the allocator beyond DROID: time series, LLM context, code, simulation, sensing and more (see [`cross-domain-plan.md`](cross-domain-plan.md)). It starts with D4, an exact-adjoint simulation domain, and reaches confirmatory cross-domain claims only through N6.
+- **Track B** benchmarks against rival models under an enforced fairness contract: rival world-model families for the Track E substrate (B1, B3) and rival allocators for H2 on DROID (B2 = E2.1/E2.2). See [`rival-benchmark-plan.md`](rival-benchmark-plan.md). A world-model result says nothing about H2.
+
+### 2.1 Recommended sequence (2026-09-29, after D4-0b)
+
+This is a recommendation for Roman to accept or change, not a decision. It orders the work by how much each step can change what we believe per unit of cost, and it follows from the evidence register in §1.1.
+
+1. **E1.1 first (Colab, one notebook, no training).** The only valid real-data allocation result is a failure (collapse, below chance), and the pilot's benchmark may simply have no adaptive opportunity. The opportunity audit on the existing checkpoint says which. If validation opportunity is below 15 %, redesign the candidates before any further training (risk table, §6).
+2. **B2 = E2.1 + E2.2 next (Colab L4).** Pilot v2 with the fixed evaluation contract and five paired seeds is the real-data H2 test. **B1 (rival world models) is a different question** (which substrate predicts best) and a result there says nothing about H2, so it is not on the critical path. Run it after B2, or in parallel when L4 time is free; the dynamics gate already passed once (single seed).
+3. **D4-2 is done (CPU): D4-1 stays closed.** D4 is the one place where the exact answer is known and a run costs minutes. D4-0 and D4-0b showed that exact co-state scoring does not pay for itself at the real price. D4-2 priced scorers in FLOPs on seven cells ([note](../research-notes/2026-09-30-d4-2-flop-priced-scoring.md)): a small learned scorer costs 0.245 (`m` = 32) and 0.133 (`m` = 64) of step-doubling scoring and beats uniform refinement in 3 of 7 cells, but a hand-built non-learned estimator does at least as well in every cell, and the co-state weight helps that estimator only at `m` = 64 (about 10 %). No cell satisfies both frozen rules, so there is no D4 regime in which to run D4-1. The one D4 question left for H2 is a *varying goal*, checked first with the non-learned pair (D4-3 below); nothing in D4 needs to block E1.1 or B2.
+4. **If D4-1 is ever opened, size it for the headroom that exists.** With the exact co-state at scoring price ×0.25 or ×0, the co-state needed 9–29 % less compute than the residual score in `sharp` (point estimates, D4-0b note §3.4), and D4-2 found about 10 % at `m` = 64 for the cheap estimator. A learned direct critic cannot lose more than that to a co-state-featured one, so D4-1 must be powered for effects of at most that size.
+5. **Defer:** production P5+ until G-H2, N6, and any GPU larger than the L4 without a profiler or held-out-gain justification. The other domains were deferred until DL pass 2 (Roman's decision); DL is done, the candidates are confirmed, and D1-0 has run (D2-0 and D3-0 follow the same card-and-gate pattern).
+6. **Roman's decision (2026-09-29, after this recommendation): the licence survey (DL) comes first, then the rest.** Pass 1 and pass 2 are done; the steps above are unchanged.
+
+**Stop-losses.**
+
+- E1.1 opportunity below 15 % on validation → redesign candidates; no B2 spend until it passes.
+- D4-2 measures a learned scorer's price above ×0.25 in every regime where adaptivity pays → D4-1 stays closed; record it as a D4 negative result. *Outcome:* the price condition was not triggered (0.245 at `m` = 32, 0.133 at `m` = 64), but the frozen rules R1 and R3 held together in no cell, so D4-1 stays closed for that reason and it is recorded as a D4 negative result.
+- D4-1 shows the direct critic matching the co-state-featured critic → record "direct utility sufficient" for D4 and do not use D4 as evidence for H2 on real data.
+
+**What would change this recommendation.** A high E1.1 opportunity and a positive B2 result would move D4 down to a mechanism study. A goal-varying D4 check (D4-3) in which the co-state weight helps a cheap estimator by a confidence-bounded margin would reopen D4-1 there. A wider `θ` grid that changes the residual-versus-co-state ordering in D4-0b would reopen D4-1 at the real ledger.
 
 ---
 
@@ -94,6 +118,39 @@ Dates assume a start of Mon 29 Sep 2026 and one person working part-time on Cola
 | E2.2 | 5 paired seeds on DROID-100, reusing the frozen split | Adjoint − critic regret reported with an episode-cluster bootstrap CI; opportunity proxy on validation | E |
 
 **Decision after N1.** If the LQTree opportunity or correctness gates fail, stop and fix the benchmark or code before N2. A failure here is not a verdict on the adjoint hypothesis.
+
+### Track B: benchmarks against rival models (from week 0; details in [`rival-benchmark-plan.md`](rival-benchmark-plan.md))
+
+| ID | Deliverable | Done when | Status (2026-09-29) |
+|---|---|---|---|
+| B0 | Plan, tested package modules, two notebooks | `harness/check.py` passes; notebooks import the package | Done (this change) |
+| B1 | `03-benchmarks/rival_world_models_droid100.ipynb` on L4: AdjointRWM vs DreamerV3-, TD-MPC2-, DINO-WM-, V-JEPA 2-AC-style arms + persistence/ridge, 5 seeds | `COMPLETE`, fairness contract PASS, imported, research note with every classification | Not run |
+| B2 | `01-production/AdjointRWM_Production_Pilot_v2.ipynb`, 5 paired seeds (= E2.1 + E2.2) | Opportunity, critic-floor and adjoint − critic results per seed and pooled; note written | Not run |
+| B3 | B1 repeated on the E3.1 shard with scene/task/site splits | Confirmatory substrate comparison | Waits for E3.1 |
+| B4 | Released-checkpoint and encoder-swap arms (exploratory; V-JEPA 2-AC is DROID-trained, so contamination is possible) | Contamination status recorded | Optional |
+| B5 | Planning rivals in simulation (official TD-MPC2 code, CEM on ManiSkill3) | — | Gated on G-H2 and Phase II |
+
+### Track D: cross-domain generalisation (details in [`cross-domain-plan.md`](cross-domain-plan.md))
+
+| ID | Deliverable | Done when | Status (2026-09-29) |
+|---|---|---|---|
+| D0 | Plan; `adjointrwm.domains` (interface, runner, ledgers, metrics); D4 reference domain with exact tests | `harness/check.py` passes | Done |
+| D4-0 | `04-domains/d4_adaptive_time_stepping.ipynb` on CPU: correctness, rate-budget opportunity, weighting comparison, equal-compute check | Run imported, note written | Done: correctness ✅, rate-budget opportunity ✅, equal-compute payoff ❌ ([note](../research-notes/2026-09-29-d4-0-adaptive-time-stepping.md)) |
+| D4-0b | Pass-based allocation and a localisation sweep, validation only | Run imported, note written | Done: at the real price adaptivity pays only in the most localised family and the residual score does as well as the co-state; the frozen rule is met in 2 of 9 cells, both at hypothetical prices ([note](../research-notes/2026-09-29-d4-0b-where-adaptivity-pays.md)) |
+| D4-2 | Learned amortised scorer priced at its measured cost; higher-dimensional system; one factor varied at a time; wider `θ` grid | Regime and price frozen before validation is read; note written | **Done:** correctness ✅; R1 (an amortised scorer beats uniform) holds in 3 of 7 cells, R3 (the co-state weight helps the cheap estimator) in 1, none has both; a non-learned cheap estimator matches or beats the learned scorer everywhere ([plan](d4-2-plan.md), [note](../research-notes/2026-09-30-d4-2-flop-priced-scoring.md)) |
+| D4-3 | *Proposed, not started.* Varying goal per instance: the non-learned pair `cheap` vs `cheap_adjoint` on validation, frozen rule written first | Regime and rule frozen before validation; note written | Awaits Roman's go-ahead; D4 does not block E1.1 or B2 |
+| D4-1 | Learned direct critic vs co-state-featured critic on D4, 5 seeds | Rung-1 gate, §0A.3 exit class | Closed: no D4-2 cell satisfies R1 and R3; reopens only through D4-3 |
+| DL | Licence survey of permissively licensed data and models for the other domains | Per-source licence and release terms; small usability test | **Pass 2 done** (59 sources: 17 `adopt`, 12 `adopt_with_conditions`, 5 `avoid`, 25 `unverified`; [survey](../licences/survey-2026-09-29-pass2.md)) |
+| D1-0 | Sensor-stream domain card, adapter and Rung-0 opportunity gate on SMD (tuning and validation machines only; test machines never downloaded) | Run imported; note written; gate of plan §7.2B-1 | **Done:** correctness ✅; G1 ✅ robust (relative headroom 0.920 [0.886, 0.949] against the best fixed allocation, privileged reference); non-learned deployable policies keep 0.42 to 0.49 of it; **labelled F1 does not improve with sensing (0.259 hold, 0.192 full), so the proxy loss does not track the task** ([plan](d1-0-plan.md), [note](../research-notes/2026-09-30-d1-0-sensor-opportunity.md)) |
+| D1-0b | *Proposed, not started.* Redesign D1's objective so the labelled endpoint moves with sensing (or switch to a forecasting objective), tested first on tuning machines | Regime and rule frozen first | Awaits Roman's decision; D1-1 is not designed on the current loss |
+| D2-0, D3-0 | LLM-context and graph domain cards and adapters (Tier P) | Rung-0 gate | Candidates confirmed 2026-09-30 ("proceed as recommended"): D2 with Qwen3-8B and MuSiQue/Qasper, D3 with code-repository context; not started. Lesson carried over from D4-2 and D1-0: check the loss against the domain's native endpoint before any critic is built |
+| DX | Shared allocator, leave-one-domain-out, negative-transfer guard | Rungs 2–3; confirmatory only in N6 | Waits for ≥ 3 specialists and the N2 exit class |
+
+**Progress on existing rows (2026-09-29, not yet run on Colab):**
+
+- **N0.1, partly done.** Data windows, split, normalisation, objective, the pilot model, exact co-state targets and evaluation now live in `src/adjointrwm/`. Tests cover split and window parity with the pilot, causality (predictions unchanged when future targets are replaced), exact co-state against float64 finite differences, and checkpoint round-trip. The pilot's parameter count is reproduced exactly (27,360,798, as in its `model_manifest.json`). Still open: v1 itself still inlines its code (it is kept for provenance).
+- **N0.3, CPU part done.** `tests/test_training.py` checks that pause-and-resume gives bit-identical weights to uninterrupted training. It found that creating a `DataLoader` iterator draws from the global RNG; the runner now uses a dedicated generator. v1 has no resume path, so no v1 result is affected. Still open: the same check on Colab with CUDA.
+- **E2.1, implemented, not run.** It is the pilot v2 notebook (B2). The one deviation from the E2.1 wording: the dynamics gate is evaluated on validation, not test, so the test split is read once.
 
 ### Then: weeks 5–18 (3 Nov – 1 Feb)
 
@@ -179,3 +236,7 @@ Every sentence in a submission maps to a gate artefact through a claim matrix (p
 2. **Data scale:** is streaming full DROID from `gs://gresearch/robotics` within your Colab storage and egress limits, or should E3 use BridgeData V2 first?
 3. **Governing plan:** should the comprehensive (cross-domain) plan formally supersede v5? This roadmap assumes yes.
 4. **Stage 0 notebooks:** which Drive copy of `Stage0_LQTree_Benchmark` is canonical? Six versions exist.
+5. **Rival benchmark endpoint:** normalised-state RMSE (the pilot's gate metric, assumed) or native-unit RMSE of one state group as the B1 primary endpoint?
+6. **TD-MPC2 input:** information-matched 8-frame stack (assumed) or the faithful single frame as the primary TD-MPC2 arm?
+7. **B4:** run the released V-JEPA 2-AC checkpoint at all, given possible DROID train/test contamination and a ViT-g encoder on L4?
+8. **Track D:** decided 2026-09-29: D4 first, the other domains subject to future research into permissively licensed content and testing. Decided later the same day: licence survey (DL) first, then the rest. DL is done through pass 2. Decided 2026-09-30 ("proceed as recommended"): the D1, D2 and D3 candidates the survey recommends are confirmed (SMD; Qwen3-8B with MuSiQue and Qasper; code-repository context), D4-1 stays closed, and E1.1 then B2 remain the critical path (Colab). D1-0 is done; D2-0 and D3-0 are not started. Open: whether to redesign D1's objective (D1-0b), and whether to run the varying-goal D4 check (D4-3).

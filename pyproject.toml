@@ -13,6 +13,9 @@ dependencies = ["numpy>=1.26", "pandas>=2.1", "pyarrow>=14"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "nbformat>=5.9"]
+# Model, training and allocator modules (adjointrwm.models/.training/.allocators). Without it,
+# their tests are skipped. CI installs the CPU wheel: pip install torch --index-url https://download.pytorch.org/whl/cpu
+torch = ["torch>=2.1"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -20,3 +23,5 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+# The pilot model (lifted verbatim) uses norm_first=True, which disables PyTorch's nested-tensor fast path.
+filterwarnings = ["ignore:enable_nested_tensor is True:UserWarning"]

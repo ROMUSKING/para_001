@@ -1,0 +1,20 @@
+{
+  "batch_equals_sequential": true,
+  "costate_proxy_close_on_fine_mesh": true,
+  "error_representation_on_batch_grids": true,
+  "features_finite": true,
+  "flop_formula_matches_counted_code_path": true,
+  "indicator_zero_without_forcing": true,
+  "max_costate_proxy_rel_gap": 0.0002915068696846734,
+  "max_reference_diff": 1.3699930079269507e-10,
+  "max_representation_abs_diff": 5.115907697472721e-13,
+  "passed": true,
+  "reference_converged": true,
+  "wall_clock_sanity_seconds": {
+    "cell": "m64",
+    "features_and_network_all_intervals": 0.004767108949999965,
+    "intervals": 1024,
+    "note": "CPU sandbox timings; not a claim",
+    "one_step_all_intervals": 0.0016354578999994373
+  }
+}

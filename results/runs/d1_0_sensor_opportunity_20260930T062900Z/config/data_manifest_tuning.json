@@ -1,0 +1,215 @@
+{
+  "files": [
+    {
+      "bytes": 9739818,
+      "kind": "train",
+      "machine": "machine-1-1",
+      "path": "train/machine-1-1.txt",
+      "retrieved_utc": "cached",
+      "sha256": "ecebd2933ccdc1126e2abbfb538762dbde16410cebc77257a7b96e1e1fbcf753",
+      "split": "tuning",
+      "url": "https://raw.githubusercontent.com/NetManAIOps/OmniAnomaly/master/ServerMachineDataset/train/machine-1-1.txt"
+    },
+    {
+      "bytes": 9739818,
+      "kind": "test",
+      "machine": "machine-1-1",
+      "path": "test/machine-1-1.txt",
+      "retrieved_utc": "cached",
+      "sha256": "bdb801d8d52ce6b0c4a20c310edf31b5cee9bc82eb84fb38e7d4a19309b16ddb",
+      "split": "tuning",
+      "url": "https://raw.githubusercontent.com/NetManAIOps/OmniAnomaly/master/ServerMachineDataset/test/machine-1-1.txt"
+    },
+    {
+      "bytes": 56958,
+      "kind": "test_label",
+      "machine": "machine-1-1",
+      "path": "test_label/machine-1-1.txt",
+      "retrieved_utc": "cached",
+      "sha256": "cddf33441ae480c6074e173c897d4715eb893f24a7078d3d3e1b79b200c7cd19",
+      "split": "tuning",
+      "url": "https://raw.githubusercontent.com/NetManAIOps/OmniAnomaly/master/ServerMachineDataset/test_label/machine-1-1.txt"
+    },
+    {
+      "bytes": 8107110,
+      "kind": "train",
+      "machine": "machine-1-5",
+      "path": "train/machine-1-5.txt",
+      "retrieved_utc": "cached",
+      "sha256": "69061055f43413863434cb9c0424c14b13a7a0817056a8fd9439e53dc365fc0b",
+      "split": "tuning",
+      "url": "https://raw.githubusercontent.com/NetManAIOps/OmniAnomaly/master/ServerMachineDataset/train/machine-1-5.txt"
+    },
+    {
+      "bytes": 8107452,
+      "kind": "test",
+      "machine": "machine-1-5",
+      "path": "test/machine-1-5.txt",
+      "retrieved_utc": "cached",
+      "sha256": "98b8979f21b4b68c7308f38dd093b9bff4275814578365103c692f28f60f61c5",
+      "split": "tuning",
+      "url": "https://raw.githubusercontent.com/NetManAIOps/OmniAnomaly/master/ServerMachineDataset/test/machine-1-5.txt"
+    },
+    {
+      "bytes": 47412,
+      "kind": "test_label",
+      "machine": "machine-1-5",
+      "path": "test_label/machine-1-5.txt",
+      "retrieved_utc": "cached",
+      "sha256": "e7e2e611e12b5e9e2558ed955ad271f1f408fbdd7fbbfdfc72eb745ade567815",
+      "split": "tuning",
+      "url": "https://raw.githubusercontent.com/NetManAIOps/OmniAnomaly/master/ServerMachineDataset/test_label/machine-1-5.txt"
+    },
+    {
+      "bytes": 8103006,
+      "kind": "train",
+      "machine": "machine-2-1",
+      "path": "train/machine-2-1.txt",
+      "retrieved_utc": "cached",
+      "sha256": "d6eb13ff74a537cf33686319fffdd4cdcb394862570a3acd519b4c37af97cd2e",
+      "split": "tuning",
+      "url": "https://raw.githubusercontent.com/NetManAIOps/OmniAnomaly/master/ServerMachineDataset/train/machine-2-1.txt"
+    },
+    {
+      "bytes": 8103348,
+      "kind": "test",
+      "machine": "machine-2-1",
+      "path": "test/machine-2-1.txt",
+      "retrieved_utc": "cached",
+      "sha256": "2d103661799271be958227907950a1c76803356442d60a4070671cc0abbefb20",
+      "split": "tuning",
+      "url": "https://raw.githubusercontent.com/NetManAIOps/OmniAnomaly/master/ServerMachineDataset/test/machine-2-1.txt"
+    },
+    {
+      "bytes": 47388,
+      "kind": "test_label",
+      "machine": "machine-2-1",
+      "path": "test_label/machine-2-1.txt",
+      "retrieved_utc": "cached",
+      "sha256": "416dd20a447f38b8d9394382293ed44f509c1c3f99c4aa2fbff179498626dbdc",
+      "split": "tuning",
+      "url": "https://raw.githubusercontent.com/NetManAIOps/OmniAnomaly/master/ServerMachineDataset/test_label/machine-2-1.txt"
+    },
+    {
+      "bytes": 8101296,
+      "kind": "train",
+      "machine": "machine-2-5",
+      "path": "train/machine-2-5.txt",
+      "retrieved_utc": "cached",
+      "sha256": "940cdf20a8345fdeeb8043efd7ce9f7506fe0e7f5f89f8b50edf19b61b304136",
+      "split": "tuning",
+      "url": "https://raw.githubusercontent.com/NetManAIOps/OmniAnomaly/master/ServerMachineDataset/train/machine-2-5.txt"
+    },
+    {
+      "bytes": 8101638,
+      "kind": "test",
+      "machine": "machine-2-5",
+      "path": "test/machine-2-5.txt",
+      "retrieved_utc": "cached",
+      "sha256": "842588acfb9299735a785757fcadd98cc7f69b6a511d28e54e1af05c5e95137b",
+      "split": "tuning",
+      "url": "https://raw.githubusercontent.com/NetManAIOps/OmniAnomaly/master/ServerMachineDataset/test/machine-2-5.txt"
+    },
+    {
+      "bytes": 47378,
+      "kind": "test_label",
+      "machine": "machine-2-5",
+      "path": "test_label/machine-2-5.txt",
+      "retrieved_utc": "cached",
+      "sha256": "9966e4092bece4e0ef60ef54d85396c49c22da64334aad82a9fc2f3842d2ef15",
+      "split": "tuning",
+      "url": "https://raw.githubusercontent.com/NetManAIOps/OmniAnomaly/master/ServerMachineDataset/test_label/machine-2-5.txt"
+    },
+    {
+      "bytes": 9822924,
+      "kind": "train",
+      "machine": "machine-2-9",
+      "path": "train/machine-2-9.txt",
+      "retrieved_utc": "cached",
+      "sha256": "465db893338b6f14985dd30ac2ff20a319246bb8584cd0a9a4aaacf52cbc2f1f",
+      "split": "tuning",
+      "url": "https://raw.githubusercontent.com/NetManAIOps/OmniAnomaly/master/ServerMachineDataset/train/machine-2-9.txt"
+    },
+    {
+      "bytes": 9822924,
+      "kind": "test",
+      "machine": "machine-2-9",
+      "path": "test/machine-2-9.txt",
+      "retrieved_utc": "cached",
+      "sha256": "8d93ccd1a6606de3f665cb2e905d206b60ad2b2a58f47e9561b9bb67a2cd4f28",
+      "split": "tuning",
+      "url": "https://raw.githubusercontent.com/NetManAIOps/OmniAnomaly/master/ServerMachineDataset/test/machine-2-9.txt"
+    },
+    {
+      "bytes": 57444,
+      "kind": "test_label",
+      "machine": "machine-2-9",
+      "path": "test_label/machine-2-9.txt",
+      "retrieved_utc": "cached",
+      "sha256": "eab9425847aa5c7c63485047a49b1bfc9cf44ed88a0d1be84e2fd0a16d0ba895",
+      "split": "tuning",
+      "url": "https://raw.githubusercontent.com/NetManAIOps/OmniAnomaly/master/ServerMachineDataset/test_label/machine-2-9.txt"
+    },
+    {
+      "bytes": 8100954,
+      "kind": "train",
+      "machine": "machine-3-4",
+      "path": "train/machine-3-4.txt",
+      "retrieved_utc": "2026-09-30T06:29:03.980030+00:00",
+      "sha256": "a27a88c5d96c3384e07776dd2ced9956f7ea78b1070b87786352bc6024129d72",
+      "split": "tuning",
+      "url": "https://raw.githubusercontent.com/NetManAIOps/OmniAnomaly/master/ServerMachineDataset/train/machine-3-4.txt"
+    },
+    {
+      "bytes": 8100954,
+      "kind": "test",
+      "machine": "machine-3-4",
+      "path": "test/machine-3-4.txt",
+      "retrieved_utc": "2026-09-30T06:29:04.886483+00:00",
+      "sha256": "07e1b43e20b7d8300fcd4b4f45ea47ea8c851f3dbd7d1fe971139c32f039357e",
+      "split": "tuning",
+      "url": "https://raw.githubusercontent.com/NetManAIOps/OmniAnomaly/master/ServerMachineDataset/test/machine-3-4.txt"
+    },
+    {
+      "bytes": 47374,
+      "kind": "test_label",
+      "machine": "machine-3-4",
+      "path": "test_label/machine-3-4.txt",
+      "retrieved_utc": "2026-09-30T06:29:05.152621+00:00",
+      "sha256": "5c1f09b85c53d1936eff1e044c5f7413b07f10fd641934b4aba9b2669485b7be",
+      "split": "tuning",
+      "url": "https://raw.githubusercontent.com/NetManAIOps/OmniAnomaly/master/ServerMachineDataset/test_label/machine-3-4.txt"
+    },
+    {
+      "bytes": 9816426,
+      "kind": "train",
+      "machine": "machine-3-8",
+      "path": "train/machine-3-8.txt",
+      "retrieved_utc": "2026-09-30T06:29:05.807347+00:00",
+      "sha256": "414ba622ae70118948a3940009ce4e90580b494ea07f9e03893c26e102edd855",
+      "split": "tuning",
+      "url": "https://raw.githubusercontent.com/NetManAIOps/OmniAnomaly/master/ServerMachineDataset/train/machine-3-8.txt"
+    },
+    {
+      "bytes": 9816768,
+      "kind": "test",
+      "machine": "machine-3-8",
+      "path": "test/machine-3-8.txt",
+      "retrieved_utc": "2026-09-30T06:29:06.326062+00:00",
+      "sha256": "fa79d5dad3a703fbc13faf0eab26d9466b74789f2bb0d22776f2adaa4236f085",
+      "split": "tuning",
+      "url": "https://raw.githubusercontent.com/NetManAIOps/OmniAnomaly/master/ServerMachineDataset/test/machine-3-8.txt"
+    },
+    {
+      "bytes": 57408,
+      "kind": "test_label",
+      "machine": "machine-3-8",
+      "path": "test_label/machine-3-8.txt",
+      "retrieved_utc": "2026-09-30T06:29:06.644051+00:00",
+      "sha256": "dc834a5b5e9a194f5367423c29410afcb622e0e47d7d3362979dd280de713220",
+      "split": "tuning",
+      "url": "https://raw.githubusercontent.com/NetManAIOps/OmniAnomaly/master/ServerMachineDataset/test_label/machine-3-8.txt"
+    }
+  ],
+  "sha256": "44bff97cb2597e0dab28e88e107aa76cf4cfe8a28274b0448bc5945daa35d222"
+}
