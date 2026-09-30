@@ -595,3 +595,62 @@ def break_even_instances(one_off_steps: float, uniform_compute, arm_compute) -> 
     """One-off cost divided by the mean compute the arm saves per instance against uniform refinement; ``None`` if it saves nothing."""
     saving = float(np.mean(np.asarray(uniform_compute, dtype=float) - np.asarray(arm_compute, dtype=float)))
     return float(one_off_steps / saving) if saving > 0 else None
+
+
+# ---------------------------------------------------------------------------
+# D4-3: the goal varies per instance (docs/plans/d4-3-plan.md)
+# ---------------------------------------------------------------------------
+
+GOAL_STREAM_OFFSET = 10_000     # the goals come from their own random stream, so forcing and initial states match D4-2's instances
+
+
+def varying_goal_instances(cell: Cell | str, family: str, count: int) -> list[LinearODEInstance]:
+    """The instances of :func:`cell_instances` (same system, pulses and initial states) with a fresh random unit goal per instance.
+
+    Names carry ``d4_3``. The goals are drawn from ``default_rng(FAMILY_SEEDS[family] + GOAL_STREAM_OFFSET + m)``; the test family is
+    refused exactly as in :func:`cell_instances`."""
+    cell = CELLS[cell] if isinstance(cell, str) else cell
+    base = cell_instances(cell, family, count)
+    rng = np.random.default_rng(FAMILY_SEEDS[family] + GOAL_STREAM_OFFSET + cell.m)
+    out = []
+    for i, inst in enumerate(base):
+        v = rng.normal(size=inst.m)
+        out.append(dataclasses.replace(inst, goal=tuple(float(x) for x in v / np.linalg.norm(v)), name=f"d4_3_{cell.name}_{family}_{i:03d}"))
+    return out
+
+
+def setup_steps(instance: LinearODEInstance) -> float:
+    """The per-instance cost, in CN steps, of tabulating the co-state of this instance's goal on the finest grid."""
+    return steps_from_flops(instance, flops_table_setup(instance))
+
+
+def with_setup_charged(frame, instances, policy: str = "cheap_adjoint", name: str = "cheap_adjoint_setup"):
+    """Scale-1 frame plus the rows of ``policy`` relabelled ``name`` with that instance's table setup added to its compute.
+
+    With a goal per instance the tabulated co-state cannot be shared, so its one-off cost is paid by every instance. Targets the
+    policy did not reach stay unreached (infinite compute)."""
+    import pandas as pd  # noqa: PLC0415
+
+    setup = {inst.name: setup_steps(inst) for inst in instances}
+    real = frame[frame["decision_scale"] == 1.0]
+    extra = real[real["policy"] == policy].copy()
+    extra["compute"] = extra["compute"] + extra["instance"].map(setup)
+    extra["policy"] = name
+    return pd.concat([real, extra], ignore_index=True)
+
+
+def cell_rules_varying_goal(block: dict, targets=TARGETS) -> dict:
+    """The frozen D4-3 rules (docs/plans/d4-3-plan.md §6) from ``work_precision_summary(...)[scale '1'][target]`` blocks.
+
+    R3v: ``cheap_adjoint`` (co-state given) beats ``cheap`` at two adjacent targets. R4v: ``cheap_adjoint`` beats ``uniform_pass`` at two
+    adjacent targets. A D4-1 candidate cell needs both. ``cheap_adjoint_setup`` (table setup charged per instance) is reported, not gated."""
+    def has(pair):
+        return pair in block[targets[0]]["differences"]
+
+    r3 = two_adjacent(beats(block, "cheap_adjoint / cheap", targets))
+    r4 = two_adjacent(beats(block, "cheap_adjoint / uniform_pass", targets))
+    others = {arm: two_adjacent(beats(block, f"{arm} / uniform_pass", targets))
+              for arm in ("residual", "goal_local", "adjoint", "cheap", "cheap_adjoint", "cheap_adjoint_setup") if has(f"{arm} / uniform_pass")}
+    setup_vs_cheap = two_adjacent(beats(block, "cheap_adjoint_setup / cheap", targets)) if has("cheap_adjoint_setup / cheap") else None
+    return {"R3v_costate_weight_helps_cheap_estimator": r3, "R4v_goal_aware_cheap_arm_beats_uniform": r4, "candidate_regime_for_d4_1": bool(r3 and r4),
+            "setup_charged_cheap_adjoint_beats_cheap": setup_vs_cheap, "arm_beats_uniform_two_adjacent_targets": others}
