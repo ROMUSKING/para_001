@@ -4,7 +4,7 @@ Research code, protocols, notebooks and results for **adjoint-guided recursive r
 
 The core question: can a recursive world model decide where to spend representational detail, compute, sensing and cross-domain communication by using a **co-state**? The co-state here is the gradient of a declared future cost with respect to the deployed model state. The test is whether this beats a **direct marginal-gain critic** that is matched on parameters, information, supervision, actual coded rate and measured compute.
 
-> **Status in one line:** the real-data dynamics model works. The allocator doesn't yet. There is **no evidence yet** that the adjoint beats the direct critic. Production promotion is blocked, and the next milestones are in the [roadmap](docs/plans/roadmap.md).
+> **Status in one line:** the real-data dynamics model beats persistence on the pilot's test split but **not on its validation split** (the same checkpoint: +31 % on test, −22 % on validation). The allocator doesn't yet. There is **no evidence yet** that the adjoint beats the direct critic. Production promotion is blocked, and the next milestones are in the [roadmap](docs/plans/roadmap.md).
 
 ---
 
@@ -13,11 +13,11 @@ The core question: can a recursive world model decide where to spend representat
 | Gate | Result | Evidence |
 |---|---|---|
 | Real data (DROID-100, episode-level split, no synthetic fallback) | ✅ pass | [run](results/runs/droid100_adjoint_20260929T070629Z/) |
-| Dynamics beat persistence on held-out episodes | ✅ pass: RMSE 0.156 vs 0.226 (−31 %), single seed. Persistence still wins at one step ahead. | [findings §2.1](docs/research-notes/2026-09-29-droid100-pilot-findings.md) |
+| Dynamics beat persistence on held-out episodes | ⚠️ **split-dependent**: passes on the test split (RMSE 0.156 vs 0.226, −31 %, single seed) and **fails on the validation split** for the same checkpoint (0.230 vs 0.189, +22 % worse); the pilot v2 seed-0 checkpoint also fails there (0.212 vs 0.189). Persistence wins at steps 1 and 2 on validation. Ten held-out episodes per split; cause untested. | [findings §2.1](docs/research-notes/2026-09-29-droid100-pilot-findings.md), [parity note](docs/research-notes/2026-09-30-dynamics-parity.md) |
 | Allocation beats random | ❌ fail: adjoint 0.037, critic 0.038, one random draw 0.021 | [findings §2.2](docs/research-notes/2026-09-29-droid100-pilot-findings.md) |
 | **H2**: adjoint vs direct critic | ⚪ tie: −0.0009, 95 % CI [−0.0028, +0.0004] | [`trace_summary.json`](results/runs/droid100_adjoint_20260929T070629Z/artifacts/trace_summary.json) |
 | Evidence-integrity reset (N0) | ⏳ in progress: pilot code lifted into `src/` with parity, causality, finite-difference and resume tests | [roadmap §3](docs/plans/roadmap.md) |
-| Pilot v2: fixed allocation contract + rival allocators (E2.1/E2.2 = B2) | ❌ one-seed probe run 2026-09-30: seed 0 **failed the dynamics gate** on validation (model RMSE 0.2125 vs persistence 0.1886); the run then crashed in its report path; five-seed run not started | [audit](docs/audits/2026-09-30_b2_probe_seed0_dynamics_gate_audit.md) |
+| Pilot v2: fixed allocation contract + rival allocators (E2.1/E2.2 = B2) | ❌ one-seed probe run 2026-09-30: seed 0 **failed the dynamics gate** on validation (model RMSE 0.2125 vs persistence 0.1886); the run then crashed in its report path. The same-split parity run shows the pilot checkpoint fails that gate too, so **five-seed run held**: its gate would likely block most seeds | [audit](docs/audits/2026-09-30_b2_probe_seed0_dynamics_gate_audit.md), [parity note](docs/research-notes/2026-09-30-dynamics-parity.md) |
 | Benchmark vs rival world models (B1: DreamerV3-, TD-MPC2-, DINO-WM-, V-JEPA 2-AC-style) | ⏳ notebook ready, **not run** | [plan](docs/plans/rival-benchmark-plan.md) |
 | Cross-domain (Track D), D4-0: adaptive time stepping, an exact-adjoint reference domain (analytic, in-repo) | correctness ✅ · rate-budget opportunity ✅ · **equal-compute payoff ❌**: plain uniform refinement beats every adaptive policy at equal total compute, so D4-1 stays closed | [note](docs/research-notes/2026-09-29-d4-0-adaptive-time-stepping.md), [run](results/runs/d4_time_stepping_20260929T162518Z/) |
 | Cross-domain (Track D), D4-0b: where adaptive allocation pays at equal compute (validation-only design study) | pass-based marking does not rescue adaptivity at the real scoring price on the smooth family; it pays only in the most localised family, where the cheap residual score does as well as the co-state; the frozen D4-1 rule is met in **2 of 9 cells, both at hypothetical scoring prices**, so D4-1 stays closed at the real ledger | [note](docs/research-notes/2026-09-29-d4-0b-where-adaptivity-pays.md), [run](results/runs/d4_0b_adaptivity_20260929T174347Z/) |
@@ -55,7 +55,7 @@ papers/
   related-work.bib          Bibliography (check entries before citing)
 notebooks/
   01-production/            Pilot v1 (provenance) and Pilot v2 (fixed allocation contract, rival allocators)
-  02-diagnostics/           dynamics_parity.ipynb (same-split dynamics check, L4 job), opportunity_audit.ipynb: run after the pilot, no retraining
+  02-diagnostics/           dynamics_kfold.ipynb (episode-level k-fold dynamics study, L4 jobs), dynamics_parity.ipynb (same-split dynamics check, L4 job), opportunity_audit.ipynb: run after the pilot, no retraining
   03-benchmarks/            rival_world_models_droid100.ipynb: AdjointRWM vs rival world-model families
   04-domains/               d4_adaptive_time_stepping.ipynb: first cross-domain reference domain (CPU)
   archive/                  Earlier notebooks, kept for provenance only

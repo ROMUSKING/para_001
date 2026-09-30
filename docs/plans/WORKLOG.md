@@ -21,6 +21,44 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 
 ---
 
+## 2026-09-30 23:13 (BST) · Claude Code (web) · k-fold dynamics study (built)
+
+- **Decision (Roman, this session):** of the options offered, "k-fold dynamics study, run twice (pilot regime and v2 regime)". I first asked because "the two jobs" could have meant B2 plus B1; the answer settled it.
+- **Changed:** frozen plan (commit `84ca8be`, 22:06:07 UTC, before any code), helpers, notebook, allow-list entry, comparison script, 31 new tests, docs (CHANGELOG (aa)). Two corrections to my own plan before any fold ran, both logged in its section 9: a wrong module path, and a wrong sentence saying the pilot's test split is never built (in a k-fold over all 100 episodes each test episode is held out once and trains the other folds; B2 does not reuse these models).
+- **Defect found and fixed in review:** the first version of the notebook checked the pilot checkpoint's hash in its last cell, after about 55 minutes of training; the anchor lookups now run before any training.
+- **Verified:** `pytest` for the helpers (19), the notebook smoke test (6, CPU, tiny random fixtures through a fake Drive tree) and the comparison script (3). Mutations caught: `>=` for `>` in the decision rule, fold = contiguous blocks instead of rank mod k, held-out fold in the training pool, wrong episodes scored, failed anchor ignored. **Not verified:** anything on Colab; that the anchor unit reproduces the stored numbers within the plan's tolerances (0.01, 0.02; policy values); training time per unit (the plan's 496 s is the probe's measured figure on the same code path).
+- **Queued (22:15 UTC):** `1-dynamics-kfold-v2-r1.json` (Drive `1mqgMJLUp97Sz4s1C2b3xvRdMDB0pnlRG`, `regimes=['v2']`, job SHA-256 `88a05182…76fd`) and `2-dynamics-kfold-pilot-r1.json` (Drive `1-2_lT0t9T1zEaVdUSVhPZjqmBIJHiPUR`, `regimes=['pilot']`, `d92199c2…44b7`) in the Drive inbox, both pinned to `8a3fea619196b7e5b44c5bc1dc29cb420d6fd02b`, 2 h limit each. Before uploading: both validated with `scripts/colab_job.py`, and the worker's own `prepare_notebook` was run on the real notebook (each override applied to exactly one line, the commit pinned). After uploading: the bytes were downloaded from Drive and equal the validated jobs (sizes 446 and 455, same canonical hashes). **They cannot run until `main` has the notebook and its allow-list entry** (the worker reads both from `main`, which was at `8b5550f` and had neither when they were uploaded): a worker started earlier would reject them and move them to `done`.
+- **Open:** (1) the branch must be merged into `main` before the worker can run the notebook; (2) two jobs, now queued: `dynamics-kfold-v2-r1` (`regimes=['v2']`) and `dynamics-kfold-pilot-r1` (`regimes=['pilot']`), 2 h limit each; (3) B2 gate design and the failed-gate report path remain open.
+
+---
+
+## 2026-09-30 23:20 (BST) · Claude Code (web) · B2, dynamics parity (import)
+
+- **Changed:** imported the parity run (`results/runs/dynamics_parity_20260930T214043Z/`, README with hashes and file origins), `scripts/dynamics_parity_tables.py`, `tests/test_dynamics_parity_tables.py`, nine Drive inventory rows, the note's provenance line (CHANGELOG (z)).
+- **Verified:** per file, SHA-256 of the copy equals the zip's and its size equals the Drive metadata; config hash `f913d72a…99d1a` recomputed from the `config` block equals `config_sha256` and the report's `config_hash`; the CSV, the JSON rows and the report rows agree; each row's relative improvement recomputes from its RMSEs. The note's tables, anchors and cross-split numbers all appear in the output of the script (test), and the test fails when one number in the note is corrupted. All nine Drive IDs written to the inventory and README were resolved with the Drive metadata call. **What this closes:** the earlier caveat that the note's numbers were read through the connector. The connector-read values and the imported files agree (the 16-row CSV matched `run_summary.md` before import; the script now checks the note against the files).
+- **Not verified:** the zip is the user's download of the Drive folder, so the chain of custody is Drive, then the user, then here; the only independent check of the bytes is the size match with the Drive metadata and the internal consistency above (Drive exposes no checksum through the connector).
+- **Open:** unchanged: (1) go-ahead for the episode-level k-fold dynamics study; (2) the B2 gate design; (3) the failed-gate report path of pilot v2. Nothing is queued.
+
+---
+
+## 2026-09-30 22:55 (BST) · Claude Code (web) · B2, dynamics parity (result)
+
+- **Result:** `dynamics-parity-r1` ran 21:40:36 to 21:42:17 UTC, status `ok`, run `dynamics_parity_20260930T214043Z` `COMPLETE`, `status: OK`, all five anchors within tolerance (v2: exact; pilot: 0.0021 to 0.0036 absolute, cause untested). Both checkpoints fail the dynamics gate on validation; the pilot checkpoint passes on test and fails on validation. Details, tables and hypotheses: `docs/research-notes/2026-09-30-dynamics-parity.md`.
+- **Changed:** the research note; README (headline and two rows corrected), roadmap (status line, §2.1, B2 row), handoff §1 and §5, CHANGELOG (y).
+- **Verified:** the run's CSV (16 rows) matches the rounded table in `run_summary.md` and each row's relative improvement recomputes from its two RMSEs; BF16 and FP32 differ by at most 7.6e-05 in model RMSE (computed); the relative improvement from the pilot's own stored validation numbers is −0.213 (`full`) and −0.227 (`base`) (computed). Worker on Colab: `worker_status.json` bytes (downloaded, 605 B, matches the metadata size) read `state: stopped`, `exit_reason: the inbox is empty`, `jobs_done: 1`; the job file is in `done`.
+- **Not verified:** the run folder has not been imported byte for byte (the connector gives text renderings; a formal import needs the folder copied), so the note's numbers are values read from Drive, not from `results/runs/`. No cause of the split dependence is established (H-A to H-D in the note are untested). The VM release after the job cannot be seen from Drive.
+- **Open:** (1) go-ahead for an episode-level k-fold dynamics study (about 41 minutes of L4 training by the probe's measured 496 s per job); (2) the B2 gate design, a protocol decision; (3) import of the parity run folder; (4) the failed-gate report path of pilot v2. Nothing is queued; the worker has stopped.
+
+---
+
+## 2026-09-30 22:30 (BST) · Claude Code (web) · B2, dynamics parity (queued)
+
+- **Queued:** at 21:25:16 UTC `1-dynamics-parity-r1.json` went into the Drive inbox (Drive file `1hJY4ytPbIXPczIKTC0xZQskw_qGWmN50`), on Roman's instruction ("push jobs to drive"), after PR #9 put the notebook and its allow-list entry on `main` (`8b5550f`). Job `dynamics-parity-r1`: `notebooks/02-diagnostics/dynamics_parity.ipynb`, pinned to `main` at `8b5550fca319ac1e8377b23f8226d1f5d87a8aca`, 1 h, no overrides; built and validated with `scripts/colab_job.py` against `main`'s own allow-list (job SHA-256 `dc05b645f4c1f8ee5ea81e29ab403909d85c3ee63ff2a96feb209a79c0902bd4`). The notebook, the eval module, the models, the data code and `training.py` are unchanged between the tested commit `a9b6663` and `8b5550f` (empty `git diff --stat`).
+- **Seen on Drive before queueing:** a worker started 21:22:59 UTC reported `worker_commit: 15b505121330f1b470a3f091fbbb674df93deac7` (`main`'s PR #8 merge, not the branch head) and wrote `stopped` 0.014 s after starting, because nothing was queued. Roman had said Colab was running from the branch; the commit shows that worker ran `main`'s code (the notebook's `WORKER_REF` stays `'main'` unless edited). It does not matter for this job: the allow-list and the notebook are read from `main`, which now has both. The files the diagnostic reads exist on Drive (pilot `best_dynamics.pt` in the pilot run folder; the probe run's `cache_manifest.json` and run folder).
+- **Next:** Roman starts the worker (from `main`, at least a minute after the upload); read `results/dynamics-parity-r1` and the run's `reports/acceptance_report.json` when it finishes. A status other than `OK` is reported as it is.
+
+---
+
 ## 2026-09-30 21:10 (BST) · Claude Code (web) · B2, dynamics parity
 
 - **Changed:** on Roman's instruction (proceed with the proposal; the worker must use an L4): reconciled the worker notebook with the Colab-saved copy (Colab's JSON formatting and `gpuType: L4` / `machine_shape: hm` metadata kept, log and termination cells applied, an `REQUIRED_GPU = 'L4'` guard that releases any other runtime), then built proposal step 1: `adjointrwm.eval.dynamics_parity`, `notebooks/02-diagnostics/dynamics_parity.ipynb`, its allow-list entry, tests, docs (CHANGELOG (w), (x)).
