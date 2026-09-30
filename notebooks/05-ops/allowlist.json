@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "max_timeout_hours": 11,
+  "notebooks": {
+    "notebooks/05-ops/ops_smoke.ipynb": {
+      "gpu": [],
+      "default_hours": 0.25,
+      "max_hours": 0.5,
+      "overrides": {}
+    },
+    "notebooks/01-production/AdjointRWM_Production_Pilot_v2.ipynb": {
+      "gpu": ["L4", "A100", "H100"],
+      "default_hours": 8,
+      "max_hours": 11,
+      "overrides": {
+        "seeds": {"kind": "int_list", "prefix": "seeds: tuple = "},
+        "resume_run_id": {"kind": "run_id", "prefix": "RESUME_RUN_ID = "},
+        "max_steps_per_session": {"kind": "int_or_null", "prefix": "MAX_STEPS_PER_SESSION = "}
+      }
+    },
+    "notebooks/03-benchmarks/rival_world_models_droid100.ipynb": {
+      "gpu": ["L4", "A100", "H100"],
+      "default_hours": 8,
+      "max_hours": 11,
+      "overrides": {
+        "seeds": {"kind": "int_list", "prefix": "seeds: tuple = "},
+        "arms": {"kind": "choice_list", "prefix": "arms: tuple = ", "choices": ["adjoint_rwm", "dreamerv3_rssm", "tdmpc2", "dino_wm", "vjepa2_ac"]},
+        "resume_run_id": {"kind": "run_id", "prefix": "RESUME_RUN_ID = "},
+        "max_steps_per_session": {"kind": "int_or_null", "prefix": "MAX_STEPS_PER_SESSION = "}
+      }
+    }
+  }
+}

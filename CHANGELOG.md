@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-30 (m): Colab job queue (Claude Code to Colab through Drive)
+
+- **`adjointrwm.colab_jobs`** (59 tests in `tests/test_colab_jobs.py`, including an end-to-end run through a real git checkout and kernel): typed job specs (notebook, full commit, whitelisted overrides, time limit), an allow-list read from `origin/main`, hardware refusal, notebook preparation (overrides, `REPO_REF` pinned, prelude), a Drive queue (`inbox`, `running`, `done`, `results`, `worker_status.json`, `STOP`), and a worker loop with a session budget.
+- **`scripts/colab_worker.py`** (runs the worker) and **`scripts/colab_job.py`** (writes and validates jobs); **`notebooks/05-ops/`**: `colab_worker.ipynb`, `ops_smoke.ipynb`, `allowlist.json` (the smoke test, pilot v2 and the rival benchmark). Documented in `docs/plans/colab-handoff.md` §5, with the safety model and what is untested (the Colab-specific prelude and Drive writes are confirmed by the first job).
+- `pyproject.toml`: `nbclient` and `ipykernel` added to the `dev` extras for the end-to-end test.
+
 ## 2026-09-30 (l): D1-0 (sensor streams on SMD) run and imported
 
 - **`adjointrwm.domains.sensor`** (26 tests in `tests/test_sensor.py`): SMD machine split by index mod 4 (test machines are refused by the download and load code), a frozen Mahalanobis detector, windows, six non-learned policies, a privileged greedy oracle (better of forward selection and backward elimination), the best-known reference, normalised areas, the opportunity gate and a machine-clustered bootstrap. `scripts/fetch_smd.py` downloads tuning and validation machines only.
