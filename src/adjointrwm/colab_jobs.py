@@ -33,7 +33,7 @@ SCHEMA = 1
 ALLOWLIST_RELPATH = "notebooks/05-ops/allowlist.json"
 TRUSTED_REF = "origin/main"
 DEFAULT_DRIVE_ROOT = "/content/drive/MyDrive/Colab Notebooks/AdjointRWM_Production"
-DEFAULT_IDLE_MINUTES = 5.0      # a worker with an empty inbox exits after this long (covers Drive sync lag and a follow-up job); 0 means "exit once the inbox is empty"
+DEFAULT_IDLE_MINUTES = 0.0      # a worker with an empty inbox exits after this long; 0 (the default) means "exit as soon as the inbox is empty", so queue every job before starting it
 DEFAULT_PROGRESS_SECONDS = 120.0  # a running job prints one progress line (and refreshes worker_status.json) this often; 0 turns it off
 QUEUE_DIRS = ("inbox", "running", "done", "results")
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
@@ -68,7 +68,7 @@ class JobError(ValueError):
 
 
 def idle_limit_seconds(minutes: float | None = None, hours: float | None = None, default_minutes: float = DEFAULT_IDLE_MINUTES) -> float:
-    """The idle limit of a worker in seconds: ``minutes`` if given, else ``hours``, else the default (5 minutes). Negative values are refused."""
+    """The idle limit of a worker in seconds: ``minutes`` if given, else ``hours``, else the default (0: exit as soon as the inbox is empty). Negative values are refused."""
     value = minutes * 60.0 if minutes is not None else hours * 3600.0 if hours is not None else default_minutes * 60.0
     if value < 0:
         raise ValueError("the idle limit cannot be negative")

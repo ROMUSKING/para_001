@@ -8,7 +8,7 @@ The worker polls ``<drive-root>/jobs/inbox`` for job files, validates each again
 (``notebooks/05-ops/allowlist.json``), and runs allow-listed notebooks from a pinned commit in ``--repo-dir``. Run it from a checkout
 that is **not** ``--repo-dir``: jobs check out other commits there, and the worker's own files must not change underneath it.
 While a job runs it prints a progress line every ``--progress-minutes`` (default 2): elapsed time and the newest file the job wrote.
-It exits by itself when the inbox has been empty for ``--max-idle-minutes`` (default 5). Stop it earlier with Colab's interrupt or by creating
+It exits by itself as soon as the inbox is empty (``--max-idle-minutes``, default 0; a larger value waits that long for a follow-up job). Stop it earlier with Colab's interrupt or by creating
 ``<drive-root>/jobs/STOP``. The worker notebook then flushes Drive and releases the Colab runtime.
 """
 
