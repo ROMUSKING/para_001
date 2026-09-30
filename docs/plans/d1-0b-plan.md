@@ -48,7 +48,7 @@ Each deployable policy ranks the channels from P0 information (the snapshot, the
 ## 5. Measures
 
 - **Native loss** `J_w(k)` per window and policy; **excess** over full observation `E_w(k) = J_w(k) − J_w(38)` (`J_w(38)` is the forecaster's own error with every channel observed).
-- **Normalised excess curve (per machine):** the mean excess curve divided by the machine's mean hold-only excess `E(0)`, so 1 means hold and 0 means as good as full observation. **Normalised area** over `k / 38`, averaged over machines. Relative headroom, retained fraction and the two-stage bootstrap (machines, then windows; 10,000 resamples; seed 0) are as in D1-0.
+- **Normalised excess curve (per machine):** the mean excess curve divided by the machine's mean full-observation loss `J(38)`; it starts at that machine's `r` at `k = 0` and is 0 at `k = 38`. **Normalised area** over `k / 38`, averaged over machines (see §10 for why this replaced division by the hold-only excess). Relative headroom, retained fraction and the two-stage bootstrap (machines, then windows; 10,000 resamples; seed 0) are as in D1-0.
 - **Endpoint-moves statistic** `r = (mean_w J_w(0) − mean_w J_w(38)) / mean_w J_w(38)`, per machine, then averaged over machines, with the same two-stage bootstrap.
 - **Secondary (descriptive):** the fidelity loss of each policy (the oracle's objective), and the same tables for `h = 1` and `h = 15` and `L = 30` and `L = 120`.
 
@@ -84,4 +84,4 @@ Each deployable policy ranks the channels from P0 information (the snapshot, the
 
 ## 10. Changes after this plan was written
 
-_None yet. Each change will be dated here, and any change made after a validation machine was read will be marked as such._
+- **2026-09-30, before any validation machine was read:** a smoke run of the notebook on tuning machines crashed at the `h = 15` sensitivity because `machine-1-1` has a **negative** hold-only excess there (its `r` is −0.152), so dividing a machine's excess curve by its hold-only excess is undefined; a direct computation of `r` on the seven tuning machines then showed, at the primary setting, `r` = 0.26, 0.66, 0.27, 1.27, 0.62, 0.013 and 0.55 (mean 0.52, so G0 holds on the tuning machines) and, for `machine-3-4`, a tiny `r` at every setting (0.006 to 0.066) together with a very large full-observation error (about 16 against 0.1 to 0.4 elsewhere), so dividing by its hold-only excess would give it an arbitrary weight. The normalisation is therefore changed from the hold-only excess to the machine's **mean full-observation loss**: the curve starts at `r` and ends at 0, is defined whenever the full-observation loss is positive, and weights machines by how much sensing matters to them. Everything else, including `r`, G0, G1, G2, G-VOI and all thresholds, is as planned. Only tuning-machine numbers had been computed when this was written.
