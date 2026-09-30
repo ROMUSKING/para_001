@@ -21,6 +21,15 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 
 ---
 
+## 2026-09-30 18:30 (BST) · Claude Code (web) · B2 probe, Colab worker
+
+- **Changed:** audit `docs/audits/2026-09-30_b2_probe_seed0_dynamics_gate_audit.md` (and its row in the audits README); B2 status rows in README and roadmap; handoff §5 (first real probe result, stale worker notebook); `scripts/colab_worker.py` ignores `--max-idle-hours` with a warning (1 new test, 72 in the file); CHANGELOG (t).
+- **Verified:** read from Drive through the connector, in this session: `dynamics_gate.json` (seed 0, validation: model RMSE 0.2124711301360882, persistence 0.18857847256011034, `passed: false`; relative improvement recomputed as −0.12669875437856223), `DONE.json`, `data_audit.json` (PASS, 100 episodes, 80/10/10, split parity with the pilot true), `gate_class_balance.json` (`{}`), `result.json` (status `failed`, `ValueError: No objects to concatenate`). The notebook code was read to confirm that a failed gate blocks allocator training by design and that the crash is in the report path. Not verified: why the dynamics gate fails here when the pilot's passed; the two were not compared on the same split.
+- **Open:** (1) formal import of the run folder (needs the folder copied from Drive), (2) the failed-gate report path of pilot v2 (new notebook version, needs a decision), (3) whether to spend an L4 on the five-seed B2 before the dynamics difference from the pilot is understood; the audit recommends not. The worker was still polling at 17:17:58 UTC with nothing queued; Roman was told to stop it and disconnect the runtime.
+- **Next:** wait for the decision on (2) and (3); no job is queued.
+
+---
+
 ## 2026-09-30 18:10 (BST) · Claude Code (web) · Colab worker
 
 - **Changed:** on Roman's request ("terminate on no job or idle run") the worker now also kills a running job that shows no sign of life (no new file in its run directories and GPU utilisation under 5 %) for 20 minutes, records it as `stalled`, and exits; with the immediate exit on an empty inbox (earlier today) both conditions end the worker and, through the notebook, release the runtime. `colab_jobs.ActivityWatch`, `gpu_utilization`, `kill_kernel`, `run_job_notebook(stall_seconds)`, `run_worker(max_stall_seconds)`, `--max-stall-minutes`, `MAX_STALL_MINUTES`; handoff §5; CHANGELOG (s).

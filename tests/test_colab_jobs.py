@@ -536,6 +536,14 @@ def test_the_worker_stops_after_a_stalled_job_and_leaves_the_rest_of_the_inbox(t
     assert json.loads((q.results_dir("quiet") / "result.json").read_text())["status"] == "stalled"
 
 
+def test_the_script_ignores_the_legacy_idle_hours_flag_so_an_old_notebook_cannot_keep_the_worker_polling(tmp_path):
+    drive = tmp_path / "drive"
+    done = subprocess.run([sys.executable, str(ROOT / "scripts/colab_worker.py"), "--drive-root", str(drive), "--repo-dir", str(tmp_path / "repo"), "--once", "--dry-run",
+                           "--max-idle-hours", "6"], capture_output=True, text=True, timeout=120)
+    assert done.returncode == 0, done.stderr
+    assert "--max-idle-hours 6 is ignored" in done.stdout and "idle limit is 0 min" in done.stdout and "0 job(s) handled" in done.stdout
+
+
 def test_stall_watch_is_on_by_default_and_the_cli_and_notebook_expose_it():
     import inspect
 
