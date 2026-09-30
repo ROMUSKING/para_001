@@ -7,7 +7,8 @@
 The worker polls ``<drive-root>/jobs/inbox`` for job files, validates each against the allow-list committed on ``origin/main``
 (``notebooks/05-ops/allowlist.json``), and runs allow-listed notebooks from a pinned commit in ``--repo-dir``. Run it from a checkout
 that is **not** ``--repo-dir``: jobs check out other commits there, and the worker's own files must not change underneath it.
-Stop it with Colab's interrupt, by creating ``<drive-root>/jobs/STOP``, or by letting it idle out.
+It exits by itself when the inbox has been empty for ``--max-idle-minutes`` (default 5). Stop it earlier with Colab's interrupt or by creating
+``<drive-root>/jobs/STOP``. The worker notebook then flushes Drive and releases the Colab runtime.
 """
 
 from __future__ import annotations
@@ -28,7 +29,9 @@ def main() -> int:
     parser.add_argument("--repo-dir", type=Path, default=Path("/content/para_001"), help="checkout that jobs run in (its origin must be --repo-url)")
     parser.add_argument("--repo-url", default="https://github.com/ROMUSKING/para_001")
     parser.add_argument("--poll-seconds", type=float, default=30.0)
-    parser.add_argument("--max-idle-hours", type=float, default=6.0, help="exit after this long without a job")
+    parser.add_argument("--max-idle-minutes", type=float, default=None,
+                        help=f"exit after the inbox has been empty this long (default {cj.DEFAULT_IDLE_MINUTES:g}; 0 exits as soon as the inbox is empty)")
+    parser.add_argument("--max-idle-hours", type=float, default=None, help="the same in hours (kept for old callers; --max-idle-minutes wins)")
     parser.add_argument("--max-session-hours", type=float, default=10.0, help="do not start a job that would outlast this budget")
     parser.add_argument("--once", action="store_true", help="process the jobs that are waiting, then exit")
     parser.add_argument("--dry-run", action="store_true", help="validate waiting jobs and report what would run; run nothing")
@@ -41,7 +44,7 @@ def main() -> int:
     queue = cj.JobQueue(args.drive_root / "jobs")
     print(f"worker commit {commit} | jobs {queue.root} | runs {args.drive_root / 'runs'} | repo {args.repo_dir}", flush=True)
     results = cj.run_worker(queue, args.repo_dir, args.repo_url, args.drive_root / "runs", poll_seconds=args.poll_seconds,
-                            max_idle_seconds=args.max_idle_hours * 3600, max_session_seconds=args.max_session_hours * 3600,
+                            max_idle_seconds=cj.idle_limit_seconds(args.max_idle_minutes, args.max_idle_hours), max_session_seconds=args.max_session_hours * 3600,
                             once=args.once, dry_run=args.dry_run, worker_commit=commit, log=lambda line: print(line, flush=True))
     print(f"{len(results)} job(s) handled", flush=True)
     return 0

@@ -1,0 +1,3 @@
+cell,m,head_width,direct_saturated,estimator_floor_met_seeds,R0,RC1,RC1L,RC2,RC2L,RC3,RC3L,RTL,critic_beats_uniform_real,direct_beats_uniform_real,critic_beats_uniform_lookup,direct_beats_uniform_lookup,critic_beats_cheap_lookup,direct_beats_cheap_lookup,cheap_adjoint_beats_uniform,estimator_ok,saturated,exit_class,exit_class_semilog,exit_class_staircase
+m4,4,8,True,4,False,False,False,False,False,False,False,True,False,False,True,True,True,True,True,True,True,teacher-only value,teacher-only value,inconclusive: precision
+m64,64,8,True,0,False,False,False,False,False,False,False,False,False,False,False,False,False,False,True,False,True,inconclusive: precision,inconclusive: precision,inconclusive: precision

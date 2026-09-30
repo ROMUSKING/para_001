@@ -1,0 +1,13 @@
+{
+  "discrete_sweep_equals_domain_costate": true,
+  "flop_formula_matches_counted_code_path": true,
+  "gain_label_is_the_objectives_own_summand": true,
+  "max_propagator_gap": 1.9229062786507711e-13,
+  "max_sweep_gap": 1.546540673302843e-13,
+  "passed": true,
+  "propagator_equals_costate_table": true,
+  "teacher_features_are_the_cheap_adjoint_terms": true,
+  "test_family_refused": true,
+  "train_goals_disjoint_from_tuning": true,
+  "train_names_disjoint_from_tuning": true
+}

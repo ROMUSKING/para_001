@@ -1,0 +1,3 @@
+cell,m,flops_step_formula,flops_step_counted,propagator_vs_table_max_abs,discrete_sweep_vs_domain_max_abs,teacher_features_vs_cheap_adjoint_terms_max_abs,gain_label_vs_objective_summand_max_abs,train_goals_disjoint_from_tuning,train_names_disjoint_from_tuning
+m4,4,204,204,6.483702463810914e-14,5.4067861299245124e-14,6.505213034913027e-19,2.2768245622195593e-18,True,True
+m64,64,17664,17664,1.9229062786507711e-13,1.546540673302843e-13,6.505213034913027e-19,9.280770596475918e-17,True,True

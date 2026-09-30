@@ -1,0 +1,101 @@
+{
+  "cells": {
+    "m4": {
+      "amplitude_scale": 10.0,
+      "m": 4,
+      "max_depth": 9,
+      "name": "m4",
+      "pulse_width": [
+        0.001,
+        0.004
+      ]
+    },
+    "m64": {
+      "amplitude_scale": 10.0,
+      "m": 64,
+      "max_depth": 9,
+      "name": "m64",
+      "pulse_width": [
+        0.001,
+        0.004
+      ]
+    }
+  },
+  "config": {
+    "bootstrap_resamples": 10000,
+    "cap_in_finest_grids": 2.0,
+    "capacity_probe_width": 64,
+    "cells": [
+      "m4",
+      "m64"
+    ],
+    "collection_theta": 0.85,
+    "equivalence_margin": 0.04879016416943204,
+    "estimator_batch": 256,
+    "estimator_floor": 0.5,
+    "estimator_hidden": 32,
+    "estimator_max_epochs": 200,
+    "estimator_patience": 20,
+    "gap_fractions": [
+      0.1,
+      0.03,
+      0.01
+    ],
+    "goals_per_state": 4,
+    "head_max_epochs": 40,
+    "head_patience": 6,
+    "max_passes": 40,
+    "max_rows": 60000,
+    "methods": [
+      "loglog",
+      "semilog",
+      "staircase"
+    ],
+    "per_state": 64,
+    "primary_method": "loglog",
+    "reference_arms": [
+      "cheap",
+      "cheap_adjoint",
+      "adjoint"
+    ],
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "seeds_needed_for_estimator_floor": 4,
+    "thetas": [
+      0.5,
+      0.7,
+      0.85,
+      0.95,
+      0.98,
+      0.995
+    ],
+    "train_instances": 30,
+    "tuning_instances": 10,
+    "validation_instances": 20,
+    "width_theta": 0.95,
+    "width_tolerance": 0.02,
+    "widths": [
+      8,
+      16,
+      32
+    ]
+  },
+  "config_sha256": "1e3c74c5dc4f3c40b055cb88a03b17a21c40b7cca512b7cc163bec53c7e82a75",
+  "family_seeds": {
+    "train": 4004,
+    "tuning": 3003,
+    "validation": 1001
+  },
+  "goal_stream_offset": 10000,
+  "notebook": "notebooks/04-domains/d4_1_learned_critics.ipynb",
+  "plan": "docs/plans/d4-1-plan.md",
+  "repo_commit": "9308b9ff1e0b87985e63ed73c426385fc4a4d7f4",
+  "repo_dirty": false,
+  "run_id": "d4_1_learned_critics_20260930T122312Z",
+  "test_family_read": false
+}

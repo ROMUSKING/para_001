@@ -1,0 +1,23 @@
+{
+  "m4": {
+    "count": 30,
+    "family_seed": 4004,
+    "goal_seed": 14004,
+    "names": [
+      "d4_3_m4_train_000",
+      "d4_3_m4_train_029"
+    ],
+    "sha256": "7f38add1acd381453a375f1fdf2ca460963d47d047d3cd2d4bd6b1fb8520dc05"
+  },
+  "m64": {
+    "count": 30,
+    "family_seed": 4004,
+    "goal_seed": 14004,
+    "names": [
+      "d4_3_m64_train_000",
+      "d4_3_m64_train_029"
+    ],
+    "sha256": "8479498cc972bbbfe7019617459ff95675676e6330ce1759d286b29b97ec21e9"
+  },
+  "sha256": "f61ee0a3527f19ca47d555a1c7a790762d3e565dd45a7d6367df4019b36aa1d9"
+}

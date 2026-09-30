@@ -115,4 +115,5 @@ Every comparison is the mean over instances of `log(compute_a / compute_b)` per 
   | `m64` | 64 | 200 | 256 | 0.605 | 0.602 |
 
   The frozen estimator floor (0.5) is therefore expected to be met in `m4` and **not** in `m64` with a generic MLP at this budget; the plan keeps the floor as written and treats an `m64` miss as a result (*estimator under-realised*), not as a reason to change the estimator after the fact.
-- **Changes after the validation family was read for a critic:** none so far.
+- **2026-09-30, execution record.** The real run (`results/runs/d4_1_learned_critics_20260930T122312Z/`, notebook at commit `9308b9f`, clean tree) followed this plan: the freeze (`reports/frozen_before_validation.json`, 12:52:33.4 UTC) preceded the generation of the validation instances (12:52:33.5 UTC); no rule, grid, margin or budget was changed between the plan and the validation read. A smoke run of the notebook on a reduced configuration read no validation instance as validation (train instances stood in). The tuning-only training tables (`artifacts/training_summary.csv`, `artifacts/width_selection.csv`) were read before the validation stage and led to no change. The test family was never generated.
+- **Changes after the validation family was read for a critic:** none.
