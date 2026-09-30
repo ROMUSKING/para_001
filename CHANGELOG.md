@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-09-30 (o): Colab worker live; first jobs; ops_smoke probes the data stack
+
+- **Worker confirmed** (Drive `jobs/worker_status.json`: NVIDIA L4, Python 3.13.15, torch 2.11.0+cu128, worker commit `e38a463`): `ops-smoke-001` returned `ok` in 10 s (prelude and Drive writes work). `b2-probe-seed0` (pilot v2, `seeds=[0]`) **failed in about 20 s in `load_droid`: `AttributeError: module 'tensorflow_datasets' has no attribute 'load'`** (a runtime/data-stack failure, not a gate; nothing about the research question follows from it).
+- **`notebooks/05-ops/ops_smoke.ipynb`:** now probes the data stack in a fresh subprocess (versions of TensorFlow, TensorFlow Datasets, NumPy, protobuf, etils, array_record, dm-tree, rlds, PyArrow; whether `tfds.load` exists; the error chain if not), re-runs the pilots' own `pip install` on Colab and probes again, and writes a compact section into `run_summary.md`. A missing `nvidia-smi` no longer raises (the notebook failed on CPU-only machines before).
+- **Docs:** `docs/plans/colab-handoff.md` §5 records the first job result.
+
+## 2026-09-30 (n): D4-3 (varying goal) and D1-0b (forecasting objective on SMD) run and imported; D4-1 planned
+
+- **D4-3:** `highdim.varying_goal_instances`, `setup_steps`, `with_setup_charged`, `cell_rules_varying_goal` (6 tests in `tests/test_varying_goal.py`); plan `docs/plans/d4-3-plan.md`; notebook `notebooks/04-domains/d4_3_varying_goal.ipynb`; `scripts/d4_3_tables.py`; **run `results/runs/d4_3_varying_goal_20260930T084725Z/` imported** (17 files, 1.1 MB, with README; validation only, test family never generated) and **note `docs/research-notes/2026-09-30-d4-3-varying-goal.md`**. The frozen rules R3v and R4v both hold in `m4` and `m64` (D4-1 candidate cells); with the exact co-state table charged per instance the goal-aware arm never beats `cheap`. A clean-worktree reproduction matches: 11 of 18 files byte-identical, the rest differ only in a run id or a timestamp (README).
+- **D1-0b:** `adjointrwm.domains.sensor_forecast` (10 tests in `tests/test_sensor_forecast.py`): a frozen per-machine ridge forecaster, the native forecast loss, the endpoint-moves statistic and gates G0/G1/G2, policies and the privileged oracle; plan `docs/plans/d1-0b-plan.md` (one dated change, before any validation read); notebook `notebooks/04-domains/d1_0b_forecast_sensing.ipynb`; `scripts/d1_0b_tables.py`; **run `results/runs/d1_0b_forecast_sensing_20260930T085746Z/` imported** (14 files, 3.3 MB, with README; the 14 test machines never downloaded) and **note `docs/research-notes/2026-09-30-d1-0b-forecast-sensing.md`**. No deployable policy keeps the oracle's headroom; the note recommends not designing D1-1. The reproduction matches exactly (README).
+- **D4-1 plan written** (`docs/plans/d4-1-plan.md`, before any code or critic): direct (flat), direct-bilinear, co-state and randomised-co-state critics on `m4` and `m64`, information-equivalent inputs, five paired seeds, frozen rules and equivalence margin. No critic has been trained yet.
+- **Docs:** roadmap, cross-domain plan, README and notebooks README updated (D4-1 reopened in `m4` and `m64`; D1-0b done); the README status table's D4-0b and D4-2 rows had each other's links and are repaired.
+- **Tests:** 279 (unchanged by this entry; counted on the committed tree before the D4-1 module).
+
 ## 2026-09-30 (m): Colab job queue (Claude Code to Colab through Drive)
 
 - **`adjointrwm.colab_jobs`** (59 tests in `tests/test_colab_jobs.py`, including an end-to-end run through a real git checkout and kernel): typed job specs (notebook, full commit, whitelisted overrides, time limit), an allow-list read from `origin/main`, hardware refusal, notebook preparation (overrides, `REPO_REF` pinned, prelude), a Drive queue (`inbox`, `running`, `done`, `results`, `worker_status.json`, `STOP`), and a worker loop with a session budget.

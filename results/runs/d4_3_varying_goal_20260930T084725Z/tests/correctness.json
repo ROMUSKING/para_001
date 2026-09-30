@@ -1,0 +1,17 @@
+{
+  "costate_proxy_close_on_fine_mesh": true,
+  "costate_table_is_linear_in_the_goal": true,
+  "error_representation_on_batch_grids": true,
+  "flop_formula_matches_counted_code_path": true,
+  "goals_are_unit_and_distinct": true,
+  "instances_equal_d4_2_except_goal_and_name": true,
+  "max_abs_cosine_between_goals": 0.9833231215036177,
+  "max_costate_proxy_rel_gap": 0.00023406368237120873,
+  "max_reference_diff": 1.3699930079269507e-10,
+  "max_representation_abs_diff": 5.808686864838819e-13,
+  "passed": true,
+  "reference_converged": true,
+  "setup_charged_rows_equal_cheap_adjoint_plus_setup": true,
+  "setup_steps_equal_the_price_report": true,
+  "test_family_refused": true
+}

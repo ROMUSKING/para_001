@@ -1,0 +1,73 @@
+{
+  "amp1": {
+    "count": 20,
+    "family_seed": 1001,
+    "goal_seed": 11001,
+    "names": [
+      "d4_3_amp1_validation_000",
+      "d4_3_amp1_validation_019"
+    ],
+    "sha256": "97c0392e57b0e6b9ee818bd2fa5744b6dc9ef78cfb00eb557c1b1f60b2ff0946"
+  },
+  "base": {
+    "count": 20,
+    "family_seed": 1001,
+    "goal_seed": 11001,
+    "names": [
+      "d4_3_base_validation_000",
+      "d4_3_base_validation_019"
+    ],
+    "sha256": "6e5c4f66da190b5183fb2cbb2550542001ebb7287c3506cd6d0dd405a1af7628"
+  },
+  "depth11": {
+    "count": 20,
+    "family_seed": 1001,
+    "goal_seed": 11001,
+    "names": [
+      "d4_3_depth11_validation_000",
+      "d4_3_depth11_validation_019"
+    ],
+    "sha256": "138c68ecd5043a33adf7322231715852b798f82207a1251724455bd16cabf033"
+  },
+  "depth7": {
+    "count": 20,
+    "family_seed": 1001,
+    "goal_seed": 11001,
+    "names": [
+      "d4_3_depth7_validation_000",
+      "d4_3_depth7_validation_019"
+    ],
+    "sha256": "e0d244c9e4e97cef749b367212be1e1c2db2cd15c78c9019c53b9e28a908f6be"
+  },
+  "m4": {
+    "count": 20,
+    "family_seed": 1001,
+    "goal_seed": 11001,
+    "names": [
+      "d4_3_m4_validation_000",
+      "d4_3_m4_validation_019"
+    ],
+    "sha256": "573b10fbe7b5fb09587f79b668b0468a6d000259c39dcbd30c44b4cdb847b53a"
+  },
+  "m64": {
+    "count": 20,
+    "family_seed": 1001,
+    "goal_seed": 11001,
+    "names": [
+      "d4_3_m64_validation_000",
+      "d4_3_m64_validation_019"
+    ],
+    "sha256": "4ae16310d36e9b2b23837b3feeaf429210ef0c4585117e14f7a5d736c49224f0"
+  },
+  "sha256": "4555658bdd1746a380c0ed512636690466e7496359d591b637f832fcbe586416",
+  "wide": {
+    "count": 20,
+    "family_seed": 1001,
+    "goal_seed": 11001,
+    "names": [
+      "d4_3_wide_validation_000",
+      "d4_3_wide_validation_019"
+    ],
+    "sha256": "25f8694a0bf6f94e37f8bf5cc7a26983e97299c3baee4d23200d5bfa59099a65"
+  }
+}

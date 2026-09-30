@@ -1,0 +1,73 @@
+{
+  "amp1": {
+    "count": 10,
+    "family_seed": 3003,
+    "goal_seed": 13003,
+    "names": [
+      "d4_3_amp1_tuning_000",
+      "d4_3_amp1_tuning_009"
+    ],
+    "sha256": "d0bea3f9167e49b38f7db0d1fbda04e21d4be9419ec766fe28b14e9b9427653a"
+  },
+  "base": {
+    "count": 10,
+    "family_seed": 3003,
+    "goal_seed": 13003,
+    "names": [
+      "d4_3_base_tuning_000",
+      "d4_3_base_tuning_009"
+    ],
+    "sha256": "eaf342883725b3b78c55a2f00793fc9468866f8d561a1ee2b08903eb3d185186"
+  },
+  "depth11": {
+    "count": 10,
+    "family_seed": 3003,
+    "goal_seed": 13003,
+    "names": [
+      "d4_3_depth11_tuning_000",
+      "d4_3_depth11_tuning_009"
+    ],
+    "sha256": "8135df863ac559a673b8abdc78828f195d0134c65fe8234bb8cde8c0ae53d4da"
+  },
+  "depth7": {
+    "count": 10,
+    "family_seed": 3003,
+    "goal_seed": 13003,
+    "names": [
+      "d4_3_depth7_tuning_000",
+      "d4_3_depth7_tuning_009"
+    ],
+    "sha256": "8b098736e8fdaa96ad06c38c43b2a23895e407039769532dc50fac25628a0459"
+  },
+  "m4": {
+    "count": 10,
+    "family_seed": 3003,
+    "goal_seed": 13003,
+    "names": [
+      "d4_3_m4_tuning_000",
+      "d4_3_m4_tuning_009"
+    ],
+    "sha256": "6000c25086d7d30765bc35e79c5d75085c46b48028f855f79acf83f228837ca0"
+  },
+  "m64": {
+    "count": 10,
+    "family_seed": 3003,
+    "goal_seed": 13003,
+    "names": [
+      "d4_3_m64_tuning_000",
+      "d4_3_m64_tuning_009"
+    ],
+    "sha256": "28b99be9e422d5247a842ae379259902950d9c507d0d7f32ba591825d0b44ca9"
+  },
+  "sha256": "6c6bbfa2b2a9b288a3a494eae36a9572c32a7b29d0f71815038058b44e403b71",
+  "wide": {
+    "count": 10,
+    "family_seed": 3003,
+    "goal_seed": 13003,
+    "names": [
+      "d4_3_wide_tuning_000",
+      "d4_3_wide_tuning_009"
+    ],
+    "sha256": "e7ffb6f384d57f6adc9c76dd739dd87490618a97e40936de7876315ce642b618"
+  }
+}

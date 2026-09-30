@@ -1,0 +1,16 @@
+{
+  "budget_38_is_full_observation_for_every_policy": true,
+  "deployable_policies_ignore_the_window_after_the_snapshot": true,
+  "fetch_refuses_a_test_machine": true,
+  "fidelity_incremental_update_matches_direct": true,
+  "fidelity_incremental_update_max_abs_difference": {
+    "backward": 7.105427357601002e-15,
+    "forward": 7.105427357601002e-15
+  },
+  "fidelity_is_zero_at_full_observation": true,
+  "forecaster_reproduces_the_ridge_solution": true,
+  "machine_used": "machine-1-1",
+  "native_loss_at_full_observation_equals_a_direct_computation": true,
+  "passed": true,
+  "split_is_a_partition": true
+}
