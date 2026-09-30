@@ -40,7 +40,7 @@ PRODUCTION PROMOTION           BLOCKED
 HARDWARE                       STAY ON L4 (pilot peak 0.6 GiB)
 PILOT V2 (E2.1/E2.2 = B2)      NOTEBOOK READY, NOT RUN
 RIVAL-MODEL BENCHMARK (B1)     NOTEBOOK READY, NOT RUN
-CROSS-DOMAIN (TRACK D)         D4 FIRST (DECIDED); D4-0, D4-0b DONE; D4-1 CLOSED AT THE REAL LEDGER (2 of 9 D4-0b cells are candidates, both at hypothetical scoring prices); D4-2 NEXT; OTHER DOMAINS DEFERRED PENDING LICENCE RESEARCH
+CROSS-DOMAIN (TRACK D)         D4 FIRST (DECIDED); D4-0, D4-0b DONE; D4-2 DONE; D4-1 STAYS CLOSED (no D4-2 cell satisfies both frozen rules); OTHER DOMAINS DEFERRED PENDING LICENCE RESEARCH
 ```
 
 ---
@@ -73,18 +73,18 @@ This is a recommendation for Roman to accept or change, not a decision. It order
 
 1. **E1.1 first (Colab, one notebook, no training).** The only valid real-data allocation result is a failure (collapse, below chance), and the pilot's benchmark may simply have no adaptive opportunity. The opportunity audit on the existing checkpoint says which. If validation opportunity is below 15 %, redesign the candidates before any further training (risk table, §6).
 2. **B2 = E2.1 + E2.2 next (Colab L4).** Pilot v2 with the fixed evaluation contract and five paired seeds is the real-data H2 test. **B1 (rival world models) is a different question** (which substrate predicts best) and a result there says nothing about H2, so it is not on the critical path. Run it after B2, or in parallel when L4 time is free; the dynamics gate already passed once (single seed).
-3. **In parallel on CPU: D4-2, then D4-1 if it opens.** D4 is the one place where the exact answer is known and a run costs minutes. D4-0 and D4-0b show that exact co-state scoring does not pay for itself at the real price. The co-state can only matter through amortisation, which is H2's premise, so the experiment that decides it is a *learned* scorer priced at its measured cost against a matched direct critic. D4-2 measures that price. D4-1 then compares a co-state-featured critic with a direct critic in a regime where adaptivity pays.
-4. **Size D4-1 for the headroom that exists.** With the exact co-state at scoring price ×0.25 or ×0, the co-state needed 9–29 % less compute than the residual score in `sharp` (point estimates, D4-0b note §3.4). A learned direct critic cannot lose more than that to a co-state-featured one, so D4-1 must be powered for effects of at most that size.
+3. **D4-2 is done (CPU): D4-1 stays closed.** D4 is the one place where the exact answer is known and a run costs minutes. D4-0 and D4-0b showed that exact co-state scoring does not pay for itself at the real price. D4-2 priced scorers in FLOPs on seven cells ([note](../research-notes/2026-09-30-d4-2-flop-priced-scoring.md)): a small learned scorer costs 0.245 (`m` = 32) and 0.133 (`m` = 64) of step-doubling scoring and beats uniform refinement in 3 of 7 cells, but a hand-built non-learned estimator does at least as well in every cell, and the co-state weight helps that estimator only at `m` = 64 (about 10 %). No cell satisfies both frozen rules, so there is no D4 regime in which to run D4-1. The one D4 question left for H2 is a *varying goal*, checked first with the non-learned pair (D4-3 below); nothing in D4 needs to block E1.1 or B2.
+4. **If D4-1 is ever opened, size it for the headroom that exists.** With the exact co-state at scoring price ×0.25 or ×0, the co-state needed 9–29 % less compute than the residual score in `sharp` (point estimates, D4-0b note §3.4), and D4-2 found about 10 % at `m` = 64 for the cheap estimator. A learned direct critic cannot lose more than that to a co-state-featured one, so D4-1 must be powered for effects of at most that size.
 5. **Defer:** the other domains until DL pass 2 (Roman's decision), production P5+ until G-H2, N6, and any GPU larger than the L4 without a profiler or held-out-gain justification.
 6. **Roman's decision (2026-09-29, after this recommendation): the licence survey (DL) comes first, then the rest.** Pass 1 and pass 2 are done; the steps above are unchanged.
 
 **Stop-losses.**
 
 - E1.1 opportunity below 15 % on validation → redesign candidates; no B2 spend until it passes.
-- D4-2 measures a learned scorer's price above ×0.25 in every regime where adaptivity pays → D4-1 stays closed; record it as a D4 negative result.
+- D4-2 measures a learned scorer's price above ×0.25 in every regime where adaptivity pays → D4-1 stays closed; record it as a D4 negative result. *Outcome:* the price condition was not triggered (0.245 at `m` = 32, 0.133 at `m` = 64), but the frozen rules R1 and R3 held together in no cell, so D4-1 stays closed for that reason and it is recorded as a D4 negative result.
 - D4-1 shows the direct critic matching the co-state-featured critic → record "direct utility sufficient" for D4 and do not use D4 as evidence for H2 on real data.
 
-**What would change this recommendation.** A high E1.1 opportunity and a positive B2 result would move D4 down to a mechanism study. A D4-2 regime with a low measured price would make D4-1 the priority. A wider `θ` grid that changes the residual-versus-co-state ordering in D4-0b would reopen D4-1 at the real ledger.
+**What would change this recommendation.** A high E1.1 opportunity and a positive B2 result would move D4 down to a mechanism study. A goal-varying D4 check (D4-3) in which the co-state weight helps a cheap estimator by a confidence-bounded margin would reopen D4-1 there. A wider `θ` grid that changes the residual-versus-co-state ordering in D4-0b would reopen D4-1 at the real ledger.
 
 ---
 
@@ -137,8 +137,9 @@ Dates assume a start of Mon 29 Sep 2026 and one person working part-time on Cola
 | D0 | Plan; `adjointrwm.domains` (interface, runner, ledgers, metrics); D4 reference domain with exact tests | `harness/check.py` passes | Done |
 | D4-0 | `04-domains/d4_adaptive_time_stepping.ipynb` on CPU: correctness, rate-budget opportunity, weighting comparison, equal-compute check | Run imported, note written | Done: correctness ✅, rate-budget opportunity ✅, equal-compute payoff ❌ ([note](../research-notes/2026-09-29-d4-0-adaptive-time-stepping.md)) |
 | D4-0b | Pass-based allocation and a localisation sweep, validation only | Run imported, note written | Done: at the real price adaptivity pays only in the most localised family and the residual score does as well as the co-state; the frozen rule is met in 2 of 9 cells, both at hypothetical prices ([note](../research-notes/2026-09-29-d4-0b-where-adaptivity-pays.md)) |
-| D4-2 | Learned amortised scorer priced at its measured cost; higher-dimensional system; one factor varied at a time; wider `θ` grid | Regime and price frozen before validation is read; note written | **In progress (CPU): [plan](d4-2-plan.md), code and notebook committed; run next** |
-| D4-1 | Learned direct critic vs co-state-featured critic on D4, 5 seeds | Rung-1 gate, §0A.3 exit class | Closed at the real ledger; may open for a regime D4-2 shows at scoring price ≤ ×0.25 |
+| D4-2 | Learned amortised scorer priced at its measured cost; higher-dimensional system; one factor varied at a time; wider `θ` grid | Regime and price frozen before validation is read; note written | **Done:** correctness ✅; R1 (an amortised scorer beats uniform) holds in 3 of 7 cells, R3 (the co-state weight helps the cheap estimator) in 1, none has both; a non-learned cheap estimator matches or beats the learned scorer everywhere ([plan](d4-2-plan.md), [note](../research-notes/2026-09-30-d4-2-flop-priced-scoring.md)) |
+| D4-3 | *Proposed, not started.* Varying goal per instance: the non-learned pair `cheap` vs `cheap_adjoint` on validation, frozen rule written first | Regime and rule frozen before validation; note written | Awaits Roman's go-ahead; D4 does not block E1.1 or B2 |
+| D4-1 | Learned direct critic vs co-state-featured critic on D4, 5 seeds | Rung-1 gate, §0A.3 exit class | Closed: no D4-2 cell satisfies R1 and R3; reopens only through D4-3 |
 | DL | Licence survey of permissively licensed data and models for the other domains | Per-source licence and release terms; small usability test | **Pass 2 done** (59 sources: 17 `adopt`, 12 `adopt_with_conditions`, 5 `avoid`, 25 `unverified`; [survey](../licences/survey-2026-09-29-pass2.md)) |
 | D2-0, D1-0, D3-0 | LLM-context, sensor-stream and graph domain cards and adapters (Tier P) | Rung-0 gate | Unblocked by DL pass 2 as far as licences go; needs Roman's choice of model, datasets and D3 domain |
 | DX | Shared allocator, leave-one-domain-out, negative-transfer guard | Rungs 2–3; confirmatory only in N6 | Waits for ≥ 3 specialists and the N2 exit class |

@@ -448,6 +448,8 @@ def test_d4_2_table_script_reads_a_run_directory_in_report_order(tmp_path):
     assert "8: 200" not in module.scorer_table(data["hidden"], data["report"]).splitlines()[2]           # cell b lists its own sizes only
     table = module.compute_table(data["summary"], "loglog", module.cell_order(data["report"]))
     assert len(table.splitlines()) == 2 + 2 * 3 and "| b | 10% |" in table
+    pairs = module.pairs_table(data["summary"], "loglog", module.cell_order(data["report"]))
+    assert len(pairs.splitlines()) == 2 + 2 * 3 and "| a | 1% |" in pairs
     rules = module.rules_table(data).splitlines()
     assert rules[2].startswith("| b | True | True | True |") and rules[3].startswith("| a | True | False | False |")
     assert "n/a" in module.headroom_table(data["report"]) and "6.5" in module.headroom_table(data["report"])

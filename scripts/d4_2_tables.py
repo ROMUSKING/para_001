@@ -58,7 +58,7 @@ def price_table(report: dict) -> str:
 
 
 def scorer_table(hidden: list[dict], report: dict) -> str:
-    lines = ["| Cell | Hidden sizes tried: tuning compute (geometric mean) | Chosen | Validation RMSE (log10) | Epochs | Training cost (CN steps) |", "|---|---|---:|---:|---:|---:|"]
+    lines = ["| Cell | Hidden sizes tried: tuning compute (geometric mean) | Chosen | Held-out RMSE on training-family instances (log10) | Epochs | Training cost (CN steps) |", "|---|---|---:|---:|---:|---:|"]
     for cell in cell_order(report):
         chosen = report["selected_hidden"][cell]
         rows = [r for r in hidden if r["cell"] == cell]
@@ -80,6 +80,17 @@ def compute_table(summary: dict, method: str, order: list[str] | None = None) ->
             medians = " / ".join(f"{e['median_compute'][a]:.0f}" for a in ARMS)
             lines.append(f"| {cell} | {target[3:]} | {medians} | {ratio(d['amortised / uniform_pass'])} | {ratio(d['cheap / uniform_pass'])} | "
                          f"{ratio(d['cheap_adjoint / uniform_pass'])} | {ratio(d['cheap_adjoint / cheap'])} | {ratio(d['adjoint / uniform_pass'])} | {ratio(d['adjoint_free / uniform_pass'])} |")
+    return "\n".join(lines)
+
+
+def pairs_table(summary: dict, method: str, order: list[str] | None = None) -> str:
+    lines = ["| Cell | Target | Amortised ÷ cheap [95 % CI] | Amortised ÷ cheap-adjoint | Adjoint-free ÷ amortised | Adjoint ÷ amortised | Residual ÷ uniform | Goal-local ÷ uniform | Indicator ÷ uniform (censored at the cap) |",
+             "|---|---|---|---|---|---|---|---|---|"]
+    for cell in order or list(summary["summary"]):
+        for target in hd.TARGETS:
+            d = summary["summary"][cell][method][target]["differences"]
+            lines.append(f"| {cell} | {target[3:]} | {ratio(d['amortised / cheap'])} | {ratio(d['amortised / cheap_adjoint'])} | {ratio(d['adjoint_free / amortised'])} | "
+                         f"{ratio(d['adjoint / amortised'])} | {ratio(d['residual / uniform_pass'])} | {ratio(d['goal_local / uniform_pass'])} | {ratio(d['indicator / uniform_pass'])} |")
     return "\n".join(lines)
 
 
@@ -138,6 +149,8 @@ def main() -> None:
     print(scorer_table(data["hidden"], data["report"]))
     print(f"\n## Validation: compute to reach each target at the real price ({primary} interpolation)\n")
     print(compute_table(data["summary"], primary, cell_order(data["report"])))
+    print(f"\n## Validation: the learned scorer against the cheap arms and the free ceiling ({primary} interpolation)\n")
+    print(pairs_table(data["summary"], primary, cell_order(data["report"])))
     print("\n## Frozen rules, and the same rules under the sensitivity pricings\n")
     print(rules_table(data))
     print("\n## Retained headroom and break-even instances\n")

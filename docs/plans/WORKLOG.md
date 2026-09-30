@@ -21,6 +21,16 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 
 ---
 
+## 2026-09-30 01:12 (BST) · Claude Code (web) · D4-2, D4-1
+
+- **Changed:** imported run `d4_2_flop_scoring_20260929T233556Z` (with README), wrote `docs/research-notes/2026-09-30-d4-2-flop-priced-scoring.md`, added `scripts/d4_2_tables.py`; updated roadmap (D4-2 done, D4-1 stays closed, D4-3 proposed), cross-domain plan, README, notebooks README, plan §12, CHANGELOG.
+- **Result (from the run files, via `scripts/d4_2_tables.py`):** R1 in 3 of 7 cells, R3 in 1, none has both; a non-learned cheap estimator matches or beats the learned scorer in every cell; the co-state weight helps it only at `m` = 64 (about 10 %). Validation only, fixed goal per system, test family never generated.
+- **Verified:** `pytest -q`: 178 passed; `python harness/check.py --base origin/main`: 7/7. The note's tables and numbers were checked programmatically against the run files.
+- **Open:** the clean-checkout reproduction (`~/adjointrwm_runs/d4_2_flop_scoring_20260930T000230Z`, worktree `wt_d42` in the scratchpad) was still running at commit time. Compare with `sha256sum`, add `results/runs/d4_2_flop_scoring_20260929T233556Z/reproduction.md` (new file; committed run files are not edited), and update the note §7 line that says reproduction is not yet established. Remove the worktree afterwards.
+- **Next:** Roman decides on D4-3 (varying goal) versus returning to E1.1 / B2 and the licence-cleared domain cards (D1-0 SMD; D2-0 Qwen3-8B with MuSiQue or Qasper; D3 code-repository context).
+
+---
+
 ## 2026-09-29 22:53 (BST) · Claude Code (web) · DL
 
 - **Decisions (Roman):** add `.gitattributes` but do not compact `instances.json`; network access is on; proceed according to plan.
