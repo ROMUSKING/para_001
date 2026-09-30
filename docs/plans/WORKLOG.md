@@ -21,6 +21,14 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 
 ---
 
+## 2026-09-30 22:30 (BST) · Claude Code (web) · B2, dynamics parity (queued)
+
+- **Queued:** at 21:25:16 UTC `1-dynamics-parity-r1.json` went into the Drive inbox (Drive file `1hJY4ytPbIXPczIKTC0xZQskw_qGWmN50`), on Roman's instruction ("push jobs to drive"), after PR #9 put the notebook and its allow-list entry on `main` (`8b5550f`). Job `dynamics-parity-r1`: `notebooks/02-diagnostics/dynamics_parity.ipynb`, pinned to `main` at `8b5550fca319ac1e8377b23f8226d1f5d87a8aca`, 1 h, no overrides; built and validated with `scripts/colab_job.py` against `main`'s own allow-list (job SHA-256 `dc05b645f4c1f8ee5ea81e29ab403909d85c3ee63ff2a96feb209a79c0902bd4`). The notebook, the eval module, the models, the data code and `training.py` are unchanged between the tested commit `a9b6663` and `8b5550f` (empty `git diff --stat`).
+- **Seen on Drive before queueing:** a worker started 21:22:59 UTC reported `worker_commit: 15b505121330f1b470a3f091fbbb674df93deac7` (`main`'s PR #8 merge, not the branch head) and wrote `stopped` 0.014 s after starting, because nothing was queued. Roman had said Colab was running from the branch; the commit shows that worker ran `main`'s code (the notebook's `WORKER_REF` stays `'main'` unless edited). It does not matter for this job: the allow-list and the notebook are read from `main`, which now has both. The files the diagnostic reads exist on Drive (pilot `best_dynamics.pt` in the pilot run folder; the probe run's `cache_manifest.json` and run folder).
+- **Next:** Roman starts the worker (from `main`, at least a minute after the upload); read `results/dynamics-parity-r1` and the run's `reports/acceptance_report.json` when it finishes. A status other than `OK` is reported as it is.
+
+---
+
 ## 2026-09-30 21:10 (BST) · Claude Code (web) · B2, dynamics parity
 
 - **Changed:** on Roman's instruction (proceed with the proposal; the worker must use an L4): reconciled the worker notebook with the Colab-saved copy (Colab's JSON formatting and `gpuType: L4` / `machine_shape: hm` metadata kept, log and termination cells applied, an `REQUIRED_GPU = 'L4'` guard that releases any other runtime), then built proposal step 1: `adjointrwm.eval.dynamics_parity`, `notebooks/02-diagnostics/dynamics_parity.ipynb`, its allow-list entry, tests, docs (CHANGELOG (w), (x)).
