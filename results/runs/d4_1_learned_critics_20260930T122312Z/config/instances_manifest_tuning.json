@@ -1,0 +1,23 @@
+{
+  "m4": {
+    "count": 10,
+    "family_seed": 3003,
+    "goal_seed": 13003,
+    "names": [
+      "d4_3_m4_tuning_000",
+      "d4_3_m4_tuning_009"
+    ],
+    "sha256": "6000c25086d7d30765bc35e79c5d75085c46b48028f855f79acf83f228837ca0"
+  },
+  "m64": {
+    "count": 10,
+    "family_seed": 3003,
+    "goal_seed": 13003,
+    "names": [
+      "d4_3_m64_tuning_000",
+      "d4_3_m64_tuning_009"
+    ],
+    "sha256": "28b99be9e422d5247a842ae379259902950d9c507d0d7f32ba591825d0b44ca9"
+  },
+  "sha256": "87ad06c41043c63c3eba1fff65ab016c366d67c02f5fdc1eb743ca010428c2b0"
+}

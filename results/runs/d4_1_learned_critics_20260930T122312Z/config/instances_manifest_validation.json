@@ -1,0 +1,23 @@
+{
+  "m4": {
+    "count": 20,
+    "family_seed": 1001,
+    "goal_seed": 11001,
+    "names": [
+      "d4_3_m4_validation_000",
+      "d4_3_m4_validation_019"
+    ],
+    "sha256": "573b10fbe7b5fb09587f79b668b0468a6d000259c39dcbd30c44b4cdb847b53a"
+  },
+  "m64": {
+    "count": 20,
+    "family_seed": 1001,
+    "goal_seed": 11001,
+    "names": [
+      "d4_3_m64_validation_000",
+      "d4_3_m64_validation_019"
+    ],
+    "sha256": "4ae16310d36e9b2b23837b3feeaf429210ef0c4585117e14f7a5d736c49224f0"
+  },
+  "sha256": "889c3a62e0353ce98dc0ffaebf946ed12f2c33333b26ddb8a3a2e8c77e82a2b9"
+}

@@ -21,6 +21,17 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 
 ---
 
+## 2026-09-30 17:10 (BST) · Claude Code (web) · D4-1, Colab queue, B2 probe
+
+- **Changed:** D4-1 plan (frozen, redesigned once before any validation read), `adjointrwm.domains.critics` with 26 tests, notebook, `scripts/d4_1_tables.py` and `d4_1_estimator_probe.py`; imported run `d4_1_learned_critics_20260930T122312Z` (with README) and note `2026-09-30-d4-1-learned-critics.md`; roadmap, cross-domain plan, README, notebooks README, plan §10. Colab: `ops_smoke` now probes the data stack; the TFDS notebooks pin `tensorflow-metadata<1.18`; `load_droid` fails loudly (3 tests).
+- **D4-1 result (from the run files, via `scripts/d4_1_tables.py`):** R0 fails in both cells (critics 6.1 to 10.3 times uniform's compute in `m4`, 1.5 to 1.8 in `m64`); co-state critic over direct critic 1.02 to 1.10 (`m4`) and 0.96 to 1.04 (`m64`), no interval entirely below 1, equal to the randomised control; at the hypothetical lookup price the exact co-state feature helps the head by about 8 % in `m4` (teacher-only value); `m64` inconclusive (estimator error 0.655 to 0.684, floor never met). D4 is not evidence for H2. Recommendation: do not spend the test family; put the effort on E1.1/B2.
+- **Colab:** worker on an L4 ran `ops-smoke-001` (ok) and `b2-probe-seed0` (**failed in 20 s at the data load**: protobuf 5.29.6 with `tensorflow-metadata` 1.21.0 generated for protobuf 6.31.1, TFDS swallows the import error and exposes no `load`; reproduced locally, fixed by the pin). The worker stopped polling twice after `pip install --upgrade` jobs (12:35 and 12:53 UTC). **Queued in Drive `jobs/inbox`, waiting for a worker restart:** `1-ops-smoke-006.json` (checks the fix) and `2-b2-probe-seed0-r2.json` (pilot v2, `seeds=[0]`, 8 h), both pinned to commit `ef7a75b` of branch `ccr-88589394-9zz9zq`.
+- **Verified:** `python harness/check.py --base origin/main` 7/7 before the D4-1 import; the table script on the imported folder prints exactly the tables in the note; the reproduction of D4-1 was still running when this entry was written (result to be added as `reproduction.md` in the run folder).
+- **Open:** Roman restarts the worker; then read `results/ops-smoke-006` (top lines of `run_summary.md`) and `results/b2-probe-seed0-r2` (`acceptance_report.json`: `opportunity_gate_validation` and the dynamics gate for seed 0). A failed gate is a result. D2-0 needs a plan and an L4 job; D3-0 needs Roman's choice of a licence-cleared repository set and localisation benchmark.
+- **Next:** add `reproduction.md` to the D4-1 run when the clean-worktree re-execution ends; then E1.1/B2 depending on the probe.
+
+---
+
 ## 2026-09-30 13:10 (BST) · Claude Code (web) · D4-3, D1-0b, D4-1, Colab queue
 
 - **Decisions (Roman, 2026-09-30):** "redesign its objective (D1-0b), want the varying-goal check, proceed with all practical CPU experiments and flag when to switch to Colab"; the repo was made public so the Colab worker can clone it (the token-support patch was declined and is not committed).
