@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-30 (q): the Colab worker exits when the queue is empty and releases the runtime
+
+- **`adjointrwm.colab_jobs`:** `idle_limit_seconds(minutes, hours)` and `DEFAULT_IDLE_MINUTES = 5`; `run_worker`'s default idle limit is 5 minutes (was 6 hours). **`scripts/colab_worker.py`:** `--max-idle-minutes` (0 exits as soon as the inbox is empty; `--max-idle-hours` kept for old callers).
+- **`notebooks/05-ops/colab_worker.ipynb`:** `MAX_IDLE_MINUTES = 5`; after the worker exits by itself, `DISCONNECT_WHEN_DONE = True` flushes Drive (`drive.flush_and_unmount()`) and calls `google.colab.runtime.unassign()` so the VM stops using compute credits; an interrupted cell keeps the runtime. New `WORKER_REF` (default `main`) to run worker code from a branch that is not merged yet; the allow-list is still read from `main`.
+- **Tests:** 3 new tests in `tests/test_colab_jobs.py` (62 in the file): the idle-limit helper, exit within one poll of the last job at a zero limit, and the notebook and script agreeing on the flag and on flushing Drive before releasing the runtime. `runtime.unassign()` itself can only be confirmed in a real Colab session.
+- **Docs:** `docs/plans/colab-handoff.md` §5 (cost discipline: queue jobs before starting the worker; order jobs by filename prefix).
+
 ## 2026-09-30 (p): D4-1 (learned direct critic against co-state critic) run and imported
 
 - **`adjointrwm.domains.critics`** (26 tests in `tests/test_critics.py`): the propagator tensor `exp(A^T (T - t))` and the continuous and discrete co-state for many goals, training rows, a co-state estimator with hand-written backpropagation, value heads (via `highdim.train_scorer`), the composite critic, FLOP prices at a real and a hypothetical lookup price, a two-stage bootstrap over seeds and instances, and the plan's exit classes. `scripts/d4_1_estimator_probe.py` (design-time probe on synthetic rows), `scripts/d4_1_tables.py`, notebook `notebooks/04-domains/d4_1_learned_critics.ipynb`.

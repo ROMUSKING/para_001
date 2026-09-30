@@ -32,6 +32,7 @@ SCHEMA = 1
 ALLOWLIST_RELPATH = "notebooks/05-ops/allowlist.json"
 TRUSTED_REF = "origin/main"
 DEFAULT_DRIVE_ROOT = "/content/drive/MyDrive/Colab Notebooks/AdjointRWM_Production"
+DEFAULT_IDLE_MINUTES = 5.0      # a worker with an empty inbox exits after this long (covers Drive sync lag and a follow-up job); 0 means "exit once the inbox is empty"
 QUEUE_DIRS = ("inbox", "running", "done", "results")
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 JOB_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{2,63}$")
@@ -62,6 +63,14 @@ except ImportError:
 
 class JobError(ValueError):
     """A job or allow-list that must not be run."""
+
+
+def idle_limit_seconds(minutes: float | None = None, hours: float | None = None, default_minutes: float = DEFAULT_IDLE_MINUTES) -> float:
+    """The idle limit of a worker in seconds: ``minutes`` if given, else ``hours``, else the default (5 minutes). Negative values are refused."""
+    value = minutes * 60.0 if minutes is not None else hours * 3600.0 if hours is not None else default_minutes * 60.0
+    if value < 0:
+        raise ValueError("the idle limit cannot be negative")
+    return float(value)
 
 
 def utcnow() -> str:
@@ -481,7 +490,7 @@ def run_job_notebook(spec: Mapping, entry: Mapping, results_dir: Path, *, repo_d
 
 # ---- the worker loop ------------------------------------------------------------------------------------------------------
 
-def run_worker(queue: JobQueue, repo_dir: Path, repo_url: str, runs_root: Path, *, poll_seconds: float = 30.0, max_idle_seconds: float = 6 * 3600,
+def run_worker(queue: JobQueue, repo_dir: Path, repo_url: str, runs_root: Path, *, poll_seconds: float = 30.0, max_idle_seconds: float = DEFAULT_IDLE_MINUTES * 60,
                max_session_seconds: float = 10 * 3600, once: bool = False, dry_run: bool = False,
                runner: Callable[[Mapping, Mapping, Path], RunOutcome] | None = None, allowlist_loader: Callable[[], Mapping] | None = None,
                sleep: Callable[[float], None] = time.sleep, clock: Callable[[], float] = time.time, log: Callable[[str], None] = print,

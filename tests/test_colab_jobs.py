@@ -9,6 +9,7 @@ import copy
 import json
 import os
 import subprocess
+import sys
 from pathlib import Path
 
 import nbformat
@@ -329,6 +330,39 @@ def test_worker_processes_jobs_in_order_then_idles_out_and_reports_stopped(tmp_p
     assert calls == ["first", "second"] and [r["status"] for r in results] == ["ok", "ok"]
     status = json.loads((q.root / "worker_status.json").read_text())
     assert status["state"] == "stopped" and status["jobs_done"] == 2 and status["worker_commit"] == "w" * 40 and clock.now >= 100
+
+
+def test_idle_limit_helper_prefers_minutes_then_hours_then_the_five_minute_default():
+    assert cj.DEFAULT_IDLE_MINUTES == 5.0 and cj.idle_limit_seconds() == 300.0
+    assert cj.idle_limit_seconds(minutes=2) == 120.0 and cj.idle_limit_seconds(hours=6) == 21600.0
+    assert cj.idle_limit_seconds(minutes=0, hours=6) == 0.0 and cj.idle_limit_seconds(minutes=1.5) == 90.0
+    with pytest.raises(ValueError, match="negative"):
+        cj.idle_limit_seconds(minutes=-1)
+    import inspect
+
+    assert inspect.signature(cj.run_worker).parameters["max_idle_seconds"].default == 300.0
+
+
+def test_worker_with_a_zero_idle_limit_exits_within_one_poll_of_its_last_job(tmp_path):
+    q, clock, kw = worker(tmp_path, max_idle_seconds=0)
+    put(q, "01.json", job(job_id="only"))
+    calls = []
+    results = cj.run_worker(q, tmp_path / "repo", "url", tmp_path / "runs", runner=outcome_runner(calls), **kw)
+    assert calls == ["only"] and len(results) == 1 and clock.now <= kw["poll_seconds"]
+    assert json.loads((q.root / "worker_status.json").read_text())["state"] == "stopped"
+
+
+def test_worker_notebook_and_script_agree_on_the_idle_exit_and_release_the_runtime():
+    import ast
+
+    nb = json.loads((Path(__file__).resolve().parents[1] / "notebooks/05-ops/colab_worker.ipynb").read_text())
+    code = "\n".join("".join(c["source"]) for c in nb["cells"] if c["cell_type"] == "code")
+    ast.parse(code)
+    assert "--max-idle-minutes" in code and "MAX_IDLE_MINUTES = 5" in code and "DISCONNECT_WHEN_DONE = True" in code
+    assert code.index("drive.flush_and_unmount()") < code.index("runtime.unassign()")            # Drive is flushed before the VM is released
+    assert "except KeyboardInterrupt" in code                                                    # an interrupt keeps the runtime
+    helped = subprocess.run([sys.executable, str(Path(__file__).resolve().parents[1] / "scripts/colab_worker.py"), "--help"], capture_output=True, text=True)
+    assert helped.returncode == 0 and "--max-idle-minutes" in helped.stdout
 
 
 def test_worker_once_stops_when_the_inbox_is_empty_and_honours_a_stop_file(tmp_path):
