@@ -1,5 +1,6 @@
 """Method-blind evaluation of world-model predictions (NumPy/pandas only)."""
 
+from .dynamics_parity import anchor_check, compare_normalisers, dynamics_gate_row
 from .prediction import (
     OUTCOMES,
     RidgeForecaster,
@@ -21,6 +22,9 @@ from .prediction import (
 
 __all__ = [
     "OUTCOMES",
+    "anchor_check",
+    "compare_normalisers",
+    "dynamics_gate_row",
     "RidgeForecaster",
     "classify_relative_difference",
     "derangement",

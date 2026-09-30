@@ -21,6 +21,15 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 
 ---
 
+## 2026-09-30 21:10 (BST) · Claude Code (web) · B2, dynamics parity
+
+- **Changed:** on Roman's instruction (proceed with the proposal; the worker must use an L4): reconciled the worker notebook with the Colab-saved copy (Colab's JSON formatting and `gpuType: L4` / `machine_shape: hm` metadata kept, log and termination cells applied, an `REQUIRED_GPU = 'L4'` guard that releases any other runtime), then built proposal step 1: `adjointrwm.eval.dynamics_parity`, `notebooks/02-diagnostics/dynamics_parity.ipynb`, its allow-list entry, tests, docs (CHANGELOG (w), (x)).
+- **Verified:** `pytest` for the new helper (9) and notebook (5) tests; the notebook's cells run on CPU against tiny random fixtures through a fake Drive tree (plumbing only). Anchor behaviour was exercised both ways (reproduces; stored number off by 0.05 gives `ANCHOR_FAILED`; pilot checkpoint in the wrong units trips the pilot's anchors). Read from committed files, not assumed: the pilot's `dynamics_evaluation.json` (gate 0.1556 vs 0.2262, horizon mean of the four stored by-horizon values) and its config (`mask_mode` default `subset`, `prediction_mode` default `full`). Not verified: anything on Colab.
+- **Open:** the pilot's note does not name the split of its +31 % gate, but the committed `dynamics_evaluation.json` does settle it: the gate's `full_rmse` (0.1555880680680275) and `persistence_rmse` (0.22619297169148922) equal the horizon means of the stored `test` by-horizon lists (computed in this session), so the pilot's +31 % is a test-split number and the probe's −12.7 % a validation number. The diagnostic scores only train and validation, so it will not reproduce the pilot's test figure; it gives the pilot checkpoint's validation figure, which is the comparable one. (The audit of the probe hedges this point; its hedge stays true, this entry supplies the missing check.) The notebook must reach `main` before the worker can run it (allow-list and notebook are read from `main`).
+- **Next:** Roman merges the branch (or asks for a PR); then queue `dynamics-parity-r1` pinned to a pushed commit and read its `acceptance_report.json`.
+
+---
+
 ## 2026-09-30 20:10 (BST) · Claude Code (web) · Colab worker
 
 - **Changed:** on Roman's request (log the running job so a long job is not mistaken for a hung one; terminate properly when no job is running) `colab_jobs`: `JobTracker`, per-cell log lines, cell and GPU in the progress line and status, `exit_reason`, signal handling (`WorkerStopped`, `arm_stop_handlers`, `signalled`), `process_job` records `interrupted`; `colab_worker.py` passes `handle_signals=True`; the worker notebook's interrupt and release path; handoff §5; CHANGELOG (v).
