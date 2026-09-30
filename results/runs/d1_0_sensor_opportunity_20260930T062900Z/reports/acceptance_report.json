@@ -1,0 +1,97 @@
+{
+  "G1_by_run": {
+    "L120": {
+      "ci": [
+        0.8781764325770895,
+        0.9441692457897399
+      ],
+      "fixed": "top_volatility",
+      "passes": true,
+      "relative_headroom": 0.9152965567175266,
+      "robust": true
+    },
+    "L30": {
+      "ci": [
+        0.8875003429199453,
+        0.9565200984507911
+      ],
+      "fixed": "top_volatility",
+      "passes": true,
+      "relative_headroom": 0.9289167748322008,
+      "robust": true
+    },
+    "decision": {
+      "ci": [
+        0.8451172075841393,
+        0.9008060532395065
+      ],
+      "fixed": "top_volatility",
+      "passes": true,
+      "relative_headroom": 0.8723658380903931,
+      "robust": true
+    },
+    "primary": {
+      "ci": [
+        0.885635109275927,
+        0.9492897520424286
+      ],
+      "fixed": "top_volatility",
+      "passes": true,
+      "relative_headroom": 0.919810882706163,
+      "robust": true
+    }
+  },
+  "G1_primary": {
+    "ci": [
+      0.885635109275927,
+      0.9492897520424286
+    ],
+    "fixed": "top_volatility",
+    "passes": true,
+    "relative_headroom": 0.919810882706163,
+    "robust": true
+  },
+  "best_fixed": {
+    "120": "top_volatility",
+    "30": "top_volatility",
+    "60": "top_volatility"
+  },
+  "claim_boundary": "Exploratory Rung-0 gate on seven validation machines of the Server Machine Dataset with non-learned policies. The oracle is a privileged greedy selection and the reference is the best-known curve over it and every deployable policy. The loss is a score-fidelity proxy for a frozen detector. No learned critic and no co-state are involved, so no H2 statement follows. Policy computation is not charged.",
+  "config_hash": "3c9fb6c74d8a42dd112052a4ed495ac0bf45d20a1b0e449aa0f06185534fd78f",
+  "correctness": {
+    "deployable_policies_ignore_the_window_after_the_snapshot": true,
+    "fetch_refuses_a_test_machine": true,
+    "full_observation_has_zero_loss": true,
+    "greedy_incremental_update_matches_direct": true,
+    "greedy_incremental_update_max_abs_difference": {
+      "decision": 0.0,
+      "score": 2.26929586233382e-12
+    },
+    "machine_used": "machine-1-1",
+    "passed": true,
+    "precision_condition_number": 13654024.829064244,
+    "precision_symmetric_positive_definite": true,
+    "split_is_a_partition": true,
+    "threshold_is_the_train_quantile": true
+  },
+  "detector": {
+    "floor": 0.01,
+    "quantile": 0.995,
+    "ridge": 1e-06,
+    "shrinkage": 0.1
+  },
+  "frozen_sha256": "d128a670eb03d4e527a94182782769ebf3b8cda55d533e90c3abfc48f91d0d95",
+  "milestone": "D1-0 (exploratory Rung-0 opportunity gate)",
+  "repo_commit": "7c5c89c52936347298f29ba06f1a1f9d66f367d8",
+  "run_id": "d1_0_sensor_opportunity_20260930T062900Z",
+  "test_machines_downloaded": false,
+  "validation_machines": [
+    "machine-1-2",
+    "machine-1-6",
+    "machine-2-2",
+    "machine-2-6",
+    "machine-3-1",
+    "machine-3-5",
+    "machine-3-9"
+  ]
+}

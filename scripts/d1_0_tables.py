@@ -131,6 +131,29 @@ def f1_table(run: dict, name_run: str) -> str:
     return "\n".join(lines)
 
 
+def facts(summary: dict, recomputed: dict) -> str:
+    """Derived quantities quoted in the research note."""
+    primary = summary["runs"]["primary"]
+    machines = primary["machines"]
+    windows = sum(m["windows"] for m in machines.values())
+    anomalous = sum(m["anomalous_windows"] for m in machines.values())
+    full = summary["full_observation_f1"]
+    rates = [f["alarm_rate_normal"] for f in full.values()]
+    areas = recomputed["areas"]
+    best_validation_fixed = min(sn.FIXED_POLICIES, key=lambda n: areas[n])
+    f1 = primary["f1_by_budget"]
+    lines = [f"- Validation windows: {windows}, of which {anomalous} contain a labelled anomalous minute ({anomalous / windows:.3f}).",
+             f"- Fully observed detector, mean per-machine F1: {np.mean([f['f1'] for f in full.values()]):.3f} (range {min(f['f1'] for f in full.values()):.3f} to {max(f['f1'] for f in full.values()):.3f}).",
+             f"- Fully observed detector, alarm rate on unlabelled minutes: median {np.median(rates):.3f}, range {min(rates):.3f} to {max(rates):.3f}; machines above 0.10: {sum(r > 0.10 for r in rates)} of {len(rates)}.",
+             f"- Pooled detection F1 at k = 0 (hold) and k = 38 (full observation): {f1['round_robin'][0]:.3f} and {f1['round_robin'][-1]:.3f}.",
+             f"- Best fixed policy on validation by area: {best_validation_fixed} ({areas[best_validation_fixed]:.4f}); the tuning-chosen best fixed ({primary['fixed']}) has {areas[primary['fixed']]:.4f}. "
+             f"Headroom against the validation-best fixed policy: {sn.headroom(areas[best_validation_fixed], areas[sn.REFERENCE]):.3f}.",
+             f"- Greedy oracle share of the reference area: {areas[sn.ORACLE]:.4f} against {areas[sn.REFERENCE]:.4f}.",
+             f"- Policies with a headroom-kept fraction whose interval excludes 0 in the primary run: "
+             f"{', '.join(n for n in sn.DYNAMIC_POLICIES if primary['bootstrap']['retained_ci'][n][0] > 0)}."]
+    return "\n".join(lines)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("run_dir", type=Path)
@@ -160,6 +183,8 @@ def main() -> None:
     print(curve_table(recomputed, budgets))
     print("\n## Detection F1 against the dataset labels by budget, pooled over validation windows\n")
     print(f1_table(primary, "primary"))
+    print("\n## Derived quantities quoted in the note\n")
+    print(facts(summary, recomputed))
 
 
 if __name__ == "__main__":

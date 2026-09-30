@@ -21,6 +21,17 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 
 ---
 
+## 2026-09-30 07:37 (BST) · Claude Code (web) · D1-0
+
+- **Decision (Roman, 2026-09-30):** "proceed as recommended": D4-1 stays closed, the D1/D2/D3 candidates are confirmed, E1.1 then B2 stay on the critical path (Colab; not runnable here).
+- **Changed:** D1-0 plan, `adjointrwm.domains.sensor` with 26 tests, `scripts/fetch_smd.py`, `scripts/d1_0_tables.py`, notebook `d1_0_sensor_opportunity.ipynb`; imported run `d1_0_sensor_opportunity_20260930T062900Z` (with README); research note; roadmap, cross-domain plan, README, notebooks README, CHANGELOG.
+- **Result (from the run files, via `scripts/d1_0_tables.py`):** G1 passes robustly (headroom 0.920 [0.886, 0.949]); non-learned dynamic policies keep 0.42 to 0.49 of it and cannot be separated; **labelled F1 does not improve with sensing (0.259 hold, 0.192 full)**, so the fidelity proxy does not track the task. Validation machines only; the 14 test machines were never downloaded.
+- **Verified:** `pytest -q`: 204 passed; `python harness/check.py --base origin/main`; clean-worktree re-execution at the same commit is byte-identical except run id, timestamps, timings and hashes that cover them. Two smoke runs on tuning machines preceded the run and led to the oracle change (plan §10); no validation file existed before the freeze.
+- **Open:** D1-0b (redesign D1's objective) vs D2-0/D3-0 vs D4-3: Roman's decision. E1.1 and B2 need Colab (GPU, DROID, Drive).
+- **Next:** if Roman wants D1 kept, run the cheap tuning-machine diagnostic (does any simple detector's labelled F1 improve with sensing?) before any design. Otherwise start D2-0 or D3-0 with the card-and-gate pattern, checking the loss against the native endpoint first.
+
+---
+
 ## 2026-09-30 01:12 (BST) · Claude Code (web) · D4-2, D4-1
 
 - **Changed:** imported run `d4_2_flop_scoring_20260929T233556Z` (with README), wrote `docs/research-notes/2026-09-30-d4-2-flop-priced-scoring.md`, added `scripts/d4_2_tables.py`; updated roadmap (D4-2 done, D4-1 stays closed, D4-3 proposed), cross-domain plan, README, notebooks README, plan §12, CHANGELOG.

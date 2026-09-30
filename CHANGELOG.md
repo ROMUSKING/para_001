@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-30 (l): D1-0 (sensor streams on SMD) run and imported
+
+- **`adjointrwm.domains.sensor`** (26 tests in `tests/test_sensor.py`): SMD machine split by index mod 4 (test machines are refused by the download and load code), a frozen Mahalanobis detector, windows, six non-learned policies, a privileged greedy oracle (better of forward selection and backward elimination), the best-known reference, normalised areas, the opportunity gate and a machine-clustered bootstrap. `scripts/fetch_smd.py` downloads tuning and validation machines only.
+- **New plan `docs/plans/d1-0-plan.md`** (domain card, frozen choices, dated changes); **new notebook `notebooks/04-domains/d1_0_sensor_opportunity.ipynb`**; **run `results/runs/d1_0_sensor_opportunity_20260930T062900Z/` imported** (15 files, 1.8 MB, with README; data not committed) and **research note `docs/research-notes/2026-09-30-d1-0-sensor-opportunity.md`**. Correctness ✅; G1 ✅ robust (relative headroom 0.920 [0.886, 0.949]); non-learned deployable policies keep 0.42 to 0.49 of it; **the labelled detection F1 does not improve with sensing (0.259 hold, 0.192 full observation), so the proxy loss does not track the task and D1-1 is not designed on it.** The run reproduces byte-for-byte from a clean worktree (`reproduction` section of the run README). `scripts/d1_0_tables.py` prints every table in the note and recomputes the primary areas from the per-window parquet.
+- **Docs:** roadmap, cross-domain plan, README and notebooks README updated; the candidates for D1, D2 and D3 are recorded as confirmed by Roman ("proceed as recommended", 2026-09-30); D1-0b (objective redesign) proposed and waiting for a decision.
+- **Tests:** 204 (was 178).
+
 ## 2026-09-30 (k): D4-2 run imported; D4-1 stays closed
 
 - **Run `results/runs/d4_2_flop_scoring_20260929T233556Z/` imported** (24 files, about 1.6 MB, with README). Research note `docs/research-notes/2026-09-30-d4-2-flop-priced-scoring.md`. Frozen rules: R1 holds in 3 of 7 cells, R3 in 1, none has both, so **no D4-1 candidate cell**; a non-learned cheap estimator does at least as well as the learned scorer in every cell. Validation only; the test family was never generated. A clean-checkout re-execution at the same commit gave byte-identical scorers, tuning and validation files (`reproduction.md` in the run folder).

@@ -99,4 +99,6 @@ Each deployable policy ranks the 38 channels from P0 information and opens the t
 
 - **2026-09-30, before any validation machine was downloaded:** a smoke run of the notebook on **tuning** machines only (three machines standing in for tuning, two other tuning machines standing in for validation, small bootstrap; not evidence) showed that greedy *forward* selection alone stalls at about 0.10 of the hold-only loss from `k = 4` to `k = 24` on the loss curve, while the best deployable policy keeps falling toward zero, so a forward-only oracle is not a credible upper bound at larger budgets. The oracle is therefore the better, per window and size, of forward selection and backward elimination. The reference and the gate are unchanged. The name `oracle_greedy` is kept.
 
+- **2026-09-30, run executed** (`d1_0_sensor_opportunity_20260930T062900Z`, commit `7c5c89c`): **no change was made after a validation machine was read.** The freeze was written at 06:29:18.9 UTC and the first validation file was retrieved at 06:29:20.1 UTC. The grid then selected the originally written detector constants by a margin of 0.0006 in mean tuning F1.
+
 Each later change will be dated here, and any change made after a validation machine was read will be marked as such.

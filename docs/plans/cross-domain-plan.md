@@ -1,6 +1,6 @@
 # Plan: generalising the allocator across domains (Track D)
 
-**Written:** 2026-09-29 · **Status:** D4 is the first domain (decided by Roman, 2026-09-29); the others are deferred (§1); D4-0 is run and imported (see the [note](../research-notes/2026-09-29-d4-0-adaptive-time-stepping.md)): the equal-compute condition failed, so D4-1 is closed; D4-0b (validation-only design study) is run and imported (see its [note](../research-notes/2026-09-29-d4-0b-where-adaptivity-pays.md)): no candidate regime at the real scoring price, two at hypothetical prices, so D4-1 stays closed at the real ledger; D4-2 (FLOP-priced scoring, seven cells) is run and imported (see its [note](../research-notes/2026-09-30-d4-2-flop-priced-scoring.md)): a learned scorer beats uniform refinement in 3 of 7 cells and the co-state weight helps a cheap estimator in 1, never in the same cell, so D4-1 stays closed · **Owner:** Roman
+**Written:** 2026-09-29 · **Status:** D4 is the first domain (decided by Roman, 2026-09-29); the others are deferred (§1); D4-0 is run and imported (see the [note](../research-notes/2026-09-29-d4-0-adaptive-time-stepping.md)): the equal-compute condition failed, so D4-1 is closed; D4-0b (validation-only design study) is run and imported (see its [note](../research-notes/2026-09-29-d4-0b-where-adaptivity-pays.md)): no candidate regime at the real scoring price, two at hypothetical prices, so D4-1 stays closed at the real ledger; D4-2 (FLOP-priced scoring, seven cells) is run and imported (see its [note](../research-notes/2026-09-30-d4-2-flop-priced-scoring.md)): a learned scorer beats uniform refinement in 3 of 7 cells and the co-state weight helps a cheap estimator in 1, never in the same cell, so D4-1 stays closed; D1-0 (sensor streams on SMD) is run and imported (see its [note](../research-notes/2026-09-30-d1-0-sensor-opportunity.md)): the opportunity gate passes on a fidelity proxy that does not track the labelled endpoint · **Owner:** Roman
 **Source:** Roman's domain-portfolio brief (chat, 2026-09-29), reconciled here with the governing plan · **Code:** `src/adjointrwm/domains/` · **Notebook:** [`04-domains/d4_adaptive_time_stepping.ipynb`](../../notebooks/04-domains/d4_adaptive_time_stepping.ipynb)
 
 ## 0. Thesis
@@ -187,6 +187,7 @@ domain adapter -> canonical hierarchical state -> shared candidate/effect interf
 - **Objective:** forecast or anomaly-detection loss at a downstream decision.
 - **Regime:** sampling is VOI (§4.5), so this domain tests "sensitivity ≠ VOI".
 - **Before building:** a public operational dataset with labels and a licence.
+- **D1-0 outcome** (validation machines only, [note](../research-notes/2026-09-30-d1-0-sensor-opportunity.md)): on the Server Machine Dataset, opening a channel is allocated at the start of a 60-minute window after a snapshot of all channels; the privileged oracle beats the best fixed allocation by 0.920 [0.886, 0.949] of the normalised area (gate ≥ 0.15) and non-learned dynamic policies keep 0.42 to 0.49 of it, but the loss is fidelity to a frozen detector whose labelled F1 does not improve with sensing (0.259 hold, 0.192 full). "Sensitivity ≠ VOI" is not decided (no separation between sensitivity times volatility and either factor). D1-1 is not designed on this loss.
 
 ### D3: graph domain (Tier P). **Which graph domain is open question 2.**
 
@@ -248,7 +249,9 @@ All metrics are lower-is-better, and each domain also keeps its native metric.
 | D4-3 | *Proposed, not started.* Goal varying per instance; the non-learned pair `cheap` vs `cheap_adjoint` on validation, rule frozen before validation is generated | Regime and rule frozen first; note written | Awaits Roman's go-ahead |
 | D4-1 | Learned direct critic vs co-state-featured critic on D4, 5 seeds | Rung-1 gate; §0A.3 exit class | Closed: no D4-2 cell satisfies R1 and R3; reopens only through D4-3 |
 | DL | Licence survey of permissively licensed data and models for D1–D3 and Tier 2 domains | Per-source licence, redistribution and release terms recorded; a small usability test per candidate | **Pass 2 done** (network access widened): 59 sources, 17 `adopt`, 12 `adopt_with_conditions`, 5 `avoid`, 25 `unverified`. Licence candidates: D2 Qwen3-8B (Apache-2.0, licence file read) with MuSiQue and Qasper; D1 SMD, UCI electricity, Monash records; D3 code-repository context (query planning is closed by IMDb's non-commercial terms). Open gaps: QuALITY annotations, TriviaQA, TPC ([pass 2](../licences/survey-2026-09-29-pass2.md), [register](../licences/register.csv)) |
-| D2-0, D1-0, D3-0 | LLM-context, sensor-stream and graph domain cards and adapters | Rung-0 gate | Unblocked by DL pass 2 as far as licences go; each needs Roman's confirmation of the model, datasets and D3 domain, then a domain card, an opportunity gate and a fit check |
+| D1-0 | Sensor-stream domain card, adapter and Rung-0 opportunity gate on SMD (validation machines only) | Run imported; note written | Done: correctness ✅; G1 ✅ robust (relative headroom 0.920 [0.886, 0.949]); non-learned deployable policies keep 0.42 to 0.49 of the headroom; the labelled F1 does not improve with sensing, so the proxy loss does not track the task ([plan](d1-0-plan.md), [note](../research-notes/2026-09-30-d1-0-sensor-opportunity.md)) |
+| D1-0b | *Proposed, not started.* Redesign D1's objective so the labelled endpoint moves with sensing, or use a forecasting objective; tuning machines first | Regime and rule frozen first | Awaits Roman's decision |
+| D2-0, D3-0 | LLM-context and graph domain cards and adapters | Rung-0 gate | Candidates confirmed by Roman 2026-09-30 ("proceed as recommended"); not started; each needs a domain card, an opportunity gate and a fit check, with the native endpoint checked against the loss first |
 | DX | Shared allocator, leave-one-domain-out, negative transfer | Rungs 2–3; confirmatory only in N6 | Waits for ≥ 3 specialists and the N2 exit class |
 
 ## 10. Decisions and open questions
@@ -257,7 +260,11 @@ All metrics are lower-is-better, and each domain also keeps its native metric.
 
 **Decided (Roman, 2026-09-29, later):** licence survey first, then the rest.
 
+**Decided (Roman, 2026-09-30):** "proceed as recommended": the survey's candidates are confirmed (D1 SMD; D2 Qwen3-8B with MuSiQue and Qasper; D3 code-repository context), D4-1 stays closed, and the real-data path (E1.1, then B2) stays on the critical path. D1-0 has been run (see §9).
+
 **Open:**
 
 1. ~~Should the licence survey (DL) be run next, or after D4-2 / D4-1?~~ Decided by Roman (2026-09-29): licence survey first, then the rest. Pass 1 and pass 2 are done.
-2. Should sensor streams (D1) also wait for DL? This plan assumes yes, because they need a public dataset with a licence.
+2. ~~Should sensor streams (D1) also wait for DL?~~ They did; DL is done, SMD is licence-cleared and D1-0 has run.
+3. Should D1's objective be redesigned (D1-0b: a labelled decision loss with a calibrated detector, or a forecasting objective) before D1-1, or should the effort move to D2-0 and D3-0? D1-0 passed its gate on a proxy loss that does not track the labelled endpoint, so D1-1 is not designed on it.
+4. Should the varying-goal D4 check (D4-3, the non-learned pair `cheap` vs `cheap_adjoint`) be run? It is proposed and not started.

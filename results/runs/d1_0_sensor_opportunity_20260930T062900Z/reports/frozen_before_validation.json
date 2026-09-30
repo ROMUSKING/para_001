@@ -1,0 +1,23 @@
+{
+  "best_fixed": {
+    "120": "top_volatility",
+    "30": "top_volatility",
+    "60": "top_volatility"
+  },
+  "config_sha256": "3c9fb6c74d8a42dd112052a4ed495ac0bf45d20a1b0e449aa0f06185534fd78f",
+  "detector": {
+    "floor": 0.01,
+    "quantile": 0.995,
+    "ridge": 1e-06,
+    "shrinkage": 0.1
+  },
+  "primary_length": 60,
+  "rules": {
+    "G1": "relative headroom >= 0.15 at the primary length (point estimate); robust if the 95 % interval lower bound is too",
+    "G2": "descriptive: retained fraction of the headroom and paired area differences",
+    "G3": "correctness on real tuning windows"
+  },
+  "sha256": "d128a670eb03d4e527a94182782769ebf3b8cda55d533e90c3abfc48f91d0d95",
+  "tuning_manifest_sha256": "44bff97cb2597e0dab28e88e107aa76cf4cfe8a28274b0448bc5945daa35d222",
+  "written_utc": "2026-09-30T06:29:18.908710+00:00"
+}

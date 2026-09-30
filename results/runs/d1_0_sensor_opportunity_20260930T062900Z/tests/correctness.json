@@ -1,0 +1,16 @@
+{
+  "deployable_policies_ignore_the_window_after_the_snapshot": true,
+  "fetch_refuses_a_test_machine": true,
+  "full_observation_has_zero_loss": true,
+  "greedy_incremental_update_matches_direct": true,
+  "greedy_incremental_update_max_abs_difference": {
+    "decision": 0.0,
+    "score": 2.26929586233382e-12
+  },
+  "machine_used": "machine-1-1",
+  "passed": true,
+  "precision_condition_number": 13654024.829064244,
+  "precision_symmetric_positive_definite": true,
+  "split_is_a_partition": true,
+  "threshold_is_the_train_quantile": true
+}

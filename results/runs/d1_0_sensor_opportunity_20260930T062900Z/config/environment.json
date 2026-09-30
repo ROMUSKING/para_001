@@ -1,0 +1,7 @@
+{
+  "hardware": "CPU (no accelerator needed)",
+  "numpy": "2.4.6",
+  "pandas": "3.0.6",
+  "platform": "Linux-6.18.44-fc-v50-x86_64-with-glibc2.39",
+  "python": "3.11.15 (main, Mar  3 2026, 09:26:23) [GCC 13.3.0]"
+}
