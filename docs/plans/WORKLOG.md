@@ -21,6 +21,16 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 
 ---
 
+## 2026-09-30 22:55 (BST) · Claude Code (web) · B2, dynamics parity (result)
+
+- **Result:** `dynamics-parity-r1` ran 21:40:36 to 21:42:17 UTC, status `ok`, run `dynamics_parity_20260930T214043Z` `COMPLETE`, `status: OK`, all five anchors within tolerance (v2: exact; pilot: 0.0021 to 0.0036 absolute, cause untested). Both checkpoints fail the dynamics gate on validation; the pilot checkpoint passes on test and fails on validation. Details, tables and hypotheses: `docs/research-notes/2026-09-30-dynamics-parity.md`.
+- **Changed:** the research note; README (headline and two rows corrected), roadmap (status line, §2.1, B2 row), handoff §1 and §5, CHANGELOG (y).
+- **Verified:** the run's CSV (16 rows) matches the rounded table in `run_summary.md` and each row's relative improvement recomputes from its two RMSEs; BF16 and FP32 differ by at most 7.6e-05 in model RMSE (computed); the relative improvement from the pilot's own stored validation numbers is −0.213 (`full`) and −0.227 (`base`) (computed). Worker on Colab: `worker_status.json` bytes (downloaded, 605 B, matches the metadata size) read `state: stopped`, `exit_reason: the inbox is empty`, `jobs_done: 1`; the job file is in `done`.
+- **Not verified:** the run folder has not been imported byte for byte (the connector gives text renderings; a formal import needs the folder copied), so the note's numbers are values read from Drive, not from `results/runs/`. No cause of the split dependence is established (H-A to H-D in the note are untested). The VM release after the job cannot be seen from Drive.
+- **Open:** (1) go-ahead for an episode-level k-fold dynamics study (about 41 minutes of L4 training by the probe's measured 496 s per job); (2) the B2 gate design, a protocol decision; (3) import of the parity run folder; (4) the failed-gate report path of pilot v2. Nothing is queued; the worker has stopped.
+
+---
+
 ## 2026-09-30 22:30 (BST) · Claude Code (web) · B2, dynamics parity (queued)
 
 - **Queued:** at 21:25:16 UTC `1-dynamics-parity-r1.json` went into the Drive inbox (Drive file `1hJY4ytPbIXPczIKTC0xZQskw_qGWmN50`), on Roman's instruction ("push jobs to drive"), after PR #9 put the notebook and its allow-list entry on `main` (`8b5550f`). Job `dynamics-parity-r1`: `notebooks/02-diagnostics/dynamics_parity.ipynb`, pinned to `main` at `8b5550fca319ac1e8377b23f8226d1f5d87a8aca`, 1 h, no overrides; built and validated with `scripts/colab_job.py` against `main`'s own allow-list (job SHA-256 `dc05b645f4c1f8ee5ea81e29ab403909d85c3ee63ff2a96feb209a79c0902bd4`). The notebook, the eval module, the models, the data code and `training.py` are unchanged between the tested commit `a9b6663` and `8b5550f` (empty `git diff --stat`).

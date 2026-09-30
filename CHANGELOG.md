@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-30 (y): the dynamics parity run; the pilot's dynamics pass is split-dependent
+
+- **Run `dynamics_parity_20260930T214043Z`** (job `dynamics-parity-r1`, L4, `main` at `8b5550f`, config SHA-256 `f913d72a…99d1a`, status `OK`, anchors within tolerance, test split not read): the pilot checkpoint and the pilot v2 seed-0 checkpoint scored against persistence on the same train and validation windows. **Both fail the 2 % gate on validation** (pilot −0.219 `full` / −0.233 `base`; v2 −0.125 / −0.127, BF16); both pass on train. The pilot checkpoint passes on test (+31.2 %, its committed file) and fails on validation (−21.9 %). Note: `docs/research-notes/2026-09-30-dynamics-parity.md`. Values were read through the Drive connector; the run folder is not yet imported byte for byte.
+- **README corrected:** the "dynamics beat persistence on held-out episodes ✅" row and the one-line status now say test split only and that validation fails. The roadmap and handoff are updated; five-seed B2 is held.
+- **Worker on Colab (first full job under the new worker):** per-cell log lines, job moved to `done`, `exit_reason: the inbox is empty`, release message printed. Handoff §5 also records that the connector's text rendering can be stale for recently changed files.
+
 ## 2026-09-30 (x): same-split dynamics parity diagnostic (built, not yet run)
 
 - **`adjointrwm.eval.dynamics_parity`** (`dynamics_gate_row`, `compare_normalisers`, `anchor_check`; 10 tests in `tests/test_dynamics_parity.py`, including that the model class inside the pilot notebook (extracted from the committed notebook, random weights) and the `src` model have the same parameter names, shapes and order and predict identically in `base` and `full` mode once the former's weights are loaded with `strict=True`, that switching a built model's `config.prediction_mode` equals building it in that mode and that `mask_mode` does not change the parameters, so a pilot v1 checkpoint loads into the v2 model).
