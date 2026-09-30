@@ -33,3 +33,37 @@ D4 (time stepping, with and without a goal per instance), D1 on SMD, licence sur
 1. Finish the run so `COMPLETE` exists; copy the run directory from Drive to the sandbox (or attach it), excluding weights and the executed notebook if they are large (the repository rules: nothing over about 5 MB, no `.pt`, `.npz` or checkpoints; record Drive IDs and SHA-256 in `docs/DRIVE_INVENTORY.csv`).
 2. Use the `import-run` skill (`/import-run`) to copy it into `results/runs/<run_id>/` with a README, hashes and a trace summary, then `audit-run` if the run is meant to count as evidence, then `research-note`.
 3. A failed gate is a result: do not rerun with different settings to get a pass, and report failed seeds instead of replacing them.
+
+## 5. Driving Colab from Claude Code: the Drive job queue
+
+This is option A from the discussion on 2026-09-30. It lets Claude Code start allow-listed notebooks in a Colab runtime that **you** have started, without either side holding the other's credentials. Code: `src/adjointrwm/colab_jobs.py` (tested in `tests/test_colab_jobs.py`, including an end-to-end run through a real git checkout and a real kernel), `scripts/colab_worker.py`, `scripts/colab_job.py`, and `notebooks/05-ops/` (`colab_worker.ipynb`, `ops_smoke.ipynb`, `allowlist.json`).
+
+**How it works.**
+
+1. You open `notebooks/05-ops/colab_worker.ipynb` from `main` in Colab on an L4 runtime and run both cells. The first asks you to authorise the Drive mount (only you can). The second starts the worker, which polls `Drive/Colab Notebooks/AdjointRWM_Production/jobs/inbox/` and prints every job's log. It writes `jobs/worker_status.json` on every poll, so Claude Code can see whether it is alive.
+2. Claude Code writes a small JSON job file into `jobs/inbox/` through the Drive connector, generated and validated by `python scripts/colab_job.py make …` so the bytes are reproducible. A job is: a notebook from the allow-list, a **full 40-character commit**, a time limit, and whitelisted overrides such as `seeds`.
+3. The worker validates the job, refuses the wrong hardware, checks the commit out in `/content/para_001`, patches `REPO_REF` to that commit and applies the overrides to an in-memory copy, and executes it with nbclient in a fresh kernel. The notebook itself runs exactly as a human would run it (its own Drive paths, run directory and gates).
+4. The worker writes `jobs/results/<job_id>/result.json` (status, commit, hashes of the job and the notebook, hardware, the new run ids and whether each is complete), an executed copy of the notebook, and a small bundle of each new run's summary files (`acceptance_report.json`, `run_summary.md`, the frozen-before-validation file, the correctness file, the run config) with a SHA-256 manifest of every file in the run. Claude Code reads these through the Drive connector, then the run is imported into `results/runs/` as usual (§4).
+
+**Safety model.**
+
+| Risk | Control |
+|---|---|
+| A job runs arbitrary code | A job carries no code, environment or secrets. The notebook must be on `notebooks/05-ops/allowlist.json`, **read from `origin/main`** for every job, so a job or an unmerged branch cannot widen it; only merged changes do. |
+| An override injects code | Overrides are typed (`int_list`, `choice_list`, `run_id`, `int_or_null`), validated, and rendered by the worker into one matching line; the notebook line must match exactly once. |
+| Results cannot be reproduced | Every job is pinned to a full commit SHA; the result records the job hash, the notebook hash, the worker commit and the hardware. |
+| The wrong GPU is used | Each allow-list entry names acceptable GPU substrings (`L4`, `A100`, `H100` for pilot v2 and the rival benchmark); a mismatch is refused, not run. |
+| Runaway cost | Each notebook has a maximum time limit; the worker has a session budget (10 h default) and an idle limit (6 h), refuses to start a job that would outlast the budget, and stops on a `STOP` file in `jobs/` or when you interrupt the cell. One job runs at a time. |
+| The worker's own code changes under it | The worker runs from its own clean checkout (`/content/adjointrwm_worker`); jobs run in a different one (`/content/para_001`). |
+| Secrets | The worker never reads or prints credentials, and the job format has no place for them. A private repository would need a token for `git clone`; that is your decision and is **not** built in. |
+
+**What it does not do.** It cannot start or keep alive the Colab runtime, accept Drive's authorisation prompt, or buy GPU quota. Colab can still disconnect an idle or long session; a resumable job (pilot v2 and the rival benchmark support `resume_run_id`) can be resubmitted after you restart the worker. Drive downloads reach Claude Code as inline text, so large binaries (checkpoints, parquet) stay on Drive and only the bundle is read; a byte-for-byte import into `results/runs/` still needs the run folder to be copied into the repository environment.
+
+**What is untested.** Everything except the Colab-specific parts is covered by tests that run here. Two behaviours can only be confirmed in a real Colab runtime and are checked by the first job, `ops_smoke.ipynb`: that the injected prelude (importing `google.colab` and turning the notebook's own `drive.mount` into a no-op, because the worker already mounted Drive) makes a fresh kernel take the notebook's Colab branch, and that the worker can write to Drive from its subprocess.
+
+**Before the first job.** The worker clones `main`, and the allow-list is read from `main`, so these files must be merged to `main` first. Then: open the worker notebook, run it, and tell Claude Code; its first job is the smoke test, then the one-seed pilot v2 probe (§1, step 1), for example:
+
+```bash
+python scripts/colab_job.py make --notebook notebooks/01-production/AdjointRWM_Production_Pilot_v2.ipynb \
+    --commit <40-hex sha of main> --set 'seeds=[0]' --timeout-hours 8 --job-id b2-probe-seed0 --note "opportunity gate probe"
+```

@@ -12,7 +12,7 @@ requires-python = ">=3.10"
 dependencies = ["numpy>=1.26", "pandas>=2.1", "pyarrow>=14"]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "nbformat>=5.9"]
+dev = ["pytest>=8", "nbformat>=5.9", "nbclient>=0.9", "ipykernel>=6"]   # nbclient and ipykernel run the Colab job-queue end-to-end test
 # Model, training and allocator modules (adjointrwm.models/.training/.allocators). Without it,
 # their tests are skipped. CI installs the CPU wheel: pip install torch --index-url https://download.pytorch.org/whl/cpu
 torch = ["torch>=2.1"]
