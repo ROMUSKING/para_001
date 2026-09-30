@@ -139,6 +139,13 @@ def load_droid(dataset_name: str = "droid_100", data_dir: str = "gs://gresearch/
     import tensorflow_datasets as tfds  # noqa: PLC0415
 
     tf.config.set_visible_devices([], "GPU")  # keep TensorFlow off the training GPU
+    if not hasattr(tfds, "load"):
+        # tensorflow_datasets wraps its whole import in try/except and only logs the error, so a broken dependency (for example a
+        # protobuf runtime older than the generated code of tensorflow_metadata) leaves a module without ``load``. Re-raise the real error.
+        import importlib  # noqa: PLC0415
+
+        importlib.import_module("tensorflow_datasets.public_api")
+        raise RuntimeError("tensorflow_datasets was imported without its public API (no `load`); see the log for the swallowed import error.")
     try:
         return tfds.load(dataset_name, data_dir=data_dir, split="train", shuffle_files=False, with_info=True)
     except Exception as error:  # noqa: BLE001
