@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-09-30 (s): the Colab worker stops an idle job and exits
+
+- **`adjointrwm.colab_jobs`:** `ActivityWatch`, `gpu_utilization`, `kill_kernel`; `run_job_notebook(stall_seconds=...)` runs a watcher thread that kills the kernel when the job has shown no sign of life (no new file in its run directories, GPU utilisation under 5 %) for that long, and returns status `stalled` with the partial output kept. `run_worker(max_stall_seconds=1200)` turns it on for real jobs and, after a `stalled` job, exits without starting the next one (later jobs stay in the inbox). **`scripts/colab_worker.py`:** `--max-stall-minutes` (default 20; 0 off). **`notebooks/05-ops/colab_worker.ipynb`:** `MAX_STALL_MINUTES = 20`; the notebook then flushes Drive and releases the runtime as after any self-exit.
+- **With the immediate exit of (r), the worker now ends on either condition:** no job in the inbox, or a job that has gone idle. The 20 minutes is a policy default, not a measured value (see `docs/plans/colab-handoff.md` §5 for its limits).
+- **Tests:** 5 new tests in `tests/test_colab_jobs.py` (71 in the file): the watch rules, the GPU probe, a real kernel killed after going idle (status `stalled`, partial run directory and executed-notebook output kept), the worker stopping after a stalled job and leaving the inbox, and the CLI and notebook settings.
+
+## 2026-09-30 (r): the Colab worker reports progress while a job runs
+
+- **`adjointrwm.colab_jobs`:** `run_worker(progress_seconds=120)` logs, every interval while a job runs, the elapsed time and the newest file the job wrote (`newest_run_activity`, `format_duration`, `ProgressTicker`) and records `job_elapsed_seconds` and `newest_run_activity` in `worker_status.json`; a failing report is logged and never stops the job. **`scripts/colab_worker.py`:** `--progress-minutes` (default 2; 0 turns it off). **`notebooks/05-ops/colab_worker.ipynb`:** a *Progress* paragraph (do not interrupt the cell because it looks quiet).
+- **Immediate exit is now the default** (`DEFAULT_IDLE_MINUTES = 0`, `MAX_IDLE_MINUTES = 0` in the notebook; was 5): the worker exits as soon as the inbox is empty, so queue every job before starting it. A larger value still waits that many minutes. Reason: the requested behaviour ("terminate immediately"), and a Colab copy of the worker notebook from before the change kept polling for 9.5 minutes against the 5-minute limit.
+- **Why:** the first pilot job after the TFDS fix was interrupted 4.5 minutes in; the worker cell had printed nothing while it ran. `ops-smoke-006` showed the `tensorflow-metadata<1.18` pin working on the L4 runtime (`tfds has load: True`); see `docs/plans/colab-handoff.md` §5.
+- **Tests:** 4 new tests in `tests/test_colab_jobs.py` (66 in the file): duration format and newest-file scan, the ticker (ticks, survives a failing tick, stops at exit, off at 0), a running job's log line and `worker_status.json`, and the CLI flag.
+
 ## 2026-09-30 (q): the Colab worker exits when the queue is empty and releases the runtime
 
 - **`adjointrwm.colab_jobs`:** `idle_limit_seconds(minutes, hours)` and `DEFAULT_IDLE_MINUTES = 5`; `run_worker`'s default idle limit is 5 minutes (was 6 hours). **`scripts/colab_worker.py`:** `--max-idle-minutes` (0 exits as soon as the inbox is empty; `--max-idle-hours` kept for old callers).

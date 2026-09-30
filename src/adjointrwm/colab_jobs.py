@@ -20,8 +20,10 @@ import os
 import platform
 import re
 import shutil
+import signal
 import subprocess
 import sys
+import threading
 import time
 import traceback
 from dataclasses import dataclass, field
@@ -32,7 +34,10 @@ SCHEMA = 1
 ALLOWLIST_RELPATH = "notebooks/05-ops/allowlist.json"
 TRUSTED_REF = "origin/main"
 DEFAULT_DRIVE_ROOT = "/content/drive/MyDrive/Colab Notebooks/AdjointRWM_Production"
-DEFAULT_IDLE_MINUTES = 5.0      # a worker with an empty inbox exits after this long (covers Drive sync lag and a follow-up job); 0 means "exit once the inbox is empty"
+DEFAULT_IDLE_MINUTES = 0.0      # a worker with an empty inbox exits after this long; 0 (the default) means "exit as soon as the inbox is empty", so queue every job before starting it
+DEFAULT_STALL_MINUTES = 20.0    # a running job that writes no file and shows no GPU activity for this long is killed and the worker exits; 0 turns the watch off
+GPU_ACTIVE_PERCENT = 5.0        # GPU utilisation at or above this counts as a sign of life
+DEFAULT_PROGRESS_SECONDS = 120.0  # a running job prints one progress line (and refreshes worker_status.json) this often; 0 turns it off
 QUEUE_DIRS = ("inbox", "running", "done", "results")
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 JOB_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{2,63}$")
@@ -66,7 +71,7 @@ class JobError(ValueError):
 
 
 def idle_limit_seconds(minutes: float | None = None, hours: float | None = None, default_minutes: float = DEFAULT_IDLE_MINUTES) -> float:
-    """The idle limit of a worker in seconds: ``minutes`` if given, else ``hours``, else the default (5 minutes). Negative values are refused."""
+    """The idle limit of a worker in seconds: ``minutes`` if given, else ``hours``, else the default (0: exit as soon as the inbox is empty). Negative values are refused."""
     value = minutes * 60.0 if minutes is not None else hours * 3600.0 if hours is not None else default_minutes * 60.0
     if value < 0:
         raise ValueError("the idle limit cannot be negative")
@@ -374,6 +379,16 @@ def gpu_name() -> str:
         return ""
 
 
+def gpu_utilization() -> float | None:
+    """The highest GPU utilisation in percent right now, or ``None`` when there is no ``nvidia-smi`` or it fails."""
+    try:
+        done = subprocess.run(["nvidia-smi", "--query-gpu=utilization.gpu", "--format=csv,noheader,nounits"], capture_output=True, text=True, timeout=30)
+        values = [float(line) for line in done.stdout.split() if line.replace(".", "", 1).isdigit()]
+        return max(values) if done.returncode == 0 and values else None
+    except (OSError, subprocess.SubprocessError, ValueError):
+        return None
+
+
 def worker_info(worker_commit: str | None = None) -> dict:
     info = {"python": sys.version.split()[0], "platform": platform.platform(), "gpu_name": gpu_name(), "worker_commit": worker_commit}
     try:
@@ -456,8 +471,13 @@ def collect_runs(runs_root: Path, before: set[str], results_dir: Path) -> list[d
     return infos
 
 
-def run_job_notebook(spec: Mapping, entry: Mapping, results_dir: Path, *, repo_dir: Path, repo_url: str, runs_root: Path) -> RunOutcome:
-    """Check out the job's commit, execute the prepared notebook with nbclient in a fresh kernel, and collect what it wrote."""
+def run_job_notebook(spec: Mapping, entry: Mapping, results_dir: Path, *, repo_dir: Path, repo_url: str, runs_root: Path, stall_seconds: float = 0.0,
+                     sample_seconds: float = 15.0, scan_seconds: float = 60.0, gpu_fn: Callable[[], float | None] = gpu_utilization,
+                     clock: Callable[[], float] = time.time) -> RunOutcome:
+    """Check out the job's commit, execute the prepared notebook with nbclient in a fresh kernel, and collect what it wrote.
+
+    With ``stall_seconds > 0`` a watcher thread kills the kernel when the job has shown no sign of life for that long (no new file in its run
+    directories, GPU idle; see ``ActivityWatch``) and the outcome is ``stalled``. The partial run directory is kept."""
     from nbclient import NotebookClient
     from nbclient.exceptions import CellExecutionError, CellTimeoutError, DeadKernelError
     import nbformat
@@ -471,12 +491,46 @@ def run_job_notebook(spec: Mapping, entry: Mapping, results_dir: Path, *, repo_d
     client = NotebookClient(result_nb, timeout=int(hours * 3600), interrupt_on_timeout=True, startup_timeout=180, kernel_name="python3",
                             resources={"metadata": {"path": str(notebook_path.parent)}})
     status, reason = "ok", f"executed at {head}"
+    watch = ActivityWatch(clock(), stall_seconds)
+    stalled, finished = threading.Event(), threading.Event()
+
+    def watcher() -> None:
+        last_scan = float("-inf")
+        while not finished.wait(sample_seconds):
+            try:
+                now = clock()
+                newest = None
+                if now - last_scan >= scan_seconds:
+                    last_scan = now
+                    activity = newest_run_activity(runs_root, before)
+                    newest = activity["mtime"] if activity else None
+                watch.observe(now, newest, gpu_fn())
+                if watch.stalled(now) and kill_kernel(client):
+                    stalled.set()
+                    return
+            except Exception:  # noqa: BLE001 - a failing probe must not take the job down; try again next time
+                continue
+
+    thread = threading.Thread(target=watcher, name="job-stall-watch", daemon=True)
+    if stall_seconds > 0:
+        thread.start()
     try:
         client.execute()
     except CellTimeoutError as error:
         status, reason = "timeout", f"a cell ran longer than {hours} h: {str(error)[-500:]}"
     except (CellExecutionError, DeadKernelError) as error:
         status, reason = "failed", str(error)[-3000:]
+    except Exception:  # noqa: BLE001 - after a stall kill nbclient may raise something else; anything else is a real failure
+        if not stalled.is_set():
+            raise
+    finally:
+        finished.set()
+        if thread.is_alive():
+            thread.join(timeout=10)
+    if stalled.is_set():
+        status = "stalled"
+        reason = (f"no new file in the run directories and no GPU activity for more than {stall_seconds / 60:.1f} min; the kernel was killed "
+                  f"(a partial run directory may remain and can be resumed with resume_run_id where the notebook supports it)")
     executed = results_dir / "executed_notebook.ipynb"
     nbformat.write(result_nb, executed)
     if executed.stat().st_size > EXECUTED_MAX_BYTES:
@@ -488,15 +542,118 @@ def run_job_notebook(spec: Mapping, entry: Mapping, results_dir: Path, *, repo_d
     return RunOutcome(status, reason, collect_runs(runs_root, before, results_dir), executed_name)
 
 
+# ---- progress while a job runs ------------------------------------------------------------------------------------------
+
+def format_duration(seconds: float) -> str:
+    seconds = max(0, int(round(seconds)))
+    hours, rest = divmod(seconds, 3600)
+    minutes, secs = divmod(rest, 60)
+    return f"{hours}h{minutes:02d}m{secs:02d}s" if hours else f"{minutes}m{secs:02d}s"
+
+
+def newest_run_activity(runs_root: Path, before: set[str], *, now: Callable[[], float] = time.time, limit: int = 20000) -> dict | None:
+    """The most recently written file under the run directories created since ``before``: ``{run_id, file, age_seconds, files}``, or ``None`` if there is none yet."""
+    best: tuple[float, str, str] | None = None
+    files = 0
+    for run_id in sorted(list_runs(runs_root) - before):
+        for path in Path(runs_root, run_id).rglob("*"):
+            if files >= limit:
+                break
+            try:
+                if not path.is_file():
+                    continue
+                mtime = path.stat().st_mtime
+            except OSError:          # a file that vanishes or is mid-sync is not progress evidence either way
+                continue
+            files += 1
+            if best is None or mtime > best[0]:
+                best = (mtime, run_id, path.relative_to(Path(runs_root, run_id)).as_posix())
+    if best is None:
+        return None
+    return {"run_id": best[1], "file": best[2], "age_seconds": max(0.0, now() - best[0]), "files": files, "mtime": best[0]}
+
+
+class ActivityWatch:
+    """Decides when a running job is idle: it has shown no sign of life for ``stall_seconds``.
+
+    A sign of life is a file in the job's new run directories newer than any seen before, or a GPU utilisation of at least ``GPU_ACTIVE_PERCENT``.
+    The clock starts at construction, so the start-up of a job counts against the limit. ``stall_seconds <= 0`` never reports a stall."""
+
+    def __init__(self, now: float, stall_seconds: float):
+        self.stall_seconds = float(stall_seconds)
+        self.last_active = now
+        self.newest_mtime: float | None = None
+
+    def observe(self, now: float, newest_mtime: float | None = None, gpu_percent: float | None = None) -> None:
+        if newest_mtime is not None and (self.newest_mtime is None or newest_mtime > self.newest_mtime):
+            self.newest_mtime = newest_mtime
+            self.last_active = now
+        if gpu_percent is not None and gpu_percent >= GPU_ACTIVE_PERCENT:
+            self.last_active = now
+
+    def idle_seconds(self, now: float) -> float:
+        return max(0.0, now - self.last_active)
+
+    def stalled(self, now: float) -> bool:
+        return self.stall_seconds > 0 and self.idle_seconds(now) > self.stall_seconds
+
+
+def kill_kernel(client) -> bool:
+    """Kill the kernel process of a running ``nbclient`` client (POSIX); nbclient then raises ``DeadKernelError`` in ``execute``. ``False`` if there is no kernel yet."""
+    pid = getattr(getattr(getattr(client, "km", None), "provisioner", None), "pid", None)
+    if not pid:
+        return False
+    try:
+        os.kill(int(pid), signal.SIGKILL)
+    except (OSError, ValueError):
+        return False
+    return True
+
+
+class ProgressTicker:
+    """Calls ``tick()`` every ``interval`` seconds on a daemon thread while the ``with`` block runs (never at entry; ``interval <= 0`` disables it).
+
+    A tick that raises is logged through ``on_error`` and does not stop the ticker or the job."""
+
+    def __init__(self, interval: float, tick: Callable[[], None], on_error: Callable[[str], None] = lambda message: None):
+        self.interval, self.tick, self.on_error = float(interval), tick, on_error
+        self._stop = threading.Event()
+        self._thread: threading.Thread | None = None
+
+    def _run(self) -> None:
+        while not self._stop.wait(self.interval):
+            try:
+                self.tick()
+            except Exception as error:  # noqa: BLE001 - progress reporting must never take a job down
+                self.on_error(f"progress report failed: {type(error).__name__}: {error}")
+
+    def __enter__(self) -> "ProgressTicker":
+        if self.interval > 0:
+            self._thread = threading.Thread(target=self._run, name="job-progress", daemon=True)
+            self._thread.start()
+        return self
+
+    def __exit__(self, *exc) -> None:
+        self._stop.set()
+        if self._thread is not None:
+            self._thread.join(timeout=10)
+
+
 # ---- the worker loop ------------------------------------------------------------------------------------------------------
 
+
 def run_worker(queue: JobQueue, repo_dir: Path, repo_url: str, runs_root: Path, *, poll_seconds: float = 30.0, max_idle_seconds: float = DEFAULT_IDLE_MINUTES * 60,
-               max_session_seconds: float = 10 * 3600, once: bool = False, dry_run: bool = False,
+               max_session_seconds: float = 10 * 3600, once: bool = False, dry_run: bool = False, progress_seconds: float = DEFAULT_PROGRESS_SECONDS,
+               max_stall_seconds: float = DEFAULT_STALL_MINUTES * 60,
                runner: Callable[[Mapping, Mapping, Path], RunOutcome] | None = None, allowlist_loader: Callable[[], Mapping] | None = None,
                sleep: Callable[[float], None] = time.sleep, clock: Callable[[], float] = time.time, log: Callable[[str], None] = print,
                gpu_name_fn: Callable[[], str] = gpu_name, worker_commit: str | None = None) -> list[dict]:
     """Poll the inbox and process jobs one at a time until idle too long, the session budget would be exceeded, a ``STOP`` file appears, or (``once``)
-    the inbox is empty. The allow-list is re-read from ``origin/main`` for every job. ``dry_run`` validates and reports without running."""
+    the inbox is empty. The allow-list is re-read from ``origin/main`` for every job. ``dry_run`` validates and reports without running.
+    While a job runs, every ``progress_seconds`` the worker logs how long it has run and which file the job wrote last, and records the same in
+    ``worker_status.json``, so a multi-hour job that prints nothing is distinguishable from a hung one. A job that shows no sign of life for
+    ``max_stall_seconds`` is killed (``stalled``; see ``run_job_notebook``) and the worker then exits without starting the next job, so that the
+    runtime can be released; 0 turns the watch off."""
     queue.ensure()
     info = worker_info(worker_commit)
     info["worker_id"] = f"{platform.node()}-{os.getpid()}"
@@ -504,12 +661,16 @@ def run_worker(queue: JobQueue, repo_dir: Path, repo_url: str, runs_root: Path, 
     started = clock()
     last_work = started
     load = allowlist_loader or (lambda: (ensure_checkout(repo_dir, repo_url), trusted_allowlist(repo_dir))[1])
-    run = runner or (lambda spec, entry, results: run_job_notebook(spec, entry, results, repo_dir=repo_dir, repo_url=repo_url, runs_root=runs_root))
+    run = runner or (lambda spec, entry, results: run_job_notebook(spec, entry, results, repo_dir=repo_dir, repo_url=repo_url, runs_root=runs_root,
+                                                                   stall_seconds=max_stall_seconds))
     results: list[dict] = []
 
-    def beat(state: str) -> None:
-        queue.heartbeat({**info, "state": state, "started_utc": started_utc, "last_poll_utc": utcnow(), "jobs_done": len(results), "dry_run": dry_run,
-                         "session_budget_hours": max_session_seconds / 3600})
+    beat_lock = threading.Lock()            # the progress thread and the loop both write worker_status.json
+
+    def beat(state: str, **extra) -> None:
+        with beat_lock:
+            queue.heartbeat({**info, "state": state, "started_utc": started_utc, "last_poll_utc": utcnow(), "jobs_done": len(results), "dry_run": dry_run,
+                             "session_budget_hours": max_session_seconds / 3600, **extra})
 
     while True:
         if queue.stop_requested():
@@ -534,9 +695,23 @@ def run_worker(queue: JobQueue, repo_dir: Path, repo_url: str, runs_root: Path, 
                 results.append(outcome)
                 queue.move(path, "done")
             else:
-                result = process_job(queue, path, allow, run, gpu_name_fn=gpu_name_fn, info=info)
+                before, job_started = list_runs(runs_root), clock()
+
+                def report(job_file: str = path.name, before: set[str] = before, job_started: float = job_started) -> None:
+                    activity = newest_run_activity(runs_root, before)
+                    elapsed = clock() - job_started
+                    where = (f"newest file {activity['run_id']}/{activity['file']} written {format_duration(activity['age_seconds'])} ago ({activity['files']} files)"
+                             if activity else "no run directory yet")
+                    beat(f"running {job_file}", job_elapsed_seconds=round(elapsed), newest_run_activity=activity)   # the status first: a visible log line implies it is on disk
+                    log(f"{job_file}: still running, {format_duration(elapsed)} elapsed; {where}")
+
+                with ProgressTicker(progress_seconds, report, on_error=log):
+                    result = process_job(queue, path, allow, run, gpu_name_fn=gpu_name_fn, info=info)
                 log(f"{path.name}: {result['status']} {result.get('reason', '')[:200]}")
                 results.append(result)
+                if result["status"] == "stalled":
+                    log(f"{path.name}: stalled; stopping the worker. Jobs still in the inbox stay there.")
+                    break
             last_work = clock()
             continue
         beat("idle")
