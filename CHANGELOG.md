@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-30 (z): the dynamics parity run imported
+
+- **`results/runs/dynamics_parity_20260930T214043Z/` imported** (six files and a README): copied byte for byte from the Drive run folder via the zip Roman downloaded (zip integrity passed; every file's SHA-256 equals the zip's and every size equals the Drive metadata: 33, 1197, 11965, 1567, 16829 and 1775 bytes; config hash recomputed and equal to `config_hash` in the report). The executed notebook and the job's `result.json` stay on Drive and are in `docs/DRIVE_INVENTORY.csv` (`drive-only`); nine inventory rows added, each Drive ID checked against Drive.
+- **`scripts/dynamics_parity_tables.py`** prints the note's tables from the run files and stops if the CSV, the JSON and the report disagree, a relative improvement does not recompute from its two RMSEs, or the config hash does not verify. **`tests/test_dynamics_parity_tables.py`** (3 tests) checks that the research note contains every row and number the run and the pilot's committed `dynamics_evaluation.json` give; corrupting one number in the note makes it fail.
+- **Research note** `docs/research-notes/2026-09-30-dynamics-parity.md` now cites the committed run as its source instead of values read through the Drive connector. No number changed.
+
 ## 2026-09-30 (y): the dynamics parity run; the pilot's dynamics pass is split-dependent
 
 - **Run `dynamics_parity_20260930T214043Z`** (job `dynamics-parity-r1`, L4, `main` at `8b5550f`, config SHA-256 `f913d72a…99d1a`, status `OK`, anchors within tolerance, test split not read): the pilot checkpoint and the pilot v2 seed-0 checkpoint scored against persistence on the same train and validation windows. **Both fail the 2 % gate on validation** (pilot −0.219 `full` / −0.233 `base`; v2 −0.125 / −0.127, BF16); both pass on train. The pilot checkpoint passes on test (+31.2 %, its committed file) and fails on validation (−21.9 %). Note: `docs/research-notes/2026-09-30-dynamics-parity.md`. Values were read through the Drive connector; the run folder is not yet imported byte for byte.

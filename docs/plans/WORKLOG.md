@@ -21,6 +21,15 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 
 ---
 
+## 2026-09-30 23:20 (BST) · Claude Code (web) · B2, dynamics parity (import)
+
+- **Changed:** imported the parity run (`results/runs/dynamics_parity_20260930T214043Z/`, README with hashes and file origins), `scripts/dynamics_parity_tables.py`, `tests/test_dynamics_parity_tables.py`, nine Drive inventory rows, the note's provenance line (CHANGELOG (z)).
+- **Verified:** per file, SHA-256 of the copy equals the zip's and its size equals the Drive metadata; config hash `f913d72a…99d1a` recomputed from the `config` block equals `config_sha256` and the report's `config_hash`; the CSV, the JSON rows and the report rows agree; each row's relative improvement recomputes from its RMSEs. The note's tables, anchors and cross-split numbers all appear in the output of the script (test), and the test fails when one number in the note is corrupted. All nine Drive IDs written to the inventory and README were resolved with the Drive metadata call. **What this closes:** the earlier caveat that the note's numbers were read through the connector. The connector-read values and the imported files agree (the 16-row CSV matched `run_summary.md` before import; the script now checks the note against the files).
+- **Not verified:** the zip is the user's download of the Drive folder, so the chain of custody is Drive, then the user, then here; the only independent check of the bytes is the size match with the Drive metadata and the internal consistency above (Drive exposes no checksum through the connector).
+- **Open:** unchanged: (1) go-ahead for the episode-level k-fold dynamics study; (2) the B2 gate design; (3) the failed-gate report path of pilot v2. Nothing is queued.
+
+---
+
 ## 2026-09-30 22:55 (BST) · Claude Code (web) · B2, dynamics parity (result)
 
 - **Result:** `dynamics-parity-r1` ran 21:40:36 to 21:42:17 UTC, status `ok`, run `dynamics_parity_20260930T214043Z` `COMPLETE`, `status: OK`, all five anchors within tolerance (v2: exact; pilot: 0.0021 to 0.0036 absolute, cause untested). Both checkpoints fail the dynamics gate on validation; the pilot checkpoint passes on test and fails on validation. Details, tables and hypotheses: `docs/research-notes/2026-09-30-dynamics-parity.md`.

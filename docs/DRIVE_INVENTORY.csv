@@ -58,3 +58,12 @@ drive_file_id,name,type,size_bytes,modified_utc,status,repo_path,note
 1ecRlObW3wYWmHm4ZCRWV-Mgupuk5suz8,swm_production_checkpoint.pt,pt,285756315,2026-09-28T21:35:52Z,drive-only,,From para_0_0_1 (SWM); not used
 1G1mry7SqzqBuJ5z9mSTYDUhewGycgcDG,swm_production_checkpoint.pt,pt,285756443,2026-09-28T21:09:25Z,drive-only,,From para_0_0_1 (SWM); not used
 1PXkzlRAxFYFjTgCnEME5YF-kH2QI5QSw,swm_pilot_checkpoint.pt,pt,286237294,2026-09-28T20:20:20Z,drive-only,,From para_0_0_1 (SWM); not used
+1EdVEDEb_3Cg9peBgoZAyQWYpRR0biHPk,runs/dynamics_parity_20260930T214043Z/,folder,,2026-09-30T21:40:43Z,copied,results/runs/dynamics_parity_20260930T214043Z/,"Same-split dynamics parity run; the six files imported byte for byte, see its README"
+1OFgN_Gp9N6eBxmEl6eEdHWe6V4aRJpB0,COMPLETE,file,33,2026-09-30T21:42:14Z,copied,results/runs/dynamics_parity_20260930T214043Z/COMPLETE,
+1sj4beeSfFYxn-QSNis73OJoM0dmMKBfF,run_config.json,json,1197,2026-09-30T21:40:43Z,copied,results/runs/dynamics_parity_20260930T214043Z/config/run_config.json,
+16VVWbotA34CLcAR-WFE431h8CUregfNd,dynamics_parity.json,json,11965,2026-09-30T21:42:13Z,copied,results/runs/dynamics_parity_20260930T214043Z/artifacts/dynamics_parity.json,
+1Axz5GsYlp7Jjg6itywIDeQ437bgl7byr,dynamics_parity.csv,csv,1567,2026-09-30T21:42:13Z,copied,results/runs/dynamics_parity_20260930T214043Z/artifacts/dynamics_parity.csv,
+1JlowuyE6_tUAqKCtytlL20S2hnqWVRl2,acceptance_report.json,json,16829,2026-09-30T21:42:14Z,copied,results/runs/dynamics_parity_20260930T214043Z/reports/acceptance_report.json,
+1DDVim5USRytPMREftTlToJjiYFXO245-,run_summary.md,md,1775,2026-09-30T21:42:14Z,copied,results/runs/dynamics_parity_20260930T214043Z/reports/run_summary.md,
+1NY2veLUpCIVleAir9vH75Cu-tvSOkwB0,jobs/results/dynamics-parity-r1/executed_notebook.ipynb,ipynb,37547,2026-09-30T21:42:17Z,drive-only,,Executed copy of the parity notebook (job dynamics-parity-r1); not committed
+1hV30Lp5yY6ASummegYmB0EnpeONotVPR,jobs/results/dynamics-parity-r1/result.json,json,1020,2026-09-30T21:42:17Z,drive-only,,"Job result record (status ok); quoted in the note, not committed"
