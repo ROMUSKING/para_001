@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-30 (o): Colab worker live; first jobs; ops_smoke probes the data stack
+
+- **Worker confirmed** (Drive `jobs/worker_status.json`: NVIDIA L4, Python 3.13.15, torch 2.11.0+cu128, worker commit `e38a463`): `ops-smoke-001` returned `ok` in 10 s (prelude and Drive writes work). `b2-probe-seed0` (pilot v2, `seeds=[0]`) **failed in about 20 s in `load_droid`: `AttributeError: module 'tensorflow_datasets' has no attribute 'load'`** (a runtime/data-stack failure, not a gate; nothing about the research question follows from it).
+- **`notebooks/05-ops/ops_smoke.ipynb`:** now probes the data stack in a fresh subprocess (versions of TensorFlow, TensorFlow Datasets, NumPy, protobuf, etils, array_record, dm-tree, rlds, PyArrow; whether `tfds.load` exists; the error chain if not), re-runs the pilots' own `pip install` on Colab and probes again, and writes a compact section into `run_summary.md`. A missing `nvidia-smi` no longer raises (the notebook failed on CPU-only machines before).
+- **Docs:** `docs/plans/colab-handoff.md` §5 records the first job result.
+
 ## 2026-09-30 (n): D4-3 (varying goal) and D1-0b (forecasting objective on SMD) run and imported; D4-1 planned
 
 - **D4-3:** `highdim.varying_goal_instances`, `setup_steps`, `with_setup_charged`, `cell_rules_varying_goal` (6 tests in `tests/test_varying_goal.py`); plan `docs/plans/d4-3-plan.md`; notebook `notebooks/04-domains/d4_3_varying_goal.ipynb`; `scripts/d4_3_tables.py`; **run `results/runs/d4_3_varying_goal_20260930T084725Z/` imported** (17 files, 1.1 MB, with README; validation only, test family never generated) and **note `docs/research-notes/2026-09-30-d4-3-varying-goal.md`**. The frozen rules R3v and R4v both hold in `m4` and `m64` (D4-1 candidate cells); with the exact co-state table charged per instance the goal-aware arm never beats `cheap`. A clean-worktree reproduction matches: 11 of 18 files byte-identical, the rest differ only in a run id or a timestamp (README).
