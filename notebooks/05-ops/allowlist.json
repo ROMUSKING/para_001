@@ -8,6 +8,12 @@
       "max_hours": 0.5,
       "overrides": {}
     },
+    "notebooks/02-diagnostics/dynamics_parity.ipynb": {
+      "gpu": ["L4"],
+      "default_hours": 1,
+      "max_hours": 2,
+      "overrides": {}
+    },
     "notebooks/01-production/AdjointRWM_Production_Pilot_v2.ipynb": {
       "gpu": ["L4", "A100", "H100"],
       "default_hours": 8,

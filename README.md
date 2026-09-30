@@ -55,7 +55,7 @@ papers/
   related-work.bib          Bibliography (check entries before citing)
 notebooks/
   01-production/            Pilot v1 (provenance) and Pilot v2 (fixed allocation contract, rival allocators)
-  02-diagnostics/           opportunity_audit.ipynb: run after the pilot, no retraining
+  02-diagnostics/           dynamics_parity.ipynb (same-split dynamics check, L4 job), opportunity_audit.ipynb: run after the pilot, no retraining
   03-benchmarks/            rival_world_models_droid100.ipynb: AdjointRWM vs rival world-model families
   04-domains/               d4_adaptive_time_stepping.ipynb: first cross-domain reference domain (CPU)
   archive/                  Earlier notebooks, kept for provenance only

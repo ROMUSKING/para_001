@@ -9,6 +9,7 @@ The worker polls ``<drive-root>/jobs/inbox`` for job files, validates each again
 that is **not** ``--repo-dir``: jobs check out other commits there, and the worker's own files must not change underneath it.
 While a job runs it prints a progress line every ``--progress-minutes`` (default 2): elapsed time and the newest file the job wrote.
 A job that writes no file and shows no GPU activity for ``--max-stall-minutes`` (default 20) is killed and the worker exits (``stalled``).
+SIGINT and SIGTERM stop it cleanly: a running job's kernel is shut down and recorded as ``interrupted``, and the worker exits without starting the next job. The log says why it exited (``exiting: …``, also ``exit_reason`` in ``worker_status.json``).
 It exits by itself as soon as the inbox is empty (``--max-idle-minutes``, default 0; a larger value waits that long for a follow-up job). Stop it earlier with Colab's interrupt or by creating
 ``<drive-root>/jobs/STOP``. The worker notebook then flushes Drive and releases the Colab runtime.
 """
@@ -58,7 +59,7 @@ def main() -> int:
     print(f"worker commit {commit} | jobs {queue.root} | runs {args.drive_root / 'runs'} | repo {args.repo_dir}", flush=True)
     results = cj.run_worker(queue, args.repo_dir, args.repo_url, args.drive_root / "runs", poll_seconds=args.poll_seconds,
                             max_idle_seconds=cj.idle_limit_seconds(args.max_idle_minutes), max_session_seconds=args.max_session_hours * 3600,
-                            once=args.once, dry_run=args.dry_run, progress_seconds=args.progress_minutes * 60, max_stall_seconds=args.max_stall_minutes * 60, worker_commit=commit,
+                            once=args.once, dry_run=args.dry_run, progress_seconds=args.progress_minutes * 60, max_stall_seconds=args.max_stall_minutes * 60, handle_signals=True, worker_commit=commit,
                             log=lambda line: print(line, flush=True))
     print(f"{len(results)} job(s) handled", flush=True)
     return 0

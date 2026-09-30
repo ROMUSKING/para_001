@@ -1,5 +1,28 @@
 # Changelog
 
+## 2026-09-30 (x): same-split dynamics parity diagnostic (built, not yet run)
+
+- **`adjointrwm.eval.dynamics_parity`** (`dynamics_gate_row`, `compare_normalisers`, `anchor_check`; 10 tests in `tests/test_dynamics_parity.py`, including that the model class inside the pilot notebook (extracted from the committed notebook, random weights) and the `src` model have the same parameter names, shapes and order and predict identically in `base` and `full` mode once the former's weights are loaded with `strict=True`, that switching a built model's `config.prediction_mode` equals building it in that mode and that `mask_mode` does not change the parameters, so a pilot v1 checkpoint loads into the v2 model).
+- **`notebooks/02-diagnostics/dynamics_parity.ipynb`:** scores the pilot checkpoint and the pilot v2 seed-0 checkpoint (both hash-checked against the committed hashes) against persistence on the same train and validation windows, in `base` and `full` mode, with BF16 and FP32, each checkpoint in its own input normaliser, from the probe run's feature cache. It reproduces two stored numbers first (the probe's `dynamics_gate.json` and the pilot checkpoint's stored validation metrics) and reports `ANCHOR_FAILED` without a reading if they do not reproduce. The test split is never built (asserted, and recorded as `test_split_read: false`). Readings are mechanical and descriptive, not causal. Allow-listed for L4 only (1 h default, 2 h maximum).
+- **Tests of the notebook:** `tests/test_dynamics_parity_notebook.py` (5 tests) runs its cells on CPU against a fake Drive tree of tiny random fixtures (plumbing only, not data): a full pass with all five anchors within tolerance, an unreproducible stored number giving `ANCHOR_FAILED` and no readings, the pilot checkpoint scored in the wrong input units tripping only the pilot's anchors, a wrong checkpoint hash refused before loading, and the no-test-split and L4 requirements in the source.
+- **Docs:** handoff §1 row 1b, roadmap §2.1, notebooks README, README layout.
+- **Not run:** the notebook has not run on Colab. It becomes available to the worker when `main` has it and its allow-list entry.
+
+## 2026-09-30 (w): worker notebook reconciled with the Colab-saved copy; it needs an L4
+
+- **Reconciled** `notebooks/05-ops/colab_worker.ipynb` with Roman's "Created using Colab" save (`c1d8c78`, which reformatted the JSON and added `gpuType: L4` and `machine_shape: hm` to the metadata): Colab's formatting and metadata kept, the log/termination cells from (v) applied on top. The cell sources of the Colab save were identical to the repository's before (v).
+- **L4 guard:** the setup cell sets `REQUIRED_GPU = 'L4'`; on any other GPU (Colab's default is a T4) it prints why, releases the runtime with `runtime.unassign()` and stops, instead of billing a runtime the pilot jobs would refuse to run on (their allow-list entries name L4, A100 and H100). `''` turns the check off. The notebook metadata asks Colab for an L4.
+- **Test:** the notebook test now checks the L4 metadata and the guard, and finds the final release call.
+
+## 2026-09-30 (v): the worker logs the running job and terminates properly
+
+- **Running-job log:** `JobTracker` (nbclient cell hooks) logs each cell's start, finish and failure; the progress line now names the running cell and its elapsed time and shows GPU utilisation (`gpu_utilization`, `run_worker(gpu_util_fn=…)`); `worker_status.json` gains `current_cell` and `gpu_utilization_percent`.
+- **Exit reason:** the worker logs `exiting: <reason>` and records `exit_reason` in `worker_status.json` for every way it can end.
+- **Bug fixed, found by a local test:** nbclient replaces the worker's SIGINT/SIGTERM handlers while a notebook runs and only shuts the kernel down, so SIGTERM mid-job failed the job and the worker carried on to the next queued job (still running 40 s after the signal). `run_worker(handle_signals=True)` (set by `scripts/colab_worker.py`) arms `WorkerStopped` handlers and re-arms them after every job; a signal during a job is recorded as `interrupted` (detected through nbclient's own cleanup future) and the worker exits without starting the next job; a signal while idle writes `stopped` and exits.
+- **`notebooks/05-ops/colab_worker.ipynb`:** the interrupt path waits 90 s then kills the worker; the release (`drive.flush_and_unmount()` then `runtime.unassign()`) now runs in the `finally` block after any exit except a manual interrupt, and still happens if the Drive flush raises.
+- **Tests:** 6 new tests in `tests/test_colab_jobs.py` (78 in the file): cell titles, the tracker, a real job whose failing cell is logged once, the exit reasons, and two real-process tests (SIGTERM while idle, SIGTERM during a job: kernel gone, result `interrupted`, next job untouched). Both process tests were checked to fail when the fix is removed (mutation), and the file passed 8 full runs in a row.
+- **Not verified:** the worker on Colab itself (the `GPU` percentage, the release after a stalled or interrupted job, how Colab's Interrupt button reaches the worker).
+
 ## 2026-09-30 (u): the worker prints and records the limits it runs with
 
 - **Why:** after the failed B2 probe job the worker kept polling for about 20 minutes (status `idle`, last poll 17:22:58 UTC) although the current notebook passes `--max-idle-minutes 0`. The notebook Roman uploaded afterwards is identical to `notebooks/05-ops/colab_worker.ipynb` (cells, metadata, cell IDs; never executed), and run locally with its arguments against a failing job the worker exits in about 5 seconds. I had attributed the polling to an old notebook copy; that is **not shown**, and is withdrawn as a stated cause. The cause is open.
