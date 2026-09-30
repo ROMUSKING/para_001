@@ -21,6 +21,15 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 
 ---
 
+## 2026-09-30 17:30 (BST) · Claude Code (web) · D4-1, Colab worker
+
+- **Changed:** `reproduction.md` added to `results/runs/d4_1_learned_critics_20260930T122312Z/`; the Colab worker now exits when the inbox has been empty for 5 minutes and its notebook flushes Drive and releases the runtime (`colab_jobs.idle_limit_seconds`, `scripts/colab_worker.py --max-idle-minutes`, `WORKER_REF`; 3 new tests; CHANGELOG (q), handoff §5).
+- **Verified:** the clean-worktree re-execution of D4-1 (`d4_1_learned_critics_20260930T154712Z`, 2197 s) matches: 25 of 32 files byte-identical, including all eight critic files and every validation table; the other seven differ only in a run id or a timestamp; the freeze hash is identical. `pytest` 311 passed and `python harness/check.py --base origin/main` 7/7 (with the worker tests).
+- **Open:** the worker change is on the branch, not on `main`: to use it, open `colab_worker.ipynb` from the branch and set `WORKER_REF = 'ccr-88589394-9zz9zq'`, or merge. The queue still holds `1-ops-smoke-006.json` and `2-b2-probe-seed0-r2.json` (commit `ef7a75b`) until Roman starts the worker.
+- **Next:** read `results/ops-smoke-006` and `results/b2-probe-seed0-r2` after the worker runs.
+
+---
+
 ## 2026-09-30 17:10 (BST) · Claude Code (web) · D4-1, Colab queue, B2 probe
 
 - **Changed:** D4-1 plan (frozen, redesigned once before any validation read), `adjointrwm.domains.critics` with 26 tests, notebook, `scripts/d4_1_tables.py` and `d4_1_estimator_probe.py`; imported run `d4_1_learned_critics_20260930T122312Z` (with README) and note `2026-09-30-d4-1-learned-critics.md`; roadmap, cross-domain plan, README, notebooks README, plan §10. Colab: `ops_smoke` now probes the data stack; the TFDS notebooks pin `tensorflow-metadata<1.18`; `load_droid` fails loudly (3 tests).
