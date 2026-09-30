@@ -21,6 +21,16 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 
 ---
 
+## 2026-09-30 23:13 (BST) · Claude Code (web) · k-fold dynamics study (built)
+
+- **Decision (Roman, this session):** of the options offered, "k-fold dynamics study, run twice (pilot regime and v2 regime)". I first asked because "the two jobs" could have meant B2 plus B1; the answer settled it.
+- **Changed:** frozen plan (commit `84ca8be`, 22:06:07 UTC, before any code), helpers, notebook, allow-list entry, comparison script, 31 new tests, docs (CHANGELOG (aa)). Two corrections to my own plan before any fold ran, both logged in its section 9: a wrong module path, and a wrong sentence saying the pilot's test split is never built (in a k-fold over all 100 episodes each test episode is held out once and trains the other folds; B2 does not reuse these models).
+- **Defect found and fixed in review:** the first version of the notebook checked the pilot checkpoint's hash in its last cell, after about 55 minutes of training; the anchor lookups now run before any training.
+- **Verified:** `pytest` for the helpers (19), the notebook smoke test (6, CPU, tiny random fixtures through a fake Drive tree) and the comparison script (3). Mutations caught: `>=` for `>` in the decision rule, fold = contiguous blocks instead of rank mod k, held-out fold in the training pool, wrong episodes scored, failed anchor ignored. **Not verified:** anything on Colab; that the anchor unit reproduces the stored numbers within the plan's tolerances (0.01, 0.02; policy values); training time per unit (the plan's 496 s is the probe's measured figure on the same code path).
+- **Open:** (1) the branch must be merged into `main` before the worker can run the notebook; (2) two jobs to queue then: `dynamics-kfold-v2-r1` (`regimes=['v2']`) and `dynamics-kfold-pilot-r1` (`regimes=['pilot']`), 2 h limit each; (3) B2 gate design and the failed-gate report path remain open.
+
+---
+
 ## 2026-09-30 23:20 (BST) · Claude Code (web) · B2, dynamics parity (import)
 
 - **Changed:** imported the parity run (`results/runs/dynamics_parity_20260930T214043Z/`, README with hashes and file origins), `scripts/dynamics_parity_tables.py`, `tests/test_dynamics_parity_tables.py`, nine Drive inventory rows, the note's provenance line (CHANGELOG (z)).

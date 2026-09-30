@@ -14,6 +14,15 @@
       "max_hours": 2,
       "overrides": {}
     },
+    "notebooks/02-diagnostics/dynamics_kfold.ipynb": {
+      "gpu": ["L4"],
+      "default_hours": 2,
+      "max_hours": 3,
+      "overrides": {
+        "regimes": {"kind": "choice_list", "prefix": "regimes: tuple = ", "choices": ["pilot", "v2"]},
+        "resume_run_id": {"kind": "run_id", "prefix": "RESUME_RUN_ID = "}
+      }
+    },
     "notebooks/01-production/AdjointRWM_Production_Pilot_v2.ipynb": {
       "gpu": ["L4", "A100", "H100"],
       "default_hours": 8,
