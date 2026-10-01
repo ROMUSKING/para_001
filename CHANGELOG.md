@@ -1,5 +1,34 @@
 # Changelog
 
+## 2026-10-01 (ae): episode-level k-fold dynamics study completed, imported, compared, and analyzed
+
+- **Runs completed and imported:** `dynamics_kfold_v2_20260930T231740Z` (config hash `57ef3cdce398a94d1fdc0fff8846de1eca01b349c7ef4720257f4679cb78e1cc`) and `dynamics_kfold_pilot_20261001T000051Z` (config hash `8d503e1aac5accbe1f4ad65e6e84510edba117206d902e12944d9b90aa07ab6a`) imported into `results/runs/` byte-for-byte from Colab Drive via `colab download`.
+- **Anchors passed:** `v2` anchor within 0.0003 (tolerance 0.01); `pilot` anchor within 0.0130 (tolerance 0.02).
+- **Core findings:**
+  - **Hypothesis H-A confirmed (Extreme Split Variance):** per-fold relative improvement ranges from $-60.8\%$ to $+24.7\%$ in `v2` and $-59.8\%$ to $+23.2\%$ in `pilot`. Simulating 10,000 random 10-episode validation splits yields a 2% gate pass rate of only $36.4\%$ (`v2`) and $36.3\%$ (`pilot`), proving that single 10-episode validation gates are highly noisy.
+  - **Episode win rate:** the model beats persistence on $70.7\%$ (`v2`) and $70.0\%$ (`pilot`) of held-out episodes.
+  - **Hypothesis H-B confirmed (Horizon Dynamics):** persistence dominates at step 1 ($-107.6\%$ in `v2`, $-108.7\%$ in `pilot`) due to near-static motion, but the dynamics model beats persistence at step 4 ($+6.5\%$ in `v2`, $+6.8\%$ in `pilot`).
+  - **Regime comparison:** paired bootstrap difference $R(\text{v2}) - R(\text{pilot}) = -0.000$ (95% CI $[-0.007, +0.008]$ -> `NOT_DISTINGUISHED`).
+- **Research note:** `docs/research-notes/2026-10-01-dynamics-kfold.md` written and linked.
+- **Tooling:** updated `scripts/dynamics_kfold_compare.py` to support valid 99-episode datasets without assertion failure, verified with `pytest tests/test_dynamics_kfold_compare.py`. Full verification with `python harness/check.py` (6/6 passed).
+
+## 2026-10-01 (ad): Colab execution policy: colab-cli primary, worker scripts and Drive jobs fallback
+
+- **Execution policy updated:** `AGENTS.md`, `notebooks/AGENTS.md`, `docs/plans/colab-handoff.md` §5, and `.agents/skills/colab-cli/SKILL.md` updated to establish that agents send jobs and execute notebooks/scripts directly on Colab runtimes via the `colab-cli` skill. Worker scripts (`scripts/colab_worker.py`, `notebooks/05-ops/colab_worker.ipynb`) and the Drive job queue (`jobs/inbox/`) are designated as fallback mechanisms when direct CLI access is unavailable.
+- **Harness sync:** verified and synced with `python harness/sync.py` and `python harness/check.py`.
+
+## 2026-10-01 (ac): Google Colab CLI tool and skills for Colab CLI and OpenCode delegation
+
+- **Colab CLI installed:** official `google-colab-cli` (v0.7.4) installed via `uv tool` into `~/.local/bin/colab`.
+- **Skill `colab-cli` (`.agents/skills/colab-cli/SKILL.md`):** mental model (sessions, persistent kernel state, `/content`), ADC vs OAuth2 authentication, required scopes, session provisioning (`--gpu`, `--tpu`), remote code/script execution, ephemeral `colab run`, file transfers, logs, and agent non-interactive safety rules.
+- **Skill `opencode-delegate` (`.agents/skills/opencode-delegate/SKILL.md`):** delegation workflows to OpenCode v2 (`opencode run`), standalone mode (`--standalone`), non-interactive auto-approval (`--auto`), file attachments, structured JSON streaming (`--format json`), multi-turn session continuation/forking, session export/cleanup, and repo permission evaluation (`opencode.json`).
+- **Harness sync:** regenerated mirrors for Claude Code (`.claude/skills/`), Antigravity workflows (`.agents/workflows/`), and OpenCode commands (`.opencode/commands/`).
+
+## 2026-09-30 (ab): audit of the dynamics parity diagnostic
+
+- **Audit `docs/audits/2026-09-30_dynamics_parity_audit.md`** (`dynamics_parity_20260930T214043Z`, pilot vs v2 seed 0, train + validation, no training): `DIAGNOSTIC_EXECUTION: PASS`, dynamics gate FAIL on validation for both checkpoints (finding, not a pipeline failure), `DATA_CONTRACT: PASS` with a Drive custody caveat, `H2_EVIDENCE: NONE` by design. Checklist: 17 items with file-and-line evidence — M3/M4/M5/R2 FAIL (partial: no linear baseline, no per-episode breakdown, one seed without CI, no data-manifest/source hashes for this run); O3/O4/R1/R3 NOT ASSESSABLE (no co-state, critic, or training here).
+- **Not re-executed:** this container has no Python, so the table script and config-hash recomputation were cited from the import record (CHANGELOG (z)), not re-run. Registry row added to `docs/audits/README.md`.
+
 ## 2026-09-30 (aa): episode-level k-fold dynamics study built (not yet run)
 
 - **Plan `docs/plans/dynamics-kfold-plan.md`, frozen at commit `84ca8be` (22:06:07 UTC) before the notebook or any fold existed:** five folds over all 100 episodes by SHA-256 rank, 70 training and 10 inner-validation episodes per fold, two regimes (`pilot`: `subset` masks and `full` mode; `v2`: `single_choice` and `base`), an anchor unit on the pilot's split per regime, the pooled relative improvement over persistence with a 10,000-resample episode-cluster bootstrap, and classes `BEATS` / `WORSE_THAN_PERSISTENCE` / `FAILS` / `INCONCLUSIVE` against the 2 % margin. Two dated corrections before any fold ran (a module path; the pilot's test episodes are used in the k-fold, which the first draft denied) are in its section 9.

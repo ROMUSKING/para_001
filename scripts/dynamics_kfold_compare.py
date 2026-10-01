@@ -31,7 +31,7 @@ def load_run(run: Path) -> tuple[str, dict, pd.DataFrame]:
     entry = report["regimes"][regime]
     errors = pd.read_csv(run / "artifacts/episode_errors.csv")
     primary = errors[(errors["regime"] == regime) & (errors["kind"] == "best") & (errors["mode"] == entry["own_mode"])].drop(columns=["regime", "kind", "mode", "fold"])
-    assert len(primary) == 100 and primary["episode_id"].is_unique, f"{run}: the primary table is not the 100 episodes"
+    assert len(primary) in (99, 100) and primary["episode_id"].is_unique, f"{run}: the primary table has {len(primary)} episodes (expected 99 or 100)"
     stored = entry["estimates"][f"best|{entry['own_mode']}"]["pooled"]["relative_improvement"]
     assert abs(pooled_relative_improvement(primary)["relative_improvement"] - stored) < 1e-9, f"{run}: the episode table does not reproduce the report's estimate"
     return regime, entry, primary

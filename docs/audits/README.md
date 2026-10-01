@@ -8,6 +8,7 @@ These are independent checks of runs and notebooks, kept so that nothing gets re
 | 2026-09-28 | [`2026-09-28_swm_pilot_synthetic_surrogate_audit.md`](2026-09-28_swm_pilot_synthetic_surrogate_audit.md) | `swm_pilot_checkpoint.pt` "DROID subset" (checkpoint SHA-256 `b0e61713…943656`) | `PIPELINE_SMOKE_TEST_PASSED`, `REAL_DATA_TRAINING_FAILED`, promotion blocked |
 | 2026-09-29 | [`2026-09-29_legacy_notebook_audit.md`](2026-09-29_legacy_notebook_audit.md) | `para_0_0_1`, signal-filtering benchmark, phase logs N3–N10, paper draft | Non-evidential |
 | 2026-09-30 | [`2026-09-30_b2_probe_seed0_dynamics_gate_audit.md`](2026-09-30_b2_probe_seed0_dynamics_gate_audit.md) | one-seed B2 probe `droid100_adjoint_v2_20260930T165409Z` (pilot v2, seed 0) | `INCOMPLETE`, dynamics gate FAIL (validation), no H2 evidence |
+| 2026-09-30 | [`2026-09-30_dynamics_parity_audit.md`](2026-09-30_dynamics_parity_audit.md) | same-split diagnostic `dynamics_parity_20260930T214043Z` (pilot vs v2 seed 0, train + validation) | `DIAGNOSTIC_EXECUTION: PASS`, dynamics gate FAIL on validation (both checkpoints), `H2_EVIDENCE: NONE` |
 
 The first two audits were written outside this repo and imported verbatim. They independently confirm the problems the third audit found in the SWM and `para_0_0_1` line of work. The pseudo-random "DROID" data, the hard-coded promotion metrics, and the co-state, critic and gate heads trained to constants all appear in both.
 

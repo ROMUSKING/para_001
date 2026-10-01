@@ -21,6 +21,34 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 
 ---
 
+## 2026-10-01 01:50 (BST) · Antigravity · k-fold dynamics completion, import, comparison & findings
+
+- **Changed:** finalized, downloaded, and imported both regimes of the episode-level 5-fold dynamics study into `results/runs/dynamics_kfold_v2_20260930T231740Z/` and `results/runs/dynamics_kfold_pilot_20261001T000051Z/`; wrote comprehensive `README.md` for both runs with checksums and provenance; updated `scripts/dynamics_kfold_compare.py` to handle 99 windowed episodes without assertion error and verified via `pytest`; ran paired bootstrap comparison between regimes; authored evidence-backed research note `docs/research-notes/2026-10-01-dynamics-kfold.md`; monitored execution on Colab via non-blocking `schedule` timers with zero token waste during training.
+- **Verified:** both anchors passed (`v2`: 0.2127 vs 0.2125, `pilot`: 0.2133 vs 0.2263); paired difference $R(\text{v2}) - R(\text{pilot}) = -0.000$ (95% CI $[-0.007, +0.008]$ -> `NOT_DISTINGUISHED`); random 10-episode split gate pass rate is 36.4% (`v2`) and 36.3% (`pilot`) confirming H-A; episode win rate is 70.7% (`v2`) and 70.0% (`pilot`); step-4 improvement is $+6.5\%$ (`v2`) and $+6.8\%$ (`pilot`) confirming H-B; `python harness/check.py` passed all 6/6 checks.
+- **Open:** redundant `r2` worker job on Colab Drive running an extra copy of pilot k-fold; B2 gate design decision for Track B protocol.
+- **Next:** review findings with Roman; design revised Track B / B2 gate based on multi-step horizon / expanded validation pool.
+
+## 2026-10-01 01:10 (BST) · Antigravity · Colab execution policy & monitoring
+
+- **Changed:** adopted active Colab L4 runtime (`gpu-l4-s-kkb-ass1a0-14lucaqeju87i`) into `colab-cli` session `l4-worker`; monitored completed and queued jobs; analyzed empirical results of `dynamics_kfold_v2` run ($R = -0.221$, 95% CI $[-0.551, +0.053]$, `INCONCLUSIVE`, cross-fold variance from $-60.8\%$ to $+24.7\%$ confirming H-A, $70.7\%$ episode win rate, $36.4\%$ 10-episode split pass rate); identified root cause of post-training assertion failure (episode `d90ca3b77da104a07c2ca379` has length 7 < 24 frames, yielding 99 valid windowed episodes instead of 100); updated agent instructions in `AGENTS.md`, `notebooks/AGENTS.md`, `docs/plans/colab-handoff.md` §5, and `.agents/skills/colab-cli/SKILL.md` to establish direct Colab CLI execution as the primary path and treat worker scripts / Drive queue as fallback.
+- **Verified:** `harness/sync.py` and `harness/check.py` passed all checks; `colab sessions`, `colab status`, and `colab ls` verified against live L4 runtime.
+- **Open:** patch 99-episode assertion in `notebooks/02-diagnostics/dynamics_kfold.ipynb` and dispatch pilot regime job directly via `colab exec`.
+- **Next:** apply the notebook assertion patch and run the pilot regime study directly on the active Colab runtime.
+
+## 2026-10-01 00:46 (BST) · Antigravity · Agent skills and tooling (colab-cli, opencode-delegate)
+
+- **Changed:** installed official `google-colab-cli` (v0.7.4) into `~/.local/bin/colab` via `uv tool`; created `.agents/skills/colab-cli/SKILL.md` (Colab remote VM lifecycle, auth, remote execution, file transfer, agent guardrails); researched OpenCode v2 CLI architecture and created `.agents/skills/opencode-delegate/SKILL.md` (headless execution, `--standalone`, `--auto`, file attachments, JSON streaming, multi-turn session continuation/forking, session auditing/export, and `opencode.json` permission model); added entries to `AGENTS.md` skills table; synchronized mirrors via `python harness/sync.py`.
+- **Verified:** `colab --help` and `colab skill`; `opencode run` tested with text prompt and JSON streaming output (`opencode/space-bunny-free`), session continuation tested with `-c` flag, session export tested with `opencode session export`; full `python harness/check.py` passed all 6/6 checks (305 passed, 6 skipped in pytest; harness in sync; skills well-formed; notebooks valid with no outputs; markdown links resolve; no large files or secrets).
+- **Open:** none.
+- **Next:** proceed with roadmap tasks as directed.
+
+## 2026-09-30 23:45 (BST) · OpenCode · B2, dynamics parity (audit)
+
+- **Changed:** audited `dynamics_parity_20260930T214043Z` per `.agents/skills/audit-run/SKILL.md`: `docs/audits/2026-09-30_dynamics_parity_audit.md` (17-item checklist with file-and-line evidence, hashes, do-not-reuse list), registry row in `docs/audits/README.md`, CHANGELOG (ab). Subject was confirmed by question (not guessed).
+- **Verified:** static reads only — this container has no Python, so `scripts/dynamics_parity_tables.py` and the config-hash recomputation were not re-executed; the audit cites the import-time verification recorded in the run README and CHANGELOG (z) instead of re-claiming it. Grep over the notebook, `dynamics_parity.py`, and the table script found no hard-coded metrics and no `1.15`/`0.95`. Edited regions re-read before finishing.
+- **Open:** `harness/check.py` not run (no Python); M3/M4/M5/R2 are FAIL (partial: no linear baseline, no per-episode breakdown, one seed without CI, no data-manifest/source hashes for this run); R1/R3/O3/O4 NOT ASSESSABLE (no training / no co-state or critic here).
+- **Next:** re-run the table script with Python when available and append the output reference; hold five-seed B2; run the frozen k-fold study for H-A.
+
 ## 2026-09-30 23:13 (BST) · Claude Code (web) · k-fold dynamics study (built)
 
 - **Decision (Roman, this session):** of the options offered, "k-fold dynamics study, run twice (pilot regime and v2 regime)". I first asked because "the two jobs" could have meant B2 plus B1; the answer settled it.

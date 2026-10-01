@@ -1,0 +1,27 @@
+{
+  "best": {
+    "checkpoint": {
+      "path": "/content/adjoint_rwm_work/dynamics_kfold_v2_20260930T231740Z/units/v2_anchor/persist/best.pt",
+      "sha256": "e1c71d1d74807ff99a7d825ae82f26e80fed8d22c709681571b64275f054fa16"
+    },
+    "score_name": "validation_rmse",
+    "step": 1400,
+    "validation_score": 0.21272998814417865
+  },
+  "best_checkpoint_sha256": "e1c71d1d74807ff99a7d825ae82f26e80fed8d22c709681571b64275f054fa16",
+  "global_step": 1500,
+  "held_out_episodes": 0,
+  "modes": [
+    "base",
+    "full"
+  ],
+  "peak_vram_gib": 0.4964613914489746,
+  "regime": "v2",
+  "seed": 20260928,
+  "session_seconds": 460.50963887299986,
+  "tables": {},
+  "train_episodes": 80,
+  "unit": "anchor",
+  "validation_episodes": 10,
+  "wall_seconds": 462.5518457889557
+}

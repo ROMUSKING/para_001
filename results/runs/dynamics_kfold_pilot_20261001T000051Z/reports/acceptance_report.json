@@ -1,0 +1,530 @@
+{
+  "anchor_reads_pilot_test_episodes": false,
+  "claim_boundary": "Episode-level k-fold dynamics against persistence on DROID-100, one training seed per fold, 70 training episodes per fold. Diagnostic models; not evidence for or against H2; B2 does not reuse them.",
+  "config_hash": "8d503e1aac5accbe1f4ad65e6e84510edba117206d902e12944d9b90aa07ab6a",
+  "kfold_uses_all_100_episodes": true,
+  "plan": "docs/plans/dynamics-kfold-plan.md",
+  "regimes": {
+    "pilot": {
+      "anchor": {
+        "abs_diff": 0.013001539083419167,
+        "atol": 0.02,
+        "best_step": 1400,
+        "recomputed": 0.21330853897124735,
+        "source": "pilot checkpoint best_metrics, validation, mean of full_rmse_by_horizon",
+        "stored": 0.22631007805466652,
+        "within": true
+      },
+      "estimates": {
+        "best|base": {
+          "bootstrap": {
+            "by_horizon": [
+              {
+                "ci_high": -0.5819902067086387,
+                "ci_low": -1.7137242772574295,
+                "estimate": -1.0844103515608212,
+                "step": 1
+              },
+              {
+                "ci_high": -0.05145065303398133,
+                "ci_low": -0.7311158478386872,
+                "estimate": -0.3633878339641465,
+                "step": 2
+              },
+              {
+                "ci_high": 0.15446019473505687,
+                "ci_low": -0.3846042441116558,
+                "estimate": -0.08885572947616424,
+                "step": 3
+              },
+              {
+                "ci_high": 0.2578521541587705,
+                "ci_low": -0.18656452541365082,
+                "estimate": 0.055694664298685866,
+                "step": 4
+              }
+            ],
+            "ci_high": 0.04700125034114131,
+            "ci_low": -0.562000609790549,
+            "episodes": 99,
+            "estimate": -0.22982432431464103,
+            "level": 0.95,
+            "resamples": 10000,
+            "seed": 0
+          },
+          "class": "INCONCLUSIVE",
+          "fraction_of_episodes_model_beats_persistence": 0.696969696969697,
+          "kind": "best",
+          "mode": "base",
+          "per_fold_relative_improvement": [
+            -0.6160092960245206,
+            0.00960359628894722,
+            0.2171890428043181,
+            -0.30175084370947247,
+            -0.1354031204345973
+          ],
+          "pooled": {
+            "episodes": 99,
+            "improvement_by_horizon": [
+              -1.0844103515608212,
+              -0.3633878339641465,
+              -0.08885572947616424,
+              0.055694664298685866
+            ],
+            "model_rmse": 0.26013215938029094,
+            "model_rmse_by_horizon": [
+              0.2359827078819996,
+              0.2501571151448543,
+              0.26818430348029615,
+              0.2862045110140137
+            ],
+            "persistence_rmse": 0.21151977094391747,
+            "persistence_rmse_by_horizon": [
+              0.11321317211138109,
+              0.18348199163366802,
+              0.24629920770983726,
+              0.3030847123207835
+            ],
+            "relative_improvement": -0.22982432431464103,
+            "windows": 7541
+          },
+          "primary": false,
+          "random_ten_episode_split_gate_rate": {
+            "draws": 10000,
+            "margin": 0.02,
+            "pass_rate": 0.3538,
+            "quantiles": {
+              "q05": -1.2091027004936472,
+              "q50": -0.07313834332340884,
+              "q95": 0.2491255589590309
+            },
+            "seed": 0,
+            "subset_size": 10
+          }
+        },
+        "best|full": {
+          "bootstrap": {
+            "by_horizon": [
+              {
+                "ci_high": -0.5883119270015464,
+                "ci_low": -1.711571018763492,
+                "estimate": -1.0871178925516913,
+                "step": 1
+              },
+              {
+                "ci_high": -0.04752675042049601,
+                "ci_low": -0.7160896068149428,
+                "estimate": -0.35546138922615,
+                "step": 2
+              },
+              {
+                "ci_high": 0.1612768382774512,
+                "ci_low": -0.3654979539582385,
+                "estimate": -0.07747999147120141,
+                "step": 3
+              },
+              {
+                "ci_high": 0.2651397015477826,
+                "ci_low": -0.16729573278199047,
+                "estimate": 0.06814499770055232,
+                "step": 4
+              }
+            ],
+            "ci_high": 0.05100601529959745,
+            "ci_low": -0.546611588977743,
+            "episodes": 99,
+            "estimate": -0.22069613324344892,
+            "level": 0.95,
+            "resamples": 10000,
+            "seed": 0
+          },
+          "class": "INCONCLUSIVE",
+          "fraction_of_episodes_model_beats_persistence": 0.696969696969697,
+          "kind": "best",
+          "mode": "full",
+          "per_fold_relative_improvement": [
+            -0.5979797197454308,
+            0.009374646961190527,
+            0.23157783472496846,
+            -0.28967673050445586,
+            -0.13922846091653354
+          ],
+          "pooled": {
+            "episodes": 99,
+            "improvement_by_horizon": [
+              -1.0871178925516913,
+              -0.35546138922615,
+              -0.07747999147120141,
+              0.06814499770055232
+            ],
+            "model_rmse": 0.25820136649578007,
+            "model_rmse_by_horizon": [
+              0.2362892371861976,
+              0.24870275527775249,
+              0.2653824682225591,
+              0.28243100529661114
+            ],
+            "persistence_rmse": 0.21151977094391747,
+            "persistence_rmse_by_horizon": [
+              0.11321317211138109,
+              0.18348199163366802,
+              0.24629920770983726,
+              0.3030847123207835
+            ],
+            "relative_improvement": -0.22069613324344892,
+            "windows": 7541
+          },
+          "primary": true,
+          "random_ten_episode_split_gate_rate": {
+            "draws": 10000,
+            "margin": 0.02,
+            "pass_rate": 0.3626,
+            "quantiles": {
+              "q05": -1.1797912597369251,
+              "q50": -0.06656303926298127,
+              "q95": 0.24928454588244173
+            },
+            "seed": 0,
+            "subset_size": 10
+          }
+        },
+        "final|base": {
+          "bootstrap": {
+            "by_horizon": [
+              {
+                "ci_high": -0.5780867925080564,
+                "ci_low": -1.710345737871313,
+                "estimate": -1.079925105857939,
+                "step": 1
+              },
+              {
+                "ci_high": -0.04944435685919884,
+                "ci_low": -0.7288271512166267,
+                "estimate": -0.36112055466700327,
+                "step": 2
+              },
+              {
+                "ci_high": 0.1558551131838393,
+                "ci_low": -0.38319334456332804,
+                "estimate": -0.08710641413613733,
+                "step": 3
+              },
+              {
+                "ci_high": 0.25937381141144117,
+                "ci_low": -0.1847671712942238,
+                "estimate": 0.05735129612246164,
+                "step": 4
+              }
+            ],
+            "ci_high": 0.04807942669056986,
+            "ci_low": -0.5607419130437271,
+            "episodes": 99,
+            "estimate": -0.22762979118839952,
+            "level": 0.95,
+            "resamples": 10000,
+            "seed": 0
+          },
+          "class": "INCONCLUSIVE",
+          "fraction_of_episodes_model_beats_persistence": 0.696969696969697,
+          "kind": "final",
+          "mode": "base",
+          "per_fold_relative_improvement": [
+            -0.616479035374937,
+            0.01270461576778356,
+            0.22176266259172425,
+            -0.30175084370947247,
+            -0.12796865206768013
+          ],
+          "pooled": {
+            "episodes": 99,
+            "improvement_by_horizon": [
+              -1.079925105857939,
+              -0.36112055466700327,
+              -0.08710641413613733,
+              0.05735129612246164
+            ],
+            "model_rmse": 0.2596679722360995,
+            "model_rmse_by_horizon": [
+              0.23547491898827738,
+              0.24974111022382467,
+              0.26775344849801286,
+              0.28570241123428314
+            ],
+            "persistence_rmse": 0.21151977094391747,
+            "persistence_rmse_by_horizon": [
+              0.11321317211138109,
+              0.18348199163366802,
+              0.24629920770983726,
+              0.3030847123207835
+            ],
+            "relative_improvement": -0.22762979118839952,
+            "windows": 7541
+          },
+          "primary": false,
+          "random_ten_episode_split_gate_rate": {
+            "draws": 10000,
+            "margin": 0.02,
+            "pass_rate": 0.3574,
+            "quantiles": {
+              "q05": -1.2074353516022427,
+              "q50": -0.06972209352493977,
+              "q95": 0.25051828994845077
+            },
+            "seed": 0,
+            "subset_size": 10
+          }
+        },
+        "final|full": {
+          "bootstrap": {
+            "by_horizon": [
+              {
+                "ci_high": -0.5837464296683176,
+                "ci_low": -1.7063542703712329,
+                "estimate": -1.081794609561501,
+                "step": 1
+              },
+              {
+                "ci_high": -0.0454394527777031,
+                "ci_low": -0.7129069483429664,
+                "estimate": -0.35285053448286446,
+                "step": 2
+              },
+              {
+                "ci_high": 0.16267429527661023,
+                "ci_low": -0.36370860510101993,
+                "estimate": -0.07543731701656613,
+                "step": 3
+              },
+              {
+                "ci_high": 0.26708791122697767,
+                "ci_low": -0.16587421050147674,
+                "estimate": 0.07009189793744981,
+                "step": 4
+              }
+            ],
+            "ci_high": 0.05279463364571446,
+            "ci_low": -0.5443709224003612,
+            "episodes": 99,
+            "estimate": -0.21812557521732714,
+            "level": 0.95,
+            "resamples": 10000,
+            "seed": 0
+          },
+          "class": "INCONCLUSIVE",
+          "fraction_of_episodes_model_beats_persistence": 0.696969696969697,
+          "kind": "final",
+          "mode": "full",
+          "per_fold_relative_improvement": [
+            -0.598333834565115,
+            0.012210451958507451,
+            0.23617528225016063,
+            -0.28967673050445586,
+            -0.12968940789932765
+          ],
+          "pooled": {
+            "episodes": 99,
+            "improvement_by_horizon": [
+              -1.081794609561501,
+              -0.35285053448286446,
+              -0.07543731701656613,
+              0.07009189793744981
+            ],
+            "model_rmse": 0.25765764265089675,
+            "model_rmse_by_horizon": [
+              0.2356865714328316,
+              0.24822371044958824,
+              0.26487935912277333,
+              0.2818409295983938
+            ],
+            "persistence_rmse": 0.21151977094391747,
+            "persistence_rmse_by_horizon": [
+              0.11321317211138109,
+              0.18348199163366802,
+              0.24629920770983726,
+              0.3030847123207835
+            ],
+            "relative_improvement": -0.21812557521732714,
+            "windows": 7541
+          },
+          "primary": false,
+          "random_ten_episode_split_gate_rate": {
+            "draws": 10000,
+            "margin": 0.02,
+            "pass_rate": 0.3674,
+            "quantiles": {
+              "q05": -1.1769243008434713,
+              "q50": -0.06340579903375837,
+              "q95": 0.2515802926311067
+            },
+            "seed": 0,
+            "subset_size": 10
+          }
+        }
+      },
+      "own_mode": "full",
+      "primary_class": "INCONCLUSIVE",
+      "status": "OK",
+      "units": {
+        "0": {
+          "best": {
+            "checkpoint": {
+              "path": "/content/adjoint_rwm_work/dynamics_kfold_pilot_20261001T000051Z/units/pilot_0/persist/best.pt",
+              "sha256": "ca62feabd76d189fad2c74b22276f0a338ebec944765c651283d7c56fe9ec215"
+            },
+            "score_name": "validation_rmse",
+            "step": 1400,
+            "validation_score": 0.19058049125606058
+          },
+          "best_checkpoint_sha256": "ca62feabd76d189fad2c74b22276f0a338ebec944765c651283d7c56fe9ec215",
+          "global_step": 1500,
+          "held_out_episodes": 20,
+          "modes": [
+            "full",
+            "base"
+          ],
+          "peak_vram_gib": 0.5002379417419434,
+          "regime": "pilot",
+          "seed": 20260929,
+          "session_seconds": 426.4678348159996,
+          "train_episodes": 70,
+          "unit": 0,
+          "validation_episodes": 10,
+          "wall_seconds": 429.84184527397156
+        },
+        "1": {
+          "best": {
+            "checkpoint": {
+              "path": "/content/adjoint_rwm_work/dynamics_kfold_pilot_20261001T000051Z/units/pilot_1/persist/best.pt",
+              "sha256": "2c3068cecc2ee4bd1470823fde31335fae1b7f8b228b63a4188e16390c6ec407"
+            },
+            "score_name": "validation_rmse",
+            "step": 1200,
+            "validation_score": 0.3467582919618396
+          },
+          "best_checkpoint_sha256": "2c3068cecc2ee4bd1470823fde31335fae1b7f8b228b63a4188e16390c6ec407",
+          "global_step": 1500,
+          "held_out_episodes": 20,
+          "modes": [
+            "full",
+            "base"
+          ],
+          "peak_vram_gib": 0.5002379417419434,
+          "regime": "pilot",
+          "seed": 20260930,
+          "session_seconds": 427.130275427,
+          "train_episodes": 70,
+          "unit": 1,
+          "validation_episodes": 10,
+          "wall_seconds": 431.13520765304565
+        },
+        "2": {
+          "best": {
+            "checkpoint": {
+              "path": "/content/adjoint_rwm_work/dynamics_kfold_pilot_20261001T000051Z/units/pilot_2/persist/best.pt",
+              "sha256": "1856cbc6f7e14f930542b1c0da198fd6c388dc0585b0e4ea247df964105f3a4a"
+            },
+            "score_name": "validation_rmse",
+            "step": 1400,
+            "validation_score": 0.38272624314870346
+          },
+          "best_checkpoint_sha256": "1856cbc6f7e14f930542b1c0da198fd6c388dc0585b0e4ea247df964105f3a4a",
+          "global_step": 1500,
+          "held_out_episodes": 20,
+          "modes": [
+            "full",
+            "base"
+          ],
+          "peak_vram_gib": 0.5002379417419434,
+          "regime": "pilot",
+          "seed": 20260931,
+          "session_seconds": 447.70612027399966,
+          "train_episodes": 70,
+          "unit": 2,
+          "validation_episodes": 10,
+          "wall_seconds": 450.07108545303345
+        },
+        "3": {
+          "best": {
+            "checkpoint": {
+              "path": "/content/adjoint_rwm_work/dynamics_kfold_pilot_20261001T000051Z/units/pilot_3/persist/best.pt",
+              "sha256": "894ca70de41bd4bffba41cc76a3450aeb9acb92e960b200bf69abbbebf86b194"
+            },
+            "score_name": "validation_rmse",
+            "step": 1500,
+            "validation_score": 0.36497370288216247
+          },
+          "best_checkpoint_sha256": "894ca70de41bd4bffba41cc76a3450aeb9acb92e960b200bf69abbbebf86b194",
+          "global_step": 1500,
+          "held_out_episodes": 20,
+          "modes": [
+            "full",
+            "base"
+          ],
+          "peak_vram_gib": 0.5002379417419434,
+          "regime": "pilot",
+          "seed": 20260932,
+          "session_seconds": 448.11623455300105,
+          "train_episodes": 70,
+          "unit": 3,
+          "validation_episodes": 10,
+          "wall_seconds": 452.2907032966614
+        },
+        "4": {
+          "best": {
+            "checkpoint": {
+              "path": "/content/adjoint_rwm_work/dynamics_kfold_pilot_20261001T000051Z/units/pilot_4/persist/best.pt",
+              "sha256": "f5cb0cb8ef233fa347d08a9954a880006c7acebc8e5937d0b8147a965f294eb6"
+            },
+            "score_name": "validation_rmse",
+            "step": 1200,
+            "validation_score": 0.3702820940127467
+          },
+          "best_checkpoint_sha256": "f5cb0cb8ef233fa347d08a9954a880006c7acebc8e5937d0b8147a965f294eb6",
+          "global_step": 1500,
+          "held_out_episodes": 20,
+          "modes": [
+            "full",
+            "base"
+          ],
+          "peak_vram_gib": 0.5005660057067871,
+          "regime": "pilot",
+          "seed": 20260933,
+          "session_seconds": 432.92574539700036,
+          "train_episodes": 70,
+          "unit": 4,
+          "validation_episodes": 10,
+          "wall_seconds": 436.77001905441284
+        },
+        "anchor": {
+          "best": {
+            "checkpoint": {
+              "path": "/content/adjoint_rwm_work/dynamics_kfold_pilot_20261001T000051Z/units/pilot_anchor/persist/best.pt",
+              "sha256": "1140a32b992f5130772a705f21de21ae970294d8bacad3fc6e33d7966eac4a9f"
+            },
+            "score_name": "validation_rmse",
+            "step": 1400,
+            "validation_score": 0.21330853897124735
+          },
+          "best_checkpoint_sha256": "1140a32b992f5130772a705f21de21ae970294d8bacad3fc6e33d7966eac4a9f",
+          "global_step": 1500,
+          "held_out_episodes": 0,
+          "modes": [
+            "full",
+            "base"
+          ],
+          "peak_vram_gib": 0.4964613914489746,
+          "regime": "pilot",
+          "seed": 20260928,
+          "session_seconds": 475.9104104529997,
+          "train_episodes": 80,
+          "unit": "anchor",
+          "validation_episodes": 10,
+          "wall_seconds": 478.7090768814087
+        }
+      }
+    }
+  },
+  "repo_commit": "8a3fea619196b7e5b44c5bc1dc29cb420d6fd02b",
+  "run_id": "dynamics_kfold_pilot_20261001T000051Z",
+  "status": "OK"
+}

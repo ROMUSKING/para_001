@@ -37,9 +37,11 @@ D4 (time stepping, with and without a goal per instance), D1 on SMD, licence sur
 2. Use the `import-run` skill (`/import-run`) to copy it into `results/runs/<run_id>/` with a README, hashes and a trace summary, then `audit-run` if the run is meant to count as evidence, then `research-note`.
 3. A failed gate is a result: do not rerun with different settings to get a pass, and report failed seeds instead of replacing them.
 
-## 5. Driving Colab from Claude Code: the Drive job queue
+## 5. Execution model: direct Colab CLI execution (primary) and Drive job queue (fallback)
 
-This is option A from the discussion on 2026-09-30. It lets Claude Code start allow-listed notebooks in a Colab runtime that **you** have started, without either side holding the other's credentials. Code: `src/adjointrwm/colab_jobs.py` (tested in `tests/test_colab_jobs.py`, including an end-to-end run through a real git checkout and a real kernel), `scripts/colab_worker.py`, `scripts/colab_job.py`, and `notebooks/05-ops/` (`colab_worker.ipynb`, `ops_smoke.ipynb`, `allowlist.json`).
+**Primary execution path (direct CLI):** Agents send jobs, execute notebooks/scripts, transfer files, and monitor execution directly on the Colab runtime using the `colab-cli` skill (`colab exec -s <session> -f <notebook>.ipynb`, `colab run`, `colab status`, `colab ls`). This eliminates polling delays and the need for a standing worker notebook.
+
+**Fallback execution path (the Drive job queue):** The asynchronous Drive job queue (`src/adjointrwm/colab_jobs.py`, `scripts/colab_worker.py`, `scripts/colab_job.py`, and `notebooks/05-ops/` including `colab_worker.ipynb`, `ops_smoke.ipynb`, `allowlist.json`) is maintained as a fallback when direct CLI connectivity is unavailable or for decoupled queueing.
 
 **How it works.**
 

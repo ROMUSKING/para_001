@@ -25,7 +25,7 @@ python harness/sync.py             # regenerate CLAUDE.md, .claude/skills/, work
 python scripts/analyze_allocation_traces.py <traces.parquet> --num-candidates 4
 ```
 
-The GPU training pipeline runs **only in Google Colab** (`notebooks/01-production/`). You can't run it here: there is no GPU, no DROID data and no Drive mount. Don't try to install TensorFlow Datasets or run notebook cells locally.
+The GPU training pipeline runs in **Google Colab** (`notebooks/01-production/`, `notebooks/02-diagnostics/`). Send jobs, execute notebooks, and monitor runs directly on Colab using the `colab-cli` skill (`colab exec` or `colab run`). Worker scripts (`scripts/colab_worker.py`, `notebooks/05-ops/colab_worker.ipynb`) and the Drive job queue (`jobs/inbox/`) serve as a fallback when direct CLI execution is not used. Do not execute GPU training notebooks locally in the CPU sandbox.
 
 ## Map
 
@@ -74,6 +74,8 @@ Portable skills live in `.agents/skills/<name>/SKILL.md` (Agent Skills format). 
 | `claim-check` | Reviewing a paper draft, README or research note for unsupported claims |
 | `notebook-hygiene` | Adding or updating a notebook (convert, strip outputs, validate) |
 | `research-note` | Writing up findings from a run |
+| `colab-cli` | Provisioning, executing, and managing workloads on Google Colab remote runtimes |
+| `opencode-delegate` | Delegating prompt workflows, headless coding tasks, and multi-turn runs to OpenCode |
 
 ## Boundaries
 

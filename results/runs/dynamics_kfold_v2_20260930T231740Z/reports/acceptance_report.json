@@ -1,0 +1,530 @@
+{
+  "anchor_reads_pilot_test_episodes": false,
+  "claim_boundary": "Episode-level k-fold dynamics against persistence on DROID-100, one training seed per fold, 70 training episodes per fold. Diagnostic models; not evidence for or against H2; B2 does not reuse them.",
+  "config_hash": "57ef3cdce398a94d1fdc0fff8846de1eca01b349c7ef4720257f4679cb78e1cc",
+  "kfold_uses_all_100_episodes": true,
+  "plan": "docs/plans/dynamics-kfold-plan.md",
+  "regimes": {
+    "v2": {
+      "anchor": {
+        "abs_diff": 0.0002588580080904457,
+        "atol": 0.01,
+        "best_step": 1400,
+        "recomputed": 0.21272998814417865,
+        "source": "probe run dynamics_gate.json, seed 0, validation, mode base",
+        "stored": 0.2124711301360882,
+        "within": true
+      },
+      "estimates": {
+        "best|base": {
+          "bootstrap": {
+            "by_horizon": [
+              {
+                "ci_high": -0.5809926220246756,
+                "ci_low": -1.7007885192056231,
+                "estimate": -1.0764309267955345,
+                "step": 1
+              },
+              {
+                "ci_high": -0.04543681249976867,
+                "ci_low": -0.7183790917004942,
+                "estimate": -0.35364938466251367,
+                "step": 2
+              },
+              {
+                "ci_high": 0.16065227872338433,
+                "ci_low": -0.372521328481808,
+                "estimate": -0.07967622259851982,
+                "step": 3
+              },
+              {
+                "ci_high": 0.2644605126637826,
+                "ci_low": -0.17622915159552882,
+                "estimate": 0.0645747039104787,
+                "step": 4
+              }
+            ],
+            "ci_high": 0.05275850489413606,
+            "ci_low": -0.5510477769322129,
+            "episodes": 99,
+            "estimate": -0.22079146233824926,
+            "level": 0.95,
+            "resamples": 10000,
+            "seed": 0
+          },
+          "class": "INCONCLUSIVE",
+          "fraction_of_episodes_model_beats_persistence": 0.7070707070707071,
+          "kind": "best",
+          "mode": "base",
+          "per_fold_relative_improvement": [
+            -0.6077707163670151,
+            0.005961639309101884,
+            0.24738993991336122,
+            -0.2896589060960757,
+            -0.1266523254615538
+          ],
+          "pooled": {
+            "episodes": 99,
+            "improvement_by_horizon": [
+              -1.0764309267955345,
+              -0.35364938466251367,
+              -0.07967622259851982,
+              0.0645747039104787
+            ],
+            "model_rmse": 0.25822153048407653,
+            "model_rmse_by_horizon": [
+              0.2350793318926974,
+              0.2483702850715672,
+              0.26592339820916533,
+              0.2835131067628763
+            ],
+            "persistence_rmse": 0.21151977094391747,
+            "persistence_rmse_by_horizon": [
+              0.11321317211138109,
+              0.18348199163366802,
+              0.24629920770983726,
+              0.3030847123207835
+            ],
+            "relative_improvement": -0.22079146233824926,
+            "windows": 7541
+          },
+          "primary": true,
+          "random_ten_episode_split_gate_rate": {
+            "draws": 10000,
+            "margin": 0.02,
+            "pass_rate": 0.3636,
+            "quantiles": {
+              "q05": -1.193435085368562,
+              "q50": -0.06467778699084778,
+              "q95": 0.24897762613582147
+            },
+            "seed": 0,
+            "subset_size": 10
+          }
+        },
+        "best|full": {
+          "bootstrap": {
+            "by_horizon": [
+              {
+                "ci_high": -0.5810766055119706,
+                "ci_low": -1.694893031762983,
+                "estimate": -1.0719619872850696,
+                "step": 1
+              },
+              {
+                "ci_high": -0.03986520739189447,
+                "ci_low": -0.7043864956165713,
+                "estimate": -0.3440292223322108,
+                "step": 2
+              },
+              {
+                "ci_high": 0.16745984461394614,
+                "ci_low": -0.3558372079709853,
+                "estimate": -0.0680607656320504,
+                "step": 3
+              },
+              {
+                "ci_high": 0.27152511489223163,
+                "ci_low": -0.15752102715997662,
+                "estimate": 0.07721861101057201,
+                "step": 4
+              }
+            ],
+            "ci_high": 0.058379723347610005,
+            "ci_low": -0.5358547951854558,
+            "episodes": 99,
+            "estimate": -0.2101965636720095,
+            "level": 0.95,
+            "resamples": 10000,
+            "seed": 0
+          },
+          "class": "INCONCLUSIVE",
+          "fraction_of_episodes_model_beats_persistence": 0.7070707070707071,
+          "kind": "best",
+          "mode": "full",
+          "per_fold_relative_improvement": [
+            -0.5937460603924708,
+            0.013460291288880738,
+            0.25455584990353486,
+            -0.2692247863080551,
+            -0.12418079487805918
+          ],
+          "pooled": {
+            "episodes": 99,
+            "improvement_by_horizon": [
+              -1.0719619872850696,
+              -0.3440292223322108,
+              -0.0680607656320504,
+              0.07721861101057201
+            ],
+            "model_rmse": 0.2559804999450195,
+            "model_rmse_by_horizon": [
+              0.2345733890747438,
+              0.24660515852736403,
+              0.2630625203611362,
+              0.2796809318168338
+            ],
+            "persistence_rmse": 0.21151977094391747,
+            "persistence_rmse_by_horizon": [
+              0.11321317211138109,
+              0.18348199163366802,
+              0.24629920770983726,
+              0.3030847123207835
+            ],
+            "relative_improvement": -0.2101965636720095,
+            "windows": 7541
+          },
+          "primary": false,
+          "random_ten_episode_split_gate_rate": {
+            "draws": 10000,
+            "margin": 0.02,
+            "pass_rate": 0.3749,
+            "quantiles": {
+              "q05": -1.1718395885837791,
+              "q50": -0.05637489024239081,
+              "q95": 0.24823396479048096
+            },
+            "seed": 0,
+            "subset_size": 10
+          }
+        },
+        "final|base": {
+          "bootstrap": {
+            "by_horizon": [
+              {
+                "ci_high": -0.5796226256890865,
+                "ci_low": -1.7051094471980683,
+                "estimate": -1.078953179685183,
+                "step": 1
+              },
+              {
+                "ci_high": -0.04598269427259445,
+                "ci_low": -0.7203360755014003,
+                "estimate": -0.3555480428600507,
+                "step": 2
+              },
+              {
+                "ci_high": 0.16099545661290066,
+                "ci_low": -0.3740373728379522,
+                "estimate": -0.0808814536637114,
+                "step": 3
+              },
+              {
+                "ci_high": 0.2647436317874283,
+                "ci_low": -0.17687936411333102,
+                "estimate": 0.06375734663770842,
+                "step": 4
+              }
+            ],
+            "ci_high": 0.05250811867998244,
+            "ci_low": -0.5523163888174003,
+            "episodes": 99,
+            "estimate": -0.22218435552159777,
+            "level": 0.95,
+            "resamples": 10000,
+            "seed": 0
+          },
+          "class": "INCONCLUSIVE",
+          "fraction_of_episodes_model_beats_persistence": 0.696969696969697,
+          "kind": "final",
+          "mode": "base",
+          "per_fold_relative_improvement": [
+            -0.606893441087736,
+            0.0043111033921065176,
+            0.24846055131238046,
+            -0.29984317388375414,
+            -0.1266523254615538
+          ],
+          "pooled": {
+            "episodes": 99,
+            "improvement_by_horizon": [
+              -1.078953179685183,
+              -0.3555480428600507,
+              -0.0808814536637114,
+              0.06375734663770842
+            ],
+            "model_rmse": 0.25851615493116775,
+            "model_rmse_by_horizon": [
+              0.23536488414320159,
+              0.24871865465908288,
+              0.2662202456656293,
+              0.28376083525675716
+            ],
+            "persistence_rmse": 0.21151977094391747,
+            "persistence_rmse_by_horizon": [
+              0.11321317211138109,
+              0.18348199163366802,
+              0.24629920770983726,
+              0.3030847123207835
+            ],
+            "relative_improvement": -0.22218435552159777,
+            "windows": 7541
+          },
+          "primary": false,
+          "random_ten_episode_split_gate_rate": {
+            "draws": 10000,
+            "margin": 0.02,
+            "pass_rate": 0.3661,
+            "quantiles": {
+              "q05": -1.1945002073427757,
+              "q50": -0.06341405353814106,
+              "q95": 0.2501929122005493
+            },
+            "seed": 0,
+            "subset_size": 10
+          }
+        },
+        "final|full": {
+          "bootstrap": {
+            "by_horizon": [
+              {
+                "ci_high": -0.5794005665285938,
+                "ci_low": -1.698086679270542,
+                "estimate": -1.0734490394930811,
+                "step": 1
+              },
+              {
+                "ci_high": -0.03981928795631914,
+                "ci_low": -0.7063811999851475,
+                "estimate": -0.34560268594942656,
+                "step": 2
+              },
+              {
+                "ci_high": 0.16724224789030126,
+                "ci_low": -0.3567506339706592,
+                "estimate": -0.0692297175380447,
+                "step": 3
+              },
+              {
+                "ci_high": 0.27146500717244976,
+                "ci_low": -0.15830566447268563,
+                "estimate": 0.07639814123178007,
+                "step": 4
+              }
+            ],
+            "ci_high": 0.058604708506631846,
+            "ci_low": -0.5360505123331305,
+            "episodes": 99,
+            "estimate": -0.21137096915021877,
+            "level": 0.95,
+            "resamples": 10000,
+            "seed": 0
+          },
+          "class": "INCONCLUSIVE",
+          "fraction_of_episodes_model_beats_persistence": 0.7070707070707071,
+          "kind": "final",
+          "mode": "full",
+          "per_fold_relative_improvement": [
+            -0.5925192293357591,
+            0.011537981175209424,
+            0.2561878058108532,
+            -0.27893622038515786,
+            -0.12418079487805918
+          ],
+          "pooled": {
+            "episodes": 99,
+            "improvement_by_horizon": [
+              -1.0734490394930811,
+              -0.34560268594942656,
+              -0.0692297175380447,
+              0.07639814123178007
+            ],
+            "model_rmse": 0.2562289099227656,
+            "model_rmse_by_horizon": [
+              0.234741742972308,
+              0.2468938607656139,
+              0.2633504322894335,
+              0.27992960366370684
+            ],
+            "persistence_rmse": 0.21151977094391747,
+            "persistence_rmse_by_horizon": [
+              0.11321317211138109,
+              0.18348199163366802,
+              0.24629920770983726,
+              0.3030847123207835
+            ],
+            "relative_improvement": -0.21137096915021877,
+            "windows": 7541
+          },
+          "primary": false,
+          "random_ten_episode_split_gate_rate": {
+            "draws": 10000,
+            "margin": 0.02,
+            "pass_rate": 0.3765,
+            "quantiles": {
+              "q05": -1.1713586458206369,
+              "q50": -0.05457146075292549,
+              "q95": 0.24948683204023306
+            },
+            "seed": 0,
+            "subset_size": 10
+          }
+        }
+      },
+      "own_mode": "base",
+      "primary_class": "INCONCLUSIVE",
+      "status": "OK",
+      "units": {
+        "0": {
+          "best": {
+            "checkpoint": {
+              "path": "/content/adjoint_rwm_work/dynamics_kfold_v2_20260930T231740Z/units/v2_0/persist/best.pt",
+              "sha256": "635e3053e0e2dd77ff275568b771f40762344ab382bff5261bb4ca38332cf322"
+            },
+            "score_name": "validation_rmse",
+            "step": 1400,
+            "validation_score": 0.19196260967848938
+          },
+          "best_checkpoint_sha256": "635e3053e0e2dd77ff275568b771f40762344ab382bff5261bb4ca38332cf322",
+          "global_step": 1500,
+          "held_out_episodes": 20,
+          "modes": [
+            "base",
+            "full"
+          ],
+          "peak_vram_gib": 0.5002379417419434,
+          "regime": "v2",
+          "seed": 20260929,
+          "session_seconds": 410.16094796699963,
+          "train_episodes": 70,
+          "unit": 0,
+          "validation_episodes": 10,
+          "wall_seconds": 413.00725412368774
+        },
+        "1": {
+          "best": {
+            "checkpoint": {
+              "path": "/content/adjoint_rwm_work/dynamics_kfold_v2_20260930T231740Z/units/v2_1/persist/best.pt",
+              "sha256": "82d2f2dc8dd19bdd90d69fc85038c2da252e5691b9630a869a7d1412a20978b5"
+            },
+            "score_name": "validation_rmse",
+            "step": 1400,
+            "validation_score": 0.3496431183138436
+          },
+          "best_checkpoint_sha256": "82d2f2dc8dd19bdd90d69fc85038c2da252e5691b9630a869a7d1412a20978b5",
+          "global_step": 1500,
+          "held_out_episodes": 20,
+          "modes": [
+            "base",
+            "full"
+          ],
+          "peak_vram_gib": 0.5021910667419434,
+          "regime": "v2",
+          "seed": 20260930,
+          "session_seconds": 408.83362940999996,
+          "train_episodes": 70,
+          "unit": 1,
+          "validation_episodes": 10,
+          "wall_seconds": 412.8223900794983
+        },
+        "2": {
+          "best": {
+            "checkpoint": {
+              "path": "/content/adjoint_rwm_work/dynamics_kfold_v2_20260930T231740Z/units/v2_2/persist/best.pt",
+              "sha256": "b475a4ec7d83f1c2544f3f192563b09b60c43398c9e36064017bf63da62fe3fc"
+            },
+            "score_name": "validation_rmse",
+            "step": 1400,
+            "validation_score": 0.38263824804618224
+          },
+          "best_checkpoint_sha256": "b475a4ec7d83f1c2544f3f192563b09b60c43398c9e36064017bf63da62fe3fc",
+          "global_step": 1500,
+          "held_out_episodes": 20,
+          "modes": [
+            "base",
+            "full"
+          ],
+          "peak_vram_gib": 0.5002379417419434,
+          "regime": "v2",
+          "seed": 20260931,
+          "session_seconds": 431.37019201400017,
+          "train_episodes": 70,
+          "unit": 2,
+          "validation_episodes": 10,
+          "wall_seconds": 433.68130922317505
+        },
+        "3": {
+          "best": {
+            "checkpoint": {
+              "path": "/content/adjoint_rwm_work/dynamics_kfold_v2_20260930T231740Z/units/v2_3/persist/best.pt",
+              "sha256": "97eaae7158311f158eb18abd2351e3b1ee1648b49e267d2fb42cd4dca50d8da4"
+            },
+            "score_name": "validation_rmse",
+            "step": 1200,
+            "validation_score": 0.36509380896905835
+          },
+          "best_checkpoint_sha256": "97eaae7158311f158eb18abd2351e3b1ee1648b49e267d2fb42cd4dca50d8da4",
+          "global_step": 1500,
+          "held_out_episodes": 20,
+          "modes": [
+            "base",
+            "full"
+          ],
+          "peak_vram_gib": 0.5021910667419434,
+          "regime": "v2",
+          "seed": 20260932,
+          "session_seconds": 433.68215915200017,
+          "train_episodes": 70,
+          "unit": 3,
+          "validation_episodes": 10,
+          "wall_seconds": 436.18471908569336
+        },
+        "4": {
+          "best": {
+            "checkpoint": {
+              "path": "/content/adjoint_rwm_work/dynamics_kfold_v2_20260930T231740Z/units/v2_4/persist/best.pt",
+              "sha256": "2e33a01d3d9f5e7b50bc65752fe7f6976343ed49f4d19a76b091dd0f43658cb6"
+            },
+            "score_name": "validation_rmse",
+            "step": 1500,
+            "validation_score": 0.37576081120410887
+          },
+          "best_checkpoint_sha256": "2e33a01d3d9f5e7b50bc65752fe7f6976343ed49f4d19a76b091dd0f43658cb6",
+          "global_step": 1500,
+          "held_out_episodes": 20,
+          "modes": [
+            "base",
+            "full"
+          ],
+          "peak_vram_gib": 0.5002379417419434,
+          "regime": "v2",
+          "seed": 20260933,
+          "session_seconds": 419.338614106,
+          "train_episodes": 70,
+          "unit": 4,
+          "validation_episodes": 10,
+          "wall_seconds": 422.5107219219208
+        },
+        "anchor": {
+          "best": {
+            "checkpoint": {
+              "path": "/content/adjoint_rwm_work/dynamics_kfold_v2_20260930T231740Z/units/v2_anchor/persist/best.pt",
+              "sha256": "e1c71d1d74807ff99a7d825ae82f26e80fed8d22c709681571b64275f054fa16"
+            },
+            "score_name": "validation_rmse",
+            "step": 1400,
+            "validation_score": 0.21272998814417865
+          },
+          "best_checkpoint_sha256": "e1c71d1d74807ff99a7d825ae82f26e80fed8d22c709681571b64275f054fa16",
+          "global_step": 1500,
+          "held_out_episodes": 0,
+          "modes": [
+            "base",
+            "full"
+          ],
+          "peak_vram_gib": 0.4964613914489746,
+          "regime": "v2",
+          "seed": 20260928,
+          "session_seconds": 460.50963887299986,
+          "train_episodes": 80,
+          "unit": "anchor",
+          "validation_episodes": 10,
+          "wall_seconds": 462.5518457889557
+        }
+      }
+    }
+  },
+  "repo_commit": "6488aac14ef5af398ce5b5cd2bf58b0a44b7d0f3",
+  "run_id": "dynamics_kfold_v2_20260930T231740Z",
+  "status": "OK"
+}

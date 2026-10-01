@@ -1,0 +1,27 @@
+{
+  "best": {
+    "checkpoint": {
+      "path": "/content/adjoint_rwm_work/dynamics_kfold_pilot_20261001T000051Z/units/pilot_anchor/persist/best.pt",
+      "sha256": "1140a32b992f5130772a705f21de21ae970294d8bacad3fc6e33d7966eac4a9f"
+    },
+    "score_name": "validation_rmse",
+    "step": 1400,
+    "validation_score": 0.21330853897124735
+  },
+  "best_checkpoint_sha256": "1140a32b992f5130772a705f21de21ae970294d8bacad3fc6e33d7966eac4a9f",
+  "global_step": 1500,
+  "held_out_episodes": 0,
+  "modes": [
+    "full",
+    "base"
+  ],
+  "peak_vram_gib": 0.4964613914489746,
+  "regime": "pilot",
+  "seed": 20260928,
+  "session_seconds": 475.9104104529997,
+  "tables": {},
+  "train_episodes": 80,
+  "unit": "anchor",
+  "validation_episodes": 10,
+  "wall_seconds": 478.7090768814087
+}
