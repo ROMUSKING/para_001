@@ -148,6 +148,33 @@ def first_order_scores(costate, effects, costs):
     return -(costate.unsqueeze(1) * effects).sum(-1) - costs.view(1, -1)
 
 
+def normalized_first_order_scores(costate: torch.Tensor, effects: torch.Tensor, costs: torch.Tensor, eps: float = 1e-6) -> torch.Tensor:
+    """Scale-invariant cosine coupling score from PARA architecture:
+
+    score_k = - <costate, delta_k> / (||costate|| * ||delta_k|| + eps) - c_k
+    For candidate 0 (hold, delta_0 = 0), returns exactly 0.0.
+    """
+    costate_norm = torch.norm(costate, dim=-1, keepdim=True).unsqueeze(1) + eps
+    effects_norm = torch.norm(effects, dim=-1, keepdim=True) + eps
+    dot = (costate.unsqueeze(1) * effects).sum(-1, keepdim=True)
+    cosine = - dot / (costate_norm * effects_norm)
+    scores = cosine.squeeze(-1) - costs.view(1, -1)
+    # Ensure hold option (k=0) is identically 0.0
+    return torch.cat([scores.new_zeros(scores.shape[0], 1), scores[:, 1:]], dim=1)
+
+
+def lcb_decision_scores(scores: torch.Tensor, uncert: torch.Tensor, kappa: float = 0.5) -> torch.Tensor:
+    """Cost-aware lower confidence bound decision scores from PARA architecture:
+
+    adjusted_score_k = score_k - kappa * uncert_k  for k >= 1
+    adjusted_score_0 = 0.0 (hold)
+    """
+    if kappa <= 0.0:
+        return scores
+    active_lcb = scores[:, 1:] - kappa * uncert[:, 1:]
+    return torch.cat([scores.new_zeros(scores.shape[0], 1), active_lcb], dim=1)
+
+
 def with_hold_zero(scores_refinements):
     """Prepend the exactly-known hold score (0) to learned refinement scores."""
     return torch.cat([torch.zeros_like(scores_refinements[:, :1]), scores_refinements], dim=1)
@@ -205,27 +232,41 @@ class AllocatorJob(nn.Module):
         budget = torch.full((latent.shape[0],), 1.0 / self.teacher.num_candidates, device=latent.device)
         return budget, torch.ones_like(budget)
 
-    def scores(self, targets) -> dict:
+    def scores(self, targets, kappa: float = 0.5) -> dict:
         """Scores of every deployable policy (and the exact-co-state diagnostic) over K+1 options."""
         latent, effects, costs = targets["latent"], targets["effects"], targets["costs"]
         budget, horizon = self._conditions(latent)
         costate = self.costate(latent, budget, horizon)
         adjoint = first_order_scores(costate, effects, costs)
+        adjoint_norm = normalized_first_order_scores(costate, effects, costs)
         critic = with_hold_zero(self.critic(latent, effects[:, 1:], costs[1:], budget, horizon))
         if latent.shape[0] > 1:
             perm = torch.roll(torch.arange(latent.shape[0], device=latent.device), 1)
             randomized = first_order_scores(costate[perm], effects, costs)
+            randomized_norm = normalized_first_order_scores(costate[perm], effects, costs)
         else:
             randomized = first_order_scores(torch.zeros_like(costate), effects, costs)
+            randomized_norm = normalized_first_order_scores(torch.zeros_like(costate), effects, costs)
         own = targets["self_objective"]
         uncertainty = own[:, :1] - own - costs.view(1, -1)  # predicted reduction of own NLL
         gate_logit = self.gate(latent)
+
+        adjoint_lcb = lcb_decision_scores(adjoint, own, kappa=kappa)
+        adjoint_norm_lcb = lcb_decision_scores(adjoint_norm, own, kappa=kappa)
+        critic_lcb = lcb_decision_scores(critic, own, kappa=kappa)
+
         return {
             "adjoint": adjoint,
+            "adjoint_norm": adjoint_norm,
+            "adjoint_lcb": adjoint_lcb,
+            "adjoint_norm_lcb": adjoint_norm_lcb,
             "critic": critic,
+            "critic_lcb": critic_lcb,
             "adjoint_randomized": randomized,
+            "adjoint_randomized_norm": randomized_norm,
             "uncertainty": uncertainty,
             "exact_costate": first_order_scores(targets["exact_costate"], effects, costs),
+            "exact_costate_norm": normalized_first_order_scores(targets["exact_costate"], effects, costs),
             "predicted_costate": costate,
             "gate_logit": gate_logit,
         }

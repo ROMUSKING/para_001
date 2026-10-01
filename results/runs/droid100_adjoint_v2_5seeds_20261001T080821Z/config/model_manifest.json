@@ -1,0 +1,29 @@
+{
+  "action_dim": 7,
+  "class": "AdjointRecursiveWorldModel",
+  "config": {
+    "candidate_costs": [
+      1.0,
+      1.0,
+      1.5,
+      2.0
+    ],
+    "context_len": 8,
+    "d_model": 512,
+    "dropout": 0.1,
+    "horizon": 4,
+    "mask_mode": "single_choice",
+    "num_refinement_candidates": 4,
+    "prediction_mode": "base",
+    "rate_beta": 0.002,
+    "transformer_ff": 2048,
+    "transformer_heads": 8,
+    "transformer_layers": 6
+  },
+  "note": "v2 trains the allocator heads as separate modules (adjointrwm.allocators); the in-model heads stay unused.",
+  "prediction_parameters": 24731164,
+  "state_dim": 14,
+  "trainable_parameters": 27360798,
+  "visual_dim": 1024,
+  "visual_target": "frozen ResNet-18 ImageNet weights"
+}

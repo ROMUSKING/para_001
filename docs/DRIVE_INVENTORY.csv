@@ -67,3 +67,7 @@ drive_file_id,name,type,size_bytes,modified_utc,status,repo_path,note
 1DDVim5USRytPMREftTlToJjiYFXO245-,run_summary.md,md,1775,2026-09-30T21:42:14Z,copied,results/runs/dynamics_parity_20260930T214043Z/reports/run_summary.md,
 1NY2veLUpCIVleAir9vH75Cu-tvSOkwB0,jobs/results/dynamics-parity-r1/executed_notebook.ipynb,ipynb,37547,2026-09-30T21:42:17Z,drive-only,,Executed copy of the parity notebook (job dynamics-parity-r1); not committed
 1hV30Lp5yY6ASummegYmB0EnpeONotVPR,jobs/results/dynamics-parity-r1/result.json,json,1020,2026-09-30T21:42:17Z,drive-only,,"Job result record (status ok); quoted in the note, not committed"
+,runs/droid100_adjoint_v2_5seeds_20261001T080821Z/,folder,,2026-10-01T08:08:21Z,copied,results/runs/droid100_adjoint_v2_5seeds_20261001T080821Z/,"5-seed pilot v2 run on DROID-100; all 5 seeds evaluated; verdict NON_DIAGNOSTIC"
+,runs/droid100_rivals_20261001T094713Z/,folder,,2026-10-01T09:47:13Z,copied,results/runs/droid100_rivals_20261001T094713Z/,"Track B Milestone B1 rival world models benchmark on DROID-100; 5 arms x 5 seeds; fairness PASS"
+,runs/droid100_rivals_20261001T094713Z/artifacts/prediction_errors.parquet,parquet,6267699,2026-10-01T16:17:00Z,drive-only,,6.2 MB prediction errors parquet file (>5MB limit); drive-only
+

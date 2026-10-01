@@ -1,0 +1,107 @@
+{
+  "lr_grid": [
+    0.0001,
+    0.0003,
+    0.001
+  ],
+  "selected_lr": {
+    "adjoint_rwm": 0.001,
+    "dino_wm": 0.001,
+    "dreamerv3_rssm": 0.001,
+    "tdmpc2": 0.0003,
+    "vjepa2_ac": 0.001
+  },
+  "trials": [
+    {
+      "arm": "adjoint_rwm",
+      "lr": 0.0001,
+      "status": "DONE",
+      "validation_rmse": 0.2451086247912568
+    },
+    {
+      "arm": "adjoint_rwm",
+      "lr": 0.0003,
+      "status": "DONE",
+      "validation_rmse": 0.2280057455356166
+    },
+    {
+      "arm": "adjoint_rwm",
+      "lr": 0.001,
+      "status": "DONE",
+      "validation_rmse": 0.2184225008936041
+    },
+    {
+      "arm": "dreamerv3_rssm",
+      "lr": 0.0001,
+      "status": "DONE",
+      "validation_rmse": 0.6104489845920956
+    },
+    {
+      "arm": "dreamerv3_rssm",
+      "lr": 0.0003,
+      "status": "DONE",
+      "validation_rmse": 0.5726243469927338
+    },
+    {
+      "arm": "dreamerv3_rssm",
+      "lr": 0.001,
+      "status": "DONE",
+      "validation_rmse": 0.5700154337843876
+    },
+    {
+      "arm": "tdmpc2",
+      "lr": 0.0001,
+      "status": "DONE",
+      "validation_rmse": 0.45755351234855146
+    },
+    {
+      "arm": "tdmpc2",
+      "lr": 0.0003,
+      "status": "DONE",
+      "validation_rmse": 0.4111335559931234
+    },
+    {
+      "arm": "tdmpc2",
+      "lr": 0.001,
+      "status": "DONE",
+      "validation_rmse": 0.45698859293745453
+    },
+    {
+      "arm": "dino_wm",
+      "lr": 0.0001,
+      "status": "DONE",
+      "validation_rmse": 0.6076433452090875
+    },
+    {
+      "arm": "dino_wm",
+      "lr": 0.0003,
+      "status": "DONE",
+      "validation_rmse": 0.5335224442395211
+    },
+    {
+      "arm": "dino_wm",
+      "lr": 0.001,
+      "status": "DONE",
+      "validation_rmse": 0.4130812768419654
+    },
+    {
+      "arm": "vjepa2_ac",
+      "lr": 0.0001,
+      "status": "DONE",
+      "validation_rmse": 0.6151926849317435
+    },
+    {
+      "arm": "vjepa2_ac",
+      "lr": 0.0003,
+      "status": "DONE",
+      "validation_rmse": 0.5176962820035965
+    },
+    {
+      "arm": "vjepa2_ac",
+      "lr": 0.001,
+      "status": "DONE",
+      "validation_rmse": 0.4347805842358177
+    }
+  ],
+  "tuning_steps": 450
+}

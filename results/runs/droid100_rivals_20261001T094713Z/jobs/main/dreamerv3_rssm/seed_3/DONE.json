@@ -1,0 +1,38 @@
+{
+  "arm": "main:dreamerv3_rssm",
+  "best": {
+    "checkpoint": {
+      "path": "/content/drive/MyDrive/Colab Notebooks/AdjointRWM_Production/runs/droid100_rivals_20261001T094713Z/jobs/main/dreamerv3_rssm/seed_3/best.pt",
+      "sha256": "64897c818c787551b7a44ffa5eb1b2a3c26cb1a964a20d0147a7d87a57f68616"
+    },
+    "score_name": "validation_rmse",
+    "step": 700,
+    "validation_score": 0.5762563191247525
+  },
+  "best_checkpoint_kept": true,
+  "config_hash": "78f419ff51e5c9661e1892a6d7b98c8ad96a11eaa97df73e74fd9471067aa246",
+  "data_manifest_hash": "7fe9fc66fa1f8e8584835cac1d23355cf0be0822ce938765cefb4a3079f89a31",
+  "global_step": 1500,
+  "peak_vram_gib": 0.8502039909362793,
+  "run_id": "droid100_rivals_20261001T094713Z",
+  "seed": 3,
+  "session_seconds": 99.73560512100084,
+  "session_steps": 250,
+  "session_steps_per_second": 2.5066273944665594,
+  "source_hash": "86624a13e821b61210d3082a26d8e5ccbfbff7332694def750d23e8a3087a967",
+  "status": "DONE",
+  "train_config": {
+    "amp": true,
+    "batch_size": 64,
+    "checkpoint_interval": 250,
+    "eval_batch_size": 128,
+    "eval_interval": 100,
+    "grad_clip": 1.0,
+    "log_interval": 25,
+    "lr": 0.001,
+    "seed": 20260931,
+    "steps": 1500,
+    "warmup_steps": 100,
+    "weight_decay": 0.05
+  }
+}

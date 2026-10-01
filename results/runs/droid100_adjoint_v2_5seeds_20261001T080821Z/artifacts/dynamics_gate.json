@@ -1,0 +1,147 @@
+{
+  "0": {
+    "gate_criterion": "improvement_h4 >= margin or relative_improvement >= margin",
+    "model_rmse": 0.2124711301360882,
+    "model_rmse_by_horizon": [
+      0.18895611614256289,
+      0.20111946436554431,
+      0.22029175547022278,
+      0.23951718456602283
+    ],
+    "passed": true,
+    "persistence_rmse": 0.18857847256011034,
+    "persistence_rmse_by_horizon": [
+      0.10005613351000735,
+      0.16448635735013278,
+      0.22100671179914588,
+      0.2687646875811554
+    ],
+    "prediction_mode": "base",
+    "relative_improvement": -0.12669875437856223,
+    "relative_improvement_by_horizon": [
+      -0.8885010794831883,
+      -0.22271213008524904,
+      0.003234998263640348,
+      0.10882197091573304
+    ],
+    "relative_improvement_h4": 0.10882197091573304,
+    "required_margin": 0.02,
+    "split": "validation"
+  },
+  "1": {
+    "gate_criterion": "improvement_h4 >= margin or relative_improvement >= margin",
+    "model_rmse": 0.23082859906447645,
+    "model_rmse_by_horizon": [
+      0.2063492053017494,
+      0.21574692089204406,
+      0.23842805630822494,
+      0.26279021375588735
+    ],
+    "passed": true,
+    "persistence_rmse": 0.18857847256011034,
+    "persistence_rmse_by_horizon": [
+      0.10005613351000735,
+      0.16448635735013278,
+      0.22100671179914588,
+      0.2687646875811554
+    ],
+    "prediction_mode": "base",
+    "relative_improvement": -0.22404533206142424,
+    "relative_improvement_by_horizon": [
+      -1.0623343923349877,
+      -0.31164021361842076,
+      -0.0788272191702116,
+      0.02222938541159363
+    ],
+    "relative_improvement_h4": 0.02222938541159363,
+    "required_margin": 0.02,
+    "split": "validation"
+  },
+  "2": {
+    "gate_criterion": "improvement_h4 >= margin or relative_improvement >= margin",
+    "model_rmse": 0.21237832292399522,
+    "model_rmse_by_horizon": [
+      0.19385930902994505,
+      0.20116885900937376,
+      0.2181356438792656,
+      0.23634947977739645
+    ],
+    "passed": true,
+    "persistence_rmse": 0.18857847256011034,
+    "persistence_rmse_by_horizon": [
+      0.10005613351000735,
+      0.16448635735013278,
+      0.22100671179914588,
+      0.2687646875811554
+    ],
+    "prediction_mode": "base",
+    "relative_improvement": -0.12620661330417,
+    "relative_improvement_by_horizon": [
+      -0.9375055004554594,
+      -0.223012426381095,
+      0.012990863021796173,
+      0.12060813530040455
+    ],
+    "relative_improvement_h4": 0.12060813530040455,
+    "required_margin": 0.02,
+    "split": "validation"
+  },
+  "3": {
+    "gate_criterion": "improvement_h4 >= margin or relative_improvement >= margin",
+    "model_rmse": 0.21735651841182985,
+    "model_rmse_by_horizon": [
+      0.19618723646965422,
+      0.20570924245078936,
+      0.2243300588505087,
+      0.2431995358763671
+    ],
+    "passed": true,
+    "persistence_rmse": 0.18857847256011034,
+    "persistence_rmse_by_horizon": [
+      0.10005613351000735,
+      0.16448635735013278,
+      0.22100671179914588,
+      0.2687646875811554
+    ],
+    "prediction_mode": "base",
+    "relative_improvement": -0.15260514872685882,
+    "relative_improvement_by_horizon": [
+      -0.9607717147098443,
+      -0.2506158307883721,
+      -0.015037312778007907,
+      0.09512094737917798
+    ],
+    "relative_improvement_h4": 0.09512094737917798,
+    "required_margin": 0.02,
+    "split": "validation"
+  },
+  "4": {
+    "gate_criterion": "improvement_h4 >= margin or relative_improvement >= margin",
+    "model_rmse": 0.22313513129623597,
+    "model_rmse_by_horizon": [
+      0.20021480358803923,
+      0.2094000089805145,
+      0.23049497320860074,
+      0.2524307394077894
+    ],
+    "passed": true,
+    "persistence_rmse": 0.18857847256011034,
+    "persistence_rmse_by_horizon": [
+      0.10005613351000735,
+      0.16448635735013278,
+      0.22100671179914588,
+      0.2687646875811554
+    ],
+    "prediction_mode": "base",
+    "relative_improvement": -0.18324816330830399,
+    "relative_improvement_by_horizon": [
+      -1.001024790429407,
+      -0.2730539623707307,
+      -0.04293200569436971,
+      0.060774160178441894
+    ],
+    "relative_improvement_h4": 0.060774160178441894,
+    "required_margin": 0.02,
+    "split": "validation"
+  }
+}

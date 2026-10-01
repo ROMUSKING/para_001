@@ -1,0 +1,68 @@
+{
+  "arms": {
+    "adjoint_rwm": {
+      "parameters": 24731164,
+      "recipe": {
+        "grad_clip": 1.0
+      },
+      "relative_gap": 0.0,
+      "width": null,
+      "within_tolerance": true
+    },
+    "dino_wm": {
+      "parameters": 25083026,
+      "recipe": {
+        "grad_clip": 1.0
+      },
+      "relative_gap": 0.01422747429114133,
+      "target": 24731164,
+      "tolerance": 0.1,
+      "width": 496,
+      "within_tolerance": true
+    },
+    "dreamerv3_rssm": {
+      "parameters": 24541052,
+      "recipe": {
+        "grad_clip": 1.0
+      },
+      "relative_gap": -0.007687143233533205,
+      "target": 24731164,
+      "tolerance": 0.1,
+      "width": 480,
+      "within_tolerance": true
+    },
+    "tdmpc2": {
+      "parameters": 24841868,
+      "recipe": {
+        "grad_clip": 20.0
+      },
+      "relative_gap": 0.004476295575897681,
+      "target": 24731164,
+      "tolerance": 0.1,
+      "width": 1504,
+      "within_tolerance": true
+    },
+    "vjepa2_ac": {
+      "parameters": 23685474,
+      "recipe": {
+        "grad_clip": 1.0
+      },
+      "relative_gap": -0.04228227996061973,
+      "target": 24731164,
+      "tolerance": 0.1,
+      "width": 288,
+      "within_tolerance": true
+    }
+  },
+  "dims": {
+    "action_dim": 7,
+    "context_len": 8,
+    "horizon": 4,
+    "state_dim": 14,
+    "target_visual_dim": 1024,
+    "visual_token_dim": 512,
+    "visual_tokens": 2
+  },
+  "reference": "adjoint_rwm",
+  "reference_parameters": 24731164
+}

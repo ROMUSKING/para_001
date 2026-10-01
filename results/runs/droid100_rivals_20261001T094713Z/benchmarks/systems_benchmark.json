@@ -1,0 +1,77 @@
+{
+  "adjoint_rwm": {
+    "gpu": "NVIDIA L4",
+    "peak_training_vram_gib_max": 0.5002379417419434,
+    "predict_latency": {
+      "device": "cuda",
+      "mean_ms": 6.313783664703369,
+      "p50_ms": 6.298624038696289,
+      "p95_ms": 6.416486382484436,
+      "p99_ms": 6.5245286035537715
+    },
+    "predict_latency_batch": 64,
+    "prediction_parameters": 24731164,
+    "train_steps_per_second_median": 2.9975208538143687,
+    "train_steps_per_second_note": "per-session rate of the session that finished each job"
+  },
+  "dino_wm": {
+    "gpu": "NVIDIA L4",
+    "peak_training_vram_gib_max": 0.5946154594421387,
+    "predict_latency": {
+      "device": "cuda",
+      "mean_ms": 16.944529838562012,
+      "p50_ms": 16.955391883850098,
+      "p95_ms": 17.24687252044678,
+      "p99_ms": 18.050539760589597
+    },
+    "predict_latency_batch": 64,
+    "prediction_parameters": 25083026,
+    "train_steps_per_second_median": 3.2914696538931336,
+    "train_steps_per_second_note": "per-session rate of the session that finished each job"
+  },
+  "dreamerv3_rssm": {
+    "gpu": "NVIDIA L4",
+    "peak_training_vram_gib_max": 0.8502039909362793,
+    "predict_latency": {
+      "device": "cuda",
+      "mean_ms": 37.98452613830566,
+      "p50_ms": 37.87775993347168,
+      "p95_ms": 38.77370758056641,
+      "p99_ms": 39.82695671081542
+    },
+    "predict_latency_batch": 64,
+    "prediction_parameters": 24541052,
+    "train_steps_per_second_median": 2.5150514313759404,
+    "train_steps_per_second_note": "per-session rate of the session that finished each job"
+  },
+  "tdmpc2": {
+    "gpu": "NVIDIA L4",
+    "peak_training_vram_gib_max": 0.4669637680053711,
+    "predict_latency": {
+      "device": "cuda",
+      "mean_ms": 2.8660774421691895,
+      "p50_ms": 2.854448080062866,
+      "p95_ms": 2.941593587398529,
+      "p99_ms": 3.0812466955184936
+    },
+    "predict_latency_batch": 64,
+    "prediction_parameters": 24841868,
+    "train_steps_per_second_median": 3.3679802518451356,
+    "train_steps_per_second_note": "per-session rate of the session that finished each job"
+  },
+  "vjepa2_ac": {
+    "gpu": "NVIDIA L4",
+    "peak_training_vram_gib_max": 1.20975923538208,
+    "predict_latency": {
+      "device": "cuda",
+      "mean_ms": 57.51733871459961,
+      "p50_ms": 57.40185546875,
+      "p95_ms": 58.726450729370114,
+      "p99_ms": 59.98283504486084
+    },
+    "predict_latency_batch": 64,
+    "prediction_parameters": 23685474,
+    "train_steps_per_second_median": 2.2814634373671856,
+    "train_steps_per_second_note": "per-session rate of the session that finished each job"
+  }
+}

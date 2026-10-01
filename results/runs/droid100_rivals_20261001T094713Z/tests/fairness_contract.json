@@ -1,0 +1,418 @@
+{
+  "checks": [
+    {
+      "check": "equal:data_manifest_hash",
+      "detail": "7fe9fc66fa1f8e8584835cac1d23355cf0be0822ce938765cefb4a3079f89a31",
+      "passed": true
+    },
+    {
+      "check": "equal:split_hash",
+      "detail": "885bd8c7471d5a898d0caa089ed2dccf252752d953ba3f4036e2429b4277e02f",
+      "passed": true
+    },
+    {
+      "check": "equal:window_spec",
+      "detail": {
+        "context_len": 8,
+        "horizon": 4,
+        "stride": 2
+      },
+      "passed": true
+    },
+    {
+      "check": "equal:test_windows_hash",
+      "detail": "9d9f9040634f481320546d5953fe7e85249e3c4c0cca452978098b1c5e473b4f",
+      "passed": true
+    },
+    {
+      "check": "equal:input_encoder",
+      "detail": "resnet18",
+      "passed": true
+    },
+    {
+      "check": "equal:target_encoder",
+      "detail": "resnet18",
+      "passed": true
+    },
+    {
+      "check": "equal:steps",
+      "detail": 1500,
+      "passed": true
+    },
+    {
+      "check": "equal:batch_size",
+      "detail": 64,
+      "passed": true
+    },
+    {
+      "check": "equal:seeds",
+      "detail": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "passed": true
+    },
+    {
+      "check": "equal:lr_grid",
+      "detail": [
+        0.0001,
+        0.0003,
+        0.001
+      ],
+      "passed": true
+    },
+    {
+      "check": "equal:tuning_steps",
+      "detail": 450,
+      "passed": true
+    },
+    {
+      "check": "equal:gpu",
+      "detail": "NVIDIA L4",
+      "passed": true
+    },
+    {
+      "check": "parameters:adjoint_rwm",
+      "detail": {
+        "parameters": 24731164,
+        "reference": 24731164,
+        "relative_gap": 0.0
+      },
+      "passed": true
+    },
+    {
+      "check": "parameters:dreamerv3_rssm",
+      "detail": {
+        "parameters": 24541052,
+        "reference": 24731164,
+        "relative_gap": -0.007687143233533205
+      },
+      "passed": true
+    },
+    {
+      "check": "parameters:tdmpc2",
+      "detail": {
+        "parameters": 24841868,
+        "reference": 24731164,
+        "relative_gap": 0.004476295575897681
+      },
+      "passed": true
+    },
+    {
+      "check": "parameters:dino_wm",
+      "detail": {
+        "parameters": 25083026,
+        "reference": 24731164,
+        "relative_gap": 0.01422747429114133
+      },
+      "passed": true
+    },
+    {
+      "check": "parameters:vjepa2_ac",
+      "detail": {
+        "parameters": 23685474,
+        "reference": 24731164,
+        "relative_gap": -0.04228227996061973
+      },
+      "passed": true
+    },
+    {
+      "check": "every_seed_accounted:adjoint_rwm",
+      "detail": {
+        "failed": [],
+        "finished": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "planned": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "passed": true
+    },
+    {
+      "check": "every_seed_accounted:dreamerv3_rssm",
+      "detail": {
+        "failed": [],
+        "finished": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "planned": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "passed": true
+    },
+    {
+      "check": "every_seed_accounted:tdmpc2",
+      "detail": {
+        "failed": [],
+        "finished": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "planned": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "passed": true
+    },
+    {
+      "check": "every_seed_accounted:dino_wm",
+      "detail": {
+        "failed": [],
+        "finished": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "planned": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "passed": true
+    },
+    {
+      "check": "every_seed_accounted:vjepa2_ac",
+      "detail": {
+        "failed": [],
+        "finished": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "planned": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "records": {
+    "adjoint_rwm": {
+      "batch_size": 64,
+      "data_manifest_hash": "7fe9fc66fa1f8e8584835cac1d23355cf0be0822ce938765cefb4a3079f89a31",
+      "gpu": "NVIDIA L4",
+      "input_encoder": "resnet18",
+      "lr_grid": [
+        0.0001,
+        0.0003,
+        0.001
+      ],
+      "prediction_parameters": 24731164,
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "seeds_failed": [],
+      "seeds_finished": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "split_hash": "885bd8c7471d5a898d0caa089ed2dccf252752d953ba3f4036e2429b4277e02f",
+      "steps": 1500,
+      "target_encoder": "resnet18",
+      "test_windows_hash": "9d9f9040634f481320546d5953fe7e85249e3c4c0cca452978098b1c5e473b4f",
+      "tuning_steps": 450,
+      "window_spec": {
+        "context_len": 8,
+        "horizon": 4,
+        "stride": 2
+      }
+    },
+    "dino_wm": {
+      "batch_size": 64,
+      "data_manifest_hash": "7fe9fc66fa1f8e8584835cac1d23355cf0be0822ce938765cefb4a3079f89a31",
+      "gpu": "NVIDIA L4",
+      "input_encoder": "resnet18",
+      "lr_grid": [
+        0.0001,
+        0.0003,
+        0.001
+      ],
+      "prediction_parameters": 25083026,
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "seeds_failed": [],
+      "seeds_finished": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "split_hash": "885bd8c7471d5a898d0caa089ed2dccf252752d953ba3f4036e2429b4277e02f",
+      "steps": 1500,
+      "target_encoder": "resnet18",
+      "test_windows_hash": "9d9f9040634f481320546d5953fe7e85249e3c4c0cca452978098b1c5e473b4f",
+      "tuning_steps": 450,
+      "window_spec": {
+        "context_len": 8,
+        "horizon": 4,
+        "stride": 2
+      }
+    },
+    "dreamerv3_rssm": {
+      "batch_size": 64,
+      "data_manifest_hash": "7fe9fc66fa1f8e8584835cac1d23355cf0be0822ce938765cefb4a3079f89a31",
+      "gpu": "NVIDIA L4",
+      "input_encoder": "resnet18",
+      "lr_grid": [
+        0.0001,
+        0.0003,
+        0.001
+      ],
+      "prediction_parameters": 24541052,
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "seeds_failed": [],
+      "seeds_finished": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "split_hash": "885bd8c7471d5a898d0caa089ed2dccf252752d953ba3f4036e2429b4277e02f",
+      "steps": 1500,
+      "target_encoder": "resnet18",
+      "test_windows_hash": "9d9f9040634f481320546d5953fe7e85249e3c4c0cca452978098b1c5e473b4f",
+      "tuning_steps": 450,
+      "window_spec": {
+        "context_len": 8,
+        "horizon": 4,
+        "stride": 2
+      }
+    },
+    "tdmpc2": {
+      "batch_size": 64,
+      "data_manifest_hash": "7fe9fc66fa1f8e8584835cac1d23355cf0be0822ce938765cefb4a3079f89a31",
+      "gpu": "NVIDIA L4",
+      "input_encoder": "resnet18",
+      "lr_grid": [
+        0.0001,
+        0.0003,
+        0.001
+      ],
+      "prediction_parameters": 24841868,
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "seeds_failed": [],
+      "seeds_finished": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "split_hash": "885bd8c7471d5a898d0caa089ed2dccf252752d953ba3f4036e2429b4277e02f",
+      "steps": 1500,
+      "target_encoder": "resnet18",
+      "test_windows_hash": "9d9f9040634f481320546d5953fe7e85249e3c4c0cca452978098b1c5e473b4f",
+      "tuning_steps": 450,
+      "window_spec": {
+        "context_len": 8,
+        "horizon": 4,
+        "stride": 2
+      }
+    },
+    "vjepa2_ac": {
+      "batch_size": 64,
+      "data_manifest_hash": "7fe9fc66fa1f8e8584835cac1d23355cf0be0822ce938765cefb4a3079f89a31",
+      "gpu": "NVIDIA L4",
+      "input_encoder": "resnet18",
+      "lr_grid": [
+        0.0001,
+        0.0003,
+        0.001
+      ],
+      "prediction_parameters": 23685474,
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "seeds_failed": [],
+      "seeds_finished": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "split_hash": "885bd8c7471d5a898d0caa089ed2dccf252752d953ba3f4036e2429b4277e02f",
+      "steps": 1500,
+      "target_encoder": "resnet18",
+      "test_windows_hash": "9d9f9040634f481320546d5953fe7e85249e3c4c0cca452978098b1c5e473b4f",
+      "tuning_steps": 450,
+      "window_spec": {
+        "context_len": 8,
+        "horizon": 4,
+        "stride": 2
+      }
+    }
+  },
+  "reference": "adjoint_rwm",
+  "tolerance": 0.1
+}

@@ -1,0 +1,2922 @@
+{
+  "seed_0/test": {
+    "num_episodes": 10,
+    "num_options": 5,
+    "num_windows": 835,
+    "opportunity": {
+      "best_fixed_candidate": 0,
+      "best_fixed_mean_gain": 0.0,
+      "cost_gap": 0.004,
+      "fixed_candidate_mean_gain": [
+        0.0,
+        -0.09271486537213142,
+        -0.07871059924587161,
+        -0.08176916343087476,
+        -0.06869750253655418
+      ],
+      "fraction_oracle_differs_from_best_fixed": 0.41437125748502995,
+      "headroom_over_best_fixed": 0.006994272031525741,
+      "headroom_over_random": 0.07137269814861213,
+      "median_gain_spread": 0.05660510063171387,
+      "num_candidates": 5,
+      "num_windows": 835,
+      "oracle_mean_gain": 0.006994272031525741,
+      "oracle_share": [
+        0.5856287425149701,
+        0.10059880239520957,
+        0.1341317365269461,
+        0.055089820359281436,
+        0.12455089820359282
+      ],
+      "passes": false,
+      "random_mean_gain": -0.0643784261170864,
+      "reason": "oracle beats best fixed candidate by 0.00699, < 15% of its margin over random (0.0714)",
+      "spread_exceeds_cost_gap_fraction": 1.0
+    },
+    "oracle_share": [
+      0.5856,
+      0.1006,
+      0.1341,
+      0.0551,
+      0.1246
+    ],
+    "paired_differences": {
+      "adjoint-critic": {
+        "ci_high": 0.01986503933177157,
+        "ci_low": -0.015867465936983984,
+        "confidence": 0.95,
+        "estimate": 0.007555078432343142,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(adjoint - critic)"
+      },
+      "adjoint_randomized-adjoint": {
+        "ci_high": 0.0015023512557542633,
+        "ci_low": -0.004996688859856567,
+        "confidence": 0.95,
+        "estimate": -0.0004334492544771847,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(adjoint_randomized - adjoint)"
+      },
+      "critic-random_expected": {
+        "ci_high": 0.015117537206911792,
+        "ci_low": -0.021595527497074676,
+        "confidence": 0.95,
+        "estimate": -0.0077456627759390955,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(critic - random_expected)"
+      },
+      "critic-uncertainty": {
+        "ci_high": -0.01447700030394721,
+        "ci_low": -0.054775209972037796,
+        "confidence": 0.95,
+        "estimate": -0.03623676359218484,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(critic - uncertainty)"
+      },
+      "exact_costate-adjoint": {
+        "ci_high": -0.04126741701166591,
+        "ci_low": -0.11149564013180971,
+        "confidence": 0.95,
+        "estimate": -0.07100074923134403,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(exact_costate - adjoint)"
+      },
+      "hybrid-critic": {
+        "ci_high": 0.01986503933177157,
+        "ci_low": -0.015867465936983984,
+        "confidence": 0.95,
+        "estimate": 0.007555078432343142,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(hybrid - critic)"
+      }
+    },
+    "policies": {
+      "adjoint": {
+        "choice_share": [
+          0.0359,
+          0.3006,
+          0.5605,
+          0.024,
+          0.079
+        ],
+        "ci": {
+          "ci_high": 0.11167521458750837,
+          "ci_low": 0.041446478923773074,
+          "confidence": 0.95,
+          "estimate": 0.07118211380501618,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(adjoint)"
+        },
+        "mean_regret": 0.07118211380501618,
+        "top1": 0.20119760479041915
+      },
+      "adjoint_randomized": {
+        "choice_share": [
+          0.0359,
+          0.3006,
+          0.5605,
+          0.024,
+          0.079
+        ],
+        "ci": {
+          "ci_high": 0.1103784144564383,
+          "ci_low": 0.04026006218404692,
+          "confidence": 0.95,
+          "estimate": 0.07074866455053899,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(adjoint_randomized)"
+        },
+        "mean_regret": 0.07074866455053899,
+        "top1": 0.20119760479041915
+      },
+      "always_c1": {
+        "ci": {
+          "ci_high": 0.14972644584757952,
+          "ci_low": 0.06679868539118923,
+          "confidence": 0.95,
+          "estimate": 0.09970913740365715,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_c1)"
+        },
+        "mean_regret": 0.09970913740365715
+      },
+      "always_c2": {
+        "ci": {
+          "ci_high": 0.13392228891470287,
+          "ci_low": 0.05243936381495675,
+          "confidence": 0.95,
+          "estimate": 0.08570487127739736,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_c2)"
+        },
+        "mean_regret": 0.08570487127739736
+      },
+      "always_c3": {
+        "ci": {
+          "ci_high": 0.12541350505057303,
+          "ci_low": 0.05960354881191417,
+          "confidence": 0.95,
+          "estimate": 0.0887634354624005,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_c3)"
+        },
+        "mean_regret": 0.0887634354624005
+      },
+      "always_c4": {
+        "ci": {
+          "ci_high": 0.11577872389197451,
+          "ci_low": 0.050133077852098064,
+          "confidence": 0.95,
+          "estimate": 0.07569177456807992,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_c4)"
+        },
+        "mean_regret": 0.07569177456807992
+      },
+      "always_hold": {
+        "ci": {
+          "ci_high": 0.010050307818631777,
+          "ci_low": 0.005394048819491289,
+          "confidence": 0.95,
+          "estimate": 0.006994272031525741,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_hold)"
+        },
+        "mean_regret": 0.006994272031525741
+      },
+      "critic": {
+        "choice_share": [
+          0.1844,
+          0.3102,
+          0.497,
+          0.0,
+          0.0084
+        ],
+        "ci": {
+          "ci_high": 0.1141020466810016,
+          "ci_low": 0.03933374115140478,
+          "confidence": 0.95,
+          "estimate": 0.06362703537267304,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(critic)"
+        },
+        "mean_regret": 0.06362703537267304,
+        "top1": 0.27305389221556886
+      },
+      "exact_costate": {
+        "choice_share": [
+          0.5497,
+          0.115,
+          0.1401,
+          0.0635,
+          0.1317
+        ],
+        "ci": {
+          "ci_high": 0.0002979192234103564,
+          "ci_low": 0.00010866708276949076,
+          "confidence": 0.95,
+          "estimate": 0.00018136457367214613,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(exact_costate)"
+        },
+        "mean_regret": 0.00018136457367214613,
+        "top1": 0.9269461077844311
+      },
+      "hybrid": {
+        "choice_share": [
+          0.0359,
+          0.3006,
+          0.5605,
+          0.024,
+          0.079
+        ],
+        "ci": {
+          "ci_high": 0.11167521458750837,
+          "ci_low": 0.041446478923773074,
+          "confidence": 0.95,
+          "estimate": 0.07118211380501618,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(hybrid)"
+        },
+        "mean_regret": 0.07118211380501618,
+        "top1": 0.20119760479041915
+      },
+      "random_expected": {
+        "ci": {
+          "ci_high": 0.1059870811090253,
+          "ci_low": 0.04778132407861593,
+          "confidence": 0.95,
+          "estimate": 0.07137269814861212,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(random_expected)"
+        },
+        "mean_regret": 0.07137269814861212
+      },
+      "uncertainty": {
+        "choice_share": [
+          0.0,
+          0.9904,
+          0.0096,
+          0.0,
+          0.0
+        ],
+        "ci": {
+          "ci_high": 0.15008735733016754,
+          "ci_low": 0.06679868539118923,
+          "confidence": 0.95,
+          "estimate": 0.09986379896485788,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(uncertainty)"
+        },
+        "mean_regret": 0.09986379896485788,
+        "top1": 0.10059880239520957
+      }
+    }
+  },
+  "seed_0/validation": {
+    "num_episodes": 10,
+    "num_options": 5,
+    "num_windows": 796,
+    "opportunity": {
+      "best_fixed_candidate": 0,
+      "best_fixed_mean_gain": 0.0,
+      "cost_gap": 0.004,
+      "fixed_candidate_mean_gain": [
+        0.0,
+        -0.337332030875847,
+        -0.3253377931717264,
+        -0.29235274418860896,
+        -0.294454591606168
+      ],
+      "fraction_oracle_differs_from_best_fixed": 0.21608040201005024,
+      "headroom_over_best_fixed": 0.004696476165598361,
+      "headroom_over_random": 0.25459190813406846,
+      "median_gain_spread": 0.13107863068580627,
+      "num_candidates": 5,
+      "num_windows": 796,
+      "oracle_mean_gain": 0.004696476165598361,
+      "oracle_share": [
+        0.7839195979899497,
+        0.0678391959798995,
+        0.05150753768844221,
+        0.048994974874371856,
+        0.04773869346733668
+      ],
+      "passes": false,
+      "random_mean_gain": -0.24989543196847008,
+      "reason": "oracle beats best fixed candidate by 0.0047, < 15% of its margin over random (0.255)",
+      "spread_exceeds_cost_gap_fraction": 1.0
+    },
+    "oracle_share": [
+      0.7839,
+      0.0678,
+      0.0515,
+      0.049,
+      0.0477
+    ],
+    "paired_differences": {
+      "adjoint-critic": {
+        "ci_high": 0.01905513699228051,
+        "ci_low": -0.006007193764353205,
+        "confidence": 0.95,
+        "estimate": 0.004775859156375442,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(adjoint - critic)"
+      },
+      "adjoint_randomized-adjoint": {
+        "ci_high": 0.0024915649309597324,
+        "ci_low": -0.002718954812113721,
+        "confidence": 0.95,
+        "estimate": 0.00019478516526819773,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(adjoint_randomized - adjoint)"
+      },
+      "critic-random_expected": {
+        "ci_high": 0.12829570893436704,
+        "ci_low": -0.029531279024557818,
+        "confidence": 0.95,
+        "estimate": 0.042854176805677574,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(critic - random_expected)"
+      },
+      "critic-uncertainty": {
+        "ci_high": -0.008225418794474177,
+        "ci_low": -0.09247744010647849,
+        "confidence": 0.95,
+        "estimate": -0.048192236619011675,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(critic - uncertainty)"
+      },
+      "exact_costate-adjoint": {
+        "ci_high": -0.07936528122123276,
+        "ci_low": -0.5250328860748089,
+        "confidence": 0.95,
+        "estimate": -0.30210938822476885,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(exact_costate - adjoint)"
+      },
+      "hybrid-critic": {
+        "ci_high": 0.01905513699228051,
+        "ci_low": -0.006007193764353205,
+        "confidence": 0.95,
+        "estimate": 0.004775859156375442,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(hybrid - critic)"
+      }
+    },
+    "policies": {
+      "adjoint": {
+        "choice_share": [
+          0.1947,
+          0.3932,
+          0.2688,
+          0.0,
+          0.1432
+        ],
+        "ci": {
+          "ci_high": 0.525111786537463,
+          "ci_low": 0.07948182667391014,
+          "confidence": 0.95,
+          "estimate": 0.30222194409612146,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(adjoint)"
+        },
+        "mean_regret": 0.30222194409612146,
+        "top1": 0.2562814070351759
+      },
+      "adjoint_randomized": {
+        "choice_share": [
+          0.1947,
+          0.3932,
+          0.2688,
+          0.0,
+          0.1432
+        ],
+        "ci": {
+          "ci_high": 0.5239749037752329,
+          "ci_low": 0.08203986119814634,
+          "confidence": 0.95,
+          "estimate": 0.3024167292613896,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(adjoint_randomized)"
+        },
+        "mean_regret": 0.3024167292613896,
+        "top1": 0.2613065326633166
+      },
+      "always_c1": {
+        "ci": {
+          "ci_high": 0.5307168741748672,
+          "ci_low": 0.15462807451276397,
+          "confidence": 0.95,
+          "estimate": 0.3420285070414454,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_c1)"
+        },
+        "mean_regret": 0.3420285070414454
+      },
+      "always_c2": {
+        "ci": {
+          "ci_high": 0.5171951813205138,
+          "ci_low": 0.13922934558079525,
+          "confidence": 0.95,
+          "estimate": 0.3300342693373247,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_c2)"
+        },
+        "mean_regret": 0.3300342693373247
+      },
+      "always_c3": {
+        "ci": {
+          "ci_high": 0.47735337952465173,
+          "ci_low": 0.12504294938638746,
+          "confidence": 0.95,
+          "estimate": 0.29704922035420733,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_c3)"
+        },
+        "mean_regret": 0.29704922035420733
+      },
+      "always_c4": {
+        "ci": {
+          "ci_high": 0.4615466465566996,
+          "ci_low": 0.13406727280117015,
+          "confidence": 0.95,
+          "estimate": 0.29915106777176637,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_c4)"
+        },
+        "mean_regret": 0.29915106777176637
+      },
+      "always_hold": {
+        "ci": {
+          "ci_high": 0.009889457663140727,
+          "ci_low": 0.001924733581324734,
+          "confidence": 0.95,
+          "estimate": 0.004696476165598361,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_hold)"
+        },
+        "mean_regret": 0.004696476165598361
+      },
+      "critic": {
+        "choice_share": [
+          0.2387,
+          0.5264,
+          0.1872,
+          0.0,
+          0.0477
+        ],
+        "ci": {
+          "ci_high": 0.5212808646028599,
+          "ci_low": 0.08562321490738031,
+          "confidence": 0.95,
+          "estimate": 0.297446084939746,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(critic)"
+        },
+        "mean_regret": 0.297446084939746,
+        "top1": 0.27889447236180903
+      },
+      "exact_costate": {
+        "choice_share": [
+          0.7651,
+          0.0791,
+          0.0477,
+          0.0578,
+          0.0503
+        ],
+        "ci": {
+          "ci_high": 0.00021999681363298436,
+          "ci_low": 4.2199637316276935e-05,
+          "confidence": 0.95,
+          "estimate": 0.00011255587135259081,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(exact_costate)"
+        },
+        "mean_regret": 0.00011255587135259081,
+        "top1": 0.957286432160804
+      },
+      "hybrid": {
+        "choice_share": [
+          0.1947,
+          0.3932,
+          0.2688,
+          0.0,
+          0.1432
+        ],
+        "ci": {
+          "ci_high": 0.525111786537463,
+          "ci_low": 0.07948182667391014,
+          "confidence": 0.95,
+          "estimate": 0.30222194409612146,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(hybrid)"
+        },
+        "mean_regret": 0.30222194409612146,
+        "top1": 0.2562814070351759
+      },
+      "random_expected": {
+        "ci": {
+          "ci_high": 0.3956727277435169,
+          "ci_low": 0.11188723142473303,
+          "confidence": 0.95,
+          "estimate": 0.2545919081340684,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(random_expected)"
+        },
+        "mean_regret": 0.2545919081340684
+      },
+      "uncertainty": {
+        "choice_share": [
+          0.0,
+          0.9598,
+          0.0402,
+          0.0,
+          0.0
+        ],
+        "ci": {
+          "ci_high": 0.5369852193942685,
+          "ci_low": 0.15462807451276397,
+          "confidence": 0.95,
+          "estimate": 0.3456383215587577,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(uncertainty)"
+        },
+        "mean_regret": 0.3456383215587577,
+        "top1": 0.0678391959798995
+      }
+    }
+  },
+  "seed_1/test": {
+    "num_episodes": 10,
+    "num_options": 5,
+    "num_windows": 835,
+    "opportunity": {
+      "best_fixed_candidate": 0,
+      "best_fixed_mean_gain": 0.0,
+      "cost_gap": 0.004,
+      "fixed_candidate_mean_gain": [
+        0.0,
+        -0.0591349926049414,
+        -0.05760242382125806,
+        -0.06304853651728369,
+        -0.06755488279058101
+      ],
+      "fraction_oracle_differs_from_best_fixed": 0.4754491017964072,
+      "headroom_over_best_fixed": 0.01090629292111063,
+      "headroom_over_random": 0.06037446006792346,
+      "median_gain_spread": 0.04714648798108101,
+      "num_candidates": 5,
+      "num_windows": 835,
+      "oracle_mean_gain": 0.01090629292111063,
+      "oracle_share": [
+        0.5245508982035928,
+        0.1568862275449102,
+        0.162874251497006,
+        0.12215568862275449,
+        0.033532934131736525
+      ],
+      "passes": true,
+      "random_mean_gain": -0.04946816714681283,
+      "reason": "per-window choice has measurable headroom over the best constant policy",
+      "spread_exceeds_cost_gap_fraction": 1.0
+    },
+    "oracle_share": [
+      0.5246,
+      0.1569,
+      0.1629,
+      0.1222,
+      0.0335
+    ],
+    "paired_differences": {
+      "adjoint-critic": {
+        "ci_high": 0.008324012672782315,
+        "ci_low": -0.005839196817073601,
+        "confidence": 0.95,
+        "estimate": 0.0032778181782561148,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(adjoint - critic)"
+      },
+      "adjoint_randomized-adjoint": {
+        "ci_high": 0.0006336238824149329,
+        "ci_low": -0.00044281030729818074,
+        "confidence": 0.95,
+        "estimate": 2.5111129005512077e-05,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(adjoint_randomized - adjoint)"
+      },
+      "critic-random_expected": {
+        "ci_high": 0.008062874859691569,
+        "ci_low": -0.00241565038476427,
+        "confidence": 0.95,
+        "estimate": 0.0013317946985943946,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(critic - random_expected)"
+      },
+      "critic-uncertainty": {
+        "ci_high": -0.007555403957589612,
+        "ci_low": -0.022037502931410664,
+        "confidence": 0.95,
+        "estimate": -0.014842816917393023,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(critic - uncertainty)"
+      },
+      "exact_costate-adjoint": {
+        "ci_high": -0.04268004813843824,
+        "ci_low": -0.09086381701280202,
+        "confidence": 0.95,
+        "estimate": -0.06460400301026191,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(exact_costate - adjoint)"
+      },
+      "hybrid-critic": {
+        "ci_high": 0.008324012672782315,
+        "ci_low": -0.005839196817073601,
+        "confidence": 0.95,
+        "estimate": 0.0032778181782561148,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(hybrid - critic)"
+      }
+    },
+    "policies": {
+      "adjoint": {
+        "choice_share": [
+          0.0,
+          0.1509,
+          0.309,
+          0.4754,
+          0.0647
+        ],
+        "ci": {
+          "ci_high": 0.09136863285064095,
+          "ci_low": 0.043117105072201754,
+          "confidence": 0.95,
+          "estimate": 0.06498407294477397,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(adjoint)"
+        },
+        "mean_regret": 0.06498407294477397,
+        "top1": 0.17365269461077845
+      },
+      "adjoint_randomized": {
+        "choice_share": [
+          0.0,
+          0.1509,
+          0.309,
+          0.4754,
+          0.0647
+        ],
+        "ci": {
+          "ci_high": 0.09157384514281197,
+          "ci_low": 0.04318624132350561,
+          "confidence": 0.95,
+          "estimate": 0.06500918407377948,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(adjoint_randomized)"
+        },
+        "mean_regret": 0.06500918407377948,
+        "top1": 0.16766467065868262
+      },
+      "always_c1": {
+        "ci": {
+          "ci_high": 0.09914285388691102,
+          "ci_low": 0.043684800121943736,
+          "confidence": 0.95,
+          "estimate": 0.07004128552605203,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_c1)"
+        },
+        "mean_regret": 0.07004128552605203
+      },
+      "always_c2": {
+        "ci": {
+          "ci_high": 0.0989356404497526,
+          "ci_low": 0.046920481055310534,
+          "confidence": 0.95,
+          "estimate": 0.06850871674236869,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_c2)"
+        },
+        "mean_regret": 0.06850871674236869
+      },
+      "always_c3": {
+        "ci": {
+          "ci_high": 0.1092485064317786,
+          "ci_low": 0.05112873385623898,
+          "confidence": 0.95,
+          "estimate": 0.07395482943839432,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_c3)"
+        },
+        "mean_regret": 0.07395482943839432
+      },
+      "always_c4": {
+        "ci": {
+          "ci_high": 0.11238615701102798,
+          "ci_low": 0.05798900773639936,
+          "confidence": 0.95,
+          "estimate": 0.07846117571169164,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_c4)"
+        },
+        "mean_regret": 0.07846117571169164
+      },
+      "always_hold": {
+        "ci": {
+          "ci_high": 0.014203501359772957,
+          "ci_low": 0.008669456833577572,
+          "confidence": 0.95,
+          "estimate": 0.01090629292111063,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_hold)"
+        },
+        "mean_regret": 0.01090629292111063
+      },
+      "critic": {
+        "choice_share": [
+          0.212,
+          0.0,
+          0.0,
+          0.6287,
+          0.1593
+        ],
+        "ci": {
+          "ci_high": 0.09118452155919375,
+          "ci_low": 0.04396106093198334,
+          "confidence": 0.95,
+          "estimate": 0.06170625476651786,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(critic)"
+        },
+        "mean_regret": 0.06170625476651786,
+        "top1": 0.20958083832335328
+      },
+      "exact_costate": {
+        "choice_share": [
+          0.4671,
+          0.1844,
+          0.1713,
+          0.1401,
+          0.0371
+        ],
+        "ci": {
+          "ci_high": 0.0005677408897639053,
+          "ci_low": 0.0002640175061715459,
+          "confidence": 0.95,
+          "estimate": 0.0003800699345120591,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(exact_costate)"
+        },
+        "mean_regret": 0.0003800699345120591,
+        "top1": 0.9065868263473054
+      },
+      "hybrid": {
+        "choice_share": [
+          0.0,
+          0.1509,
+          0.309,
+          0.4754,
+          0.0647
+        ],
+        "ci": {
+          "ci_high": 0.09136863285064095,
+          "ci_low": 0.043117105072201754,
+          "confidence": 0.95,
+          "estimate": 0.06498407294477397,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(hybrid)"
+        },
+        "mean_regret": 0.06498407294477397,
+        "top1": 0.17365269461077845
+      },
+      "random_expected": {
+        "ci": {
+          "ci_high": 0.08540059477857745,
+          "ci_low": 0.04281535409330012,
+          "confidence": 0.95,
+          "estimate": 0.06037446006792346,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(random_expected)"
+        },
+        "mean_regret": 0.06037446006792346
+      },
+      "uncertainty": {
+        "choice_share": [
+          0.0,
+          0.0,
+          0.1856,
+          0.1713,
+          0.6431
+        ],
+        "ci": {
+          "ci_high": 0.11007196525986152,
+          "ci_low": 0.05434280389578895,
+          "confidence": 0.95,
+          "estimate": 0.07654907168391088,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(uncertainty)"
+        },
+        "mean_regret": 0.07654907168391088,
+        "top1": 0.0658682634730539
+      }
+    }
+  },
+  "seed_1/validation": {
+    "num_episodes": 10,
+    "num_options": 5,
+    "num_windows": 796,
+    "opportunity": {
+      "best_fixed_candidate": 0,
+      "best_fixed_mean_gain": 0.0,
+      "cost_gap": 0.004,
+      "fixed_candidate_mean_gain": [
+        0.0,
+        -0.2895902893959367,
+        -0.2710127703671171,
+        -0.3007377605714447,
+        -0.3143755468263773
+      ],
+      "fraction_oracle_differs_from_best_fixed": 0.21733668341708542,
+      "headroom_over_best_fixed": 0.006280405352994256,
+      "headroom_over_random": 0.2414236787851694,
+      "median_gain_spread": 0.15526790171861649,
+      "num_candidates": 5,
+      "num_windows": 796,
+      "oracle_mean_gain": 0.006280405352994256,
+      "oracle_share": [
+        0.7826633165829145,
+        0.06155778894472362,
+        0.06281407035175879,
+        0.0678391959798995,
+        0.02512562814070352
+      ],
+      "passes": false,
+      "random_mean_gain": -0.23514327343217514,
+      "reason": "oracle beats best fixed candidate by 0.00628, < 15% of its margin over random (0.241)",
+      "spread_exceeds_cost_gap_fraction": 1.0
+    },
+    "oracle_share": [
+      0.7827,
+      0.0616,
+      0.0628,
+      0.0678,
+      0.0251
+    ],
+    "paired_differences": {
+      "adjoint-critic": {
+        "ci_high": 0.31944253798397004,
+        "ci_low": 0.04173015783777384,
+        "confidence": 0.95,
+        "estimate": 0.1827525154558179,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(adjoint - critic)"
+      },
+      "adjoint_randomized-adjoint": {
+        "ci_high": 0.0013223968754216796,
+        "ci_low": -0.0010696898057725608,
+        "confidence": 0.95,
+        "estimate": -0.0002576657886799406,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(adjoint_randomized - adjoint)"
+      },
+      "critic-random_expected": {
+        "ci_high": -0.011435371696463376,
+        "ci_low": -0.24681600474883392,
+        "confidence": 0.95,
+        "estimate": -0.1270588054910803,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(critic - random_expected)"
+      },
+      "critic-uncertainty": {
+        "ci_high": -0.05264470297418276,
+        "ci_low": -0.35438486886561427,
+        "confidence": 0.95,
+        "estimate": -0.21284356674597127,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(critic - uncertainty)"
+      },
+      "exact_costate-adjoint": {
+        "ci_high": -0.13975188427645388,
+        "ci_low": -0.4249888640195385,
+        "confidence": 0.95,
+        "estimate": -0.2968445926385197,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(exact_costate - adjoint)"
+      },
+      "hybrid-critic": {
+        "ci_high": 0.31944253798397004,
+        "ci_low": 0.04173015783777384,
+        "confidence": 0.95,
+        "estimate": 0.1827525154558179,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(hybrid - critic)"
+      }
+    },
+    "policies": {
+      "adjoint": {
+        "choice_share": [
+          0.0163,
+          0.1068,
+          0.196,
+          0.3631,
+          0.3178
+        ],
+        "ci": {
+          "ci_high": 0.42529645651164993,
+          "ci_low": 0.13993118028337168,
+          "confidence": 0.95,
+          "estimate": 0.297117388749907,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(adjoint)"
+        },
+        "mean_regret": 0.297117388749907,
+        "top1": 0.11683417085427136
+      },
+      "adjoint_randomized": {
+        "choice_share": [
+          0.0163,
+          0.1068,
+          0.196,
+          0.3631,
+          0.3178
+        ],
+        "ci": {
+          "ci_high": 0.4249833345357844,
+          "ci_low": 0.14053718618389785,
+          "confidence": 0.95,
+          "estimate": 0.29685972296122703,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(adjoint_randomized)"
+        },
+        "mean_regret": 0.29685972296122703,
+        "top1": 0.11055276381909548
+      },
+      "always_c1": {
+        "ci": {
+          "ci_high": 0.4348961553055817,
+          "ci_low": 0.14463645852554372,
+          "confidence": 0.95,
+          "estimate": 0.2958706947489309,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_c1)"
+        },
+        "mean_regret": 0.2958706947489309
+      },
+      "always_c2": {
+        "ci": {
+          "ci_high": 0.4152206837965725,
+          "ci_low": 0.1385409972260409,
+          "confidence": 0.95,
+          "estimate": 0.2772931757201113,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_c2)"
+        },
+        "mean_regret": 0.2772931757201113
+      },
+      "always_c3": {
+        "ci": {
+          "ci_high": 0.45241182695568094,
+          "ci_low": 0.14076885431580866,
+          "confidence": 0.95,
+          "estimate": 0.3070181659244389,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_c3)"
+        },
+        "mean_regret": 0.3070181659244389
+      },
+      "always_c4": {
+        "ci": {
+          "ci_high": 0.4498726643578272,
+          "ci_low": 0.1538530508793891,
+          "confidence": 0.95,
+          "estimate": 0.32065595217937154,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_c4)"
+        },
+        "mean_regret": 0.32065595217937154
+      },
+      "always_hold": {
+        "ci": {
+          "ci_high": 0.013333039384289905,
+          "ci_low": 0.0023616399945408447,
+          "confidence": 0.95,
+          "estimate": 0.006280405352994256,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_hold)"
+        },
+        "mean_regret": 0.006280405352994256
+      },
+      "critic": {
+        "choice_share": [
+          0.4548,
+          0.0025,
+          0.0176,
+          0.2776,
+          0.2475
+        ],
+        "ci": {
+          "ci_high": 0.20093101211557773,
+          "ci_low": 0.04441521109416403,
+          "confidence": 0.95,
+          "estimate": 0.1143648732940891,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(critic)"
+        },
+        "mean_regret": 0.1143648732940891,
+        "top1": 0.49246231155778897
+      },
+      "exact_costate": {
+        "choice_share": [
+          0.7437,
+          0.0791,
+          0.0653,
+          0.0716,
+          0.0402
+        ],
+        "ci": {
+          "ci_high": 0.00041280928369650665,
+          "ci_low": 0.0001416023079088081,
+          "confidence": 0.95,
+          "estimate": 0.0002727961113872989,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(exact_costate)"
+        },
+        "mean_regret": 0.0002727961113872989,
+        "top1": 0.9484924623115578
+      },
+      "hybrid": {
+        "choice_share": [
+          0.0163,
+          0.1068,
+          0.196,
+          0.3631,
+          0.3178
+        ],
+        "ci": {
+          "ci_high": 0.42529645651164993,
+          "ci_low": 0.13993118028337168,
+          "confidence": 0.95,
+          "estimate": 0.297117388749907,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(hybrid)"
+        },
+        "mean_regret": 0.297117388749907,
+        "top1": 0.11683417085427136
+      },
+      "random_expected": {
+        "ci": {
+          "ci_high": 0.3507767430643863,
+          "ci_low": 0.11845845034854702,
+          "confidence": 0.95,
+          "estimate": 0.24142367878516943,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(random_expected)"
+        },
+        "mean_regret": 0.24142367878516943
+      },
+      "uncertainty": {
+        "choice_share": [
+          0.0,
+          0.0,
+          0.059,
+          0.0528,
+          0.8882
+        ],
+        "ci": {
+          "ci_high": 0.45720559087578416,
+          "ci_low": 0.15998871345621876,
+          "confidence": 0.95,
+          "estimate": 0.3272084400400604,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(uncertainty)"
+        },
+        "mean_regret": 0.3272084400400604,
+        "top1": 0.02512562814070352
+      }
+    }
+  },
+  "seed_2/test": {
+    "num_episodes": 10,
+    "num_options": 5,
+    "num_windows": 835,
+    "opportunity": {
+      "best_fixed_candidate": 0,
+      "best_fixed_mean_gain": 0.0,
+      "cost_gap": 0.004,
+      "fixed_candidate_mean_gain": [
+        0.0,
+        -0.10458176141816698,
+        -0.09656459231565366,
+        -0.08675271897426176,
+        -0.1021827740254561
+      ],
+      "fraction_oracle_differs_from_best_fixed": 0.34850299401197604,
+      "headroom_over_best_fixed": 0.0043830887428456975,
+      "headroom_over_random": 0.0823994580895534,
+      "median_gain_spread": 0.05293514975346625,
+      "num_candidates": 5,
+      "num_windows": 835,
+      "oracle_mean_gain": 0.0043830887428456975,
+      "oracle_share": [
+        0.651497005988024,
+        0.081437125748503,
+        0.10538922155688622,
+        0.1029940119760479,
+        0.058682634730538925
+      ],
+      "passes": false,
+      "random_mean_gain": -0.0780163693467077,
+      "reason": "oracle beats best fixed candidate by 0.00438, < 15% of its margin over random (0.0824)",
+      "spread_exceeds_cost_gap_fraction": 1.0
+    },
+    "oracle_share": [
+      0.6515,
+      0.0814,
+      0.1054,
+      0.103,
+      0.0587
+    ],
+    "paired_differences": {
+      "adjoint-critic": {
+        "ci_high": 0.0796948705412407,
+        "ci_low": 0.020138287866264298,
+        "confidence": 0.95,
+        "estimate": 0.052475473904023004,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(adjoint - critic)"
+      },
+      "adjoint_randomized-adjoint": {
+        "ci_high": 0.001426947512055229,
+        "ci_low": -0.001027656528379641,
+        "confidence": 0.95,
+        "estimate": 0.0002994340674360534,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(adjoint_randomized - adjoint)"
+      },
+      "critic-random_expected": {
+        "ci_high": -0.010259547744057951,
+        "ci_low": -0.058884010490359344,
+        "confidence": 0.95,
+        "estimate": -0.03909844500536913,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(critic - random_expected)"
+      },
+      "critic-uncertainty": {
+        "ci_high": -0.0318640454519061,
+        "ci_low": -0.09698209807126648,
+        "confidence": 0.95,
+        "estimate": -0.066830963031584,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(critic - uncertainty)"
+      },
+      "exact_costate-adjoint": {
+        "ci_high": -0.05631910537557145,
+        "ci_low": -0.16544174690164506,
+        "confidence": 0.95,
+        "estimate": -0.09556029063766588,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(exact_costate - adjoint)"
+      },
+      "hybrid-critic": {
+        "ci_high": 0.0796948705412407,
+        "ci_low": 0.020138287866264298,
+        "confidence": 0.95,
+        "estimate": 0.052475473904023004,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(hybrid - critic)"
+      }
+    },
+    "policies": {
+      "adjoint": {
+        "choice_share": [
+          0.0814,
+          0.5054,
+          0.1449,
+          0.1401,
+          0.1281
+        ],
+        "ci": {
+          "ci_high": 0.16582193192623407,
+          "ci_low": 0.056626445355501626,
+          "confidence": 0.95,
+          "estimate": 0.09577648698820727,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(adjoint)"
+        },
+        "mean_regret": 0.09577648698820727,
+        "top1": 0.15808383233532936
+      },
+      "adjoint_randomized": {
+        "choice_share": [
+          0.0802,
+          0.5066,
+          0.1473,
+          0.1377,
+          0.1281
+        ],
+        "ci": {
+          "ci_high": 0.16519162684054878,
+          "ci_low": 0.057275552418073326,
+          "confidence": 0.95,
+          "estimate": 0.09607592105564332,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(adjoint_randomized)"
+        },
+        "mean_regret": 0.09607592105564332,
+        "top1": 0.16047904191616766
+      },
+      "always_c1": {
+        "ci": {
+          "ci_high": 0.18163552668298474,
+          "ci_low": 0.06666776916733881,
+          "confidence": 0.95,
+          "estimate": 0.10896485016101269,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_c1)"
+        },
+        "mean_regret": 0.10896485016101269
+      },
+      "always_c2": {
+        "ci": {
+          "ci_high": 0.1563560045107631,
+          "ci_low": 0.06247662206424153,
+          "confidence": 0.95,
+          "estimate": 0.10094768105849936,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_c2)"
+        },
+        "mean_regret": 0.10094768105849936
+      },
+      "always_c3": {
+        "ci": {
+          "ci_high": 0.1495791336661807,
+          "ci_low": 0.054532112582803195,
+          "confidence": 0.95,
+          "estimate": 0.09113580771710746,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_c3)"
+        },
+        "mean_regret": 0.09113580771710746
+      },
+      "always_c4": {
+        "ci": {
+          "ci_high": 0.171177180946145,
+          "ci_low": 0.06574222733341435,
+          "confidence": 0.95,
+          "estimate": 0.1065658627683018,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_c4)"
+        },
+        "mean_regret": 0.1065658627683018
+      },
+      "always_hold": {
+        "ci": {
+          "ci_high": 0.005118636901832829,
+          "ci_low": 0.0034087491003371045,
+          "confidence": 0.95,
+          "estimate": 0.0043830887428456975,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_hold)"
+        },
+        "mean_regret": 0.0043830887428456975
+      },
+      "critic": {
+        "choice_share": [
+          0.5976,
+          0.1269,
+          0.2407,
+          0.0168,
+          0.018
+        ],
+        "ci": {
+          "ci_high": 0.09701246931244092,
+          "ci_low": 0.018413581491378565,
+          "confidence": 0.95,
+          "estimate": 0.04330101308418427,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(critic)"
+        },
+        "mean_regret": 0.04330101308418427,
+        "top1": 0.42634730538922155
+      },
+      "exact_costate": {
+        "choice_share": [
+          0.612,
+          0.0922,
+          0.1246,
+          0.097,
+          0.0743
+        ],
+        "ci": {
+          "ci_high": 0.00041750710282994585,
+          "ci_low": 0.00010504121195144142,
+          "confidence": 0.95,
+          "estimate": 0.00021619635054138963,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(exact_costate)"
+        },
+        "mean_regret": 0.00021619635054138963,
+        "top1": 0.9293413173652695
+      },
+      "hybrid": {
+        "choice_share": [
+          0.0814,
+          0.5054,
+          0.1449,
+          0.1401,
+          0.1281
+        ],
+        "ci": {
+          "ci_high": 0.16582193192623407,
+          "ci_low": 0.056626445355501626,
+          "confidence": 0.95,
+          "estimate": 0.09577648698820727,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(hybrid)"
+        },
+        "mean_regret": 0.09577648698820727,
+        "top1": 0.15808383233532936
+      },
+      "random_expected": {
+        "ci": {
+          "ci_high": 0.13228345895788746,
+          "ci_low": 0.05108203953067279,
+          "confidence": 0.95,
+          "estimate": 0.0823994580895534,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(random_expected)"
+        },
+        "mean_regret": 0.0823994580895534
+      },
+      "uncertainty": {
+        "choice_share": [
+          0.0,
+          0.9365,
+          0.0012,
+          0.0,
+          0.0623
+        ],
+        "ci": {
+          "ci_high": 0.18269582715636865,
+          "ci_low": 0.0681282890518127,
+          "confidence": 0.95,
+          "estimate": 0.11013197611576828,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(uncertainty)"
+        },
+        "mean_regret": 0.11013197611576828,
+        "top1": 0.081437125748503
+      }
+    }
+  },
+  "seed_2/validation": {
+    "num_episodes": 10,
+    "num_options": 5,
+    "num_windows": 796,
+    "opportunity": {
+      "best_fixed_candidate": 0,
+      "best_fixed_mean_gain": 0.0,
+      "cost_gap": 0.004,
+      "fixed_candidate_mean_gain": [
+        0.0,
+        -0.39763085033373685,
+        -0.3802877392420363,
+        -0.37400126159156033,
+        -0.4231437001068463
+      ],
+      "fraction_oracle_differs_from_best_fixed": 0.1884422110552764,
+      "headroom_over_best_fixed": 0.003668415330317639,
+      "headroom_over_random": 0.3186811255851536,
+      "median_gain_spread": 0.20532534271478653,
+      "num_candidates": 5,
+      "num_windows": 796,
+      "oracle_mean_gain": 0.003668415330317639,
+      "oracle_share": [
+        0.8115577889447236,
+        0.06407035175879397,
+        0.05527638190954774,
+        0.03391959798994975,
+        0.035175879396984924
+      ],
+      "passes": false,
+      "random_mean_gain": -0.31501271025483596,
+      "reason": "oracle beats best fixed candidate by 0.00367, < 15% of its margin over random (0.319)",
+      "spread_exceeds_cost_gap_fraction": 1.0
+    },
+    "oracle_share": [
+      0.8116,
+      0.0641,
+      0.0553,
+      0.0339,
+      0.0352
+    ],
+    "paired_differences": {
+      "adjoint-critic": {
+        "ci_high": 0.09742641652670961,
+        "ci_low": 0.008746746888309809,
+        "confidence": 0.95,
+        "estimate": 0.046351570160720196,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(adjoint - critic)"
+      },
+      "adjoint_randomized-adjoint": {
+        "ci_high": 0.0005302679978562708,
+        "ci_low": -0.001957539985275494,
+        "confidence": 0.95,
+        "estimate": -0.0007657491167347372,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(adjoint_randomized - adjoint)"
+      },
+      "critic-random_expected": {
+        "ci_high": 0.05891510210166022,
+        "ci_low": -0.10943915729363436,
+        "confidence": 0.95,
+        "estimate": -0.006756354653248424,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(critic - random_expected)"
+      },
+      "critic-uncertainty": {
+        "ci_high": -0.03186930576339037,
+        "ci_low": -0.18608555188568698,
+        "confidence": 0.95,
+        "estimate": -0.09589891980405682,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(critic - uncertainty)"
+      },
+      "exact_costate-adjoint": {
+        "ci_high": -0.11465611601675366,
+        "ci_low": -0.5057770890697525,
+        "confidence": 0.95,
+        "estimate": -0.3581849060380532,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(exact_costate - adjoint)"
+      },
+      "hybrid-critic": {
+        "ci_high": 0.09742641652670961,
+        "ci_low": 0.008746746888309809,
+        "confidence": 0.95,
+        "estimate": 0.046351570160720196,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(hybrid - critic)"
+      }
+    },
+    "policies": {
+      "adjoint": {
+        "choice_share": [
+          0.0452,
+          0.2889,
+          0.3254,
+          0.1156,
+          0.2249
+        ],
+        "ci": {
+          "ci_high": 0.5058097507693964,
+          "ci_low": 0.11482050248969003,
+          "confidence": 0.95,
+          "estimate": 0.35827634109262535,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(adjoint)"
+        },
+        "mean_regret": 0.35827634109262535,
+        "top1": 0.09673366834170855
+      },
+      "adjoint_randomized": {
+        "choice_share": [
+          0.0452,
+          0.2889,
+          0.3254,
+          0.1156,
+          0.2249
+        ],
+        "ci": {
+          "ci_high": 0.5049919763309577,
+          "ci_low": 0.11457640354696294,
+          "confidence": 0.95,
+          "estimate": 0.35751059197589063,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(adjoint_randomized)"
+        },
+        "mean_regret": 0.35751059197589063,
+        "top1": 0.0942211055276382
+      },
+      "always_c1": {
+        "ci": {
+          "ci_high": 0.5540421300899798,
+          "ci_low": 0.1536308926003487,
+          "confidence": 0.95,
+          "estimate": 0.40129926566405444,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_c1)"
+        },
+        "mean_regret": 0.40129926566405444
+      },
+      "always_c2": {
+        "ci": {
+          "ci_high": 0.5167532769109544,
+          "ci_low": 0.1633429077755447,
+          "confidence": 0.95,
+          "estimate": 0.38395615457235394,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_c2)"
+        },
+        "mean_regret": 0.38395615457235394
+      },
+      "always_c3": {
+        "ci": {
+          "ci_high": 0.542025010819495,
+          "ci_low": 0.11846618002133392,
+          "confidence": 0.95,
+          "estimate": 0.377669676921878,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_c3)"
+        },
+        "mean_regret": 0.377669676921878
+      },
+      "always_c4": {
+        "ci": {
+          "ci_high": 0.5733890440861336,
+          "ci_low": 0.1821370059607445,
+          "confidence": 0.95,
+          "estimate": 0.42681211543716396,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_c4)"
+        },
+        "mean_regret": 0.42681211543716396
+      },
+      "always_hold": {
+        "ci": {
+          "ci_high": 0.007393634229937484,
+          "ci_low": 0.0015718093260926463,
+          "confidence": 0.95,
+          "estimate": 0.003668415330317639,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_hold)"
+        },
+        "mean_regret": 0.003668415330317639
+      },
+      "critic": {
+        "choice_share": [
+          0.3141,
+          0.1482,
+          0.5126,
+          0.0,
+          0.0251
+        ],
+        "ci": {
+          "ci_high": 0.47783414040527805,
+          "ci_low": 0.04785250940116359,
+          "confidence": 0.95,
+          "estimate": 0.3119247709319052,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(critic)"
+        },
+        "mean_regret": 0.3119247709319052,
+        "top1": 0.28266331658291455
+      },
+      "exact_costate": {
+        "choice_share": [
+          0.8065,
+          0.0641,
+          0.0528,
+          0.0276,
+          0.049
+        ],
+        "ci": {
+          "ci_high": 0.00020083062768830754,
+          "ci_low": 3.0317930470018893e-05,
+          "confidence": 0.95,
+          "estimate": 9.143505457217745e-05,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(exact_costate)"
+        },
+        "mean_regret": 9.143505457217745e-05,
+        "top1": 0.9597989949748744
+      },
+      "hybrid": {
+        "choice_share": [
+          0.0452,
+          0.2889,
+          0.3254,
+          0.1156,
+          0.2249
+        ],
+        "ci": {
+          "ci_high": 0.5058097507693964,
+          "ci_low": 0.11482050248969003,
+          "confidence": 0.95,
+          "estimate": 0.35827634109262535,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(hybrid)"
+        },
+        "mean_regret": 0.35827634109262535,
+        "top1": 0.09673366834170855
+      },
+      "random_expected": {
+        "ci": {
+          "ci_high": 0.4354407556480411,
+          "ci_low": 0.12913939643004194,
+          "confidence": 0.95,
+          "estimate": 0.3186811255851536,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(random_expected)"
+        },
+        "mean_regret": 0.3186811255851536
+      },
+      "uncertainty": {
+        "choice_share": [
+          0.0,
+          0.603,
+          0.0038,
+          0.0,
+          0.3932
+        ],
+        "ci": {
+          "ci_high": 0.5544763704711764,
+          "ci_low": 0.16613557529724202,
+          "confidence": 0.95,
+          "estimate": 0.407823690735962,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(uncertainty)"
+        },
+        "mean_regret": 0.407823690735962,
+        "top1": 0.04396984924623116
+      }
+    }
+  },
+  "seed_3/test": {
+    "num_episodes": 10,
+    "num_options": 5,
+    "num_windows": 835,
+    "opportunity": {
+      "best_fixed_candidate": 0,
+      "best_fixed_mean_gain": 0.0,
+      "cost_gap": 0.004,
+      "fixed_candidate_mean_gain": [
+        0.0,
+        -0.0952635149722417,
+        -0.09101845175055731,
+        -0.09249748269452931,
+        -0.08759905899913903
+      ],
+      "fraction_oracle_differs_from_best_fixed": 0.4035928143712575,
+      "headroom_over_best_fixed": 0.007234346488780693,
+      "headroom_over_random": 0.08051004817207418,
+      "median_gain_spread": 0.04928794130682945,
+      "num_candidates": 5,
+      "num_windows": 835,
+      "oracle_mean_gain": 0.007234346488780693,
+      "oracle_share": [
+        0.5964071856287425,
+        0.08263473053892216,
+        0.081437125748503,
+        0.09700598802395209,
+        0.14251497005988023
+      ],
+      "passes": false,
+      "random_mean_gain": -0.07327570168329348,
+      "reason": "oracle beats best fixed candidate by 0.00723, < 15% of its margin over random (0.0805)",
+      "spread_exceeds_cost_gap_fraction": 1.0
+    },
+    "oracle_share": [
+      0.5964,
+      0.0826,
+      0.0814,
+      0.097,
+      0.1425
+    ],
+    "paired_differences": {
+      "adjoint-critic": {
+        "ci_high": 0.033684518593105596,
+        "ci_low": -0.024180590900253398,
+        "confidence": 0.95,
+        "estimate": 0.011695330828974794,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(adjoint - critic)"
+      },
+      "adjoint_randomized-adjoint": {
+        "ci_high": 0.0005444979507317494,
+        "ci_low": -0.0023999617621257635,
+        "confidence": 0.95,
+        "estimate": -0.0003134821254403113,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(adjoint_randomized - adjoint)"
+      },
+      "critic-random_expected": {
+        "ci_high": 0.03211664790201662,
+        "ci_low": -0.030967976634348863,
+        "confidence": 0.95,
+        "estimate": -0.004762921729152965,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(critic - random_expected)"
+      },
+      "critic-uncertainty": {
+        "ci_high": 2.711962967027547e-05,
+        "ci_low": -0.04664658417264713,
+        "confidence": 0.95,
+        "estimate": -0.02687229082562743,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(critic - uncertainty)"
+      },
+      "exact_costate-adjoint": {
+        "ci_high": -0.050141793632403335,
+        "ci_low": -0.1643937795241679,
+        "confidence": 0.95,
+        "estimate": -0.0872853479019093,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(exact_costate - adjoint)"
+      },
+      "hybrid-critic": {
+        "ci_high": 0.026202276451511245,
+        "ci_low": -0.022713464110363416,
+        "confidence": 0.95,
+        "estimate": 0.007647126800140846,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(hybrid - critic)"
+      }
+    },
+    "policies": {
+      "adjoint": {
+        "choice_share": [
+          0.097,
+          0.2228,
+          0.0707,
+          0.1353,
+          0.4743
+        ],
+        "ci": {
+          "ci_high": 0.16455371191186546,
+          "ci_low": 0.05031738899371532,
+          "confidence": 0.95,
+          "estimate": 0.08744245727189599,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(adjoint)"
+        },
+        "mean_regret": 0.08744245727189599,
+        "top1": 0.18562874251497005
+      },
+      "adjoint_randomized": {
+        "choice_share": [
+          0.097,
+          0.2216,
+          0.0707,
+          0.1365,
+          0.4743
+        ],
+        "ci": {
+          "ci_high": 0.16251787567008108,
+          "ci_low": 0.050305438828892546,
+          "confidence": 0.95,
+          "estimate": 0.08712897514645568,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(adjoint_randomized)"
+        },
+        "mean_regret": 0.08712897514645568,
+        "top1": 0.1784431137724551
+      },
+      "always_c1": {
+        "ci": {
+          "ci_high": 0.1700545397306729,
+          "ci_low": 0.06787197544312674,
+          "confidence": 0.95,
+          "estimate": 0.10249786146102238,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_c1)"
+        },
+        "mean_regret": 0.10249786146102238
+      },
+      "always_c2": {
+        "ci": {
+          "ci_high": 0.1781054064569849,
+          "ci_low": 0.058599111327157186,
+          "confidence": 0.95,
+          "estimate": 0.09825279823933801,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_c2)"
+        },
+        "mean_regret": 0.09825279823933801
+      },
+      "always_c3": {
+        "ci": {
+          "ci_high": 0.17018055646450025,
+          "ci_low": 0.06286976473648928,
+          "confidence": 0.95,
+          "estimate": 0.09973182918331,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_c3)"
+        },
+        "mean_regret": 0.09973182918331
+      },
+      "always_c4": {
+        "ci": {
+          "ci_high": 0.16904154163939972,
+          "ci_low": 0.05435877415658733,
+          "confidence": 0.95,
+          "estimate": 0.09483340548791973,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_c4)"
+        },
+        "mean_regret": 0.09483340548791973
+      },
+      "always_hold": {
+        "ci": {
+          "ci_high": 0.009626339766689715,
+          "ci_low": 0.005689332076953531,
+          "confidence": 0.95,
+          "estimate": 0.007234346488780693,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_hold)"
+        },
+        "mean_regret": 0.007234346488780693
+      },
+      "critic": {
+        "choice_share": [
+          0.3174,
+          0.5305,
+          0.0503,
+          0.0,
+          0.1018
+        ],
+        "ci": {
+          "ci_high": 0.16082053404662935,
+          "ci_low": 0.033878152152578014,
+          "confidence": 0.95,
+          "estimate": 0.0757471264429212,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(critic)"
+        },
+        "mean_regret": 0.0757471264429212,
+        "top1": 0.28023952095808385
+      },
+      "exact_costate": {
+        "choice_share": [
+          0.5557,
+          0.0934,
+          0.0886,
+          0.0898,
+          0.1725
+        ],
+        "ci": {
+          "ci_high": 0.0002242612541081035,
+          "ci_low": 0.0001113860185825567,
+          "confidence": 0.95,
+          "estimate": 0.00015710936998669615,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(exact_costate)"
+        },
+        "mean_regret": 0.00015710936998669615,
+        "top1": 0.9161676646706587
+      },
+      "hybrid": {
+        "choice_share": [
+          0.1605,
+          0.2467,
+          0.0551,
+          0.1293,
+          0.4084
+        ],
+        "ci": {
+          "ci_high": 0.16250756832997393,
+          "ci_low": 0.04748870096791874,
+          "confidence": 0.95,
+          "estimate": 0.08339425324306204,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(hybrid)"
+        },
+        "mean_regret": 0.08339425324306204,
+        "top1": 0.20958083832335328
+      },
+      "random_expected": {
+        "ci": {
+          "ci_high": 0.13844207703743566,
+          "ci_low": 0.05104624873669559,
+          "confidence": 0.95,
+          "estimate": 0.08051004817207416,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(random_expected)"
+        },
+        "mean_regret": 0.08051004817207416
+      },
+      "uncertainty": {
+        "choice_share": [
+          0.0,
+          0.9856,
+          0.0,
+          0.0144,
+          0.0
+        ],
+        "ci": {
+          "ci_high": 0.17021370616715828,
+          "ci_low": 0.06793796963048694,
+          "confidence": 0.95,
+          "estimate": 0.10261941726854863,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(uncertainty)"
+        },
+        "mean_regret": 0.10261941726854863,
+        "top1": 0.08263473053892216
+      }
+    }
+  },
+  "seed_3/validation": {
+    "num_episodes": 10,
+    "num_options": 5,
+    "num_windows": 796,
+    "opportunity": {
+      "best_fixed_candidate": 0,
+      "best_fixed_mean_gain": 0.0,
+      "cost_gap": 0.004,
+      "fixed_candidate_mean_gain": [
+        0.0,
+        -0.38329444705402177,
+        -0.35491191268425865,
+        -0.35937732646485143,
+        -0.3738298400325102
+      ],
+      "fraction_oracle_differs_from_best_fixed": 0.1922110552763819,
+      "headroom_over_best_fixed": 0.003455201964462691,
+      "headroom_over_random": 0.2977379072115911,
+      "median_gain_spread": 0.15911775082349777,
+      "num_candidates": 5,
+      "num_windows": 796,
+      "oracle_mean_gain": 0.003455201964462691,
+      "oracle_share": [
+        0.8077889447236181,
+        0.0728643216080402,
+        0.04773869346733668,
+        0.02512562814070352,
+        0.04648241206030151
+      ],
+      "passes": false,
+      "random_mean_gain": -0.2942827052471284,
+      "reason": "oracle beats best fixed candidate by 0.00346, < 15% of its margin over random (0.298)",
+      "spread_exceeds_cost_gap_fraction": 1.0
+    },
+    "oracle_share": [
+      0.8078,
+      0.0729,
+      0.0477,
+      0.0251,
+      0.0465
+    ],
+    "paired_differences": {
+      "adjoint-critic": {
+        "ci_high": 0.0179534845960633,
+        "ci_low": -0.0013394603580254363,
+        "confidence": 0.95,
+        "estimate": 0.00773737891506984,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(adjoint - critic)"
+      },
+      "adjoint_randomized-adjoint": {
+        "ci_high": -9.643654286819248e-05,
+        "ci_low": -0.0023261580448594625,
+        "confidence": 0.95,
+        "estimate": -0.0010982648827528685,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(adjoint_randomized - adjoint)"
+      },
+      "critic-random_expected": {
+        "ci_high": 0.1252344885759223,
+        "ci_low": 0.020333444063394327,
+        "confidence": 0.95,
+        "estimate": 0.08503853776574079,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(critic - random_expected)"
+      },
+      "critic-uncertainty": {
+        "ci_high": -0.0016109053767239636,
+        "ci_low": -0.02599180551549287,
+        "confidence": 0.95,
+        "estimate": -0.011421388986253708,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(critic - uncertainty)"
+      },
+      "exact_costate-adjoint": {
+        "ci_high": -0.14947823323696813,
+        "ci_low": -0.5437487951812713,
+        "confidence": 0.95,
+        "estimate": -0.3900647280289061,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(exact_costate - adjoint)"
+      },
+      "hybrid-critic": {
+        "ci_high": 0.017675654986309686,
+        "ci_low": -0.0009946851980806306,
+        "confidence": 0.95,
+        "estimate": 0.007723512551829162,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(hybrid - critic)"
+      }
+    },
+    "policies": {
+      "adjoint": {
+        "choice_share": [
+          0.0201,
+          0.4774,
+          0.0377,
+          0.1658,
+          0.299
+        ],
+        "ci": {
+          "ci_high": 0.543976667456481,
+          "ci_low": 0.15026519730118248,
+          "confidence": 0.95,
+          "estimate": 0.39051382389240175,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(adjoint)"
+        },
+        "mean_regret": 0.39051382389240175,
+        "top1": 0.07035175879396985
+      },
+      "adjoint_randomized": {
+        "choice_share": [
+          0.0201,
+          0.4786,
+          0.0377,
+          0.1658,
+          0.2977
+        ],
+        "ci": {
+          "ci_high": 0.5426821137665575,
+          "ci_low": 0.14967339569759866,
+          "confidence": 0.95,
+          "estimate": 0.38941555900964886,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(adjoint_randomized)"
+        },
+        "mean_regret": 0.38941555900964886,
+        "top1": 0.07035175879396985
+      },
+      "always_c1": {
+        "ci": {
+          "ci_high": 0.5361915839816712,
+          "ci_low": 0.15286643394938004,
+          "confidence": 0.95,
+          "estimate": 0.38674964901848446,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_c1)"
+        },
+        "mean_regret": 0.38674964901848446
+      },
+      "always_c2": {
+        "ci": {
+          "ci_high": 0.5028944409918874,
+          "ci_low": 0.15828422804148545,
+          "confidence": 0.95,
+          "estimate": 0.35836711464872134,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_c2)"
+        },
+        "mean_regret": 0.35836711464872134
+      },
+      "always_c3": {
+        "ci": {
+          "ci_high": 0.5213193605534597,
+          "ci_low": 0.15419877745317598,
+          "confidence": 0.95,
+          "estimate": 0.3628325284293141,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_c3)"
+        },
+        "mean_regret": 0.3628325284293141
+      },
+      "always_c4": {
+        "ci": {
+          "ci_high": 0.5230419956125689,
+          "ci_low": 0.1476731722921031,
+          "confidence": 0.95,
+          "estimate": 0.3772850419969728,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_c4)"
+        },
+        "mean_regret": 0.3772850419969728
+      },
+      "always_hold": {
+        "ci": {
+          "ci_high": 0.005943151331600493,
+          "ci_low": 0.0018994464002029914,
+          "confidence": 0.95,
+          "estimate": 0.003455201964462691,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_hold)"
+        },
+        "mean_regret": 0.003455201964462691
+      },
+      "critic": {
+        "choice_share": [
+          0.0892,
+          0.7977,
+          0.0251,
+          0.0402,
+          0.0477
+        ],
+        "ci": {
+          "ci_high": 0.5342190910835755,
+          "ci_low": 0.14464558871733973,
+          "confidence": 0.95,
+          "estimate": 0.3827764449773319,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(critic)"
+        },
+        "mean_regret": 0.3827764449773319,
+        "top1": 0.11809045226130653
+      },
+      "exact_costate": {
+        "choice_share": [
+          0.8103,
+          0.0804,
+          0.0415,
+          0.0188,
+          0.049
+        ],
+        "ci": {
+          "ci_high": 0.0010928155998270166,
+          "ci_low": 0.00015820598175716357,
+          "confidence": 0.95,
+          "estimate": 0.0004490958634955837,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(exact_costate)"
+        },
+        "mean_regret": 0.0004490958634955837,
+        "top1": 0.9560301507537688
+      },
+      "hybrid": {
+        "choice_share": [
+          0.0226,
+          0.4862,
+          0.0377,
+          0.1658,
+          0.2877
+        ],
+        "ci": {
+          "ci_high": 0.5437354478588486,
+          "ci_low": 0.15033653759081786,
+          "confidence": 0.95,
+          "estimate": 0.39049995752916106,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(hybrid)"
+        },
+        "mean_regret": 0.39049995752916106,
+        "top1": 0.07035175879396985
+      },
+      "random_expected": {
+        "ci": {
+          "ci_high": 0.41591229031100874,
+          "ci_low": 0.1235817514033524,
+          "confidence": 0.95,
+          "estimate": 0.2977379072115911,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(random_expected)"
+        },
+        "mean_regret": 0.2977379072115911
+      },
+      "uncertainty": {
+        "choice_share": [
+          0.0,
+          0.9774,
+          0.0126,
+          0.0101,
+          0.0
+        ],
+        "ci": {
+          "ci_high": 0.5521906101682627,
+          "ci_low": 0.15286526297690436,
+          "confidence": 0.95,
+          "estimate": 0.3941978339635856,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(uncertainty)"
+        },
+        "mean_regret": 0.3941978339635856,
+        "top1": 0.0728643216080402
+      }
+    }
+  },
+  "seed_4/test": {
+    "num_episodes": 10,
+    "num_options": 5,
+    "num_windows": 835,
+    "opportunity": {
+      "best_fixed_candidate": 0,
+      "best_fixed_mean_gain": 0.0,
+      "cost_gap": 0.004,
+      "fixed_candidate_mean_gain": [
+        0.0,
+        -0.0636372437642073,
+        -0.06276649219753544,
+        -0.05685332046520567,
+        -0.07209324482438004
+      ],
+      "fraction_oracle_differs_from_best_fixed": 0.4682634730538922,
+      "headroom_over_best_fixed": 0.011201978604515602,
+      "headroom_over_random": 0.06227203885478129,
+      "median_gain_spread": 0.05269365757703781,
+      "num_candidates": 5,
+      "num_windows": 835,
+      "oracle_mean_gain": 0.011201978604515602,
+      "oracle_share": [
+        0.5317365269461077,
+        0.21437125748502994,
+        0.058682634730538925,
+        0.11497005988023952,
+        0.08023952095808383
+      ],
+      "passes": true,
+      "random_mean_gain": -0.05107006025026569,
+      "reason": "per-window choice has measurable headroom over the best constant policy",
+      "spread_exceeds_cost_gap_fraction": 0.9988023952095808
+    },
+    "oracle_share": [
+      0.5317,
+      0.2144,
+      0.0587,
+      0.115,
+      0.0802
+    ],
+    "paired_differences": {
+      "adjoint-critic": {
+        "ci_high": 0.0019272580346976094,
+        "ci_low": -0.0018628057614986644,
+        "confidence": 0.95,
+        "estimate": -0.00055993578820573,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(adjoint - critic)"
+      },
+      "adjoint_randomized-adjoint": {
+        "ci_high": 0.00022132485358798427,
+        "ci_low": -0.0014764398826478567,
+        "confidence": 0.95,
+        "estimate": -0.0007297474759892968,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(adjoint_randomized - adjoint)"
+      },
+      "critic-random_expected": {
+        "ci_high": 0.020194614336627427,
+        "ci_low": 0.005161449553620043,
+        "confidence": 0.95,
+        "estimate": 0.012331017745034156,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(critic - random_expected)"
+      },
+      "critic-uncertainty": {
+        "ci_high": -1.9030089779105694e-06,
+        "ci_low": -0.0006949099319752487,
+        "confidence": 0.95,
+        "estimate": -0.0002577718057318362,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(critic - uncertainty)"
+      },
+      "exact_costate-adjoint": {
+        "ci_high": -0.05191911435726412,
+        "ci_low": -0.10103605803032434,
+        "confidence": 0.95,
+        "estimate": -0.07367737516509872,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(exact_costate - adjoint)"
+      },
+      "hybrid-critic": {
+        "ci_high": 0.0018988395076265647,
+        "ci_low": -0.0021138145260495493,
+        "confidence": 0.95,
+        "estimate": -0.0006964082737637316,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(hybrid - critic)"
+      }
+    },
+    "policies": {
+      "adjoint": {
+        "choice_share": [
+          0.0,
+          0.7557,
+          0.0263,
+          0.1006,
+          0.1174
+        ],
+        "ci": {
+          "ci_high": 0.10143635147532376,
+          "ci_low": 0.05219710620755884,
+          "confidence": 0.95,
+          "estimate": 0.07404312081160971,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(adjoint)"
+        },
+        "mean_regret": 0.07404312081160971,
+        "top1": 0.23233532934131737
+      },
+      "adjoint_randomized": {
+        "choice_share": [
+          0.0,
+          0.7557,
+          0.0263,
+          0.1006,
+          0.1174
+        ],
+        "ci": {
+          "ci_high": 0.10064155918137598,
+          "ci_low": 0.05186016033513025,
+          "confidence": 0.95,
+          "estimate": 0.07331337333562042,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(adjoint_randomized)"
+        },
+        "mean_regret": 0.07331337333562042,
+        "top1": 0.23233532934131737
+      },
+      "always_c1": {
+        "ci": {
+          "ci_high": 0.102648101794323,
+          "ci_low": 0.05124732404151806,
+          "confidence": 0.95,
+          "estimate": 0.07483922236872291,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_c1)"
+        },
+        "mean_regret": 0.07483922236872291
+      },
+      "always_c2": {
+        "ci": {
+          "ci_high": 0.09503394992622595,
+          "ci_low": 0.052372132555481454,
+          "confidence": 0.95,
+          "estimate": 0.07396847080205105,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_c2)"
+        },
+        "mean_regret": 0.07396847080205105
+      },
+      "always_c3": {
+        "ci": {
+          "ci_high": 0.09424464502190516,
+          "ci_low": 0.04447779000419322,
+          "confidence": 0.95,
+          "estimate": 0.06805529906972127,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_c3)"
+        },
+        "mean_regret": 0.06805529906972127
+      },
+      "always_c4": {
+        "ci": {
+          "ci_high": 0.11102109836076379,
+          "ci_low": 0.06273512484517352,
+          "confidence": 0.95,
+          "estimate": 0.08329522342889564,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_c4)"
+        },
+        "mean_regret": 0.08329522342889564
+      },
+      "always_hold": {
+        "ci": {
+          "ci_high": 0.01604772609333625,
+          "ci_low": 0.008499012715292433,
+          "confidence": 0.95,
+          "estimate": 0.011201978604515602,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(always_hold)"
+        },
+        "mean_regret": 0.011201978604515602
+      },
+      "critic": {
+        "choice_share": [
+          0.0,
+          0.988,
+          0.0024,
+          0.0,
+          0.0096
+        ],
+        "ci": {
+          "ci_high": 0.10233112050663444,
+          "ci_low": 0.050985606410633925,
+          "confidence": 0.95,
+          "estimate": 0.07460305659981545,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(critic)"
+        },
+        "mean_regret": 0.07460305659981545,
+        "top1": 0.2215568862275449
+      },
+      "exact_costate": {
+        "choice_share": [
+          0.4754,
+          0.2719,
+          0.0575,
+          0.1114,
+          0.0838
+        ],
+        "ci": {
+          "ci_high": 0.00048123207726142794,
+          "ci_low": 0.00019339408783711594,
+          "confidence": 0.95,
+          "estimate": 0.00036574564651100934,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(exact_costate)"
+        },
+        "mean_regret": 0.00036574564651100934,
+        "top1": 0.9017964071856287
+      },
+      "hybrid": {
+        "choice_share": [
+          0.0,
+          0.7593,
+          0.0251,
+          0.0994,
+          0.1162
+        ],
+        "ci": {
+          "ci_high": 0.10127203815597467,
+          "ci_low": 0.052104072170909795,
+          "confidence": 0.95,
+          "estimate": 0.07390664832605172,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(hybrid)"
+        },
+        "mean_regret": 0.07390664832605172,
+        "top1": 0.23233532934131737
+      },
+      "random_expected": {
+        "ci": {
+          "ci_high": 0.08250647290029631,
+          "ci_low": 0.045107040617803615,
+          "confidence": 0.95,
+          "estimate": 0.062272038854781296,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(random_expected)"
+        },
+        "mean_regret": 0.062272038854781296
+      },
+      "uncertainty": {
+        "choice_share": [
+          0.0,
+          0.9988,
+          0.0,
+          0.0,
+          0.0012
+        ],
+        "ci": {
+          "ci_high": 0.10267730103442589,
+          "ci_low": 0.05124732404151806,
+          "confidence": 0.95,
+          "estimate": 0.07486082840554728,
+          "num_episodes": 10,
+          "num_windows": 835,
+          "statistic": "mean(uncertainty)"
+        },
+        "mean_regret": 0.07486082840554728,
+        "top1": 0.21437125748502994
+      }
+    }
+  },
+  "seed_4/validation": {
+    "num_episodes": 10,
+    "num_options": 5,
+    "num_windows": 796,
+    "opportunity": {
+      "best_fixed_candidate": 0,
+      "best_fixed_mean_gain": 0.0,
+      "cost_gap": 0.004,
+      "fixed_candidate_mean_gain": [
+        0.0,
+        -0.3242626333174567,
+        -0.2760943818770714,
+        -0.24777300336547944,
+        -0.28426926180570566
+      ],
+      "fraction_oracle_differs_from_best_fixed": 0.24120603015075376,
+      "headroom_over_best_fixed": 0.004934233827715337,
+      "headroom_over_random": 0.231414089900858,
+      "median_gain_spread": 0.14631366729736328,
+      "num_candidates": 5,
+      "num_windows": 796,
+      "oracle_mean_gain": 0.004934233827715337,
+      "oracle_share": [
+        0.7587939698492462,
+        0.05527638190954774,
+        0.09547738693467336,
+        0.0678391959798995,
+        0.022613065326633167
+      ],
+      "passes": false,
+      "random_mean_gain": -0.22647985607314264,
+      "reason": "oracle beats best fixed candidate by 0.00493, < 15% of its margin over random (0.231)",
+      "spread_exceeds_cost_gap_fraction": 1.0
+    },
+    "oracle_share": [
+      0.7588,
+      0.0553,
+      0.0955,
+      0.0678,
+      0.0226
+    ],
+    "paired_differences": {
+      "adjoint-critic": {
+        "ci_high": 0.00011976806572080671,
+        "ci_low": -0.009582118902272372,
+        "confidence": 0.95,
+        "estimate": -0.004065775074680153,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(adjoint - critic)"
+      },
+      "adjoint_randomized-adjoint": {
+        "ci_high": 0.00035428784040234825,
+        "ci_low": -0.0015299441906439692,
+        "confidence": 0.95,
+        "estimate": -0.0004678230092687598,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(adjoint_randomized - adjoint)"
+      },
+      "critic-random_expected": {
+        "ci_high": 0.10237069740064489,
+        "ci_low": 0.029610269478419927,
+        "confidence": 0.95,
+        "estimate": 0.07776458448708179,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(critic - random_expected)"
+      },
+      "critic-uncertainty": {
+        "ci_high": -0.0022456298319710787,
+        "ci_low": -0.041653704928101436,
+        "confidence": 0.95,
+        "estimate": -0.020018192757232274,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(critic - uncertainty)"
+      },
+      "exact_costate-adjoint": {
+        "ci_high": -0.14650892036329416,
+        "ci_low": -0.4151309818804338,
+        "confidence": 0.95,
+        "estimate": -0.3049202046644331,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(exact_costate - adjoint)"
+      },
+      "hybrid-critic": {
+        "ci_high": 0.00011976806572080671,
+        "ci_low": -0.011194490677888662,
+        "confidence": 0.95,
+        "estimate": -0.0048021890568762235,
+        "num_episodes": 10,
+        "num_windows": 796,
+        "statistic": "mean(hybrid - critic)"
+      }
+    },
+    "policies": {
+      "adjoint": {
+        "choice_share": [
+          0.0,
+          0.7563,
+          0.1696,
+          0.049,
+          0.0251
+        ],
+        "ci": {
+          "ci_high": 0.4152550697977098,
+          "ci_low": 0.14686769384904755,
+          "confidence": 0.95,
+          "estimate": 0.30511289931325963,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(adjoint)"
+        },
+        "mean_regret": 0.30511289931325963,
+        "top1": 0.07412060301507538
+      },
+      "adjoint_randomized": {
+        "choice_share": [
+          0.0,
+          0.755,
+          0.1696,
+          0.049,
+          0.0264
+        ],
+        "ci": {
+          "ci_high": 0.41468617055190937,
+          "ci_low": 0.1470854267450902,
+          "confidence": 0.95,
+          "estimate": 0.30464507630399085,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(adjoint_randomized)"
+        },
+        "mean_regret": 0.30464507630399085,
+        "top1": 0.07412060301507538
+      },
+      "always_c1": {
+        "ci": {
+          "ci_high": 0.45843142929454,
+          "ci_low": 0.16024287904014953,
+          "confidence": 0.95,
+          "estimate": 0.32919686714517205,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_c1)"
+        },
+        "mean_regret": 0.32919686714517205
+      },
+      "always_c2": {
+        "ci": {
+          "ci_high": 0.37894254328704036,
+          "ci_low": 0.1299465766919431,
+          "confidence": 0.95,
+          "estimate": 0.28102861570478677,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_c2)"
+        },
+        "mean_regret": 0.28102861570478677
+      },
+      "always_c3": {
+        "ci": {
+          "ci_high": 0.35833045832378013,
+          "ci_low": 0.12564696449797888,
+          "confidence": 0.95,
+          "estimate": 0.25270723719319477,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_c3)"
+        },
+        "mean_regret": 0.25270723719319477
+      },
+      "always_c4": {
+        "ci": {
+          "ci_high": 0.4102715043467432,
+          "ci_low": 0.14872974452846208,
+          "confidence": 0.95,
+          "estimate": 0.289203495633421,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_c4)"
+        },
+        "mean_regret": 0.289203495633421
+      },
+      "always_hold": {
+        "ci": {
+          "ci_high": 0.009900581269518677,
+          "ci_low": 0.002381661701824327,
+          "confidence": 0.95,
+          "estimate": 0.004934233827715337,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(always_hold)"
+        },
+        "mean_regret": 0.004934233827715337
+      },
+      "critic": {
+        "choice_share": [
+          0.0,
+          0.8266,
+          0.1256,
+          0.0477,
+          0.0
+        ],
+        "ci": {
+          "ci_high": 0.4190492884151907,
+          "ci_low": 0.14887884061694623,
+          "confidence": 0.95,
+          "estimate": 0.3091786743879398,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(critic)"
+        },
+        "mean_regret": 0.3091786743879398,
+        "top1": 0.0678391959798995
+      },
+      "exact_costate": {
+        "choice_share": [
+          0.7324,
+          0.0804,
+          0.1005,
+          0.0653,
+          0.0214
+        ],
+        "ci": {
+          "ci_high": 0.00038559525046553684,
+          "ci_low": 9.579670917140364e-05,
+          "confidence": 0.95,
+          "estimate": 0.0001926946488265229,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(exact_costate)"
+        },
+        "mean_regret": 0.0001926946488265229,
+        "top1": 0.9422110552763819
+      },
+      "hybrid": {
+        "choice_share": [
+          0.0,
+          0.7324,
+          0.1696,
+          0.0729,
+          0.0251
+        ],
+        "ci": {
+          "ci_high": 0.41416969407192666,
+          "ci_low": 0.14679840138250377,
+          "confidence": 0.95,
+          "estimate": 0.30437648533106354,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(hybrid)"
+        },
+        "mean_regret": 0.30437648533106354,
+        "top1": 0.07412060301507538
+      },
+      "random_expected": {
+        "ci": {
+          "ci_high": 0.32277738563297764,
+          "ci_low": 0.11495478825901936,
+          "confidence": 0.95,
+          "estimate": 0.231414089900858,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(random_expected)"
+        },
+        "mean_regret": 0.231414089900858
+      },
+      "uncertainty": {
+        "choice_share": [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "ci": {
+          "ci_high": 0.45843142929454,
+          "ci_low": 0.16024287904014953,
+          "confidence": 0.95,
+          "estimate": 0.32919686714517205,
+          "num_episodes": 10,
+          "num_windows": 796,
+          "statistic": "mean(uncertainty)"
+        },
+        "mean_regret": 0.32919686714517205,
+        "top1": 0.05527638190954774
+      }
+    }
+  }
+}

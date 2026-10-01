@@ -1,0 +1,26 @@
+{
+  "amortised_costate_ms": {
+    "device": "cuda",
+    "mean_ms": 0.2697804793715477,
+    "p50_ms": 0.24985599517822266,
+    "p95_ms": 0.3641855925321578,
+    "p99_ms": 0.38966272145509717
+  },
+  "batch": 64,
+  "critic_ms": {
+    "device": "cuda",
+    "mean_ms": 0.320986242890358,
+    "p50_ms": 0.3112959861755371,
+    "p95_ms": 0.393472009897232,
+    "p99_ms": 0.43093409150838846
+  },
+  "exact_costate_and_gains_ms": {
+    "device": "cuda",
+    "mean_ms": 15.173231887817384,
+    "p50_ms": 15.105599880218506,
+    "p95_ms": 15.530854225158691,
+    "p99_ms": 15.886509895324707
+  },
+  "gpu": "NVIDIA L4",
+  "note": "uncertainty-only needs one rollout per option; its cost is inside exact_costate_and_gains_ms here"
+}

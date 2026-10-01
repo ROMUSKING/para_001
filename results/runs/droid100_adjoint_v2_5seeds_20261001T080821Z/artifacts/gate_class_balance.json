@@ -1,0 +1,32 @@
+{
+  "0": {
+    "negatives": 139,
+    "pos_weight": 1.5617977528089888,
+    "positives": 89,
+    "ties": 568
+  },
+  "1": {
+    "negatives": 395,
+    "pos_weight": 3.98989898989899,
+    "positives": 99,
+    "ties": 302
+  },
+  "2": {
+    "negatives": 335,
+    "pos_weight": 2.537878787878788,
+    "positives": 132,
+    "ties": 329
+  },
+  "3": {
+    "negatives": 185,
+    "pos_weight": 1.2671232876712328,
+    "positives": 146,
+    "ties": 465
+  },
+  "4": {
+    "negatives": 79,
+    "pos_weight": 0.8586956521739131,
+    "positives": 92,
+    "ties": 625
+  }
+}

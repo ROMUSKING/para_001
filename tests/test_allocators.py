@@ -18,7 +18,9 @@ from adjointrwm.allocators import (  # noqa: E402
     allocation_traces,
     exact_targets,
     gate_positive_weight,
+    lcb_decision_scores,
     matched_critic_hidden,
+    normalized_first_order_scores,
     validation_regret,
 )
 from adjointrwm.data import WindowDataset, WindowSpec, fit_normaliser  # noqa: E402
@@ -152,6 +154,53 @@ def test_deployable_scores_never_read_future_targets():
     with torch.no_grad():
         a = job.scores(exact_targets(job.teacher, data, 0.002))
         b = job.scores(exact_targets(job.teacher, tampered, 0.002))
-    for name in ("adjoint", "critic", "adjoint_randomized", "uncertainty", "gate_logit"):
+    for name in ("adjoint", "adjoint_norm", "adjoint_lcb", "critic", "critic_lcb", "adjoint_randomized", "adjoint_randomized_norm", "uncertainty", "gate_logit"):
         assert torch.equal(a[name], b[name]), name
     assert not torch.equal(a["exact_costate"], b["exact_costate"])  # the privileged diagnostic does depend on them
+    assert not torch.equal(a["exact_costate_norm"], b["exact_costate_norm"])
+
+
+def test_normalized_first_order_scores_properties():
+    """PARA enhancement: scale-invariance and hold option preservation."""
+    b, k, d = 4, 3, 8
+    costate = torch.randn(b, d)
+    effects = torch.randn(b, k + 1, d)
+    effects[:, 0] = 0.0  # hold option has zero effect
+    costs = torch.tensor([0.0, 0.01, 0.02, 0.03])
+
+    scores = normalized_first_order_scores(costate, effects, costs)
+    assert scores.shape == (b, k + 1)
+    # Hold option must be identically zero
+    assert torch.equal(scores[:, 0], torch.zeros(b))
+
+    # Scale-invariance: multiplying costate by positive alpha yields identical scores
+    alpha = 42.5
+    scores_scaled = normalized_first_order_scores(costate * alpha, effects, costs)
+    assert torch.allclose(scores, scores_scaled, atol=1e-5)
+
+
+def test_lcb_decision_scores_properties():
+    """PARA enhancement: LCB trigger penalizes uncertain options and preserves hold."""
+    b, k = 4, 3
+    scores = torch.tensor([
+        [0.0, 0.5, 0.2],
+        [0.0, 0.1, 0.8],
+        [0.0, 0.3, 0.4],
+        [0.0, -0.1, -0.2],
+    ])
+    uncert = torch.tensor([
+        [0.0, 1.0, 0.1],  # k=1 has high uncert
+        [0.0, 0.1, 1.0],  # k=2 has high uncert
+        [0.0, 0.5, 0.5],
+        [0.0, 0.2, 0.2],
+    ])
+    # kappa = 0 returns identical scores
+    assert torch.equal(lcb_decision_scores(scores, uncert, kappa=0.0), scores)
+
+    # kappa = 1.0 penalizes active candidates
+    lcb = lcb_decision_scores(scores, uncert, kappa=1.0)
+    assert lcb.shape == (b, k)
+    assert torch.equal(lcb[:, 0], torch.zeros(b))
+    # Active candidate scores must be strictly lower
+    assert (lcb[:, 1:] < scores[:, 1:]).all()
+

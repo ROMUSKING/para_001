@@ -1,0 +1,283 @@
+{
+  "claim_boundary": "Track E evidence on DROID-100 refinement candidates with a latent-state co-state. Not a confirmatory H2 verdict (that needs N1/N2 and gate G-H2).",
+  "config_hash": "eaad4782d247e9d085b97e0330e2beb1fbbc00bfe97d7d1f5107f573727358a5",
+  "data_manifest_hash": "7fe9fc66fa1f8e8584835cac1d23355cf0be0822ce938765cefb4a3079f89a31",
+  "dynamics_test": {
+    "0": {
+      "model_rmse": 0.15679899070185693,
+      "persistence_rmse": 0.2272094167702637
+    },
+    "1": {
+      "model_rmse": 0.16495063359738946,
+      "persistence_rmse": 0.2272094167702637
+    },
+    "2": {
+      "model_rmse": 0.1559595322125768,
+      "persistence_rmse": 0.2272094167702637
+    },
+    "3": {
+      "model_rmse": 0.1570650324402001,
+      "persistence_rmse": 0.2272094167702637
+    },
+    "4": {
+      "model_rmse": 0.16464312970032852,
+      "persistence_rmse": 0.2272094167702637
+    }
+  },
+  "per_seed": {
+    "0": {
+      "adjoint_minus_critic_test": {
+        "ci_high": 0.01986503933177157,
+        "ci_low": -0.015867465936983984,
+        "confidence": 0.95,
+        "estimate": 0.007555078432343142,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(adjoint - critic)"
+      },
+      "critic_floor_validation": {
+        "beats_random_expected": false,
+        "beats_uncertainty": true,
+        "critic_mean_regret": 0.297446084939746,
+        "passed": false
+      },
+      "opportunity_gate_validation": false,
+      "randomized_minus_adjoint_test": {
+        "ci_high": 0.0015023512557542633,
+        "ci_low": -0.004996688859856567,
+        "confidence": 0.95,
+        "estimate": -0.0004334492544771847,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(adjoint_randomized - adjoint)"
+      },
+      "status": "EVALUATED",
+      "verdict": "NON_DIAGNOSTIC"
+    },
+    "1": {
+      "adjoint_minus_critic_test": {
+        "ci_high": 0.008324012672782315,
+        "ci_low": -0.005839196817073601,
+        "confidence": 0.95,
+        "estimate": 0.0032778181782561148,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(adjoint - critic)"
+      },
+      "critic_floor_validation": {
+        "beats_random_expected": true,
+        "beats_uncertainty": true,
+        "critic_mean_regret": 0.1143648732940891,
+        "passed": true
+      },
+      "opportunity_gate_validation": false,
+      "randomized_minus_adjoint_test": {
+        "ci_high": 0.0006336238824149329,
+        "ci_low": -0.00044281030729818074,
+        "confidence": 0.95,
+        "estimate": 2.5111129005512077e-05,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(adjoint_randomized - adjoint)"
+      },
+      "status": "EVALUATED",
+      "verdict": "NON_DIAGNOSTIC"
+    },
+    "2": {
+      "adjoint_minus_critic_test": {
+        "ci_high": 0.0796948705412407,
+        "ci_low": 0.020138287866264298,
+        "confidence": 0.95,
+        "estimate": 0.052475473904023004,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(adjoint - critic)"
+      },
+      "critic_floor_validation": {
+        "beats_random_expected": true,
+        "beats_uncertainty": true,
+        "critic_mean_regret": 0.3119247709319052,
+        "passed": true
+      },
+      "opportunity_gate_validation": false,
+      "randomized_minus_adjoint_test": {
+        "ci_high": 0.001426947512055229,
+        "ci_low": -0.001027656528379641,
+        "confidence": 0.95,
+        "estimate": 0.0002994340674360534,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(adjoint_randomized - adjoint)"
+      },
+      "status": "EVALUATED",
+      "verdict": "NON_DIAGNOSTIC"
+    },
+    "3": {
+      "adjoint_minus_critic_test": {
+        "ci_high": 0.033684518593105596,
+        "ci_low": -0.024180590900253398,
+        "confidence": 0.95,
+        "estimate": 0.011695330828974794,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(adjoint - critic)"
+      },
+      "critic_floor_validation": {
+        "beats_random_expected": false,
+        "beats_uncertainty": true,
+        "critic_mean_regret": 0.3827764449773319,
+        "passed": false
+      },
+      "opportunity_gate_validation": false,
+      "randomized_minus_adjoint_test": {
+        "ci_high": 0.0005444979507317494,
+        "ci_low": -0.0023999617621257635,
+        "confidence": 0.95,
+        "estimate": -0.0003134821254403113,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(adjoint_randomized - adjoint)"
+      },
+      "status": "EVALUATED",
+      "verdict": "NON_DIAGNOSTIC"
+    },
+    "4": {
+      "adjoint_minus_critic_test": {
+        "ci_high": 0.0019272580346976094,
+        "ci_low": -0.0018628057614986644,
+        "confidence": 0.95,
+        "estimate": -0.00055993578820573,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(adjoint - critic)"
+      },
+      "critic_floor_validation": {
+        "beats_random_expected": false,
+        "beats_uncertainty": true,
+        "critic_mean_regret": 0.3091786743879398,
+        "passed": false
+      },
+      "opportunity_gate_validation": false,
+      "randomized_minus_adjoint_test": {
+        "ci_high": 0.00022132485358798427,
+        "ci_low": -0.0014764398826478567,
+        "confidence": 0.95,
+        "estimate": -0.0007297474759892968,
+        "num_episodes": 10,
+        "num_windows": 835,
+        "statistic": "mean(adjoint_randomized - adjoint)"
+      },
+      "status": "EVALUATED",
+      "verdict": "NON_DIAGNOSTIC"
+    }
+  },
+  "pooled_test": {
+    "adjoint-critic": {
+      "ci_high": 0.02544950232691963,
+      "ci_low": -0.0019444230435147912,
+      "confidence": 0.95,
+      "estimate": 0.014888753111078264,
+      "num_episodes": 10,
+      "num_windows": 4175,
+      "statistic": "mean(adjoint - critic)"
+    },
+    "adjoint_randomized-adjoint": {
+      "ci_high": 0.0002445455126822259,
+      "ci_low": -0.0014864593785646834,
+      "confidence": 0.95,
+      "estimate": -0.00023042673189304546,
+      "num_episodes": 10,
+      "num_windows": 4175,
+      "statistic": "mean(adjoint_randomized - adjoint)"
+    },
+    "critic-uncertainty": {
+      "ci_high": -0.01445628075871379,
+      "ci_low": -0.03963623501662327,
+      "confidence": 0.95,
+      "estimate": -0.029008121234504226,
+      "num_episodes": 10,
+      "num_windows": 4175,
+      "statistic": "mean(critic - uncertainty)"
+    },
+    "exact_costate-adjoint": {
+      "ci_high": -0.04984296612319594,
+      "ci_low": -0.12498717210148724,
+      "confidence": 0.95,
+      "estimate": -0.07842555318925597,
+      "num_episodes": 10,
+      "num_windows": 4175,
+      "statistic": "mean(exact_costate - adjoint)"
+    },
+    "hybrid-critic": {
+      "ci_high": 0.024001279662179246,
+      "ci_low": -0.0017730856393276097,
+      "confidence": 0.95,
+      "estimate": 0.014051817808199875,
+      "num_episodes": 10,
+      "num_windows": 4175,
+      "statistic": "mean(hybrid - critic)"
+    },
+    "mean_regret": {
+      "adjoint": 0.07868565036430063,
+      "adjoint_randomized": 0.07845522363240758,
+      "always_c1": 0.09121047138409344,
+      "always_c2": 0.08547650762393089,
+      "always_c3": 0.0843282401741867,
+      "always_c4": 0.08776948839297774,
+      "always_hold": 0.008143995757755674,
+      "critic": 0.06379689725322236,
+      "exact_costate": 0.00026009717504466007,
+      "hybrid": 0.07784871506142224,
+      "random_expected": 0.07138574066658888,
+      "uncertainty": 0.09280501848772658
+    }
+  },
+  "run_id": "droid100_adjoint_v2_5seeds_20261001T080821Z",
+  "source_hash": "86624a13e821b61210d3082a26d8e5ccbfbff7332694def750d23e8a3087a967",
+  "split_parity_with_pilot": {
+    "different_split": [],
+    "matches": true,
+    "only_in_new": [],
+    "only_in_reference": []
+  },
+  "status": {
+    "data": "PASS",
+    "dynamics_gate_validation": {
+      "0": true,
+      "1": true,
+      "2": true,
+      "3": true,
+      "4": true
+    },
+    "seeds_evaluated": 5,
+    "seeds_planned": 5,
+    "tests": "PASS"
+  },
+  "systems": {
+    "amortised_costate_ms": {
+      "device": "cuda",
+      "mean_ms": 0.2697804793715477,
+      "p50_ms": 0.24985599517822266,
+      "p95_ms": 0.3641855925321578,
+      "p99_ms": 0.38966272145509717
+    },
+    "batch": 64,
+    "critic_ms": {
+      "device": "cuda",
+      "mean_ms": 0.320986242890358,
+      "p50_ms": 0.3112959861755371,
+      "p95_ms": 0.393472009897232,
+      "p99_ms": 0.43093409150838846
+    },
+    "exact_costate_and_gains_ms": {
+      "device": "cuda",
+      "mean_ms": 15.173231887817384,
+      "p50_ms": 15.105599880218506,
+      "p95_ms": 15.530854225158691,
+      "p99_ms": 15.886509895324707
+    },
+    "gpu": "NVIDIA L4",
+    "note": "uncertainty-only needs one rollout per option; its cost is inside exact_costate_and_gains_ms here"
+  },
+  "task_success": "NOT_MEASURED (offline dataset; no simulator or robot)"
+}

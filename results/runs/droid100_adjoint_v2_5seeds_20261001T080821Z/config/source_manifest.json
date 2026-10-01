@@ -1,0 +1,11 @@
+{
+  "data_dir": "gs://gresearch/robotics",
+  "dataset": "droid_100",
+  "format": "RLDS / TensorFlow Datasets",
+  "licence": "DROID: CC BY 4.0; attribute the DROID authors",
+  "repo_commit": "5d879df74fdb756d17dcd5d48b112b9aa81f27d1",
+  "repo_dirty": true,
+  "repo_url": "https://github.com/romusking/para_001",
+  "source_sha256": "86624a13e821b61210d3082a26d8e5ccbfbff7332694def750d23e8a3087a967",
+  "synthetic_fallback_allowed": false
+}

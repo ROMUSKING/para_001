@@ -1,0 +1,18 @@
+{
+  "real_image_payloads_verified": true,
+  "split_counts": {
+    "test": 10,
+    "train": 80,
+    "validation": 10
+  },
+  "split_disjointness_verified": true,
+  "split_parity_with_pilot": {
+    "different_split": [],
+    "matches": true,
+    "only_in_new": [],
+    "only_in_reference": []
+  },
+  "status": "PASS",
+  "synthetic_fallback_used": false,
+  "valid_episode_count": 100
+}

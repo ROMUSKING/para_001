@@ -1,0 +1,55 @@
+{
+  "config": {
+    "arms": [
+      "adjoint_rwm",
+      "dreamerv3_rssm",
+      "tdmpc2",
+      "dino_wm",
+      "vjepa2_ac"
+    ],
+    "batch_size": 64,
+    "bootstrap_resamples": 5000,
+    "checkpoint_interval": 250,
+    "context_len": 8,
+    "dataset_data_dir": "gs://gresearch/robotics",
+    "dataset_name": "droid_100",
+    "dinov2_grid": 2,
+    "dinov2_image_size": 224,
+    "embedding_batch_size": 64,
+    "eval_batch_size": 128,
+    "eval_interval": 100,
+    "eval_seed": 0,
+    "frame_stride": 2,
+    "horizon": 4,
+    "input_encoder": "resnet18",
+    "lr_grid": [
+      0.0001,
+      0.0003,
+      0.001
+    ],
+    "margin": 0.02,
+    "max_episodes": 100,
+    "param_tolerance": 0.1,
+    "pilot_run_id": "droid100_adjoint_20260929T070629Z",
+    "resnet_image_size": 128,
+    "seed_base": 20260928,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "shuffle_seed": 0,
+    "steps": 1500,
+    "tuning_fraction": 0.3,
+    "warmup_steps": 100,
+    "weight_decay": 0.05,
+    "window_stride": 2
+  },
+  "config_sha256": "78f419ff51e5c9661e1892a6d7b98c8ad96a11eaa97df73e74fd9471067aa246",
+  "gpu": "NVIDIA L4",
+  "notebook": "notebooks/03-benchmarks/rival_world_models_droid100.ipynb",
+  "repo_commit": "5d879df74fdb756d17dcd5d48b112b9aa81f27d1",
+  "run_id": "droid100_rivals_20261001T094713Z"
+}

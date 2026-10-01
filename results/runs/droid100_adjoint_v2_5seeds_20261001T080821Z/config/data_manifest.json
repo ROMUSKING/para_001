@@ -1,0 +1,834 @@
+{
+  "action_dim": 7,
+  "data_manifest_sha256": "7fe9fc66fa1f8e8584835cac1d23355cf0be0822ce938765cefb4a3079f89a31",
+  "encoders": {
+    "resnet18": {
+      "dim": 512,
+      "image_size": 128,
+      "licence": "torchvision (BSD-3-Clause); ImageNet weights",
+      "name": "resnet18",
+      "tokens_per_camera": 1,
+      "weights": "ResNet18_Weights.IMAGENET1K_V1"
+    }
+  },
+  "episodes": [
+    {
+      "cached_sha256": "92d203f60482d7228639d578e2f3dad10cdeeb91780729179e32af5f3908d1fc",
+      "episode_id": "01d2b0bb70c756910f6fee6b",
+      "episode_index": 22,
+      "instruction": "Use the duster to wipe the whiteboard",
+      "length": 107,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "92ddec1fc923bc19245e5421ffcfa61abb803ccbe53c4cbb48d3ec418ef194b8",
+      "episode_id": "06755e10f47dc8eed37b1719",
+      "episode_index": 96,
+      "instruction": "Get the marker from the table and place it in the colorless cup",
+      "length": 169,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "dacaf456174fa11afd9e30206a962bfcb56a38e88bd63210a023b9c9caecc97a",
+      "episode_id": "0d15c03ff91687d6e4160c76",
+      "episode_index": 94,
+      "instruction": "",
+      "length": 100,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "e119af100532c0bd3b92bf3af4eaeed727a8697d7f9e46950b7c5313ce61e155",
+      "episode_id": "0e9e8498a81833aa0e801cfd",
+      "episode_index": 87,
+      "instruction": "",
+      "length": 287,
+      "split": "validation"
+    },
+    {
+      "cached_sha256": "af5f446387ab0e7a8882f1d839aaf38cb78b8ee50f6d0b7a45b5bdd5b7c39906",
+      "episode_id": "15264321f49364d0e409d25a",
+      "episode_index": 74,
+      "instruction": "Move the yellow mug forward",
+      "length": 84,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "720604d3d1f2b50db3a747eb8eec50e8b9ca0778551c40f3760446f51c3b6ed7",
+      "episode_id": "15ac0c27cfb7bd123cba253c",
+      "episode_index": 4,
+      "instruction": "Move the sharpie to the table",
+      "length": 107,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "dfe64c762326e22cbf6017e9266bfbb882c44d995a567e3140a765e09ac94ec2",
+      "episode_id": "18be04203c9741a45c03846c",
+      "episode_index": 56,
+      "instruction": "Pick up the white towel and put it in the basket , pick up the marker and put it in the cup, then, pick up the yellow towel and put it in the basket, and finally pick up the masking tape and put it in the cup",
+      "length": 301,
+      "split": "test"
+    },
+    {
+      "cached_sha256": "50dfed281bded3e1acbd3ecdf7fb5d4c1bafd6b9cb765e399d5d48c7c3621256",
+      "episode_id": "1923e1bf3fc5c00a85a60ab3",
+      "episode_index": 36,
+      "instruction": "",
+      "length": 218,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "4174e44c4b8db770c44d27b61b99791613ae196537fc6dc73f34e08d78639f86",
+      "episode_id": "19de99e892f7b81c995afcee",
+      "episode_index": 13,
+      "instruction": "Pick up the black object from the striped towel and place it on the white sheet of paper on the right",
+      "length": 98,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "3982211d1e4a2a97c4b6e08d687335cd7deed2ea5d2056109319ca67b2b25ffd",
+      "episode_id": "1cbbc7776394571133e0e0c2",
+      "episode_index": 18,
+      "instruction": "",
+      "length": 95,
+      "split": "test"
+    },
+    {
+      "cached_sha256": "3d21c9afe6e26045ac019514f9288c1a95dee0d737357692007f23fbfa77b04d",
+      "episode_id": "1e74fdb8aadc76905d6568db",
+      "episode_index": 41,
+      "instruction": "",
+      "length": 45,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "961edb3ce3b6d5921dd77bbbad135c4a91a3bb18aa491dcfa50c401646f96c0c",
+      "episode_id": "1f3694a0903ca7aa11b6d537",
+      "episode_index": 57,
+      "instruction": "Press a button on the keyboard",
+      "length": 152,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "ff02211355fb936b38042424714944bc3ee0990ad9a924f71848e853f7d6670e",
+      "episode_id": "208d695526edfa0e1786c8b7",
+      "episode_index": 93,
+      "instruction": "Move the faucet to the center of the sink",
+      "length": 105,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "edb58467327c81f3603aea895ccafc36c635d4a8c3e95060212a11856e70312d",
+      "episode_id": "22b4a078d92af984c9fee622",
+      "episode_index": 91,
+      "instruction": "Put the yellow cube inside the blue cup",
+      "length": 50,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "a6e0f20b38f174945e0de22994a9f43ddd5d44d95fa16bc07c5ee383ac4c3def",
+      "episode_id": "251c4aed6f2f22e2cd4e7950",
+      "episode_index": 7,
+      "instruction": "",
+      "length": 298,
+      "split": "validation"
+    },
+    {
+      "cached_sha256": "c49301852f4b6f89c4bfee6cc0191b06d7813fd22f39bca808ca14cf75bdfcd9",
+      "episode_id": "2622b0d26b835ae6d2f9a6fb",
+      "episode_index": 5,
+      "instruction": "",
+      "length": 44,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "2ab46d5ddd3f53c03b0c2d78e7ad14175675838723128eeca1cfe3a4db34d704",
+      "episode_id": "27a9f0ccf4449520d7945ddb",
+      "episode_index": 30,
+      "instruction": "",
+      "length": 181,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "78ba660323e438689b95dc211d04296b27f37d448379f3a4d50b02e0fcc46673",
+      "episode_id": "297cdf3f22a5ce3c69d592dc",
+      "episode_index": 8,
+      "instruction": "",
+      "length": 57,
+      "split": "test"
+    },
+    {
+      "cached_sha256": "2997df17256ead7cee9e0899424a698a8c3631b7ea59ad00f28646d19e1d2f5a",
+      "episode_id": "2c3b38ff6f807a91e3cdd8a6",
+      "episode_index": 95,
+      "instruction": "",
+      "length": 79,
+      "split": "validation"
+    },
+    {
+      "cached_sha256": "56ad4c1f710c35d9ccb488901eb7e640a818428cf82601d3a631b07ed29c55bc",
+      "episode_id": "30bf7f5ece6b66f593a62355",
+      "episode_index": 44,
+      "instruction": "",
+      "length": 195,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "2de0768a4f5fe14965f0befb2bd3772420050e3ecdea3f59f1b3ddecbd54b475",
+      "episode_id": "3181ce705c6dc5bf85e5c726",
+      "episode_index": 17,
+      "instruction": "",
+      "length": 132,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "3b7ada416c5f6571af7f7ce54414d6089521b8028285da3079fabe19fd70bda8",
+      "episode_id": "31ed08fae62e9a59ac4fbef2",
+      "episode_index": 43,
+      "instruction": "",
+      "length": 79,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "f4bf471096ce7d50313b6c03a80a39c12c48e921f5b6cfca6e88335ec6fcc8da",
+      "episode_id": "32c0e5181af52a6e1e69eead",
+      "episode_index": 72,
+      "instruction": "",
+      "length": 168,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "eb8efa2232d5ff4c5ccf72bdca22172e42afdbc24d242b3d1d165eba90a2093b",
+      "episode_id": "37565d359b277fad78dedfc1",
+      "episode_index": 69,
+      "instruction": "Move the orange objects from the pullout table to the desk",
+      "length": 201,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "7bcc8307a64ea9aa87dab1394d8bf5335b056e13c75265381e1ded16b100b90f",
+      "episode_id": "416653a55c8f38eadcdad8ef",
+      "episode_index": 27,
+      "instruction": "Put the bread in the toaster",
+      "length": 183,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "ce7c2486cbee758d415e6185e7b4ba42d560cc15c087d6731987e8dc6003ed00",
+      "episode_id": "4270cf35bec82cd80b00a353",
+      "episode_index": 15,
+      "instruction": "",
+      "length": 116,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "8d0cab1758c4f8a4d3ddca6db1079b4cee1b9b8d61985b59993d9991e87b5590",
+      "episode_id": "43b3bed3cf3786a0441bb030",
+      "episode_index": 58,
+      "instruction": "",
+      "length": 107,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "83916dca8db5bd7d7503df488735083521d89e48ff3648dd4167c139870e29ad",
+      "episode_id": "519bb4fc6c5afbbeabc02746",
+      "episode_index": 31,
+      "instruction": "",
+      "length": 99,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "82ed47b4cbde86bf8fa3a028ba8f7d62ceedc29bc0de48b06d76ea10a845a2ca",
+      "episode_id": "54cf16f5546c465081595c8a",
+      "episode_index": 46,
+      "instruction": "",
+      "length": 160,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "4a8705bc8cc22b6418cf970dea24bae2aa997514f43d1a775e1b86e44f1e95e2",
+      "episode_id": "5aa446cc0d519b3d1ff5dd59",
+      "episode_index": 35,
+      "instruction": "Put the towel on the bottle to the right",
+      "length": 149,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "51adb3a18b30b847df810de2b07a066d12a33e98183f7b09171ce73f3c9aed9c",
+      "episode_id": "5cdaec7458bf61138cfd0ba2",
+      "episode_index": 55,
+      "instruction": "",
+      "length": 103,
+      "split": "test"
+    },
+    {
+      "cached_sha256": "d98a9ce07b03dd3f570f49c7a518e6f09b7c31068a955fc12b213a07136b851c",
+      "episode_id": "604318a82bdce83568498e50",
+      "episode_index": 38,
+      "instruction": "",
+      "length": 113,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "12dc3bb9f9962799c009766fde6abff0c7c960115e7f5815ad8e2587999a8a88",
+      "episode_id": "62086441a395f4ee3ac106d5",
+      "episode_index": 37,
+      "instruction": "",
+      "length": 105,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "263a950c2387a9e1ef75d7f1c2840a1e7cd6688b807428a94d39e2c1508c94a7",
+      "episode_id": "6376b9b233e3f46c99d1b25a",
+      "episode_index": 40,
+      "instruction": "Put the objects on the table into the cardboard box",
+      "length": 417,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "6ec5ea4237711ba4f3f4757a25de6c3b1702c36b21b46fa4a325b19bb97043ca",
+      "episode_id": "647300a9e7b5197e7d576b88",
+      "episode_index": 88,
+      "instruction": "",
+      "length": 64,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "2eb78aee8f27a2aefb1515d5a7f53084a0dd0b3f8b5146f036fb2c500f98f359",
+      "episode_id": "67133ff435a17a5ec17cf840",
+      "episode_index": 84,
+      "instruction": "",
+      "length": 814,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "b3ac9dfe9de4037d10e01065a0700b2493bc2def5b1be09d16dfccdee2ecedee",
+      "episode_id": "70a85d0ee62de8cb910dff34",
+      "episode_index": 85,
+      "instruction": "",
+      "length": 65,
+      "split": "test"
+    },
+    {
+      "cached_sha256": "7e0184c251f9455b8fed90619338c1449bd0e0f793c90430c8ba8665d8d21ac3",
+      "episode_id": "712e212ed71e1d58c2469d27",
+      "episode_index": 98,
+      "instruction": "Take the blocks out of the gift disappointed",
+      "length": 560,
+      "split": "test"
+    },
+    {
+      "cached_sha256": "dce32ff1fe49e0b647f83a2374081ec6225b1645d1d86b1cfe6ab2945e687702",
+      "episode_id": "74543bbafa57085358ce660c",
+      "episode_index": 32,
+      "instruction": "",
+      "length": 104,
+      "split": "validation"
+    },
+    {
+      "cached_sha256": "975b62fb7cdd6f593779af81364d7d6e04cda392c8c6afec9458f4b0e0d163d5",
+      "episode_id": "78a7ee098a87947602e5aeea",
+      "episode_index": 0,
+      "instruction": "Put the marker in the pot",
+      "length": 83,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "38dffda7d2540913a4ca8e0833e73023d5bcc5728b5afb142b4d0ed847e39dd0",
+      "episode_id": "7919203741a99f9f867dca66",
+      "episode_index": 50,
+      "instruction": "Put the towel on the table into the box",
+      "length": 674,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "87d1a6f6a1398d879f1bb4ddd5b074c26006fd0350268b3b0929eae049dddebc",
+      "episode_id": "803097051326d15b37d1f0b5",
+      "episode_index": 75,
+      "instruction": "Move the cup to the right",
+      "length": 113,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "6145a1b593d455826213d5d932600f268bddbb992572bf435a6401dc6ab913d2",
+      "episode_id": "82b738752b07c786c4894425",
+      "episode_index": 9,
+      "instruction": "",
+      "length": 180,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "e24795f52042040f8dd2087eca288c3187271dbfe019fe85da3c8e7bbc54e7f6",
+      "episode_id": "83077d8cda843b1f8999b8ac",
+      "episode_index": 89,
+      "instruction": "Pick up one small bottle from the container and put it on the table.",
+      "length": 93,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "29efbe6b9912d57d3d9fcadba7bdad5c1304fddb2e9c5b35d650fa5401638b19",
+      "episode_id": "8328cbb9a38d105805a841ae",
+      "episode_index": 21,
+      "instruction": "Put the orange rubber duck into the pot",
+      "length": 46,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "1c3ca867688a2cd0ca5aadbcb3aca9ab3c5df687d9913d0e2166e3f20ab95e5d",
+      "episode_id": "859d79d160a0c2d4e8dc6601",
+      "episode_index": 23,
+      "instruction": "Turn off the left light switch",
+      "length": 124,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "c525510482e040981e61b273362f61d82c0d4ab0b6d310fe161644ae3985abf2",
+      "episode_id": "8b911a92a60c4b75453b96ba",
+      "episode_index": 76,
+      "instruction": "",
+      "length": 86,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "31d17f457e342caeb0cfcbffff128b297bcaaa50082faaab84695c811b6b9531",
+      "episode_id": "8d090ad17dfd15c68596e923",
+      "episode_index": 3,
+      "instruction": "Place the pack of doritos inside the sink",
+      "length": 103,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "c110c3a993ce34d1a842cdf2e43b42f7c79e7cc25327fa541e3276496507616f",
+      "episode_id": "8f980b6456b392be5483af6a",
+      "episode_index": 14,
+      "instruction": "",
+      "length": 178,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "10f04758bd63d35e79b354333785bb032c3019fb555c539e1dc735fc279eaff8",
+      "episode_id": "98687d66d5e3ec415bc7769e",
+      "episode_index": 11,
+      "instruction": "Move the glass to the second row in the dishwasher",
+      "length": 202,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "7b3d950f7ff2b33abda81412fc6b1e5f4da8d4194f8134d46711f28ac6d16047",
+      "episode_id": "9a8bcc1c9caf8e173e52d899",
+      "episode_index": 83,
+      "instruction": "",
+      "length": 46,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "7cc85dc530abece4cf0911d3993a06e6fa7cc0ef341480afae72b021c8a05baa",
+      "episode_id": "9ab5a133445172da22cdf234",
+      "episode_index": 97,
+      "instruction": "Pick the two bottles on the stove and place them on the counter, then pick the cooking stick from the pot and place it on the stove",
+      "length": 289,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "0bd8ffb9f28a700536661b3520d39f453e28405a174c60b40b4f43115298bfd0",
+      "episode_id": "9c3383854c3a4e4a033a83c6",
+      "episode_index": 47,
+      "instruction": "",
+      "length": 65,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "310540ef76a406e99df6d5283abca3a71bac818cf922e7e03fc096238d280fb0",
+      "episode_id": "9e8600ee502cf8d652da2190",
+      "episode_index": 28,
+      "instruction": "Put the white book on top of the tissue box.",
+      "length": 199,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "5f77c60db6bfe207ab2702577f49ebb30de7f2c3ca33f0a5b3aea6afce46b4a8",
+      "episode_id": "a0c18740edcec6332b64efdb",
+      "episode_index": 52,
+      "instruction": "Turn the tap on and off and put the spoon in the dishes tray",
+      "length": 303,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "956bb6992453e4a8c9247faf4838f200a0d776739e2f2e1089b60f0c7e6f0cb1",
+      "episode_id": "a56a50feb861136806a443c8",
+      "episode_index": 99,
+      "instruction": "",
+      "length": 256,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "40237d0682c45c0e12ad7930e330d542a5480f8b81a9fbc74345b90d61353562",
+      "episode_id": "a684da0a8321178250720483",
+      "episode_index": 25,
+      "instruction": "Put the middle fork in the middle section of the white object",
+      "length": 279,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "b2b2e8f75a6d969f64c3ec861bfa8adf26500bccb37ce8e44aac375bd17637fc",
+      "episode_id": "aa1b515c110a46d2a37ed31c",
+      "episode_index": 66,
+      "instruction": "Put the orange toy into the wooden box",
+      "length": 70,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "ce4634ca6a89de04124fb7095e8a30142a6b4c8e321213bbaf58b083a926edc3",
+      "episode_id": "afd3d75d64731a4a2971d0a2",
+      "episode_index": 1,
+      "instruction": "Put the candy bar on the left side of the first shelf",
+      "length": 119,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "96a5e4b83366804de868c4ad99e05909538898edc4eb188eac55186b3f264fec",
+      "episode_id": "b18a1ec1c1a78939f5d7dc6a",
+      "episode_index": 62,
+      "instruction": "",
+      "length": 413,
+      "split": "validation"
+    },
+    {
+      "cached_sha256": "f995b94af0aae8e54468b72a739e83c327a8924b58b618a9469d7b2e01da4c44",
+      "episode_id": "b2c3f126ac3f52bd93b9e24d",
+      "episode_index": 70,
+      "instruction": "Move the green plush to the left",
+      "length": 50,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "35f824e865023e74bf182ada097e48466d77621a7220028c8859325c1fad9c8b",
+      "episode_id": "b3ea770ff7186b0683a0a797",
+      "episode_index": 60,
+      "instruction": "Put the green block in the bowl",
+      "length": 72,
+      "split": "validation"
+    },
+    {
+      "cached_sha256": "f96209b992772aa6eb2fae6c30118d3013c0ff81a351cb92d03d4a27e2995ff0",
+      "episode_id": "b673b62aef2e393a9a57da0e",
+      "episode_index": 19,
+      "instruction": "",
+      "length": 86,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "9b0888080095d36c7ac59aff64628ae4afc53a6971a9e904e1fb9a4fa566df57",
+      "episode_id": "b754e040a63becc56b04d5ae",
+      "episode_index": 63,
+      "instruction": "",
+      "length": 109,
+      "split": "validation"
+    },
+    {
+      "cached_sha256": "d5dffa3fb5526b96676c710bdca72020ffc28691a998abc5dd0d498edb2d0b86",
+      "episode_id": "bb4473a9757ca16a9f02ce13",
+      "episode_index": 39,
+      "instruction": "Take two folded white cloths out of the white box on the left",
+      "length": 342,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "fb6137131df07f14a096d534bab8525fe4d011080da35f674cf29684f282cb7f",
+      "episode_id": "bbed182eaae70a20eea68990",
+      "episode_index": 48,
+      "instruction": "",
+      "length": 115,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "738931713c2f47690ec8d77dcc02459c2f35f78e42edaad256df0e5b69b8d259",
+      "episode_id": "bcf035a124c9342210d36adb",
+      "episode_index": 53,
+      "instruction": "Pick up the computer mouse and put it in the microwave",
+      "length": 194,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "9c19325364c18fd73d87797b62e30501541fc942481e7fd88a8c94217b6dc52b",
+      "episode_id": "c46e2177e3eacda2490c068c",
+      "episode_index": 71,
+      "instruction": "move one white object from the right heap to the left, then get the blue-white object and fold it on top of the left heap",
+      "length": 220,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "49b7255fa530a47c84c8ef342336ffd34bb93a0461c7597c2112db89feda49b8",
+      "episode_id": "c4ac2bcd854590b8597d2451",
+      "episode_index": 29,
+      "instruction": "",
+      "length": 114,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "b60312602a6b5e42a36a4fd3836eb5c26332fc93750e72eeef5f304760cd5985",
+      "episode_id": "c4ce4991e2c780ee248798c5",
+      "episode_index": 24,
+      "instruction": "Put the tissues in the rubbish bin.",
+      "length": 533,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "fed090855f8d8b9c5762333951486f7a30535e4ee8dd2dfbd53b791944c0e41f",
+      "episode_id": "c8dbc9db24ccf188b1047836",
+      "episode_index": 77,
+      "instruction": "Close the drawer",
+      "length": 50,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "50c4de11abce390f16b982430673cc4248598bb944b87a9d29de448263d4a5df",
+      "episode_id": "ca4dac8cfc5968789e4daed3",
+      "episode_index": 86,
+      "instruction": "",
+      "length": 43,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "b2573ffec7e9b118340decb7209f5c6530d1e9b95e16d75e7a754fd3d882821f",
+      "episode_id": "ca98723ea341f53a85c13939",
+      "episode_index": 82,
+      "instruction": "",
+      "length": 196,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "f5051ce33279e75ab258970664d7158f1e59976bacb845b15cfe7a8af6ca935e",
+      "episode_id": "cafda7b2c405a7356ad23317",
+      "episode_index": 45,
+      "instruction": "",
+      "length": 147,
+      "split": "validation"
+    },
+    {
+      "cached_sha256": "c1aafa497b29b3947d24be491ccb7f4652b5c55e772ed0c6f19914722df8ad11",
+      "episode_id": "d08246fe29a5350bad6fe070",
+      "episode_index": 68,
+      "instruction": "Take the lid off the smaller pot",
+      "length": 106,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "621fcd7646a60d4dafdc1796df9a5e829d5a0ca0310fe02a001de73bd3a7f786",
+      "episode_id": "d12771172f616e82494d2e01",
+      "episode_index": 81,
+      "instruction": "Turn the tap nozzle from the right to the middle then open the tap",
+      "length": 152,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "602f0036c3e3ef9d5030def7f24f2aacc9e89fb4a81bb44eb81ade6d94381f85",
+      "episode_id": "d487644f50415a00aa395687",
+      "episode_index": 80,
+      "instruction": "",
+      "length": 570,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "d319c3b88775c23ba2b0dda73de53e5117b06be5d6be7ea2e8832f9a46270648",
+      "episode_id": "d500c1b5bce271717c00099b",
+      "episode_index": 10,
+      "instruction": "Move the pan to the right.",
+      "length": 179,
+      "split": "test"
+    },
+    {
+      "cached_sha256": "96162865dff8bae19050497e43548dc7ef805d782debbeff9b91a07a7042364d",
+      "episode_id": "d5ce1d32b4865d2191b015f1",
+      "episode_index": 64,
+      "instruction": "",
+      "length": 142,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "50028da21a0d397610d6232f037c528126eff32f0caab66f82674da13e4f5aa7",
+      "episode_id": "d90ca3b77da104a07c2ca379",
+      "episode_index": 79,
+      "instruction": "",
+      "length": 7,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "8e7132cf0cba3c446882999f07e06a27d814e474126b7b5a96d91d88664f19dd",
+      "episode_id": "d9fa36aa7d2d425c4e774763",
+      "episode_index": 59,
+      "instruction": "",
+      "length": 74,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "a5c9a445b6c2f69483c38d580f4717df153f0d992c3c0025b2808c212d2caef3",
+      "episode_id": "dad499d5efb83338dfca60ba",
+      "episode_index": 73,
+      "instruction": "",
+      "length": 195,
+      "split": "test"
+    },
+    {
+      "cached_sha256": "4cf8846dd3ef1d0fd379106208f1f9a2e51ad6eca7cce8fb567079919889269a",
+      "episode_id": "dc5e80c36850c234e8fb9522",
+      "episode_index": 16,
+      "instruction": "",
+      "length": 87,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "5361ef6bf770177a2b874e2b5897001aa11350b1ac458c7cd9b646aec60d9342",
+      "episode_id": "de2c6c96d6cda1d2abc2c9f2",
+      "episode_index": 33,
+      "instruction": "",
+      "length": 141,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "54d6c52bb674e08146d7997b2e24d013f988ccdfc2372df81c4f40ff9ba2f6ff",
+      "episode_id": "e0215028944a4ec75f444e19",
+      "episode_index": 67,
+      "instruction": "",
+      "length": 142,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "669b0453092190a47ffb638f99033caf29c2a720cdaef8def4c2aa81454cc129",
+      "episode_id": "e112ee6ab051b580ca051db0",
+      "episode_index": 54,
+      "instruction": "Put the marker inside the cup",
+      "length": 63,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "4961adbe831b7261ca2da332de24214db8b0d1cf8e1caf398b6d2f02301a05e8",
+      "episode_id": "e18f355b53e707053ace4031",
+      "episode_index": 26,
+      "instruction": "Put the  cable in the storage box",
+      "length": 60,
+      "split": "test"
+    },
+    {
+      "cached_sha256": "bf99f96b078673872579a1d83d888983cf7dea2d82b5ee00973382f3a1b129c5",
+      "episode_id": "e423c7d529287238e81079f0",
+      "episode_index": 61,
+      "instruction": "",
+      "length": 25,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "7de9a02c41815f8f22a2d9dba5171ab5b17370dab985881deb0db32d5b832be4",
+      "episode_id": "e515d6ddae9d300034e5a4c9",
+      "episode_index": 6,
+      "instruction": "Take the pen out of the bowl and place it on the table",
+      "length": 91,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "59d03d94e196e0a5af591fb8a0637cb1a13246f03bb90da0335f24969594a899",
+      "episode_id": "e7ad0f6d986db7e46d5793dc",
+      "episode_index": 42,
+      "instruction": "",
+      "length": 166,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "37f1dedc853d27981c3231d8e72204a3c09be831540acf4fd98f093f86ceb4a0",
+      "episode_id": "e93c606e41c81542f2771f32",
+      "episode_index": 65,
+      "instruction": "",
+      "length": 100,
+      "split": "validation"
+    },
+    {
+      "cached_sha256": "f30ee6c0318c1b781610bba2f8a0cd5649edf111c8e34348def80a0ab49ceb58",
+      "episode_id": "e9ff40ea77c973f5568e80a7",
+      "episode_index": 12,
+      "instruction": "Pick up the lid from the table and put it on the pot",
+      "length": 107,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "f0f3212521eb7130fba7f15a3319c9fd4dee84c99936282a100484c840632870",
+      "episode_id": "ea5cba16c2b375249fb0cdb1",
+      "episode_index": 49,
+      "instruction": "",
+      "length": 81,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "da35860a32c2835a276130d2dc904339030d7e5c27739c5475400efb30ef22a3",
+      "episode_id": "f00cb7a36cfe26683f4940cd",
+      "episode_index": 20,
+      "instruction": "Slide the black lid off",
+      "length": 95,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "ddf4e69da987b1278a29745a5bd2f6521d784f1ded11e097858c55daae293a7d",
+      "episode_id": "f091da94d826fc41dfd96523",
+      "episode_index": 34,
+      "instruction": "Move the vaseline closer to the mirror",
+      "length": 130,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "11c268624ab0975c3894e181ec662505ecfea14f6f1c6fac6a9682a248db4789",
+      "episode_id": "f16d833d3f91c8caa433428b",
+      "episode_index": 92,
+      "instruction": "Move the pot to the top left corner of the table",
+      "length": 63,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "6d3aea57043fc5c8dd32deee78fc824323ecdb64887e33785fd9ce77e47b4a6c",
+      "episode_id": "f7a033fe121407c2e431a3fb",
+      "episode_index": 78,
+      "instruction": "",
+      "length": 162,
+      "split": "test"
+    },
+    {
+      "cached_sha256": "303c8d8c0d976b7124f044bc74be4a6526dd4bd7dd4d1c56bcd2e0f6aef5fcfe",
+      "episode_id": "f95c92978b570a98e434271a",
+      "episode_index": 2,
+      "instruction": "Put one green sachet in the grey bowl.",
+      "length": 71,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "d9f9b154b3eadce18ca754c32997e349a29d36f5e8117a7eab0988bd990ca935",
+      "episode_id": "feb2503bff968376ea29adef",
+      "episode_index": 90,
+      "instruction": "",
+      "length": 331,
+      "split": "train"
+    },
+    {
+      "cached_sha256": "fc3eb8e675a0d50db0f8df912d04058713561b1273069e3e2a96e8efd55a6254",
+      "episode_id": "ff626c988eb779cf4dc8622c",
+      "episode_index": 51,
+      "instruction": "",
+      "length": 88,
+      "split": "validation"
+    }
+  ],
+  "frame_stride": 2,
+  "skipped": [],
+  "source_sha256": "86624a13e821b61210d3082a26d8e5ccbfbff7332694def750d23e8a3087a967",
+  "split_counts": {
+    "test": 10,
+    "train": 80,
+    "validation": 10
+  },
+  "state_dims": [
+    6,
+    1,
+    7
+  ],
+  "state_keys": [
+    "cartesian_position",
+    "gripper_position",
+    "joint_position"
+  ]
+}

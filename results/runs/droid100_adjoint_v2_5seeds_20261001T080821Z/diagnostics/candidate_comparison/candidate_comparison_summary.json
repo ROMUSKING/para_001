@@ -1,0 +1,4417 @@
+{
+  "run_id": "droid100_adjoint_v2_5seeds_20261001T080821Z",
+  "date": "2026-10-01T17:37:52Z",
+  "num_seeds": 5,
+  "total_test_windows": 4175,
+  "total_val_windows": 3980,
+  "candidate_1_depth_costs": [
+    [
+      0.0,
+      0.0001,
+      0.0002,
+      0.0003
+    ],
+    [
+      0.0,
+      0.0005,
+      0.001,
+      0.0015
+    ],
+    [
+      0.0,
+      0.001,
+      0.002,
+      0.003
+    ],
+    [
+      0.0,
+      0.002,
+      0.004,
+      0.006
+    ],
+    [
+      0.0,
+      0.005,
+      0.01,
+      0.015
+    ]
+  ],
+  "candidate_2_sensing_costs": [
+    [
+      0.0,
+      0.001,
+      0.002,
+      0.003
+    ],
+    [
+      0.0,
+      0.005,
+      0.01,
+      0.015
+    ],
+    [
+      0.0,
+      0.01,
+      0.02,
+      0.03
+    ],
+    [
+      0.0,
+      0.02,
+      0.04,
+      0.06
+    ],
+    [
+      0.0,
+      0.05,
+      0.08,
+      0.13
+    ]
+  ],
+  "comparison": {
+    "cand1_adjoint_depth": {
+      "opportunity_pass_rate_per_cost": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mean_headroom_over_best_fixed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.3768877911709008e-05
+      ],
+      "mean_relative_headroom": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.00030234426005739106
+      ],
+      "mean_oracle_entropy_bits": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.09939526696004183
+      ],
+      "mean_correlations": [
+        0.9999710712414706,
+        0.999900627687637,
+        0.9998038504280139
+      ],
+      "mean_raw_gains": [
+        0.0,
+        0.07152275666594506,
+        0.13503890931606294,
+        0.19169042408466339
+      ]
+    },
+    "cand2_adaptive_sensing": {
+      "opportunity_pass_rate_per_cost": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mean_headroom_over_best_fixed": [
+        0.14541159949903965,
+        0.14009053176168554,
+        0.1339174797301164,
+        0.12291109705756524,
+        0.1031964929562486
+      ],
+      "mean_relative_headroom": [
+        0.7085737083322312,
+        0.6787181431488923,
+        0.6426352451165842,
+        0.57505345174921,
+        0.445016650455307
+      ],
+      "mean_oracle_entropy_bits": [
+        1.914410154361228,
+        1.893999216774024,
+        1.8622738274004795,
+        1.7717218410378155,
+        1.5270042466480584
+      ],
+      "mean_correlations": [
+        0.9554619647246902,
+        0.940770489744857,
+        0.9371738162137309
+      ],
+      "mean_raw_gains": [
+        0.0,
+        -0.12856119945645333,
+        -0.05796945225447416,
+        -0.034502120595425366
+      ]
+    }
+  },
+  "per_seed_results": {
+    "seed_0_test": {
+      "seed": 0,
+      "split": "test",
+      "num_windows": 835,
+      "candidate_1_arch": {
+        "mean_raw_gains": [
+          0.0,
+          -0.09067024290561676,
+          -0.20559968054294586,
+          -0.3453903794288635
+        ],
+        "std_raw_gains": [
+          0.0,
+          0.1942088007926941,
+          0.42258065938949585,
+          0.6816207766532898
+        ],
+        "win_rate_over_hold": [
+          0.0,
+          0.2179640718562874,
+          0.18682634730538922,
+          0.16167664670658682
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.0001,
+              0.0002,
+              0.0003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.0073, < 15% of its margin over random (0.168)",
+            "headroom_over_best_fixed": 0.007304163850790927,
+            "headroom_over_random": 0.16786926300329597,
+            "relative_headroom": 0.04351102590262469,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.7772455089820359,
+              0.06107784431137724,
+              0.06946107784431138,
+              0.09221556886227544
+            ],
+            "oracle_entropy_bits": 1.1132903354777095,
+            "oracle_mean_gain": 0.007304163850790927
+          },
+          {
+            "costs": [
+              0.0,
+              0.0005,
+              0.001,
+              0.0015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00711, < 15% of its margin over random (0.168)",
+            "headroom_over_best_fixed": 0.007113641110725678,
+            "headroom_over_random": 0.16827874009519772,
+            "relative_headroom": 0.04227296393294476,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.7772455089820359,
+              0.06227544910179641,
+              0.06946107784431138,
+              0.09101796407185629
+            ],
+            "oracle_entropy_bits": 1.113974047704062,
+            "oracle_mean_gain": 0.007113641110725678
+          },
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00688, < 15% of its margin over random (0.169)",
+            "headroom_over_best_fixed": 0.006879077654633069,
+            "headroom_over_random": 0.1687941772802273,
+            "relative_headroom": 0.04075423551614947,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.7832335329341318,
+              0.058682634730538925,
+              0.07065868263473053,
+              0.08742514970059881
+            ],
+            "oracle_entropy_bits": 1.0936420413159282,
+            "oracle_mean_gain": 0.006879077654633069
+          },
+          {
+            "costs": [
+              0.0,
+              0.002,
+              0.004,
+              0.006
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00643, < 15% of its margin over random (0.17)",
+            "headroom_over_best_fixed": 0.006428502414453618,
+            "headroom_over_random": 0.16984360188944264,
+            "relative_headroom": 0.037849541242290445,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.792814371257485,
+              0.059880239520958084,
+              0.06706586826347305,
+              0.08023952095808383
+            ],
+            "oracle_entropy_bits": 1.0622458913242756,
+            "oracle_mean_gain": 0.006428502414453618
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00521, < 15% of its margin over random (0.173)",
+            "headroom_over_best_fixed": 0.00520823687805744,
+            "headroom_over_random": 0.1731233345874457,
+            "relative_headroom": 0.030083968117115525,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8131736526946107,
+              0.06467065868263473,
+              0.055089820359281436,
+              0.06706586826347305
+            ],
+            "oracle_entropy_bits": 0.9899503961603983,
+            "oracle_mean_gain": 0.00520823687805744
+          }
+        ]
+      },
+      "candidate_1_adjoint": {
+        "mean_raw_gains": [
+          0.0,
+          0.07120086997747421,
+          0.13485732674598694,
+          0.19192935526371002
+        ],
+        "std_raw_gains": [
+          0.0,
+          0.0872332826256752,
+          0.16374008357524872,
+          0.23125304281711578
+        ],
+        "win_rate_over_hold": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "first_order_correlations": [
+          0.9999792211752765,
+          0.9999262694359546,
+          0.9998493245026221
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.0001,
+              0.0002,
+              0.0003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.0923)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.09228244204914844,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.19162936528508892
+          },
+          {
+            "costs": [
+              0.0,
+              0.0005,
+              0.001,
+              0.0015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.0917)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.09168243962674663,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.19042936309190567
+          },
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.0909)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.0909324403171857,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.18892936406735175
+          },
+          {
+            "costs": [
+              0.0,
+              0.002,
+              0.004,
+              0.006
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.0894)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.08943244070846387,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.18592936439540036
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 3.59e-05, < 15% of its margin over random (0.085)",
+            "headroom_over_best_fixed": 3.586056123591752e-05,
+            "headroom_over_random": 0.08496830294544468,
+            "relative_headroom": 0.0004220463395502014,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.00718562874251497,
+              0.0023952095808383233,
+              0.0,
+              0.9904191616766467
+            ],
+            "oracle_entropy_bits": 0.08577410549438336,
+            "oracle_mean_gain": 0.1769652277141988
+          }
+        ]
+      },
+      "candidate_2_sensing": {
+        "mean_raw_gains": [
+          0.0,
+          -0.09299856424331665,
+          -0.03423168510198593,
+          -0.035813108086586
+        ],
+        "std_raw_gains": [
+          0.0,
+          0.31566759943962097,
+          0.33993151783943176,
+          0.35926514863967896
+        ],
+        "win_rate_over_proprio": [
+          0.0,
+          0.3568862275449102,
+          0.4419161676646707,
+          0.437125748502994
+        ],
+        "first_order_correlations": [
+          0.9489049784700111,
+          0.9403151214397075,
+          0.9203488926786337
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.15163172466978767,
+            "headroom_over_random": 0.19389257149479472,
+            "relative_headroom": 0.7820398868342329,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.29101796407185626,
+              0.19041916167664671,
+              0.2958083832335329,
+              0.22275449101796407
+            ],
+            "oracle_entropy_bits": 1.9762814013327599,
+            "oracle_mean_gain": 0.15163172466978767
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.14594941007943746,
+            "headroom_over_random": 0.19421025593709312,
+            "relative_headroom": 0.7515020737458484,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.3089820359281437,
+              0.2,
+              0.29221556886227545,
+              0.19880239520958085
+            ],
+            "oracle_entropy_bits": 1.9699057948927916,
+            "oracle_mean_gain": 0.14594941007943746
+          },
+          {
+            "costs": [
+              0.0,
+              0.01,
+              0.02,
+              0.03
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.13935248924051216,
+            "headroom_over_random": 0.1951133355163707,
+            "relative_headroom": 0.7142130437763953,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.34251497005988024,
+              0.20479041916167665,
+              0.2874251497005988,
+              0.16526946107784432
+            ],
+            "oracle_entropy_bits": 1.94418795580987,
+            "oracle_mean_gain": 0.13935248924051216
+          },
+          {
+            "costs": [
+              0.0,
+              0.02,
+              0.04,
+              0.06
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.12740143354602917,
+            "headroom_over_random": 0.1981622801614022,
+            "relative_headroom": 0.6429146527899323,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.4119760479041916,
+              0.19520958083832335,
+              0.25748502994011974,
+              0.13532934131736526
+            ],
+            "oracle_entropy_bits": 1.8816569979340643,
+            "oracle_mean_gain": 0.12740143354602917
+          },
+          {
+            "costs": [
+              0.0,
+              0.05,
+              0.08,
+              0.13
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.10452313505246967,
+            "headroom_over_random": 0.21028398047173452,
+            "relative_headroom": 0.4970570502707372,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.5137724550898204,
+              0.17724550898203592,
+              0.22634730538922157,
+              0.08263473053892216
+            ],
+            "oracle_entropy_bits": 1.7184649381448085,
+            "oracle_mean_gain": 0.10452313505246967
+          }
+        ]
+      }
+    },
+    "seed_0_validation": {
+      "seed": 0,
+      "split": "validation",
+      "num_windows": 796,
+      "candidate_1_arch": {
+        "mean_raw_gains": [
+          0.0,
+          -0.33536529541015625,
+          -0.699759840965271,
+          -1.0787309408187866
+        ],
+        "std_raw_gains": [
+          0.0,
+          1.050674319267273,
+          2.1208269596099854,
+          3.2030203342437744
+        ],
+        "win_rate_over_hold": [
+          0.0,
+          0.14698492462311558,
+          0.12185929648241206,
+          0.11055276381909548
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.0001,
+              0.0002,
+              0.0003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00473, < 15% of its margin over random (0.533)",
+            "headroom_over_best_fixed": 0.004728012162362501,
+            "headroom_over_random": 0.5333419130115933,
+            "relative_headroom": 0.008864880196017387,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8530150753768844,
+              0.0364321608040201,
+              0.03768844221105527,
+              0.0728643216080402
+            ],
+            "oracle_entropy_bits": 0.8233257808872076,
+            "oracle_mean_gain": 0.004728012162362501
+          },
+          {
+            "costs": [
+              0.0,
+              0.0005,
+              0.001,
+              0.0015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.0046, < 15% of its margin over random (0.534)",
+            "headroom_over_best_fixed": 0.004596442048819314,
+            "headroom_over_random": 0.5338103375574768,
+            "relative_headroom": 0.008610627643239305,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8530150753768844,
+              0.03768844221105527,
+              0.03768844221105527,
+              0.07160804020100503
+            ],
+            "oracle_entropy_bits": 0.8245354516164198,
+            "oracle_mean_gain": 0.004596442048819314
+          },
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00443, < 15% of its margin over random (0.534)",
+            "headroom_over_best_fixed": 0.004434556172764041,
+            "headroom_over_random": 0.5343984560777015,
+            "relative_headroom": 0.008298220405261156,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8555276381909548,
+              0.035175879396984924,
+              0.0414572864321608,
+              0.0678391959798995
+            ],
+            "oracle_entropy_bits": 0.8161800832201693,
+            "oracle_mean_gain": 0.004434556172764041
+          },
+          {
+            "costs": [
+              0.0,
+              0.002,
+              0.004,
+              0.006
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00412, < 15% of its margin over random (0.536)",
+            "headroom_over_best_fixed": 0.004120173922274262,
+            "headroom_over_random": 0.5355840747607503,
+            "relative_headroom": 0.007692861151845817,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8655778894472361,
+              0.028894472361809045,
+              0.038944723618090454,
+              0.06658291457286432
+            ],
+            "oracle_entropy_bits": 0.7706171410255449,
+            "oracle_mean_gain": 0.004120173922274262
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00326, < 15% of its margin over random (0.539)",
+            "headroom_over_best_fixed": 0.0032557412846266624,
+            "headroom_over_random": 0.5392196397785561,
+            "relative_headroom": 0.0060378759311580585,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8756281407035176,
+              0.031407035175879394,
+              0.0414572864321608,
+              0.05150753768844221
+            ],
+            "oracle_entropy_bits": 0.7353728737561748,
+            "oracle_mean_gain": 0.0032557412846266624
+          }
+        ]
+      },
+      "candidate_1_adjoint": {
+        "mean_raw_gains": [
+          0.0,
+          0.3666057884693146,
+          0.6524165868759155,
+          0.8707163333892822
+        ],
+        "std_raw_gains": [
+          0.0,
+          1.739305853843689,
+          2.9290177822113037,
+          3.66829514503479
+        ],
+        "win_rate_over_hold": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "first_order_correlations": [
+          0.995429321492876,
+          0.9956551962132092,
+          0.9957283205585162
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.0001,
+              0.0002,
+              0.0003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.398)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.39813122636318,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.8704158691899972
+          },
+          {
+            "costs": [
+              0.0,
+              0.0005,
+              0.001,
+              0.0015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.398)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.3975312360559459,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.8692158821352463
+          },
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.397)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.39678123692488154,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.8677158827692195
+          },
+          {
+            "costs": [
+              0.0,
+              0.002,
+              0.004,
+              0.006
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.395)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.39528123200631204,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.864715871327421
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.391)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.3907812389237432,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.8557158859467705
+          }
+        ]
+      },
+      "candidate_2_sensing": {
+        "mean_raw_gains": [
+          0.0,
+          -0.06370653957128525,
+          0.24613644182682037,
+          0.3067407011985779
+        ],
+        "std_raw_gains": [
+          0.0,
+          0.9251285791397095,
+          1.2469855546951294,
+          1.324934720993042
+        ],
+        "win_rate_over_proprio": [
+          0.0,
+          0.4723618090452261,
+          0.44221105527638194,
+          0.550251256281407
+        ],
+        "first_order_correlations": [
+          0.9727148819433658,
+          0.979044284465905,
+          0.9685214401481617
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.40241360063892767,
+            "headroom_over_random": 0.5853616021429926,
+            "relative_headroom": 0.6874615607954171,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "mode_3 (full)",
+            "oracle_share": [
+              0.2663316582914573,
+              0.19472361809045227,
+              0.1972361809045226,
+              0.3417085427135678
+            ],
+            "oracle_entropy_bits": 1.9592832014720625,
+            "oracle_mean_gain": 0.706154301621303
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.40800906338696197,
+            "headroom_over_random": 0.5849570714202873,
+            "relative_headroom": 0.6975025746698094,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "mode_3 (full)",
+            "oracle_share": [
+              0.2776381909547739,
+              0.1972361809045226,
+              0.19095477386934673,
+              0.3341708542713568
+            ],
+            "oracle_entropy_bits": 1.959775332744361,
+            "oracle_mean_gain": 0.6997497684928359
+          },
+          {
+            "costs": [
+              0.0,
+              0.01,
+              0.02,
+              0.03
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.4151364268721011,
+            "headroom_over_random": 0.5845844346664884,
+            "relative_headroom": 0.7101393780847772,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "mode_3 (full)",
+            "oracle_share": [
+              0.2814070351758794,
+              0.19597989949748743,
+              0.1934673366834171,
+              0.32914572864321606
+            ],
+            "oracle_entropy_bits": 1.9617349190948539,
+            "oracle_mean_gain": 0.6918771364796327
+          },
+          {
+            "costs": [
+              0.0,
+              0.02,
+              0.04,
+              0.06
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.4298936079522997,
+            "headroom_over_random": 0.5843416184465396,
+            "relative_headroom": 0.7356888408790103,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "mode_3 (full)",
+            "oracle_share": [
+              0.314070351758794,
+              0.1922110552763819,
+              0.1884422110552764,
+              0.30527638190954776
+            ],
+            "oracle_entropy_bits": 1.958385106664146,
+            "oracle_mean_gain": 0.6766343229969767
+          },
+          {
+            "costs": [
+              0.0,
+              0.05,
+              0.08,
+              0.13
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.46703439372493394,
+            "headroom_over_random": 0.5864823949663671,
+            "relative_headroom": 0.7963314802513669,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "mode_3 (full)",
+            "oracle_share": [
+              0.3793969849246231,
+              0.1670854271356784,
+              0.1884422110552764,
+              0.2650753768844221
+            ],
+            "oracle_entropy_bits": 1.9232759677931084,
+            "oracle_mean_gain": 0.6437750957232324
+          }
+        ]
+      }
+    },
+    "seed_1_test": {
+      "seed": 1,
+      "split": "test",
+      "num_windows": 835,
+      "candidate_1_arch": {
+        "mean_raw_gains": [
+          0.0,
+          -0.05708858370780945,
+          -0.13615678250789642,
+          -0.23758168518543243
+        ],
+        "std_raw_gains": [
+          0.0,
+          0.13534307479858398,
+          0.2921660244464874,
+          0.4728732407093048
+        ],
+        "win_rate_over_hold": [
+          0.0,
+          0.35808383233532937,
+          0.2898203592814371,
+          0.21916167664670658
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.0001,
+              0.0002,
+              0.0003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.0127, < 15% of its margin over random (0.121)",
+            "headroom_over_best_fixed": 0.012687107150780643,
+            "headroom_over_random": 0.1205438390626838,
+            "relative_headroom": 0.10524890570461458,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.637125748502994,
+              0.14011976047904193,
+              0.09341317365269461,
+              0.12934131736526946
+            ],
+            "oracle_entropy_bits": 1.512779511693389,
+            "oracle_mean_gain": 0.012687107150780643
+          },
+          {
+            "costs": [
+              0.0,
+              0.0005,
+              0.001,
+              0.0015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.0124, < 15% of its margin over random (0.121)",
+            "headroom_over_best_fixed": 0.0124023334991778,
+            "headroom_over_random": 0.12085906528535963,
+            "relative_headroom": 0.10261814841852966,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.6395209580838324,
+              0.14011976047904193,
+              0.09101796407185629,
+              0.12934131736526946
+            ],
+            "oracle_entropy_bits": 1.5060938951844334,
+            "oracle_mean_gain": 0.0124023334991778
+          },
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.012, < 15% of its margin over random (0.121)",
+            "headroom_over_best_fixed": 0.012049608859568165,
+            "headroom_over_random": 0.12125634073773343,
+            "relative_headroom": 0.0993730207118025,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.6431137724550898,
+              0.14131736526946106,
+              0.09341317365269461,
+              0.12215568862275449
+            ],
+            "oracle_entropy_bits": 1.4985251142414004,
+            "oracle_mean_gain": 0.012049608859568165
+          },
+          {
+            "costs": [
+              0.0,
+              0.002,
+              0.004,
+              0.006
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.0114, < 15% of its margin over random (0.122)",
+            "headroom_over_best_fixed": 0.011364370309831407,
+            "headroom_over_random": 0.12207110232776756,
+            "relative_headroom": 0.09309631921990394,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.6502994011976048,
+              0.14011976047904193,
+              0.09101796407185629,
+              0.118562874251497
+            ],
+            "oracle_entropy_bits": 1.4804438566085756,
+            "oracle_mean_gain": 0.011364370309831407
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00947, < 15% of its margin over random (0.125)",
+            "headroom_over_best_fixed": 0.009467679101549937,
+            "headroom_over_random": 0.12467440969344162,
+            "relative_headroom": 0.07593923343876056,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.6850299401197605,
+              0.1317365269461078,
+              0.09101796407185629,
+              0.09221556886227544
+            ],
+            "oracle_entropy_bits": 1.3909245696606107,
+            "oracle_mean_gain": 0.009467679101549937
+          }
+        ]
+      },
+      "candidate_1_adjoint": {
+        "mean_raw_gains": [
+          0.0,
+          0.04091960936784744,
+          0.07833701372146606,
+          0.1126154363155365
+        ],
+        "std_raw_gains": [
+          0.0,
+          0.042285796254873276,
+          0.08069600909948349,
+          0.11569171398878098
+        ],
+        "win_rate_over_hold": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "first_order_correlations": [
+          0.9999831864924361,
+          0.9999360754456451,
+          0.9998638197288566
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.0001,
+              0.0002,
+              0.0003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.0545)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.05449738938125787,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.11231540311462508
+          },
+          {
+            "costs": [
+              0.0,
+              0.0005,
+              0.001,
+              0.0015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.0539)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.05389738780959415,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.1111154017534977
+          },
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.0531)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.05314738863610668,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.10961540276017374
+          },
+          {
+            "costs": [
+              0.0,
+              0.002,
+              0.004,
+              0.006
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.0516)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.05164738911291874,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.10661540317745087
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 2e-05, < 15% of its margin over random (0.0472)",
+            "headroom_over_best_fixed": 2.0044849081315985e-05,
+            "headroom_over_random": 0.04716743352644502,
+            "relative_headroom": 0.00042497222305041437,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.008383233532934131,
+              0.0,
+              0.0023952095808383233,
+              0.9892215568862276
+            ],
+            "oracle_entropy_bits": 0.0941475863472048,
+            "oracle_mean_gain": 0.09763544807600939
+          }
+        ]
+      },
+      "candidate_2_sensing": {
+        "mean_raw_gains": [
+          0.0,
+          -0.12772656977176666,
+          -0.012825260870158672,
+          0.00231139431707561
+        ],
+        "std_raw_gains": [
+          0.0,
+          0.2681728005409241,
+          0.31660380959510803,
+          0.22368000447750092
+        ],
+        "win_rate_over_proprio": [
+          0.0,
+          0.20239520958083831,
+          0.42035928143712575,
+          0.46467065868263474
+        ],
+        "first_order_correlations": [
+          0.978624710709874,
+          0.9225174031182817,
+          0.9503590331030025
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.12044099608079313,
+            "headroom_over_random": 0.1565010878460309,
+            "relative_headroom": 0.7695856798087279,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.37365269461077844,
+              0.09101796407185629,
+              0.3281437125748503,
+              0.20718562874251498
+            ],
+            "oracle_entropy_bits": 1.8434294443445622,
+            "oracle_mean_gain": 0.12044099608079313
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.11511734093422304,
+            "headroom_over_random": 0.15717743200969375,
+            "relative_headroom": 0.7324037520038075,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.4023952095808383,
+              0.08742514970059881,
+              0.325748502994012,
+              0.1844311377245509
+            ],
+            "oracle_entropy_bits": 1.8127570976140952,
+            "oracle_mean_gain": 0.11511734093422304
+          },
+          {
+            "costs": [
+              0.0,
+              0.01,
+              0.02,
+              0.03
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.10893159522312487,
+            "headroom_over_random": 0.15849168666465555,
+            "relative_headroom": 0.6873016340195033,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.4407185628742515,
+              0.08622754491017964,
+              0.32335329341317365,
+              0.1497005988023952
+            ],
+            "oracle_entropy_bits": 1.7626759242245136,
+            "oracle_mean_gain": 0.10893159522312487
+          },
+          {
+            "costs": [
+              0.0,
+              0.02,
+              0.04,
+              0.06
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.09801041545892904,
+            "headroom_over_random": 0.16257050652949218,
+            "relative_headroom": 0.6028794370591988,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.5137724550898204,
+              0.08263473053892216,
+              0.30538922155688625,
+              0.09820359281437126
+            ],
+            "oracle_entropy_bits": 1.6422775435498091,
+            "oracle_mean_gain": 0.09801041545892904
+          },
+          {
+            "costs": [
+              0.0,
+              0.05,
+              0.08,
+              0.13
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.07998662971986269,
+            "headroom_over_random": 0.17954671928647928,
+            "relative_headroom": 0.44549201476769096,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.6431137724550898,
+              0.05029940119760479,
+              0.2682634730538922,
+              0.03832335329341317
+            ],
+            "oracle_entropy_bits": 1.3161009267916208,
+            "oracle_mean_gain": 0.07998662971986269
+          }
+        ]
+      }
+    },
+    "seed_1_validation": {
+      "seed": 1,
+      "split": "validation",
+      "num_windows": 796,
+      "candidate_1_arch": {
+        "mean_raw_gains": [
+          0.0,
+          -0.2876054346561432,
+          -0.6399974226951599,
+          -1.066336989402771
+        ],
+        "std_raw_gains": [
+          0.0,
+          0.9030652046203613,
+          1.9931529760360718,
+          3.293544054031372
+        ],
+        "win_rate_over_hold": [
+          0.0,
+          0.1771356783919598,
+          0.15577889447236182,
+          0.1306532663316583
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.0001,
+              0.0002,
+              0.0003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00742, < 15% of its margin over random (0.506)",
+            "headroom_over_best_fixed": 0.007422891067546891,
+            "headroom_over_random": 0.5060578552635601,
+            "relative_headroom": 0.014668068068385134,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8190954773869347,
+              0.05150753768844221,
+              0.06407035175879397,
+              0.06532663316582915
+            ],
+            "oracle_entropy_bits": 0.9673445369608762,
+            "oracle_mean_gain": 0.007422891067546891
+          },
+          {
+            "costs": [
+              0.0,
+              0.0005,
+              0.001,
+              0.0015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00727, < 15% of its margin over random (0.507)",
+            "headroom_over_best_fixed": 0.007273403819239155,
+            "headroom_over_random": 0.5065083617951475,
+            "relative_headroom": 0.01435988893344433,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.821608040201005,
+              0.05150753768844221,
+              0.06407035175879397,
+              0.06281407035175879
+            ],
+            "oracle_entropy_bits": 0.958101808992933,
+            "oracle_mean_gain": 0.007273403819239155
+          },
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00709, < 15% of its margin over random (0.507)",
+            "headroom_over_best_fixed": 0.007090122204820331,
+            "headroom_over_random": 0.5070750857236483,
+            "relative_headroom": 0.013982391177239553,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.821608040201005,
+              0.052763819095477386,
+              0.06658291457286432,
+              0.059045226130653265
+            ],
+            "oracle_entropy_bits": 0.958131133416573,
+            "oracle_mean_gain": 0.007090122204820331
+          },
+          {
+            "costs": [
+              0.0,
+              0.002,
+              0.004,
+              0.006
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00674, < 15% of its margin over random (0.508)",
+            "headroom_over_best_fixed": 0.006736544900674411,
+            "headroom_over_random": 0.5082215079823457,
+            "relative_headroom": 0.013255135398379128,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8266331658291457,
+              0.052763819095477386,
+              0.06909547738693467,
+              0.05150753768844221
+            ],
+            "oracle_entropy_bits": 0.9377920183983041,
+            "oracle_mean_gain": 0.006736544900674411
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00574, < 15% of its margin over random (0.512)",
+            "headroom_over_best_fixed": 0.005737830073942417,
+            "headroom_over_random": 0.5117227891811063,
+            "relative_headroom": 0.011212770264002673,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8366834170854272,
+              0.052763819095477386,
+              0.06281407035175879,
+              0.04773869346733668
+            ],
+            "oracle_entropy_bits": 0.8994922345816375,
+            "oracle_mean_gain": 0.005737830073942417
+          }
+        ]
+      },
+      "candidate_1_adjoint": {
+        "mean_raw_gains": [
+          0.0,
+          0.16303110122680664,
+          0.2981122136116028,
+          0.4137343466281891
+        ],
+        "std_raw_gains": [
+          0.0,
+          0.6426619291305542,
+          1.102256178855896,
+          1.4513499736785889
+        ],
+        "win_rate_over_hold": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "first_order_correlations": [
+          0.9998776225380316,
+          0.9996136349855836,
+          0.9992925229412939
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.0001,
+              0.0002,
+              0.0003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.195)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.19486485219327437,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.4134341658809077
+          },
+          {
+            "costs": [
+              0.0,
+              0.0005,
+              0.001,
+              0.0015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.194)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.1942648524336573,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.4122341664603925
+          },
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.194)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.19351484813190994,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.4107341634246507
+          },
+          {
+            "costs": [
+              0.0,
+              0.002,
+              0.004,
+              0.006
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.192)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.1920148527978606,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.4077341699675568
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 7.55e-06, < 15% of its margin over random (0.188)",
+            "headroom_over_best_fixed": 7.553351341060832e-06,
+            "headroom_over_random": 0.18752240623469144,
+            "relative_headroom": 4.027972706156258e-05,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.001256281407035176,
+              0.001256281407035176,
+              0.001256281407035176,
+              0.9962311557788944
+            ],
+            "oracle_entropy_bits": 0.041745970828504564,
+            "oracle_mean_gain": 0.39874172110541084
+          }
+        ]
+      },
+      "candidate_2_sensing": {
+        "mean_raw_gains": [
+          0.0,
+          -0.2847802937030792,
+          0.7365637421607971,
+          0.5802107453346252
+        ],
+        "std_raw_gains": [
+          0.0,
+          1.0277727842330933,
+          1.443771481513977,
+          1.2018948793411255
+        ],
+        "win_rate_over_proprio": [
+          0.0,
+          0.3492462311557789,
+          0.6381909547738693,
+          0.6331658291457286
+        ],
+        "first_order_correlations": [
+          0.9786156563418716,
+          0.9843401832954398,
+          0.9824821147634802
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.1791044783111001,
+            "headroom_over_random": 0.6571694207719592,
+            "relative_headroom": 0.272539276250424,
+            "best_fixed_candidate": 2,
+            "best_fixed_name": "mode_2 (exterior)",
+            "oracle_share": [
+              0.25753768844221103,
+              0.07537688442211055,
+              0.3316582914572864,
+              0.33542713567839194
+            ],
+            "oracle_entropy_bits": 1.84185990018393,
+            "oracle_mean_gain": 0.9136680006356699
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.18024575981854374,
+            "headroom_over_random": 0.6563107011609841,
+            "relative_headroom": 0.2746348025404692,
+            "best_fixed_candidate": 2,
+            "best_fixed_name": "mode_2 (exterior)",
+            "oracle_share": [
+              0.27638190954773867,
+              0.07663316582914573,
+              0.32914572864321606,
+              0.3178391959798995
+            ],
+            "oracle_entropy_bits": 1.850031259529536,
+            "oracle_mean_gain": 0.9068092794506225
+          },
+          {
+            "costs": [
+              0.0,
+              0.01,
+              0.02,
+              0.03
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.18194622734336918,
+            "headroom_over_random": 0.6555111718097298,
+            "relative_headroom": 0.2775638847482241,
+            "best_fixed_candidate": 2,
+            "best_fixed_name": "mode_2 (exterior)",
+            "oracle_share": [
+              0.29773869346733667,
+              0.0728643216080402,
+              0.32914572864321606,
+              0.30025125628140703
+            ],
+            "oracle_entropy_bits": 1.8445906491661397,
+            "oracle_mean_gain": 0.8985097574598937
+          },
+          {
+            "costs": [
+              0.0,
+              0.02,
+              0.04,
+              0.06
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.18612496715843974,
+            "headroom_over_random": 0.6546899135980343,
+            "relative_headroom": 0.28429484446390374,
+            "best_fixed_candidate": 2,
+            "best_fixed_name": "mode_2 (exterior)",
+            "oracle_share": [
+              0.32914572864321606,
+              0.0728643216080402,
+              0.3316582914572864,
+              0.2663316582914573
+            ],
+            "oracle_entropy_bits": 1.8394400627569136,
+            "oracle_mean_gain": 0.8826885036281754
+          },
+          {
+            "costs": [
+              0.0,
+              0.05,
+              0.08,
+              0.13
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.19465374823509896,
+            "headroom_over_random": 0.6582186985854528,
+            "relative_headroom": 0.29572807435191417,
+            "best_fixed_candidate": 2,
+            "best_fixed_name": "mode_2 (exterior)",
+            "oracle_share": [
+              0.39824120603015073,
+              0.07035175879396985,
+              0.3241206030150754,
+              0.20728643216080403
+            ],
+            "oracle_entropy_bits": 1.7958015735095068,
+            "oracle_mean_gain": 0.8512172830061772
+          }
+        ]
+      }
+    },
+    "seed_2_test": {
+      "seed": 2,
+      "split": "test",
+      "num_windows": 835,
+      "candidate_1_arch": {
+        "mean_raw_gains": [
+          0.0,
+          -0.10258428752422333,
+          -0.2235749512910843,
+          -0.36114922165870667
+        ],
+        "std_raw_gains": [
+          0.0,
+          0.24375510215759277,
+          0.5109920501708984,
+          0.7990431189537048
+        ],
+        "win_rate_over_hold": [
+          0.0,
+          0.19161676646706588,
+          0.1568862275449102,
+          0.12095808383233533
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.0001,
+              0.0002,
+              0.0003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00365, < 15% of its margin over random (0.176)",
+            "headroom_over_best_fixed": 0.00364764287292645,
+            "headroom_over_random": 0.17562471733294,
+            "relative_headroom": 0.02076953021374231,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8059880239520958,
+              0.07305389221556886,
+              0.06107784431137724,
+              0.059880239520958084
+            ],
+            "oracle_entropy_bits": 1.0161295454531967,
+            "oracle_mean_gain": 0.00364764287292645
+          },
+          {
+            "costs": [
+              0.0,
+              0.0005,
+              0.001,
+              0.0015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.0035, < 15% of its margin over random (0.176)",
+            "headroom_over_best_fixed": 0.003499800058689615,
+            "headroom_over_random": 0.17607687464082183,
+            "relative_headroom": 0.019876545774843154,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8095808383233533,
+              0.07305389221556886,
+              0.059880239520958084,
+              0.05748502994011976
+            ],
+            "oracle_entropy_bits": 1.002589889108188,
+            "oracle_mean_gain": 0.003499800058689615
+          },
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00332, < 15% of its margin over random (0.177)",
+            "headroom_over_best_fixed": 0.003321449731582564,
+            "headroom_over_random": 0.17664852422752006,
+            "relative_headroom": 0.018802589753337522,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8155688622754491,
+              0.07784431137724551,
+              0.05269461077844311,
+              0.05389221556886228
+            ],
+            "oracle_entropy_bits": 0.9774392481542931,
+            "oracle_mean_gain": 0.003321449731582564
+          },
+          {
+            "costs": [
+              0.0,
+              0.002,
+              0.004,
+              0.006
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00298, < 15% of its margin over random (0.178)",
+            "headroom_over_best_fixed": 0.0029849095406668806,
+            "headroom_over_random": 0.17781198400325102,
+            "relative_headroom": 0.016786886201170255,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8167664670658683,
+              0.08502994011976048,
+              0.05029940119760479,
+              0.04790419161676647
+            ],
+            "oracle_entropy_bits": 0.9678111315152823,
+            "oracle_mean_gain": 0.0029849095406668806
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00211, < 15% of its margin over random (0.181)",
+            "headroom_over_best_fixed": 0.0021113027076789005,
+            "headroom_over_random": 0.18143837547994882,
+            "relative_headroom": 0.011636472725761512,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8526946107784431,
+              0.07544910179640718,
+              0.04431137724550898,
+              0.027544910179640718
+            ],
+            "oracle_entropy_bits": 0.8193059950905733,
+            "oracle_mean_gain": 0.0021113027076789005
+          }
+        ]
+      },
+      "candidate_1_adjoint": {
+        "mean_raw_gains": [
+          0.0,
+          0.09023182839155197,
+          0.16940991580486298,
+          0.2392313927412033
+        ],
+        "std_raw_gains": [
+          0.0,
+          0.15616914629936218,
+          0.2880745828151703,
+          0.40073883533477783
+        ],
+        "win_rate_over_hold": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "first_order_correlations": [
+          0.9999616840530244,
+          0.999873917019865,
+          0.9997598083884521
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.0001,
+              0.0002,
+              0.0003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.114)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.11436318804378884,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.23893148823234137
+          },
+          {
+            "costs": [
+              0.0,
+              0.0005,
+              0.001,
+              0.0015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.114)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.11376318596777489,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.23773148650760778
+          },
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.113)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.11301318518928961,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.2362314855646409
+          },
+          {
+            "costs": [
+              0.0,
+              0.002,
+              0.004,
+              0.006
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.112)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.11151318574591937,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.23323148637229277
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 3.91e-05, < 15% of its margin over random (0.107)",
+            "headroom_over_best_fixed": 3.907057027260907e-05,
+            "headroom_over_random": 0.10705225747469033,
+            "relative_headroom": 0.0003649672710717593,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.009580838323353293,
+              0.0023952095808383233,
+              0.00718562874251497,
+              0.9808383233532935
+            ],
+            "oracle_entropy_bits": 0.16364177477660852,
+            "oracle_mean_gain": 0.22427055881788097
+          }
+        ]
+      },
+      "candidate_2_sensing": {
+        "mean_raw_gains": [
+          0.0,
+          -0.18393422663211823,
+          -0.09874171018600464,
+          -0.09900728613138199
+        ],
+        "std_raw_gains": [
+          0.0,
+          0.5059919357299805,
+          0.3123355805873871,
+          0.42609527707099915
+        ],
+        "win_rate_over_proprio": [
+          0.0,
+          0.2946107784431138,
+          0.31137724550898205,
+          0.4
+        ],
+        "first_order_correlations": [
+          0.954262876846561,
+          0.9475361961580934,
+          0.9203692611608497
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.12331935340917842,
+            "headroom_over_random": 0.22024012110258792,
+            "relative_headroom": 0.5599313730477664,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.38203592814371257,
+              0.1844311377245509,
+              0.18682634730538922,
+              0.2467065868263473
+            ],
+            "oracle_entropy_bits": 1.9304448355048134,
+            "oracle_mean_gain": 0.12331935340917842
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.11830024926694567,
+            "headroom_over_random": 0.2212210162517665,
+            "relative_headroom": 0.5347604457811138,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.40838323353293415,
+              0.18922155688622755,
+              0.18562874251497005,
+              0.21676646706586827
+            ],
+            "oracle_entropy_bits": 1.9112421234227415,
+            "oracle_mean_gain": 0.11830024926694567
+          },
+          {
+            "costs": [
+              0.0,
+              0.01,
+              0.02,
+              0.03
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.1124274721759522,
+            "headroom_over_random": 0.2228482385640016,
+            "relative_headroom": 0.5045024044184367,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.42634730538922155,
+              0.19520958083832335,
+              0.18562874251497005,
+              0.19281437125748502
+            ],
+            "oracle_entropy_bits": 1.8933201828612187,
+            "oracle_mean_gain": 0.1124274721759522
+          },
+          {
+            "costs": [
+              0.0,
+              0.02,
+              0.04,
+              0.06
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.10214089226133809,
+            "headroom_over_random": 0.2275616588572899,
+            "relative_headroom": 0.44884930429072595,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.5017964071856288,
+              0.20479041916167665,
+              0.16766467065868262,
+              0.12574850299401197
+            ],
+            "oracle_entropy_bits": 1.7758406777892528,
+            "oracle_mean_gain": 0.10214089226133809
+          },
+          {
+            "costs": [
+              0.0,
+              0.05,
+              0.08,
+              0.13
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.08391498002909614,
+            "headroom_over_random": 0.2443357462743799,
+            "relative_headroom": 0.3434412741836913,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.6239520958083832,
+              0.18323353293413175,
+              0.1341317365269461,
+              0.058682634730538925
+            ],
+            "oracle_entropy_bits": 1.5020125244737794,
+            "oracle_mean_gain": 0.08391498002909614
+          }
+        ]
+      }
+    },
+    "seed_2_validation": {
+      "seed": 2,
+      "split": "validation",
+      "num_windows": 796,
+      "candidate_1_arch": {
+        "mean_raw_gains": [
+          0.0,
+          -0.3958239257335663,
+          -0.7733741402626038,
+          -1.1376409530639648
+        ],
+        "std_raw_gains": [
+          0.0,
+          0.9779001474380493,
+          1.9249993562698364,
+          2.8075692653656006
+        ],
+        "win_rate_over_hold": [
+          0.0,
+          0.13190954773869346,
+          0.11306532663316583,
+          0.10050251256281408
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.0001,
+              0.0002,
+              0.0003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00495, < 15% of its margin over random (0.582)",
+            "headroom_over_best_fixed": 0.004952584355955489,
+            "headroom_over_random": 0.5818124994560244,
+            "relative_headroom": 0.008512337498053055,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8618090452261307,
+              0.03768844221105527,
+              0.04020100502512563,
+              0.06030150753768844
+            ],
+            "oracle_entropy_bits": 0.7938842342403569,
+            "oracle_mean_gain": 0.004952584355955489
+          },
+          {
+            "costs": [
+              0.0,
+              0.0005,
+              0.001,
+              0.0015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00483, < 15% of its margin over random (0.582)",
+            "headroom_over_best_fixed": 0.004833519582425469,
+            "headroom_over_random": 0.5822934316302921,
+            "relative_headroom": 0.008300831367602221,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8630653266331658,
+              0.038944723618090454,
+              0.03768844221105527,
+              0.06030150753768844
+            ],
+            "oracle_entropy_bits": 0.7882989371982984,
+            "oracle_mean_gain": 0.004833519582425469
+          },
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00469, < 15% of its margin over random (0.583)",
+            "headroom_over_best_fixed": 0.004688101624233424,
+            "headroom_over_random": 0.5828980175257544,
+            "relative_headroom": 0.008042747587533676,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8655778894472361,
+              0.0414572864321608,
+              0.035175879396984924,
+              0.05778894472361809
+            ],
+            "oracle_entropy_bits": 0.7782138759100796,
+            "oracle_mean_gain": 0.004688101624233424
+          },
+          {
+            "costs": [
+              0.0,
+              0.002,
+              0.004,
+              0.006
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00441, < 15% of its margin over random (0.584)",
+            "headroom_over_best_fixed": 0.004410716764401907,
+            "headroom_over_random": 0.5841206331545312,
+            "relative_headroom": 0.0075510374296862675,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.871859296482412,
+              0.0414572864321608,
+              0.03015075376884422,
+              0.056532663316582916
+            ],
+            "oracle_entropy_bits": 0.7494901469503259,
+            "oracle_mean_gain": 0.004410716764401907
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00368, < 15% of its margin over random (0.588)",
+            "headroom_over_best_fixed": 0.0036790313868404335,
+            "headroom_over_random": 0.5878889454401744,
+            "relative_headroom": 0.006258038045069558,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8894472361809045,
+              0.04773869346733668,
+              0.01507537688442211,
+              0.04773869346733668
+            ],
+            "oracle_entropy_bits": 0.6605859641502714,
+            "oracle_mean_gain": 0.0036790313868404335
+          }
+        ]
+      },
+      "candidate_1_adjoint": {
+        "mean_raw_gains": [
+          0.0,
+          0.47135525941848755,
+          0.845256507396698,
+          1.147321105003357
+        ],
+        "std_raw_gains": [
+          0.0,
+          1.5396376848220825,
+          2.5776877403259277,
+          3.2936768531799316
+        ],
+        "win_rate_over_hold": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "first_order_correlations": [
+          0.9979139711894847,
+          0.9964332541779359,
+          0.995176927005475
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.0001,
+              0.0002,
+              0.0003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.531)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.5311889957967705,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 1.1470222905267675
+          },
+          {
+            "costs": [
+              0.0,
+              0.0005,
+              0.001,
+              0.0015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.531)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.5305890035909137,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 1.1458223031227706
+          },
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.53)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.529839004198244,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 1.1443223015243777
+          },
+          {
+            "costs": [
+              0.0,
+              0.002,
+              0.004,
+              0.006
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 2.37e-07, < 15% of its margin over random (0.528)",
+            "headroom_over_best_fixed": 2.3728513842691257e-07,
+            "headroom_over_random": 0.5283392281159636,
+            "relative_headroom": 4.491151249038649e-07,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.001256281407035176,
+              0.0,
+              0.9987437185929648
+            ],
+            "oracle_entropy_bits": 0.013917604354558886,
+            "oracle_mean_gain": 1.141322520636689
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 2.07e-05, < 15% of its margin over random (0.524)",
+            "headroom_over_best_fixed": 2.073363316745791e-05,
+            "headroom_over_random": 0.5238597410308061,
+            "relative_headroom": 3.9578596222454606e-05,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0037688442211055275,
+              0.0,
+              0.0,
+              0.9962311557788944
+            ],
+            "oracle_entropy_bits": 0.03577249406699266,
+            "oracle_mean_gain": 1.132343039371719
+          }
+        ]
+      },
+      "candidate_2_sensing": {
+        "mean_raw_gains": [
+          0.0,
+          0.274279922246933,
+          -0.11821232736110687,
+          0.7242323756217957
+        ],
+        "std_raw_gains": [
+          0.0,
+          1.447251558303833,
+          1.0345319509506226,
+          1.3276351690292358
+        ],
+        "win_rate_over_proprio": [
+          0.0,
+          0.571608040201005,
+          0.3165829145728643,
+          0.6922110552763819
+        ],
+        "first_order_correlations": [
+          0.9896798849789944,
+          0.978494042066689,
+          0.9895000591888139
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.3170621189616103,
+            "headroom_over_random": 0.8197193748255356,
+            "relative_headroom": 0.38679349140563135,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "mode_3 (full)",
+            "oracle_share": [
+              0.17336683417085427,
+              0.24371859296482412,
+              0.1407035175879397,
+              0.44221105527638194
+            ],
+            "oracle_entropy_bits": 1.853329209173711,
+            "oracle_mean_gain": 1.0382943619257623
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.32174133865312493,
+            "headroom_over_random": 0.8183985939732024,
+            "relative_headroom": 0.39313525343576045,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "mode_3 (full)",
+            "oracle_share": [
+              0.1884422110552764,
+              0.2449748743718593,
+              0.13819095477386933,
+              0.42839195979899497
+            ],
+            "oracle_entropy_bits": 1.869352124261599,
+            "oracle_mean_gain": 1.0309735768001957
+          },
+          {
+            "costs": [
+              0.0,
+              0.01,
+              0.02,
+              0.03
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.32781705241088743,
+            "headroom_over_random": 0.8169743176432673,
+            "relative_headroom": 0.40125747570198295,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "mode_3 (full)",
+            "oracle_share": [
+              0.20100502512562815,
+              0.24623115577889448,
+              0.135678391959799,
+              0.41708542713567837
+            ],
+            "oracle_entropy_bits": 1.8803023013609952,
+            "oracle_mean_gain": 1.0220493079097615
+          },
+          {
+            "costs": [
+              0.0,
+              0.02,
+              0.04,
+              0.06
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.34062548624772826,
+            "headroom_over_random": 0.8147827586774532,
+            "relative_headroom": 0.41805681651956894,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "mode_3 (full)",
+            "oracle_share": [
+              0.22989949748743718,
+              0.24874371859296482,
+              0.13190954773869346,
+              0.38944723618090454
+            ],
+            "oracle_entropy_bits": 1.9022276027400067,
+            "oracle_mean_gain": 1.0048577528699634
+          },
+          {
+            "costs": [
+              0.0,
+              0.05,
+              0.08,
+              0.13
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.372554745249001,
+            "headroom_over_random": 0.8117119999714758,
+            "relative_headroom": 0.45897405146418047,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "mode_3 (full)",
+            "oracle_share": [
+              0.28391959798994976,
+              0.2399497487437186,
+              0.12185929648241206,
+              0.3542713567839196
+            ],
+            "oracle_entropy_bits": 1.9102497728938101,
+            "oracle_mean_gain": 0.9667869876723868
+          }
+        ]
+      }
+    },
+    "seed_3_test": {
+      "seed": 3,
+      "split": "test",
+      "num_windows": 835,
+      "candidate_1_arch": {
+        "mean_raw_gains": [
+          0.0,
+          -0.0932818353176117,
+          -0.19641563296318054,
+          -0.31030094623565674
+        ],
+        "std_raw_gains": [
+          0.0,
+          0.2201516181230545,
+          0.4542548954486847,
+          0.7059646844863892
+        ],
+        "win_rate_over_hold": [
+          0.0,
+          0.2778443113772455,
+          0.23353293413173654,
+          0.18922155688622755
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.0001,
+              0.0002,
+              0.0003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00832, < 15% of its margin over random (0.158)",
+            "headroom_over_best_fixed": 0.008315633380362794,
+            "headroom_over_random": 0.1584652065587222,
+            "relative_headroom": 0.052476083305272966,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.7197604790419162,
+              0.08622754491017964,
+              0.07425149700598803,
+              0.11976047904191617
+            ],
+            "oracle_entropy_bits": 1.2915673335497648,
+            "oracle_mean_gain": 0.008315633380362794
+          },
+          {
+            "costs": [
+              0.0,
+              0.0005,
+              0.001,
+              0.0015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00808, < 15% of its margin over random (0.159)",
+            "headroom_over_best_fixed": 0.008082593681115077,
+            "headroom_over_random": 0.1588321670512376,
+            "relative_headroom": 0.05088763712773444,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.7281437125748503,
+              0.08502994011976048,
+              0.07305389221556886,
+              0.11377245508982035
+            ],
+            "oracle_entropy_bits": 1.2681674364137394,
+            "oracle_mean_gain": 0.008082593681115077
+          },
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.0078, < 15% of its margin over random (0.159)",
+            "headroom_over_best_fixed": 0.0078016683381206976,
+            "headroom_over_random": 0.15930124193089765,
+            "relative_headroom": 0.04897430957572156,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.7413173652694611,
+              0.07904191616766468,
+              0.07065868263473053,
+              0.1089820359281437
+            ],
+            "oracle_entropy_bits": 1.228153656868339,
+            "oracle_mean_gain": 0.0078016683381206976
+          },
+          {
+            "costs": [
+              0.0,
+              0.002,
+              0.004,
+              0.006
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00727, < 15% of its margin over random (0.16)",
+            "headroom_over_best_fixed": 0.007271618662335113,
+            "headroom_over_random": 0.16027119245218435,
+            "relative_headroom": 0.0453707154172734,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.7485029940119761,
+              0.07664670658682635,
+              0.07904191616766468,
+              0.09580838323353294
+            ],
+            "oracle_entropy_bits": 1.2104174212691359,
+            "oracle_mean_gain": 0.007271618662335113
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00584, < 15% of its margin over random (0.163)",
+            "headroom_over_best_fixed": 0.005842529983443772,
+            "headroom_over_random": 0.16334210190403384,
+            "relative_headroom": 0.035768671489707866,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.7832335329341318,
+              0.08263473053892216,
+              0.0562874251497006,
+              0.07784431137724551
+            ],
+            "oracle_entropy_bits": 1.093697303206758,
+            "oracle_mean_gain": 0.005842529983443772
+          }
+        ]
+      },
+      "candidate_1_adjoint": {
+        "mean_raw_gains": [
+          0.0,
+          0.1052275076508522,
+          0.19682879745960236,
+          0.2770530581474304
+        ],
+        "std_raw_gains": [
+          0.0,
+          0.19184234738349915,
+          0.3505952060222626,
+          0.4839437007904053
+        ],
+        "win_rate_over_hold": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "first_order_correlations": [
+          0.9999450951961647,
+          0.9998191628567706,
+          0.9996578046872153
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.0001,
+              0.0002,
+              0.0003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.132)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.1321258548950403,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.2767532434202954
+          },
+          {
+            "costs": [
+              0.0,
+              0.0005,
+              0.001,
+              0.0015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.132)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.13152585207808115,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.2755532412996103
+          },
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.131)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.130775852456081,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.27405324107660595
+          },
+          {
+            "costs": [
+              0.0,
+              0.002,
+              0.004,
+              0.006
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.129)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.1292758518860614,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.27105324044265966
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 1.16e-05, < 15% of its margin over random (0.125)",
+            "headroom_over_best_fixed": 1.1620045957450031e-05,
+            "headroom_over_random": 0.1247874741894221,
+            "relative_headroom": 9.311868865789602e-05,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0023952095808383233,
+              0.0011976047904191617,
+              0.004790419161676647,
+              0.9916167664670659
+            ],
+            "oracle_entropy_bits": 0.08143214687106573,
+            "oracle_mean_gain": 0.2620648641908865
+          }
+        ]
+      },
+      "candidate_2_sensing": {
+        "mean_raw_gains": [
+          0.0,
+          -0.051866862922906876,
+          -0.0853307694196701,
+          0.001990953227505088
+        ],
+        "std_raw_gains": [
+          0.0,
+          0.4731787145137787,
+          0.7370895147323608,
+          0.5116399526596069
+        ],
+        "win_rate_over_proprio": [
+          0.0,
+          0.3209580838323353,
+          0.4023952095808383,
+          0.4023952095808383
+        ],
+        "first_order_correlations": [
+          0.960958021010988,
+          0.9538020228753648,
+          0.9551263583403331
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.23831714969184137,
+            "headroom_over_random": 0.2736187913886921,
+            "relative_headroom": 0.8709823929939716,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.36167664670658684,
+              0.17125748502994012,
+              0.3005988023952096,
+              0.1664670658682635
+            ],
+            "oracle_entropy_bits": 1.91850655073184,
+            "oracle_mean_gain": 0.23831714969184137
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.23339940186835334,
+            "headroom_over_random": 0.2747010432749786,
+            "relative_headroom": 0.8496487639281302,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.38562874251497004,
+              0.17485029940119762,
+              0.2934131736526946,
+              0.14610778443113773
+            ],
+            "oracle_entropy_bits": 1.8944996082144794,
+            "oracle_mean_gain": 0.23339940186835334
+          },
+          {
+            "costs": [
+              0.0,
+              0.01,
+              0.02,
+              0.03
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.22759907140346344,
+            "headroom_over_random": 0.27640071208003214,
+            "relative_headroom": 0.8234388026379681,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.4095808383233533,
+              0.18083832335329342,
+              0.28263473053892213,
+              0.12694610778443113
+            ],
+            "oracle_entropy_bits": 1.8668683112390703,
+            "oracle_mean_gain": 0.22759907140346344
+          },
+          {
+            "costs": [
+              0.0,
+              0.02,
+              0.04,
+              0.06
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.21690451474246863,
+            "headroom_over_random": 0.2807061557975893,
+            "relative_headroom": 0.7727102176514913,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.4479041916167665,
+              0.1844311377245509,
+              0.26706586826347306,
+              0.10059880239520957
+            ],
+            "oracle_entropy_bits": 1.8108072418995764,
+            "oracle_mean_gain": 0.21690451474246863
+          },
+          {
+            "costs": [
+              0.0,
+              0.05,
+              0.08,
+              0.13
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.1958378162658857,
+            "headroom_over_random": 0.29463945692349336,
+            "relative_headroom": 0.6646693498241728,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.5341317365269461,
+              0.16407185628742516,
+              0.2347305389221557,
+              0.06706586826347305
+            ],
+            "oracle_entropy_bits": 1.6633248953711692,
+            "oracle_mean_gain": 0.1958378162658857
+          }
+        ]
+      }
+    },
+    "seed_3_validation": {
+      "seed": 3,
+      "split": "validation",
+      "num_windows": 796,
+      "candidate_1_arch": {
+        "mean_raw_gains": [
+          0.0,
+          -0.38131392002105713,
+          -0.7287561893463135,
+          -1.0662455558776855
+        ],
+        "std_raw_gains": [
+          0.0,
+          0.9996350407600403,
+          1.944950819015503,
+          2.8364903926849365
+        ],
+        "win_rate_over_hold": [
+          0.0,
+          0.14321608040201006,
+          0.13316582914572864,
+          0.10678391959798995
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.0001,
+              0.0002,
+              0.0003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00596, < 15% of its margin over random (0.55)",
+            "headroom_over_best_fixed": 0.005955751833430463,
+            "headroom_over_random": 0.5501846481162975,
+            "relative_headroom": 0.010825005484652385,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8542713567839196,
+              0.0364321608040201,
+              0.026381909547738693,
+              0.0829145728643216
+            ],
+            "oracle_entropy_bits": 0.8044186366386881,
+            "oracle_mean_gain": 0.005955751833430463
+          },
+          {
+            "costs": [
+              0.0,
+              0.0005,
+              0.001,
+              0.0015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00582, < 15% of its margin over random (0.551)",
+            "headroom_over_best_fixed": 0.005821093645817881,
+            "headroom_over_random": 0.5506499862483851,
+            "relative_headroom": 0.010571313522547015,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8555276381909548,
+              0.035175879396984924,
+              0.03015075376884422,
+              0.07914572864321608
+            ],
+            "oracle_entropy_bits": 0.8043976659561667,
+            "oracle_mean_gain": 0.005821093645817881
+          },
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00566, < 15% of its margin over random (0.551)",
+            "headroom_over_best_fixed": 0.005655157180027989,
+            "headroom_over_random": 0.5512340561084664,
+            "relative_headroom": 0.010259085260354855,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8555276381909548,
+              0.03768844221105527,
+              0.028894472361809045,
+              0.07788944723618091
+            ],
+            "oracle_entropy_bits": 0.8054087952449382,
+            "oracle_mean_gain": 0.005655157180027989
+          },
+          {
+            "costs": [
+              0.0,
+              0.002,
+              0.004,
+              0.006
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00533, < 15% of its margin over random (0.552)",
+            "headroom_over_best_fixed": 0.005334013168016758,
+            "headroom_over_random": 0.5524129092401705,
+            "relative_headroom": 0.009655844530051902,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8605527638190955,
+              0.038944723618090454,
+              0.02763819095477387,
+              0.0728643216080402
+            ],
+            "oracle_entropy_bits": 0.7872236145446327,
+            "oracle_mean_gain": 0.005334013168016758
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00444, < 15% of its margin over random (0.556)",
+            "headroom_over_best_fixed": 0.004440792434937765,
+            "headroom_over_random": 0.5560196882769601,
+            "relative_headroom": 0.00798675393797522,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.871859296482412,
+              0.04020100502512563,
+              0.026381909547738693,
+              0.06155778894472362
+            ],
+            "oracle_entropy_bits": 0.7448143266626033,
+            "oracle_mean_gain": 0.004440792434937765
+          }
+        ]
+      },
+      "candidate_1_adjoint": {
+        "mean_raw_gains": [
+          0.0,
+          0.568227231502533,
+          1.038344383239746,
+          1.4174771308898926
+        ],
+        "std_raw_gains": [
+          0.0,
+          1.9738600254058838,
+          3.5619113445281982,
+          4.714768409729004
+        ],
+        "win_rate_over_hold": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "first_order_correlations": [
+          0.9991917053894953,
+          0.9989138955250693,
+          0.9981265039650652
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.0001,
+              0.0002,
+              0.0003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.661)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.6613147737360799,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 1.4171770393044627
+          },
+          {
+            "costs": [
+              0.0,
+              0.0005,
+              0.001,
+              0.0015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.661)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.6607147890301631,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 1.4159770600507082
+          },
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.66)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.6599647853036551,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 1.4144770544538292
+          },
+          {
+            "costs": [
+              0.0,
+              0.002,
+              0.004,
+              0.006
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.658)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.6584647743940475,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 1.4114770363342373
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 9.88e-06, < 15% of its margin over random (0.654)",
+            "headroom_over_best_fixed": 9.877776876665578e-06,
+            "headroom_over_random": 0.6539746630739715,
+            "relative_headroom": 1.5104219527765247e-05,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.001256281407035176,
+              0.001256281407035176,
+              0.0,
+              0.9974874371859297
+            ],
+            "oracle_entropy_bits": 0.027832928921150683,
+            "oracle_mean_gain": 1.402486932895675
+          }
+        ]
+      },
+      "candidate_2_sensing": {
+        "mean_raw_gains": [
+          0.0,
+          0.2768428325653076,
+          -0.22100140154361725,
+          0.26012924313545227
+        ],
+        "std_raw_gains": [
+          0.0,
+          1.5010889768600464,
+          1.197507619857788,
+          1.2065489292144775
+        ],
+        "win_rate_over_proprio": [
+          0.0,
+          0.4748743718592965,
+          0.30904522613065327,
+          0.5025125628140703
+        ],
+        "first_order_correlations": [
+          0.968919559396939,
+          0.9665048381488586,
+          0.9534436845317599
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.47860334758897166,
+            "headroom_over_random": 0.676953459396928,
+            "relative_headroom": 0.7069959403344229,
+            "best_fixed_candidate": 1,
+            "best_fixed_name": "mode_1 (wrist)",
+            "oracle_share": [
+              0.31909547738693467,
+              0.26884422110552764,
+              0.157035175879397,
+              0.2550251256281407
+            ],
+            "oracle_entropy_bits": 1.9574963890093182,
+            "oracle_mean_gain": 0.7544461265449113
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.4772930297270492,
+            "headroom_over_random": 0.6776431353269005,
+            "relative_headroom": 0.7043427504018014,
+            "best_fixed_candidate": 1,
+            "best_fixed_name": "mode_1 (wrist)",
+            "oracle_share": [
+              0.33291457286432163,
+              0.2663316582914573,
+              0.15577889447236182,
+              0.2449748743718593
+            ],
+            "oracle_entropy_bits": 1.9516010581806542,
+            "oracle_mean_gain": 0.7491358019828085
+          },
+          {
+            "costs": [
+              0.0,
+              0.01,
+              0.02,
+              0.03
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.47581564151359035,
+            "headroom_over_random": 0.6786657497035246,
+            "relative_headroom": 0.7011045447946218,
+            "best_fixed_candidate": 1,
+            "best_fixed_name": "mode_1 (wrist)",
+            "oracle_share": [
+              0.3442211055276382,
+              0.2638190954773869,
+              0.15577889447236182,
+              0.23618090452261306
+            ],
+            "oracle_entropy_bits": 1.9463791481260126,
+            "oracle_mean_gain": 0.7426584216592899
+          },
+          {
+            "costs": [
+              0.0,
+              0.02,
+              0.04,
+              0.06
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.4734114008819937,
+            "headroom_over_random": 0.6812615094112054,
+            "relative_headroom": 0.6949040777177466,
+            "best_fixed_candidate": 1,
+            "best_fixed_name": "mode_1 (wrist)",
+            "oracle_share": [
+              0.3731155778894472,
+              0.2638190954773869,
+              0.15326633165829145,
+              0.20979899497487436
+            ],
+            "oracle_entropy_bits": 1.9252264928884326,
+            "oracle_mean_gain": 0.730254183911798
+          },
+          {
+            "costs": [
+              0.0,
+              0.05,
+              0.08,
+              0.13
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.476213604852969,
+            "headroom_over_random": 0.6890637177445144,
+            "relative_headroom": 0.6911024228815016,
+            "best_fixed_candidate": 1,
+            "best_fixed_name": "mode_1 (wrist)",
+            "oracle_share": [
+              0.41959798994974873,
+              0.25879396984924624,
+              0.14195979899497488,
+              0.17964824120603015
+            ],
+            "oracle_entropy_bits": 1.8751696378824652,
+            "oracle_mean_gain": 0.7030563874207624
+          }
+        ]
+      }
+    },
+    "seed_4_test": {
+      "seed": 4,
+      "split": "test",
+      "num_windows": 835,
+      "candidate_1_arch": {
+        "mean_raw_gains": [
+          0.0,
+          -0.061685312539339066,
+          -0.14872032403945923,
+          -0.2622252404689789
+        ],
+        "std_raw_gains": [
+          0.0,
+          0.16343286633491516,
+          0.35467174649238586,
+          0.578158974647522
+        ],
+        "win_rate_over_hold": [
+          0.0,
+          0.37964071856287424,
+          0.3149700598802395,
+          0.24431137724550897
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.0001,
+              0.0002,
+              0.0003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.0157, < 15% of its margin over random (0.134)",
+            "headroom_over_best_fixed": 0.015714330347547652,
+            "headroom_over_random": 0.134022069478652,
+            "relative_headroom": 0.11725181090455214,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.6203592814371257,
+              0.13532934131736526,
+              0.10179640718562874,
+              0.14251497005988023
+            ],
+            "oracle_entropy_bits": 1.5539336338525511,
+            "oracle_mean_gain": 0.015714330347547652
+          },
+          {
+            "costs": [
+              0.0,
+              0.0005,
+              0.001,
+              0.0015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.0154, < 15% of its margin over random (0.134)",
+            "headroom_over_best_fixed": 0.015408522183491017,
+            "headroom_over_random": 0.13431626131620766,
+            "relative_headroom": 0.11471821827452625,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.6227544910179641,
+              0.13532934131736526,
+              0.10419161676646707,
+              0.1377245508982036
+            ],
+            "oracle_entropy_bits": 1.5498492430199116,
+            "oracle_mean_gain": 0.015408522183491017
+          },
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.015, < 15% of its margin over random (0.135)",
+            "headroom_over_best_fixed": 0.015031979491510345,
+            "headroom_over_random": 0.13468971862889892,
+            "relative_headroom": 0.11160450585635938,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.6275449101796408,
+              0.1317365269461078,
+              0.10658682634730539,
+              0.1341317365269461
+            ],
+            "oracle_entropy_bits": 1.5400907730862077,
+            "oracle_mean_gain": 0.015031979491510345
+          },
+          {
+            "costs": [
+              0.0,
+              0.002,
+              0.004,
+              0.006
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.0143, < 15% of its margin over random (0.135)",
+            "headroom_over_best_fixed": 0.014301012866031713,
+            "headroom_over_random": 0.13545875194514573,
+            "relative_headroom": 0.10557466875099318,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.6395209580838324,
+              0.12934131736526946,
+              0.10538922155688622,
+              0.12574850299401197
+            ],
+            "oracle_entropy_bits": 1.5123806034693983,
+            "oracle_mean_gain": 0.014301012866031713
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.0122, < 15% of its margin over random (0.138)",
+            "headroom_over_best_fixed": 0.012223156253823976,
+            "headroom_over_random": 0.13788089390626612,
+            "relative_headroom": 0.08865010885506366,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.6610778443113773,
+              0.1341317365269461,
+              0.09101796407185629,
+              0.11377245508982035
+            ],
+            "oracle_entropy_bits": 1.454964093678596,
+            "oracle_mean_gain": 0.012223156253823976
+          }
+        ]
+      },
+      "candidate_1_adjoint": {
+        "mean_raw_gains": [
+          0.0,
+          0.050033967941999435,
+          0.0957614928483963,
+          0.1376228779554367
+        ],
+        "std_raw_gains": [
+          0.0,
+          0.05608745664358139,
+          0.10685143619775772,
+          0.1529490053653717
+        ],
+        "win_rate_over_hold": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "first_order_correlations": [
+          0.9999861692904513,
+          0.9999477136799497,
+          0.999888494832923
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.0001,
+              0.0002,
+              0.0003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.0666)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.06661833468176324,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.13732293484185984
+          },
+          {
+            "costs": [
+              0.0,
+              0.0005,
+              0.001,
+              0.0015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.066)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.06601833335101648,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.13612293379526294
+          },
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.0653)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.06526833355948218,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.13462293437419984
+          },
+          {
+            "costs": [
+              0.0,
+              0.002,
+              0.004,
+              0.006
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.0638)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.06376833442715692,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.13162293524486932
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 1.22e-05, < 15% of its margin over random (0.0593)",
+            "headroom_over_best_fixed": 1.2248363011252428e-05,
+            "headroom_over_random": 0.05928058278897476,
+            "relative_headroom": 0.00020661677795668411,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.003592814371257485,
+              0.0011976047904191617,
+              0.0023952095808383233,
+              0.9928143712574851
+            ],
+            "oracle_entropy_bits": 0.07198072131094681,
+            "oracle_mean_gain": 0.12263518409346214
+          }
+        ]
+      },
+      "candidate_2_sensing": {
+        "mean_raw_gains": [
+          0.0,
+          -0.1862797737121582,
+          -0.05871783569455147,
+          -0.04199255630373955
+        ],
+        "std_raw_gains": [
+          0.0,
+          0.2975482642650604,
+          0.23525892198085785,
+          0.2474808394908905
+        ],
+        "win_rate_over_proprio": [
+          0.0,
+          0.20119760479041915,
+          0.36407185628742517,
+          0.43353293413173655
+        ],
+        "first_order_correlations": [
+          0.9345592365860164,
+          0.9396817051328376,
+          0.9396655357858349
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.09334877364359752,
+            "headroom_over_random": 0.16659630115323806,
+            "relative_headroom": 0.5603292089764571,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.34970059880239523,
+              0.11616766467065869,
+              0.237125748502994,
+              0.2970059880239521
+            ],
+            "oracle_entropy_bits": 1.903388539892164,
+            "oracle_mean_gain": 0.09334877364359752
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.08768625665946814,
+            "headroom_over_random": 0.1669337834407224,
+            "relative_headroom": 0.5252756802855619,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.3976047904191617,
+              0.11736526946107785,
+              0.22634730538922157,
+              0.25868263473053893
+            ],
+            "oracle_entropy_bits": 1.8815914597260117,
+            "oracle_mean_gain": 0.08768625665946814
+          },
+          {
+            "costs": [
+              0.0,
+              0.01,
+              0.02,
+              0.03
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.08127677060752929,
+            "headroom_over_random": 0.168024297851043,
+            "relative_headroom": 0.48372034073061754,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.444311377245509,
+              0.11976047904191617,
+              0.20958083832335328,
+              0.22634730538922157
+            ],
+            "oracle_entropy_bits": 1.8443167628677248,
+            "oracle_mean_gain": 0.08127677060752929
+          },
+          {
+            "costs": [
+              0.0,
+              0.02,
+              0.04,
+              0.06
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.07009822927906127,
+            "headroom_over_random": 0.17184575657711593,
+            "relative_headroom": 0.40791364695470167,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.5197604790419161,
+              0.12095808383233533,
+              0.19161676646706588,
+              0.16766467065868262
+            ],
+            "oracle_entropy_bits": 1.7480267440163746,
+            "oracle_mean_gain": 0.07009822927906127
+          },
+          {
+            "costs": [
+              0.0,
+              0.05,
+              0.08,
+              0.13
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.051719903713928726,
+            "headroom_over_random": 0.1884674300746379,
+            "relative_headroom": 0.27442356323024264,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "mode_0 (proprio)",
+            "oracle_share": [
+              0.6646706586826348,
+              0.10179640718562874,
+              0.15209580838323353,
+              0.081437125748503
+            ],
+            "oracle_entropy_bits": 1.435117948458914,
+            "oracle_mean_gain": 0.051719903713928726
+          }
+        ]
+      }
+    },
+    "seed_4_validation": {
+      "seed": 4,
+      "split": "validation",
+      "num_windows": 796,
+      "candidate_1_arch": {
+        "mean_raw_gains": [
+          0.0,
+          -0.3222987949848175,
+          -0.7245480418205261,
+          -1.210033893585205
+        ],
+        "std_raw_gains": [
+          0.0,
+          0.8310736417770386,
+          1.8330504894256592,
+          3.0343897342681885
+        ],
+        "win_rate_over_hold": [
+          0.0,
+          0.15829145728643215,
+          0.12939698492462312,
+          0.08417085427135679
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.0001,
+              0.0002,
+              0.0003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00431, < 15% of its margin over random (0.569)",
+            "headroom_over_best_fixed": 0.004312109239742025,
+            "headroom_over_random": 0.568682411138045,
+            "relative_headroom": 0.007582631632852243,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8404522613065326,
+              0.07035175879396985,
+              0.05150753768844221,
+              0.03768844221105527
+            ],
+            "oracle_entropy_bits": 0.8788103344607844,
+            "oracle_mean_gain": 0.004312109239742025
+          },
+          {
+            "costs": [
+              0.0,
+              0.0005,
+              0.001,
+              0.0015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.0042, < 15% of its margin over random (0.569)",
+            "headroom_over_best_fixed": 0.004199203431674153,
+            "headroom_over_random": 0.5691695027626474,
+            "relative_headroom": 0.007377773073384936,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.842964824120603,
+              0.07160804020100503,
+              0.04773869346733668,
+              0.03768844221105527
+            ],
+            "oracle_entropy_bits": 0.8678984097436171,
+            "oracle_mean_gain": 0.004199203431674153
+          },
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00406, < 15% of its margin over random (0.57)",
+            "headroom_over_best_fixed": 0.004060838016858043,
+            "headroom_over_random": 0.5697811424019458,
+            "relative_headroom": 0.007127013715721343,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8454773869346733,
+              0.07160804020100503,
+              0.04648241206030151,
+              0.0364321608040201
+            ],
+            "oracle_entropy_bits": 0.8570023244794474,
+            "oracle_mean_gain": 0.004060838016858043
+          },
+          {
+            "costs": [
+              0.0,
+              0.002,
+              0.004,
+              0.006
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00379, < 15% of its margin over random (0.571)",
+            "headroom_over_best_fixed": 0.003790781992351889,
+            "headroom_over_random": 0.5710110859124221,
+            "relative_headroom": 0.006638718732219665,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8492462311557789,
+              0.06909547738693467,
+              0.052763819095477386,
+              0.028894472361809045
+            ],
+            "oracle_entropy_bits": 0.8382721834624527,
+            "oracle_mean_gain": 0.003790781992351889
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0.00305, < 15% of its margin over random (0.575)",
+            "headroom_over_best_fixed": 0.0030502983949254807,
+            "headroom_over_random": 0.5747705996969606,
+            "relative_headroom": 0.005306984032470877,
+            "best_fixed_candidate": 0,
+            "best_fixed_name": "depth_0 (hold)",
+            "oracle_share": [
+              0.8630653266331658,
+              0.06909547738693467,
+              0.04396984924623116,
+              0.02386934673366834
+            ],
+            "oracle_entropy_bits": 0.7765585991738083,
+            "oracle_mean_gain": 0.0030502983949254807
+          }
+        ]
+      },
+      "candidate_1_adjoint": {
+        "mean_raw_gains": [
+          0.0,
+          0.1822630763053894,
+          0.3346186876296997,
+          0.4655121862888336
+        ],
+        "std_raw_gains": [
+          0.0,
+          0.6107943654060364,
+          1.0553327798843384,
+          1.3973315954208374
+        ],
+        "win_rate_over_hold": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "first_order_correlations": [
+          0.9998388724020263,
+          0.9994897029892634,
+          0.9990679376615773
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.0001,
+              0.0002,
+              0.0003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.22)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.2197637854409568,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.46521220007097003
+          },
+          {
+            "costs": [
+              0.0,
+              0.0005,
+              0.001,
+              0.0015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.219)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.21916378684103224,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.4640122024113097
+          },
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.218)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.21841378263186137,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.4625121993972129
+          },
+          {
+            "costs": [
+              0.0,
+              0.002,
+              0.004,
+              0.006
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.217)",
+            "headroom_over_best_fixed": 0.0,
+            "headroom_over_random": 0.2169137863018468,
+            "relative_headroom": 0.0,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "oracle_entropy_bits": 0.0,
+            "oracle_mean_gain": 0.45951220523870207
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": false,
+            "reason": "oracle beats best fixed candidate by 4.59e-06, < 15% of its margin over random (0.212)",
+            "headroom_over_best_fixed": 4.591689393595999e-06,
+            "headroom_over_random": 0.21241837789903598,
+            "relative_headroom": 2.1616252976842065e-05,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "depth_3",
+            "oracle_share": [
+              0.002512562814070352,
+              0.0,
+              0.0,
+              0.9974874371859297
+            ],
+            "oracle_entropy_bits": 0.02532036610708033,
+            "oracle_mean_gain": 0.45051679386635635
+          }
+        ]
+      },
+      "candidate_2_sensing": {
+        "mean_raw_gains": [
+          0.0,
+          -0.41314616799354553,
+          0.15316763520240784,
+          0.18577061593532562
+        ],
+        "std_raw_gains": [
+          0.0,
+          1.0289337635040283,
+          0.985724687576294,
+          0.8266216516494751
+        ],
+        "win_rate_over_proprio": [
+          0.0,
+          0.20100502512562815,
+          0.4623115577889447,
+          0.49120603015075376
+        ],
+        "first_order_correlations": [
+          0.9849138440334163,
+          0.9806185666040509,
+          0.9753725369154147
+        ],
+        "cost_sweep": [
+          {
+            "costs": [
+              0.0,
+              0.001,
+              0.002,
+              0.003
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.2646083670057563,
+            "headroom_over_random": 0.46743121845208213,
+            "relative_headroom": 0.5660904889536859,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "mode_3 (full)",
+            "oracle_share": [
+              0.35050251256281406,
+              0.07412060301507538,
+              0.23115577889447236,
+              0.3442211055276382
+            ],
+            "oracle_entropy_bits": 1.8264462580331378,
+            "oracle_mean_gain": 0.447379307802673
+          },
+          {
+            "costs": [
+              0.0,
+              0.005,
+              0.01,
+              0.015
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.27047212737209947,
+            "headroom_over_random": 0.4672949820734682,
+            "relative_headroom": 0.5788038342974884,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "mode_3 (full)",
+            "oracle_share": [
+              0.37814070351758794,
+              0.06909547738693467,
+              0.22738693467336685,
+              0.32537688442211055
+            ],
+            "oracle_entropy_bits": 1.809841003682588,
+            "oracle_mean_gain": 0.44124307277280106
+          },
+          {
+            "costs": [
+              0.0,
+              0.01,
+              0.02,
+              0.03
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.278134334509509,
+            "headroom_over_random": 0.46745719033382344,
+            "relative_headroom": 0.5949942374635118,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "mode_3 (full)",
+            "oracle_share": [
+              0.39824120603015073,
+              0.06532663316582915,
+              0.22487437185929648,
+              0.31155778894472363
+            ],
+            "oracle_entropy_bits": 1.7944009434032269,
+            "oracle_mean_gain": 0.43390528228714237
+          },
+          {
+            "costs": [
+              0.0,
+              0.02,
+              0.04,
+              0.06
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.2943089074085481,
+            "headroom_over_random": 0.4686317601996994,
+            "relative_headroom": 0.6280174166666241,
+            "best_fixed_candidate": 3,
+            "best_fixed_name": "mode_3 (full)",
+            "oracle_share": [
+              0.4484924623115578,
+              0.05778894472361809,
+              0.2198492462311558,
+              0.27386934673366836
+            ],
+            "oracle_entropy_bits": 1.7486955607332986,
+            "oracle_mean_gain": 0.42007985445740986
+          },
+          {
+            "costs": [
+              0.0,
+              0.05,
+              0.08,
+              0.13
+            ],
+            "passes": true,
+            "reason": "per-window choice has measurable headroom over the best constant policy",
+            "headroom_over_best_fixed": 0.31939860076723087,
+            "headroom_over_random": 0.4761181119115714,
+            "relative_headroom": 0.6708390056510857,
+            "best_fixed_candidate": 2,
+            "best_fixed_name": "mode_2 (exterior)",
+            "oracle_share": [
+              0.5138190954773869,
+              0.05402010050251256,
+              0.20603015075376885,
+              0.22613065326633167
+            ],
+            "oracle_entropy_bits": 1.6756096745360198,
+            "oracle_mean_gain": 0.3925662047543268
+          }
+        ]
+      }
+    }
+  }
+}

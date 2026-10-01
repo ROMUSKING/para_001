@@ -1,0 +1,108 @@
+{
+  "benchmark": "Milestone B2.1: Adaptive Sensing Allocator",
+  "date": "2026-10-01T18:12:19Z",
+  "run_id": "droid100_adjoint_v2_5seeds_20261001T080821Z",
+  "num_seeds": 5,
+  "total_test_windows": 4175,
+  "sensing_costs": [
+    0.0,
+    0.004999999888241291,
+    0.009999999776482582,
+    0.014999999664723873
+  ],
+  "pooled_mean_regrets": {
+    "exact_costate": 0.030070978775620462,
+    "allocator_costate": 0.18151769936084747,
+    "allocator_costate_norm": 0.17914668172597886,
+    "allocator_critic": 0.18960261046886445,
+    "always_mode0": 0.14009053111076356,
+    "always_mode1": 0.2736516922712326,
+    "always_mode2": 0.20805996060371398,
+    "always_mode3": 0.18959263563156128,
+    "random_expected": 0.2028487116098404,
+    "uncertainty": 0.18322475254535675
+  },
+  "pooled_std_regrets": {
+    "exact_costate": 0.005942462248355789,
+    "allocator_costate": 0.04455067584128561,
+    "allocator_costate_norm": 0.045756004871005444,
+    "allocator_critic": 0.046764028941975136,
+    "always_mode0": 0.05017082309657647,
+    "always_mode1": 0.024414894793137423,
+    "always_mode2": 0.0675662955017772,
+    "always_mode3": 0.04677360389764636,
+    "random_expected": 0.04230997593252901,
+    "uncertainty": 0.04471953493431684
+  },
+  "primary_endpoint": {
+    "mean_difference_adjoint_minus_critic": -0.008084911108016967,
+    "ci_95": [
+      -0.014813798666000366,
+      -0.0004706427454948429
+    ],
+    "normalized_coupling_difference": -0.01045592874288559,
+    "realization_floor_critic_minus_uncertainty": 0.00637785792350769
+  },
+  "per_seed_regrets": [
+    {
+      "exact_costate": 0.026928067207336426,
+      "allocator_costate": 0.19669532775878906,
+      "allocator_costate_norm": 0.19476625323295593,
+      "allocator_critic": 0.19676251709461212,
+      "always_mode0": 0.14594940841197968,
+      "always_mode1": 0.24394798278808594,
+      "always_mode2": 0.19018112123012543,
+      "always_mode3": 0.19676251709461212,
+      "random_expected": 0.1942102462053299,
+      "uncertainty": 0.1895643025636673
+    },
+    {
+      "exact_costate": 0.031857579946517944,
+      "allocator_costate": 0.11866356432437897,
+      "allocator_costate_norm": 0.1158672496676445,
+      "allocator_critic": 0.1278059482574463,
+      "always_mode0": 0.11511734873056412,
+      "always_mode1": 0.2478438764810562,
+      "always_mode2": 0.13794255256652832,
+      "always_mode3": 0.1278059482574463,
+      "random_expected": 0.15717744827270508,
+      "uncertainty": 0.142013818025589
+    },
+    {
+      "exact_costate": 0.040445536375045776,
+      "allocator_costate": 0.21717938780784607,
+      "allocator_costate_norm": 0.2106781005859375,
+      "allocator_critic": 0.23230747878551483,
+      "always_mode0": 0.11830023676156998,
+      "always_mode1": 0.30723437666893005,
+      "always_mode2": 0.22704192996025085,
+      "always_mode3": 0.23230747878551483,
+      "random_expected": 0.22122101485729218,
+      "uncertainty": 0.17303815484046936
+    },
+    {
+      "exact_costate": 0.028318539261817932,
+      "allocator_costate": 0.23442327976226807,
+      "allocator_costate_norm": 0.2376861870288849,
+      "allocator_critic": 0.24640844762325287,
+      "always_mode0": 0.2333994060754776,
+      "always_mode1": 0.2902662456035614,
+      "always_mode2": 0.3287300765514374,
+      "always_mode3": 0.24640844762325287,
+      "random_expected": 0.2747010588645935,
+      "uncertainty": 0.2655106484889984
+    },
+    {
+      "exact_costate": 0.022805171087384224,
+      "allocator_costate": 0.1406269371509552,
+      "allocator_costate_norm": 0.13673561811447144,
+      "allocator_critic": 0.1447286605834961,
+      "always_mode0": 0.08768625557422638,
+      "always_mode1": 0.2789659798145294,
+      "always_mode2": 0.15640412271022797,
+      "always_mode3": 0.14467878639698029,
+      "random_expected": 0.1669337898492813,
+      "uncertainty": 0.1459968388080597
+    }
+  ]
+}

@@ -1,0 +1,993 @@
+{
+  "run_id": "droid100_adjoint_v2_5seeds_20261001T080821Z",
+  "date": "2026-10-01T17:21:28Z",
+  "val_windows": 796,
+  "test_windows": 835,
+  "candidate_scales": [
+    0.1,
+    0.25,
+    0.5,
+    1.0,
+    2.0,
+    3.0,
+    5.0
+  ],
+  "cost_weights": [
+    0.0,
+    0.01,
+    0.05,
+    0.1,
+    0.25,
+    0.5,
+    1.0,
+    2.0
+  ],
+  "per_seed_results": {
+    "seed_0": {
+      "effect_norms": [
+        1.9206650257110596,
+        1.8058393001556396,
+        1.8141306638717651,
+        1.8313707113265991
+      ],
+      "effect_cosine_matrix": [
+        [
+          1.0,
+          0.09530529379844666,
+          0.06981223076581955,
+          0.14119382202625275
+        ],
+        [
+          0.09530529379844666,
+          1.0,
+          0.07145465910434723,
+          -0.005982270929962397
+        ],
+        [
+          0.06981223076581955,
+          0.07145465910434723,
+          1.0,
+          0.11191686987876892
+        ],
+        [
+          0.14119382202625275,
+          -0.005982270929962397,
+          0.11191686987876892,
+          1.0
+        ]
+      ],
+      "perturbation_scale_sweep": {
+        "0.1": {
+          "mean_raw_gain": [
+            -0.008041472174227238,
+            -0.006937019992619753,
+            -0.0071411957032978535,
+            -0.005784453824162483
+          ],
+          "win_rate_over_hold": [
+            0.25988023952095807,
+            0.30538922155688625,
+            0.2778443113772455,
+            0.3161676646706587
+          ],
+          "first_order_correlation": [
+            0.9999268438452029,
+            0.9999410668903598,
+            0.9999203898101234,
+            0.9999198234848204
+          ]
+        },
+        "0.25": {
+          "mean_raw_gain": [
+            -0.02050567977130413,
+            -0.017632383853197098,
+            -0.01814410090446472,
+            -0.014727222733199596
+          ],
+          "win_rate_over_hold": [
+            0.25149700598802394,
+            0.2958083832335329,
+            0.2694610778443114,
+            0.3065868263473054
+          ],
+          "first_order_correlation": [
+            0.9996520746943567,
+            0.999710243820854,
+            0.999620687082876,
+            0.9996137511074225
+          ]
+        },
+        "0.5": {
+          "mean_raw_gain": [
+            -0.04241881147027016,
+            -0.03625412657856941,
+            -0.03728410601615906,
+            -0.030374959111213684
+          ],
+          "win_rate_over_hold": [
+            0.23832335329341317,
+            0.2874251497005988,
+            0.25988023952095807,
+            0.3005988023952096
+          ],
+          "first_order_correlation": [
+            0.9992858373656456,
+            0.9993920835928602,
+            0.9992691811731873,
+            0.9991685275262974
+          ]
+        },
+        "1.0": {
+          "mean_raw_gain": [
+            -0.09067024290561676,
+            -0.07668223977088928,
+            -0.07872302830219269,
+            -0.0646788626909256
+          ],
+          "win_rate_over_hold": [
+            0.2179640718562874,
+            0.2718562874251497,
+            0.23353293413173654,
+            0.2778443113772455
+          ],
+          "first_order_correlation": [
+            0.9985987272003595,
+            0.9988457894384017,
+            0.9987539611376948,
+            0.9982634059315874
+          ]
+        },
+        "2.0": {
+          "mean_raw_gain": [
+            -0.20517712831497192,
+            -0.17090976238250732,
+            -0.17397238314151764,
+            -0.1460779309272766
+          ],
+          "win_rate_over_hold": [
+            0.18802395209580838,
+            0.237125748502994,
+            0.18922155688622755,
+            0.2347305389221557
+          ],
+          "first_order_correlation": [
+            0.9964141872113331,
+            0.9971870218426047,
+            0.9970754491599672,
+            0.9955961372239442
+          ]
+        },
+        "3.0": {
+          "mean_raw_gain": [
+            -0.3440355956554413,
+            -0.28364214301109314,
+            -0.2855986952781677,
+            -0.24524319171905518
+          ],
+          "win_rate_over_hold": [
+            0.1664670658682635,
+            0.20359281437125748,
+            0.13652694610778443,
+            0.18083832335329342
+          ],
+          "first_order_correlation": [
+            0.9936521908133249,
+            0.9949556272176794,
+            0.9946371728364597,
+            0.9916264414285545
+          ]
+        },
+        "5.0": {
+          "mean_raw_gain": [
+            -0.6954955458641052,
+            -0.564440906047821,
+            -0.555052638053894,
+            -0.49982959032058716
+          ],
+          "win_rate_over_hold": [
+            0.08742514970059881,
+            0.1317365269461078,
+            0.06467065868263473,
+            0.09461077844311377
+          ],
+          "first_order_correlation": [
+            0.9848080860408102,
+            0.9879255159665643,
+            0.9866585757566395,
+            0.9814874479916693
+          ]
+        }
+      },
+      "cost_weight_sweep": {
+        "0.0": {
+          "passes": false,
+          "reason": "oracle beats best fixed candidate by 0.00819, < 15% of its margin over random (0.0703)",
+          "headroom_over_best_fixed": 0.008191821559103663,
+          "headroom_over_random": 0.07034269693815066,
+          "relative_headroom": 0.11645589258976496,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            0.5497005988023952,
+            0.09820359281437126,
+            0.14131736526946106,
+            0.06107784431137724,
+            0.1497005988023952
+          ],
+          "oracle_mean_gain": 0.008191821559103663
+        },
+        "0.01": {
+          "passes": false,
+          "reason": "oracle beats best fixed candidate by 0.00352, < 15% of its margin over random (0.0767)",
+          "headroom_over_best_fixed": 0.0035168706082298364,
+          "headroom_over_random": 0.07666774598727683,
+          "relative_headroom": 0.04587157954028632,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            0.7305389221556886,
+            0.1029940119760479,
+            0.11616766467065869,
+            0.015568862275449102,
+            0.03473053892215569
+          ],
+          "oracle_mean_gain": 0.0035168706082298364
+        },
+        "0.05": {
+          "passes": false,
+          "reason": "oracle beats best fixed candidate by 4.02e-05, < 15% of its margin over random (0.117)",
+          "headroom_over_best_fixed": 4.019361770081662e-05,
+          "headroom_over_random": 0.1171910689967478,
+          "relative_headroom": 0.0003429750922566637,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            0.9976047904191617,
+            0.0023952095808383233,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "oracle_mean_gain": 4.019361770081662e-05
+        },
+        "0.1": {
+          "passes": false,
+          "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.172)",
+          "headroom_over_best_fixed": 0.0,
+          "headroom_over_random": 0.172150875379047,
+          "relative_headroom": 0.0,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "oracle_mean_gain": 0.0
+        },
+        "0.25": {
+          "passes": false,
+          "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.337)",
+          "headroom_over_best_fixed": 0.0,
+          "headroom_over_random": 0.337150875379047,
+          "relative_headroom": 0.0,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "oracle_mean_gain": 0.0
+        },
+        "0.5": {
+          "passes": false,
+          "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.612)",
+          "headroom_over_best_fixed": 0.0,
+          "headroom_over_random": 0.612150875379047,
+          "relative_headroom": 0.0,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "oracle_mean_gain": 0.0
+        },
+        "1.0": {
+          "passes": false,
+          "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (1.16)",
+          "headroom_over_best_fixed": 0.0,
+          "headroom_over_random": 1.162150875379047,
+          "relative_headroom": 0.0,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "oracle_mean_gain": 0.0
+        },
+        "2.0": {
+          "passes": false,
+          "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (2.26)",
+          "headroom_over_best_fixed": 0.0,
+          "headroom_over_random": 2.262150875379047,
+          "relative_headroom": 0.0,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "oracle_mean_gain": 0.0
+        }
+      },
+      "depth_refinement_sweep": {
+        "mean_gains": [
+          0.0,
+          -0.1297021210193634,
+          -0.29221969842910767,
+          -0.4855291247367859
+        ],
+        "passes": false,
+        "oracle_share": [
+          0.85546875,
+          0.03125,
+          0.046875,
+          0.06640625
+        ],
+        "relative_headroom": 0.021915106643819814
+      }
+    },
+    "seed_1": {
+      "effect_norms": [
+        1.934386134147644,
+        1.7925148010253906,
+        1.8357837200164795,
+        1.8954068422317505
+      ],
+      "effect_cosine_matrix": [
+        [
+          1.0000001192092896,
+          0.14853699505329132,
+          0.08733775466680527,
+          0.14169317483901978
+        ],
+        [
+          0.14853699505329132,
+          1.0000001192092896,
+          0.13277249038219452,
+          0.06450071185827255
+        ],
+        [
+          0.08733775466680527,
+          0.13277249038219452,
+          0.9999998807907104,
+          0.1270025223493576
+        ],
+        [
+          0.14169317483901978,
+          0.06450071185827255,
+          0.1270025223493576,
+          1.0000001192092896
+        ]
+      ],
+      "perturbation_scale_sweep": {
+        "0.1": {
+          "mean_raw_gain": [
+            -0.004724044818431139,
+            -0.004549114499241114,
+            -0.004864535294473171,
+            -0.005204756744205952
+          ],
+          "win_rate_over_hold": [
+            0.41916167664670656,
+            0.4239520958083832,
+            0.42634730538922155,
+            0.38682634730538923
+          ],
+          "first_order_correlation": [
+            0.9999013256771376,
+            0.9999039324534588,
+            0.9999257248783571,
+            0.9998834332248834
+          ]
+        },
+        "0.25": {
+          "mean_raw_gain": [
+            -0.01219458132982254,
+            -0.011760727502405643,
+            -0.01260481309145689,
+            -0.01345741841942072
+          ],
+          "win_rate_over_hold": [
+            0.4095808383233533,
+            0.4155688622754491,
+            0.4215568862275449,
+            0.37365269461077844
+          ],
+          "first_order_correlation": [
+            0.9996966037019648,
+            0.9997369098368283,
+            0.9997655442151955,
+            0.9996528943810703
+          ]
+        },
+        "0.5": {
+          "mean_raw_gain": [
+            -0.025774909183382988,
+            -0.024924980476498604,
+            -0.026788106188178062,
+            -0.02852434478700161
+          ],
+          "win_rate_over_hold": [
+            0.39520958083832336,
+            0.4,
+            0.4035928143712575,
+            0.3568862275449102
+          ],
+          "first_order_correlation": [
+            0.9993128156092387,
+            0.9994519501684238,
+            0.9994567376331035,
+            0.999240226075477
+          ]
+        },
+        "1.0": {
+          "mean_raw_gain": [
+            -0.05708857625722885,
+            -0.05560409650206566,
+            -0.060019101947546005,
+            -0.06352987140417099
+          ],
+          "win_rate_over_hold": [
+            0.35808383233532937,
+            0.3592814371257485,
+            0.3592814371257485,
+            0.30419161676646705
+          ],
+          "first_order_correlation": [
+            0.9982672828277315,
+            0.9987351480697045,
+            0.9985659898968581,
+            0.9981208536661182
+          ]
+        },
+        "2.0": {
+          "mean_raw_gain": [
+            -0.13597609102725983,
+            -0.13514015078544617,
+            -0.14656196534633636,
+            -0.15285450220108032
+          ],
+          "win_rate_over_hold": [
+            0.29101796407185626,
+            0.2934131736526946,
+            0.29221556886227545,
+            0.21077844311377245
+          ],
+          "first_order_correlation": [
+            0.9939997146234238,
+            0.9960817682086289,
+            0.9944362410027694,
+            0.9929944518717001
+          ]
+        },
+        "3.0": {
+          "mean_raw_gain": [
+            -0.2369306981563568,
+            -0.24098752439022064,
+            -0.2621108889579773,
+            -0.269595205783844
+          ],
+          "win_rate_over_hold": [
+            0.2179640718562874,
+            0.23233532934131737,
+            0.21437125748502994,
+            0.13892215568862276
+          ],
+          "first_order_correlation": [
+            0.9869725253713983,
+            0.9913345569737159,
+            0.9873076304563319,
+            0.9847252359787968
+          ]
+        },
+        "5.0": {
+          "mean_raw_gain": [
+            -0.518066942691803,
+            -0.5477737188339233,
+            -0.5930492877960205,
+            -0.5917671322822571
+          ],
+          "win_rate_over_hold": [
+            0.11017964071856287,
+            0.11976047904191617,
+            0.08982035928143713,
+            0.059880239520958084
+          ],
+          "first_order_correlation": [
+            0.9717337718765947,
+            0.9800217429751362,
+            0.9731783134700018,
+            0.9685999318465874
+          ]
+        }
+      },
+      "cost_weight_sweep": {
+        "0.0": {
+          "passes": true,
+          "reason": "per-window choice has measurable headroom over the best constant policy",
+          "headroom_over_best_fixed": 0.012095061961762205,
+          "headroom_over_random": 0.059343391120612266,
+          "relative_headroom": 0.20381480959151188,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            0.5077844311377245,
+            0.1532934131736527,
+            0.1592814371257485,
+            0.1341317365269461,
+            0.045508982035928146
+          ],
+          "oracle_mean_gain": 0.012095061961762205
+        },
+        "0.01": {
+          "passes": false,
+          "reason": "oracle beats best fixed candidate by 0.00694, < 15% of its margin over random (0.0652)",
+          "headroom_over_best_fixed": 0.006935912797550955,
+          "headroom_over_random": 0.06518424195640102,
+          "relative_headroom": 0.10640474736501643,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            0.6179640718562874,
+            0.1377245508982036,
+            0.15568862275449102,
+            0.08023952095808383,
+            0.008383233532934131
+          ],
+          "oracle_mean_gain": 0.006935912797550955
+        },
+        "0.05": {
+          "passes": false,
+          "reason": "oracle beats best fixed candidate by 8.92e-05, < 15% of its margin over random (0.102)",
+          "headroom_over_best_fixed": 8.92281389521981e-05,
+          "headroom_over_random": 0.10233755729780226,
+          "relative_headroom": 0.0008719002222472855,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            0.9832335329341317,
+            0.015568862275449102,
+            0.0011976047904191617,
+            0.0,
+            0.0
+          ],
+          "oracle_mean_gain": 8.92281389521981e-05
+        },
+        "0.1": {
+          "passes": false,
+          "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.157)",
+          "headroom_over_best_fixed": 0.0,
+          "headroom_over_random": 0.15724832915885006,
+          "relative_headroom": 0.0,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "oracle_mean_gain": 0.0
+        },
+        "0.25": {
+          "passes": false,
+          "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.322)",
+          "headroom_over_best_fixed": 0.0,
+          "headroom_over_random": 0.32224832915885004,
+          "relative_headroom": 0.0,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "oracle_mean_gain": 0.0
+        },
+        "0.5": {
+          "passes": false,
+          "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.597)",
+          "headroom_over_best_fixed": 0.0,
+          "headroom_over_random": 0.5972483291588501,
+          "relative_headroom": 0.0,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "oracle_mean_gain": 0.0
+        },
+        "1.0": {
+          "passes": false,
+          "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (1.15)",
+          "headroom_over_best_fixed": 0.0,
+          "headroom_over_random": 1.14724832915885,
+          "relative_headroom": 0.0,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "oracle_mean_gain": 0.0
+        },
+        "2.0": {
+          "passes": false,
+          "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (2.25)",
+          "headroom_over_best_fixed": 0.0,
+          "headroom_over_random": 2.24724832915885,
+          "relative_headroom": 0.0,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "oracle_mean_gain": 0.0
+        }
+      },
+      "depth_refinement_sweep": {
+        "mean_gains": [
+          0.0,
+          -0.06838402897119522,
+          -0.1625143587589264,
+          -0.28147003054618835
+        ],
+        "passes": false,
+        "oracle_share": [
+          0.66015625,
+          0.12890625,
+          0.10546875,
+          0.10546875
+        ],
+        "relative_headroom": 0.08344070376526948
+      }
+    },
+    "seed_2": {
+      "effect_norms": [
+        1.8370834589004517,
+        1.758084774017334,
+        1.77424955368042,
+        1.8028929233551025
+      ],
+      "effect_cosine_matrix": [
+        [
+          0.9999999403953552,
+          0.07280606776475906,
+          0.05370330065488815,
+          0.0712634027004242
+        ],
+        [
+          0.07280606776475906,
+          1.0000001192092896,
+          0.07329067587852478,
+          0.06059678643941879
+        ],
+        [
+          0.05370330065488815,
+          0.07329067587852478,
+          1.0000001192092896,
+          0.06530319899320602
+        ],
+        [
+          0.0712634027004242,
+          0.06059678643941879,
+          0.06530319899320602,
+          1.0
+        ]
+      ],
+      "perturbation_scale_sweep": {
+        "0.1": {
+          "mean_raw_gain": [
+            -0.009396063163876534,
+            -0.008752607740461826,
+            -0.007780683226883411,
+            -0.009082041680812836
+          ],
+          "win_rate_over_hold": [
+            0.23233532934131737,
+            0.24910179640718563,
+            0.25269461077844313,
+            0.25149700598802394
+          ],
+          "first_order_correlation": [
+            0.9999465767437435,
+            0.9999452836232665,
+            0.9999438646665095,
+            0.9999392173719037
+          ]
+        },
+        "0.25": {
+          "mean_raw_gain": [
+            -0.023840274661779404,
+            -0.0221648458391428,
+            -0.019689397886395454,
+            -0.023002980276942253
+          ],
+          "win_rate_over_hold": [
+            0.2251497005988024,
+            0.24311377245508983,
+            0.24910179640718563,
+            0.2467065868263473
+          ],
+          "first_order_correlation": [
+            0.999881020030414,
+            0.9998663340852182,
+            0.9998440576856735,
+            0.9998320086721918
+          ]
+        },
+        "0.5": {
+          "mean_raw_gain": [
+            -0.04889707267284393,
+            -0.04531591758131981,
+            -0.04021675884723663,
+            -0.04703010991215706
+          ],
+          "win_rate_over_hold": [
+            0.2155688622754491,
+            0.23952095808383234,
+            0.24191616766467067,
+            0.2251497005988024
+          ],
+          "first_order_correlation": [
+            0.9997267042383758,
+            0.9997187787739568,
+            0.9996274809581738,
+            0.9996189856008794
+          ]
+        },
+        "1.0": {
+          "mean_raw_gain": [
+            -0.10258432477712631,
+            -0.09450408816337585,
+            -0.08374369144439697,
+            -0.09813402593135834
+          ],
+          "win_rate_over_hold": [
+            0.19161676646706588,
+            0.21437125748502994,
+            0.22634730538922157,
+            0.2
+          ],
+          "first_order_correlation": [
+            0.9992171009028623,
+            0.9992379161571652,
+            0.9988971643081039,
+            0.998953836692296
+          ]
+        },
+        "2.0": {
+          "mean_raw_gain": [
+            -0.22265952825546265,
+            -0.20294715464115143,
+            -0.1786080151796341,
+            -0.2090306133031845
+          ],
+          "win_rate_over_hold": [
+            0.1568862275449102,
+            0.1664670658682635,
+            0.19401197604790418,
+            0.16047904191616766
+          ],
+          "first_order_correlation": [
+            0.9977822173998099,
+            0.9973330007606174,
+            0.996435385464864,
+            0.9966804857986845
+          ]
+        },
+        "3.0": {
+          "mean_raw_gain": [
+            -0.3581775426864624,
+            -0.3231913149356842,
+            -0.28258103132247925,
+            -0.33085694909095764
+          ],
+          "win_rate_over_hold": [
+            0.11976047904191617,
+            0.11736526946107785,
+            0.1664670658682635,
+            0.12335329341317365
+          ],
+          "first_order_correlation": [
+            0.9955916900996297,
+            0.9939040354993256,
+            0.9912920480041343,
+            0.992002026905484
+          ]
+        },
+        "5.0": {
+          "mean_raw_gain": [
+            -0.6820620894432068,
+            -0.6001567840576172,
+            -0.5337218046188354,
+            -0.6154261231422424
+          ],
+          "win_rate_over_hold": [
+            0.05748502994011976,
+            0.0658682634730539,
+            0.1281437125748503,
+            0.06467065868263473
+          ],
+          "first_order_correlation": [
+            0.9891144500609454,
+            0.9839924252667392,
+            0.975489706713124,
+            0.9797703333129298
+          ]
+        }
+      },
+      "cost_weight_sweep": {
+        "0.0": {
+          "passes": false,
+          "reason": "oracle beats best fixed candidate by 0.00538, < 15% of its margin over random (0.0812)",
+          "headroom_over_best_fixed": 0.005384654092217634,
+          "headroom_over_random": 0.0811778800135958,
+          "relative_headroom": 0.0663315436583932,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            0.6095808383233533,
+            0.07544910179640718,
+            0.11017964071856287,
+            0.12455089820359282,
+            0.08023952095808383
+          ],
+          "oracle_mean_gain": 0.005384654092217634
+        },
+        "0.01": {
+          "passes": false,
+          "reason": "oracle beats best fixed candidate by 0.00161, < 15% of its margin over random (0.0884)",
+          "headroom_over_best_fixed": 0.0016121073925566532,
+          "headroom_over_random": 0.08840533331393483,
+          "relative_headroom": 0.018235408794081726,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            0.8,
+            0.06467065868263473,
+            0.07305389221556886,
+            0.04910179640718563,
+            0.013173652694610778
+          ],
+          "oracle_mean_gain": 0.0016121073925566532
+        },
+        "0.05": {
+          "passes": false,
+          "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.131)",
+          "headroom_over_best_fixed": 0.0,
+          "headroom_over_random": 0.13079322592137815,
+          "relative_headroom": 0.0,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "oracle_mean_gain": 0.0
+        },
+        "0.1": {
+          "passes": false,
+          "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.186)",
+          "headroom_over_best_fixed": 0.0,
+          "headroom_over_random": 0.1857932259213782,
+          "relative_headroom": 0.0,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "oracle_mean_gain": 0.0
+        },
+        "0.25": {
+          "passes": false,
+          "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.351)",
+          "headroom_over_best_fixed": 0.0,
+          "headroom_over_random": 0.3507932259213782,
+          "relative_headroom": 0.0,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "oracle_mean_gain": 0.0
+        },
+        "0.5": {
+          "passes": false,
+          "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (0.626)",
+          "headroom_over_best_fixed": 0.0,
+          "headroom_over_random": 0.6257932259213782,
+          "relative_headroom": 0.0,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "oracle_mean_gain": 0.0
+        },
+        "1.0": {
+          "passes": false,
+          "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (1.18)",
+          "headroom_over_best_fixed": 0.0,
+          "headroom_over_random": 1.1757932259213781,
+          "relative_headroom": 0.0,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "oracle_mean_gain": 0.0
+        },
+        "2.0": {
+          "passes": false,
+          "reason": "oracle beats best fixed candidate by 0, < 15% of its margin over random (2.28)",
+          "headroom_over_best_fixed": 0.0,
+          "headroom_over_random": 2.2757932259213782,
+          "relative_headroom": 0.0,
+          "best_fixed_candidate": 0,
+          "oracle_share": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "oracle_mean_gain": 0.0
+        }
+      },
+      "depth_refinement_sweep": {
+        "mean_gains": [
+          0.0,
+          -0.15056471526622772,
+          -0.3250035047531128,
+          -0.5241657495498657
+        ],
+        "passes": false,
+        "oracle_share": [
+          0.8984375,
+          0.0546875,
+          0.01953125,
+          0.02734375
+        ],
+        "relative_headroom": 0.006804166511346801
+      }
+    }
+  }
+}
