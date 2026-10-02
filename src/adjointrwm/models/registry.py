@@ -9,6 +9,7 @@ import torch
 from .adjoint_rwm import build_adjoint_rwm
 from .common import ArmDims, WorldModel
 from .feature_predictor import build_dino_wm, build_vjepa2_ac
+from .hybrid_adjoint import build_hybrid_adjoint_rwm
 from .rssm import build_rssm
 from .tdmpc2 import build_tdmpc2
 
@@ -16,6 +17,7 @@ REFERENCE_ARM = "adjoint_rwm"
 
 BUILDERS: dict[str, Callable[..., WorldModel]] = {
     "adjoint_rwm": build_adjoint_rwm,
+    "hybrid_adjoint_rwm": build_hybrid_adjoint_rwm,
     "dreamerv3_rssm": build_rssm,
     "tdmpc2": build_tdmpc2,
     "dino_wm": build_dino_wm,
@@ -26,6 +28,7 @@ BUILDERS: dict[str, Callable[..., WorldModel]] = {
 # divisibility constraints (heads, blocks x classes, SimNorm groups).
 WIDTH_GRIDS: dict[str, range] = {
     "adjoint_rwm": range(128, 1025, 64),
+    "hybrid_adjoint_rwm": range(128, 1025, 64),
     "dreamerv3_rssm": range(64, 1025, 16),
     "tdmpc2": range(128, 4097, 32),
     "dino_wm": range(64, 1537, 16),
@@ -35,6 +38,7 @@ WIDTH_GRIDS: dict[str, range] = {
 # Recipe hyperparameters that the official configs fix (recorded in the fairness manifest).
 RECIPE_DEFAULTS: dict[str, dict] = {
     "adjoint_rwm": {"grad_clip": 1.0},
+    "hybrid_adjoint_rwm": {"grad_clip": 1.0},
     "dreamerv3_rssm": {"grad_clip": 1.0},
     "tdmpc2": {"grad_clip": 20.0},
     "dino_wm": {"grad_clip": 1.0},

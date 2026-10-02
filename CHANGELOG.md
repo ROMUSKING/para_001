@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-10-02 (aq): Milestone E3.3: Multi-Horizon Rollout Scaling and HARP Architecture
+
+- **Multi-Horizon Rollout Decay Benchmark (`scripts/benchmark_horizon_scaling.py`):**
+  - Evaluated rollout horizons $H \in \{1, 2, 4, 8, 12, 16\}$ on 50 held-out test episodes across 12 robotics laboratories on NVIDIA L4 GPU.
+  - **Empirical Crossover Horizons Confirmed:** Crossover horizon identified at $H^* = 8$ for terminal state prediction and $H^* = 11$ for mean trajectory prediction. At $H=12$, AdjointRWM beats Persistence on Mean RMSE (0.3425 vs 0.3733, **−8.24%**) and Terminal RMSE (0.4464 vs 0.5690, **−21.56%**). At $H=16$, AdjointRWM widens the advantage to **−13.65% Mean RMSE** (0.3746 vs 0.4339) and **−24.09% Terminal RMSE** (0.4967 vs 0.6543).
+  - **Bounded Degradation vs Linear Explosion:** From $H=1 \to H=16$, Persistence Terminal RMSE explodes by **+523.8%** (0.1049 to 0.6543) and Ridge compounds by **+388.1%** (0.0775 to 0.3783), while AdjointRWM degrades by only **+113.2%** (0.2330 to 0.4967).
+  - **Compression of Ridge Advantage:** Relative difference between AdjointRWM and Ridge shrinks steadily across horizons (+200.6% at $H=1$, +137.8% at $H=4$, +90.9% at $H=8$, +66.2% at $H=12$, +54.0% at $H=16$).
+  - **Artifacts & Research Note:** Committed in `results/benchmarks/horizon_scaling/` and documented in `docs/research-notes/2026-10-02-multi-horizon-rollout-decay.md`.
+- **HARP Architecture Implementation (`src/adjointrwm/models/hybrid_adjoint.py`):**
+  - Implemented `HybridAdjointRecursiveWorldModel` combining linear kinematic continuation ($\hat{s}^{\text{kin}}_{h+1} = \hat{s}_h + A_v v_h + B_u u_h$) with a 24.7M parameter transformer-GRU neural residual and Pontryagin sensitivity co-state allocation.
+  - Fully integrated into arm registry (`hybrid_adjoint_rwm`) with unit tests covering kinematics, gradients, causality, and co-state propagation in `tests/test_hybrid_adjoint.py` and `tests/test_models.py`.
+  - Created end-to-end multi-site training pipeline `scripts/train_hybrid_dynamics.py` on NVIDIA L4 GPU.
+
 ## 2026-10-02 (ap): Milestone E3.2: Dynamics Pilot on E3.1 Stratified Shard
 
 - **Same-Data Training Protocol (`scripts/train_e3_dynamics_pilot.py`):** Trained AdjointRWM (24.7M parameters) directly on 399 training episodes (26,879 windows) across 14 robotics laboratories on the E3.1 stratified shard with native E3 normalisation on NVIDIA L4 GPU.

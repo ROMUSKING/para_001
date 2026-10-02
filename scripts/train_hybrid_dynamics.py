@@ -1,0 +1,467 @@
+#!/usr/bin/env python3
+"""Train and evaluate the Hybrid Kinematic-Residual Adjoint World Model (HARP arm) on E3.1 shard.
+
+Combines linear kinematic state-action continuation with a 24.7M parameter Adjoint Transformer
+residual dynamics model and Pontryagin sensitivity co-state allocation.
+
+Evaluates against standard AdjointRWM, In-Domain Ridge, and Persistence on held-out test episodes.
+"""
+
+from __future__ import annotations
+
+import argparse
+import datetime
+import json
+import math
+from pathlib import Path
+import time
+from typing import List
+
+import numpy as np
+import pandas as pd
+import torch
+
+from adjointrwm.data import WindowDataset, WindowSpec
+from adjointrwm.eval.prediction import (
+    RidgeForecaster,
+    classify_relative_difference,
+    derangement,
+    horizon_mean_rmse,
+    paired_relative_difference,
+    per_window_mse,
+    per_window_native_mse,
+    persistence_forecast,
+    prediction_frame,
+    stack_windows,
+    summarize_frame,
+)
+from adjointrwm.models import ArmDims, build_arm, count_prediction_parameters
+from adjointrwm.io import atomic_write_json, sha256_file, sha256_json
+from adjointrwm.training import (
+    PermutedActions,
+    TrainConfig,
+    load_best_weights,
+    measure_latency_ms,
+    predict_dataset,
+    seed_everything,
+    train_job,
+)
+
+GROUPS = {
+    "cartesian": range(7, 13),
+    "gripper": range(13, 14),
+    "joints": range(0, 7),
+}
+
+
+def train_hybrid_dynamics(
+    cache_dir: str | Path,
+    out_dir: str | Path,
+    seeds: List[int] = (0, 1),
+    steps: int = 1500,
+    batch_size: int = 64,
+    lr: float = 3e-4,
+    seed_base: int = 20261002,
+    device: str | None = None,
+):
+    t0_all = time.time()
+    cache_dir = Path(cache_dir)
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    local_dir = Path("/tmp/para_hybrid_run")
+    local_dir.mkdir(parents=True, exist_ok=True)
+
+    if device is None:
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"=== Starting Hybrid Adjoint World Model (HARP) Training on {device.upper()} ===")
+    print(f"Artifacts output dir: {out_dir}")
+
+    # 1. Load Episode Manifest
+    cache_manifest_path = cache_dir / "cache_manifest.json"
+    if not cache_manifest_path.exists():
+        cache_manifest_path = cache_dir / "e3_1_droid_500_manifest.json"
+    if not cache_manifest_path.exists():
+        fallback_manifest = Path("results/data/droid_e3_1/e3_1_droid_500_manifest.json")
+        if fallback_manifest.exists():
+            cache_manifest_path = fallback_manifest
+        else:
+            raise FileNotFoundError(f"Missing cache manifest at {cache_manifest_path}")
+
+    manifest_data = json.loads(cache_manifest_path.read_text())
+    episodes = manifest_data.get("episodes", [])
+
+    records_by_split = {"train": [], "val": [], "test": []}
+    episodes_dir = cache_dir / "episodes"
+    site_by_episode = {}
+    for ep in episodes:
+        raw_split = ep.get("split", "train")
+        split = "val" if raw_split in ("val", "validation") else raw_split
+        ep_id = ep["episode_id"]
+        site_by_episode[ep_id] = ep.get("site", "unknown")
+        npz_path = Path(ep.get("cached_path")) if "cached_path" in ep else (episodes_dir / f"{ep_id}.npz")
+        if not npz_path.exists():
+            if split == "test":
+                raise FileNotFoundError(f"Missing test episode {npz_path}")
+            continue
+        rec = dict(ep)
+        rec["cached_path"] = str(npz_path)
+        records_by_split[split].append(rec)
+
+    print(f"Loaded episodes: {len(records_by_split['train'])} train, {len(records_by_split['val'])} val, {len(records_by_split['test'])} test across {len(set(site_by_episode.values()))} sites.")
+
+    # 2. Load Normalisation
+    norm_path = cache_dir / "normalisation.npz"
+    if not norm_path.exists():
+        raise FileNotFoundError(f"Missing normalisation file: {norm_path}")
+    norm_data = np.load(norm_path)
+    normalisation = {k: norm_data[k] for k in norm_data.files}
+    print("Loaded native E3.1 normalisation statistics.")
+
+    # 3. Create Datasets
+    spec = WindowSpec(context_len=8, horizon=4, stride=2)
+    datasets = {
+        s: WindowDataset(
+            records_by_split[s],
+            spec,
+            normalisation,
+            input_visual_keys=("exterior_embeddings", "wrist_embeddings"),
+            target_visual_keys=("exterior_embeddings", "wrist_embeddings"),
+            visual_layout="tokens",
+        )
+        for s in ("train", "val", "test")
+    }
+
+    test_len = len(datasets["test"])
+    print(f"Window datasets: train={len(datasets['train'])}, val={len(datasets['val'])}, test={test_len}")
+
+    shuffle = derangement(test_len, seed=0)
+    shuffled_test = PermutedActions(datasets["test"], shuffle)
+
+    # 4. Model Dimensions
+    dims = ArmDims(
+        state_dim=14,
+        action_dim=7,
+        visual_tokens=2,
+        visual_token_dim=512,
+        target_visual_dim=1024,
+        context_len=8,
+        horizon=4,
+    )
+    param_count = count_prediction_parameters("hybrid_adjoint_rwm", dims)
+    print(f"HybridAdjointRWM Architecture: Kinematic-Residual Transformer ({param_count:,} parameters)")
+
+    # 5. Fit & Score Classical Baselines
+    print("\n--- Evaluating Classical Baselines ---", flush=True)
+    frames: List[pd.DataFrame] = []
+    stack_keys = ["context_state", "context_action", "future_actions", "target_state"]
+    test_stacked = stack_windows(datasets["test"], keys=stack_keys)
+
+    # Persistence
+    persistence_pred = persistence_forecast(test_stacked["context_state"], spec.horizon)
+    for seed in seeds:
+        frames.append(
+            prediction_frame(
+                arm="persistence",
+                seed=seed,
+                episode_ids=test_stacked["episode_id"],
+                window_starts=test_stacked["window_start"],
+                pred_state=persistence_pred,
+                target_state=test_stacked["target_state"],
+                state_std=normalisation["state_std"],
+                groups=GROUPS,
+                condition="nominal",
+            )
+        )
+    pers_mse = per_window_mse(persistence_pred, test_stacked["target_state"])
+    pers_rmse = float(horizon_mean_rmse(pers_mse))
+    print(f"  Persistence Test RMSE: {pers_rmse:.4f}")
+
+    # In-Domain Ridge Forecaster
+    print("  Fitting In-Domain Ridge Forecaster...", flush=True)
+    val_stacked = stack_windows(datasets["val"], keys=stack_keys)
+    train_sample_records = records_by_split["train"][:50]
+    train_sample_ds = WindowDataset(train_sample_records, spec, normalisation, visual_layout="tokens")
+    train_sample_stacked = stack_windows(train_sample_ds, keys=stack_keys)
+    ridge = RidgeForecaster().fit(train_sample_stacked, val_stacked)
+    ridge_pred = ridge.predict(test_stacked["context_state"], test_stacked["context_action"], test_stacked["future_actions"])
+    ridge_pred_shuf = ridge.predict(test_stacked["context_state"], test_stacked["context_action"], test_stacked["future_actions"][shuffle])
+
+    for seed in seeds:
+        frames.append(
+            prediction_frame(
+                arm="ridge",
+                seed=seed,
+                episode_ids=test_stacked["episode_id"],
+                window_starts=test_stacked["window_start"],
+                pred_state=ridge_pred,
+                target_state=test_stacked["target_state"],
+                state_std=normalisation["state_std"],
+                groups=GROUPS,
+                condition="nominal",
+            )
+        )
+        frames.append(
+            prediction_frame(
+                arm="ridge",
+                seed=seed,
+                episode_ids=test_stacked["episode_id"],
+                window_starts=test_stacked["window_start"],
+                pred_state=ridge_pred_shuf,
+                target_state=test_stacked["target_state"],
+                state_std=normalisation["state_std"],
+                groups=GROUPS,
+                condition="actions_shuffled",
+            )
+        )
+    ridge_mse = per_window_mse(ridge_pred, test_stacked["target_state"])
+    ridge_rmse = float(horizon_mean_rmse(ridge_mse))
+    print(f"  In-Domain Ridge Test RMSE: {ridge_rmse:.4f} (best lambda: {ridge.lambda_:.4e})")
+
+    # 6. Training HybridAdjointRWM across Seeds
+    source_hash = sha256_file(Path(__file__))
+    config_dict = {
+        "steps": steps,
+        "batch_size": batch_size,
+        "lr": lr,
+        "seeds": list(seeds),
+        "params": param_count,
+        "arm": "hybrid_adjoint_rwm",
+    }
+    config_hash = sha256_json(config_dict)
+    data_hash = sha256_file(cache_manifest_path)
+
+    cfg = TrainConfig(
+        steps=steps,
+        batch_size=batch_size,
+        lr=lr,
+        weight_decay=0.05,
+        warmup_steps=100,
+        eval_interval=100,
+        eval_batch_size=128,
+        amp=True,
+    )
+
+    arm_latencies = {}
+    for seed in seeds:
+        print(f"\n>>> Training HybridAdjointRWM Seed {seed} on E3.1 Shard ({steps} steps) <<<", flush=True)
+        t_seed = time.time()
+        seed_everything(seed_base + seed)
+        model = build_arm("hybrid_adjoint_rwm", dims).to(device)
+
+        identity = {
+            "run_id": out_dir.name,
+            "arm": "hybrid_adjoint_rwm",
+            "seed": seed,
+            "config_hash": config_hash,
+            "data_manifest_hash": data_hash,
+            "source_hash": source_hash,
+        }
+
+        job_local = local_dir / f"seed_{seed}"
+        job_persist = out_dir / f"seed_{seed}"
+
+        summary = train_job(
+            model,
+            datasets["train"],
+            datasets["val"],
+            cfg,
+            identity=identity,
+            local_dir=job_local,
+            persist_dir=job_persist,
+            device=device,
+            resume=True,
+        )
+
+        load_best_weights(model, job_persist)
+        model.eval()
+
+        if seed == seeds[0]:
+            print("  Measuring inference latency on GPU (batch-128 and batch-1 with CUDA events)...")
+            from torch.utils.data import DataLoader
+            from adjointrwm.training import move_batch
+
+            loader_128 = DataLoader(datasets["test"], batch_size=128, shuffle=False)
+            b128 = move_batch(next(iter(loader_128)), device)
+            fn_128 = lambda: model.predict(b128)
+            arm_latencies = measure_latency_ms(fn_128, device=device)
+            print(f"  Batch-128 Latency: p50={arm_latencies['p50_ms']:.2f}ms, p95={arm_latencies['p95_ms']:.2f}ms")
+
+            loader_1 = DataLoader(datasets["test"], batch_size=1, shuffle=False)
+            b1 = move_batch(next(iter(loader_1)), device)
+            fn_1 = lambda: model.predict(b1)
+            b1_latencies = measure_latency_ms(fn_1, device=device)
+            arm_latencies["batch1_p50_ms"] = b1_latencies["p50_ms"]
+            arm_latencies["batch1_p95_ms"] = b1_latencies["p95_ms"]
+            arm_latencies["batch1_mean_ms"] = b1_latencies["mean_ms"]
+            print(f"  Batch-1 Latency: p50={b1_latencies['p50_ms']:.2f}ms, p95={b1_latencies['p95_ms']:.2f}ms")
+
+        # Evaluate nominal
+        pred_nom = predict_dataset(model, datasets["test"], batch_size=128, device=device, eval_seed=seed, amp=True)
+        frames.append(
+            prediction_frame(
+                arm="hybrid_adjoint_rwm",
+                seed=seed,
+                episode_ids=pred_nom["episode_id"],
+                window_starts=pred_nom["window_start"],
+                pred_state=pred_nom["state_mean"],
+                target_state=pred_nom["target_state"],
+                state_std=normalisation["state_std"],
+                groups=GROUPS,
+                pred_visual=pred_nom.get("visual"),
+                target_visual=pred_nom.get("target_visual"),
+                pred_logvar=pred_nom.get("state_logvar"),
+                condition="nominal",
+            )
+        )
+
+        # Evaluate action shuffled
+        pred_shuf = predict_dataset(model, shuffled_test, batch_size=128, device=device, eval_seed=seed, amp=True)
+        frames.append(
+            prediction_frame(
+                arm="hybrid_adjoint_rwm",
+                seed=seed,
+                episode_ids=pred_shuf["episode_id"],
+                window_starts=pred_shuf["window_start"],
+                pred_state=pred_shuf["state_mean"],
+                target_state=pred_shuf["target_state"],
+                state_std=normalisation["state_std"],
+                groups=GROUPS,
+                pred_visual=pred_shuf.get("visual"),
+                target_visual=pred_shuf.get("target_visual"),
+                pred_logvar=pred_shuf.get("state_logvar"),
+                condition="actions_shuffled",
+            )
+        )
+
+        mse_nom = np.mean((pred_nom["state_mean"] - pred_nom["target_state"]) ** 2)
+        rmse_nom = float(np.sqrt(mse_nom))
+        mse_shuf = np.mean((pred_shuf["state_mean"] - pred_shuf["target_state"]) ** 2)
+        rmse_shuf = float(np.sqrt(mse_shuf))
+        coupling = rmse_shuf / rmse_nom
+        print(f"  Seed {seed} Done in {time.time() - t_seed:.1f}s | Nominal RMSE={rmse_nom:.4f} | Shuffled RMSE={rmse_shuf:.4f} | Coupling={coupling:.2f}x")
+
+    # 7. Aggregate & Summarize
+    all_errors = pd.concat(frames, ignore_index=True)
+    summary_df = summarize_frame(all_errors)
+    summary_df.to_csv(out_dir / "summary_by_arm_seed.csv", index=False)
+
+    # 8. Site Breakdown with Exact Unique Window Deduplication
+    nominal_errors = all_errors[all_errors["condition"] == "nominal"].copy()
+    nominal_errors["site"] = nominal_errors["episode_id"].map(site_by_episode)
+
+    site_summary = []
+    for site, group in nominal_errors.groupby("site"):
+        num_episodes = int(group["episode_id"].nunique())
+        num_windows = int(group[["episode_id", "window_start"]].drop_duplicates().shape[0])
+        site_row = {"site": site, "num_episodes": num_episodes, "num_windows": num_windows}
+        for arm in ["hybrid_adjoint_rwm", "persistence", "ridge"]:
+            arm_sub = group[group["arm"] == arm]
+            if len(arm_sub) > 0:
+                site_row[f"{arm}_rmse"] = float(np.sqrt(arm_sub["mse_norm"].mean()))
+        site_summary.append(site_row)
+
+    site_df = pd.DataFrame(site_summary).sort_values("num_windows", ascending=False)
+    site_df.to_csv(out_dir / "site_breakdown.csv", index=False)
+
+    # 9. Paired Relative Differences vs Persistence and Ridge
+    paired_results = {}
+    for baseline in ["persistence", "ridge"]:
+        res = paired_relative_difference(
+            nominal_errors,
+            reference="hybrid_adjoint_rwm",
+            rival=baseline,
+            metric="mse_norm",
+            num_resamples=5000,
+            seed=0,
+        )
+        res["classification"] = classify_relative_difference(res["ci_low"], res["ci_high"], margin=0.02)
+        paired_results[baseline] = res
+
+    # 10. Generate Markdown Report
+    total_time = time.time() - t0_all
+    hybrid_mean_rmse = float(summary_df[(summary_df['arm'] == 'hybrid_adjoint_rwm') & (summary_df['condition'] == 'nominal')]['rmse_norm'].mean())
+    hybrid_std_rmse = float(summary_df[(summary_df['arm'] == 'hybrid_adjoint_rwm') & (summary_df['condition'] == 'nominal')]['rmse_norm'].std())
+
+    report_text = f"""# Hybrid Adjoint Recursive World Model (HARP): Dynamics on E3.1 Stratified Shard
+
+**Date:** {datetime.date.today().isoformat()} · **Execution Time:** {total_time:.1f} s · **Device:** {torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'CPU'}
+**Manifest:** `{cache_manifest_path.name}` · **Test Split:** {len(records_by_split['test'])} held-out episodes, {test_len:,} windows across {len(site_df)} robotics laboratories
+**Architecture:** HybridAdjointRWM Kinematic-Residual Transformer ({param_count:,} parameters) trained on 399 multi-site episodes
+
+---
+
+## 1. Executive Summary & Findings
+
+The Hybrid Adjoint Recursive World Model (HARP architecture) combines an analytical kinematic state-action continuation base with a 6-layer Transformer + GRU neural residual dynamics network.
+
+### Primary Results:
+- **Test Proprioception RMSE (Mean ± Std over {len(seeds)} seeds):**
+  - **Hybrid Adjoint RWM:** {hybrid_mean_rmse:.4f} ± {hybrid_std_rmse:.4f}
+  - **Persistence Baseline:** {pers_rmse:.4f}
+  - **In-Domain Ridge Forecaster:** {ridge_rmse:.4f}
+- **Paired Comparisons (5,000 cluster bootstrap resamples):**
+  - **vs Persistence:** {paired_results['persistence']['relative_difference']*100:+.2f}% (95% CI [{paired_results['persistence']['ci_low']*100:+.2f}%, {paired_results['persistence']['ci_high']*100:+.2f}%]) -> `{paired_results['persistence']['classification']}`
+  - **vs In-Domain Ridge:** {paired_results['ridge']['relative_difference']*100:+.2f}% (95% CI [{paired_results['ridge']['ci_low']*100:+.2f}%, {paired_results['ridge']['ci_high']*100:+.2f}%]) -> `{paired_results['ridge']['classification']}`
+
+---
+
+## 2. Cross-Site Performance Across {len(site_df)} Laboratories
+
+{site_df.to_markdown(index=False)}
+
+---
+
+## 3. Inference Latency on {torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'CPU'}
+
+- **Batch-1 p50 Latency:** {arm_latencies.get('batch1_p50_ms', 0.0):.2f} ms
+- **Batch-1 p95 Latency:** {arm_latencies.get('batch1_p95_ms', 0.0):.2f} ms
+- **Batch-128 p50 Latency:** {arm_latencies.get('p50_ms', 0.0):.2f} ms
+"""
+    report_path = out_dir / "hybrid_dynamics_report.md"
+    report_path.write_text(report_text, encoding="utf-8")
+    print(f"\nSaved report to {report_path}")
+
+    overall_results = {
+        "architecture": "hybrid_adjoint_rwm",
+        "timestamp_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "total_time_seconds": total_time,
+        "seeds": list(seeds),
+        "steps": steps,
+        "test_windows": test_len,
+        "num_sites": len(site_df),
+        "persistence_rmse": pers_rmse,
+        "ridge_rmse": ridge_rmse,
+        "hybrid_adjoint_rmse": hybrid_mean_rmse,
+        "paired_results": paired_results,
+        "latencies": arm_latencies,
+    }
+    atomic_write_json(out_dir / "hybrid_dynamics_summary.json", overall_results)
+    print("=" * 80)
+    print(f"HYBRID DYNAMICS COMPLETED IN {total_time:.1f}s")
+    print("=" * 80, flush=True)
+    return overall_results
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Hybrid Adjoint World Model (HARP) Training on E3.1 Shard")
+    parser.add_argument("--cache-dir", type=str, default="/content/drive/MyDrive/Colab Notebooks/AdjointRWM_Production/cache_e3_1")
+    parser.add_argument("--out-dir", type=str, default="")
+    parser.add_argument("--steps", type=int, default=1500)
+    parser.add_argument("--batch-size", type=int, default=64)
+    parser.add_argument("--lr", type=float, default=3e-4)
+    parser.add_argument("--seeds", type=str, default="0,1")
+    args = parser.parse_args()
+
+    if not args.out_dir:
+        ts = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        args.out_dir = f"/content/drive/MyDrive/Colab Notebooks/AdjointRWM_Production/runs/hybrid_dynamics_{ts}"
+
+    seed_list = [int(s.strip()) for s in args.seeds.split(",")]
+    train_hybrid_dynamics(
+        cache_dir=args.cache_dir,
+        out_dir=args.out_dir,
+        seeds=seed_list,
+        steps=args.steps,
+        batch_size=args.batch_size,
+        lr=args.lr,
+    )

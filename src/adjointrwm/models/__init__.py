@@ -23,6 +23,13 @@ from .common import (
     variance_covariance_regularizer,
 )
 from .feature_predictor import FeaturePredictorWorldModel, block_causal_mask
+from .hybrid_adjoint import (
+    HybridAdjointConfig,
+    HybridAdjointRecursiveWorldModel,
+    KinematicTransition,
+    build_hybrid_adjoint_rwm,
+    hybrid_stage1_loss,
+)
 from .registry import BUILDERS, RECIPE_DEFAULTS, REFERENCE_ARM, WIDTH_GRIDS, build_arm, count_prediction_parameters, match_width
 from .rssm import RSSMWorldModel
 from .tdmpc2 import SimNorm, TDMPC2WorldModel
@@ -34,7 +41,10 @@ __all__ = [
     "ArmDims",
     "BUILDERS",
     "FeaturePredictorWorldModel",
+    "HybridAdjointConfig",
+    "HybridAdjointRecursiveWorldModel",
     "INPUT_KEYS",
+    "KinematicTransition",
     "RECIPE_DEFAULTS",
     "REFERENCE_ARM",
     "RSSMWorldModel",
@@ -45,8 +55,10 @@ __all__ = [
     "WorldModel",
     "block_causal_mask",
     "build_arm",
+    "build_hybrid_adjoint_rwm",
     "count_prediction_parameters",
     "flatten_visual",
+    "hybrid_stage1_loss",
     "inputs_only",
     "match_width",
     "prediction_objective",

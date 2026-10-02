@@ -31,6 +31,7 @@ PILOT_RUN = ROOT / "results/runs/droid100_adjoint_20260929T070629Z"
 DIMS = ArmDims(state_dim=3, action_dim=2, visual_tokens=2, visual_token_dim=8, target_visual_dim=16, context_len=4, horizon=3)
 SMALL = {
     "adjoint_rwm": {"width": 32, "transformer_heads": 4, "transformer_layers": 2},
+    "hybrid_adjoint_rwm": {"width": 32, "transformer_heads": 4, "transformer_layers": 2},
     "dreamerv3_rssm": {"width": 32, "eval_samples": 3},
     "tdmpc2": {"width": 32},
     "dino_wm": {"width": 32, "heads": 2, "dim_head": 8, "depth": 2},

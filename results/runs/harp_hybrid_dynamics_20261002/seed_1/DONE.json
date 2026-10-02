@@ -1,0 +1,38 @@
+{
+  "arm": "hybrid_adjoint_rwm",
+  "best": {
+    "checkpoint": {
+      "path": "/content/drive/MyDrive/Colab Notebooks/AdjointRWM_Production/runs/harp_hybrid_dynamics_20261002/seed_1/best.pt",
+      "sha256": "73e97c7eeb1d4fc26af07c71c0e17cdbc20653ba17f4ca5466fb252947fc00c6"
+    },
+    "score_name": "validation_rmse",
+    "step": 1500,
+    "validation_score": 0.23684270123883294
+  },
+  "best_checkpoint_kept": true,
+  "config_hash": "52f295af589043e8bb28d9bab24551f77bf4c536e5430031a443da2dfd70f234",
+  "data_manifest_hash": "1f7796331c8958b1c23e69bff8fac59f9ab83e9874ce3d3f9581e8d3f440c801",
+  "global_step": 1500,
+  "peak_vram_gib": 0.511204719543457,
+  "run_id": "harp_hybrid_dynamics_20261002",
+  "seed": 1,
+  "session_seconds": 855.3511751199999,
+  "session_steps": 1500,
+  "session_steps_per_second": 1.7536656798180705,
+  "source_hash": "40bfd4698937fd336ea8ce59e2e69a486551f8e98f02e99b0a48faacc0e517f5",
+  "status": "DONE",
+  "train_config": {
+    "amp": true,
+    "batch_size": 64,
+    "checkpoint_interval": 250,
+    "eval_batch_size": 128,
+    "eval_interval": 100,
+    "grad_clip": 1.0,
+    "log_interval": 25,
+    "lr": 0.0003,
+    "seed": 20260928,
+    "steps": 1500,
+    "warmup_steps": 100,
+    "weight_decay": 0.05
+  }
+}
