@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-10-02 (ao): Milestone B3b: Confirmatory Rival World Models on E3.1 Stratified Shard
+
+- **Confirmatory Multi-Laboratory Benchmark (`scripts/run_b3b_shard_benchmark.py`):** Evaluated AdjointRWM against 4 deep rival world model families (`dreamerv3_rssm`, `tdmpc2`, `dino_wm`, `vjepa2_ac`) and classical baselines (`persistence`, `ridge`) across 5 paired seeds on the 50 held-out test episodes (4,154 temporal windows with stride 2, 20,770 paired window evaluations) of the E3.1 stratified shard across 14 robotics laboratories on NVIDIA L4 GPU.
+- **Primary Endpoint Results (Test Proprioception RMSE with 5,000 Episode-Cluster Bootstrap Resamples):**
+  - **vs `dreamerv3_rssm`:** **−44.62%** relative error (95% CI [−57.45%, −37.77%]), classified **`reference_better`** ($p < 0.001$).
+  - **vs `tdmpc2`:** **−33.33%** relative error (95% CI [−39.94%, −25.90%]), classified **`reference_better`** ($p < 0.001$).
+  - **vs `dino_wm`:** **−24.53%** relative error (95% CI [−35.52%, −18.19%]), classified **`reference_better`** ($p < 0.001$).
+  - **vs `vjepa2_ac`:** **−24.37%** relative error (95% CI [−30.69%, −18.79%]), classified **`reference_better`** ($p < 0.001$).
+  - **vs `persistence`:** +84.13% relative error (95% CI [−0.10%, +157.10%]), classified `inconclusive`.
+  - **vs `ridge` (linear forecaster):** +271.34% relative error (95% CI [+100.33%, +426.77%]), classified `rival_better`.
+- **100% Win Rate Across Laboratories:** `adjoint_rwm` achieves lower test RMSE than every deep rival world model in **12 out of 12 laboratories** represented in the test split (`ILIAD`, `TRI`, `AUTOLab`, `IRIS`, `IPRL`, `RPL`, `PennPAL`, `BVL`, `RAD`, `REAL`, `WEIRD`, `RAIL`).
+- **Causal Action Coupling:** Under action permutation, `adjoint_rwm` error increases by **3.19×** (+219%), demonstrating the highest action sensitivity among all neural world models (vs 1.69× DreamerV3, 2.12× DINO-WM, 2.26× V-JEPA 2-AC, 2.50× TD-MPC2).
+- **Physical Joint Accuracy:** On 7-DoF joint angles, `adjoint_rwm` achieves 0.0662 $rad^2$ MSE (a **57.6% reduction** vs V-JEPA 2-AC at 0.1563 $rad^2$).
+- **Compute Discipline:** Benchmark executed in 649.3s on Colab L4; session immediately terminated (`colab stop -s l4-worker`); verified 0 active assignments.
+- **Artifacts & Research Note:** Published in `results/benchmarks/b3b_rivals_shard/` and `docs/research-notes/2026-10-02-b3b-rival-world-models-e3-shard.md`.
+
 ## 2026-10-02 (an): Milestone E3.1: DROID 500-Episode Stratified Shard Streaming and Multi-Modal Alignment Verification
 
 - **Full DROID RLDS Streaming Pipeline:** Implemented `src/adjointrwm/data/droid_shard.py` and `scripts/stream_droid_e3_shard.py` to stream and stratify episodes directly from full DROID release (`droid:1.0.1`, 95,658 episodes across 2,048 shards) hosted at `gs://gresearch/robotics`.

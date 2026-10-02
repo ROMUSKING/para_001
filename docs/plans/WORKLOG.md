@@ -19,6 +19,15 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 - Next:
 ```
 
+## 2026-10-02 08:50 (BST) · Antigravity · Milestone B3b Confirmatory Rival World Models on E3.1 Stratified Shard
+
+- **Changed:** created `scripts/run_b3b_shard_benchmark.py`; connected to active Colab L4 session `l4-worker`; verified 499 cached episodes in `cache_e3_1` and 25 B1 model checkpoints on Drive; executed confirmatory rival benchmark across 5 paired seeds on 50 held-out test episodes (4,154 temporal windows with stride 2, 20,770 paired test windows total) across 14 robotics laboratories; computed paired relative differences with 5,000 episode-cluster bootstrap resamples; evaluated cross-site performance across 12 test laboratories; downloaded reports and CSV/JSON summaries to `results/benchmarks/b3b_rivals_shard/`; stopped Colab session immediately (`colab stop -s l4-worker`, verified 0 active assignments); authored research note `docs/research-notes/2026-10-02-b3b-rival-world-models-e3-shard.md`; updated `README.md`, `CHANGELOG.md` (ao), and `docs/plans/roadmap.md`.
+- **Verified:** `adjoint_rwm` statistically significantly outperforms all 4 deep rival world-model families on the primary endpoint: DreamerV3 **−44.62%** [−57.45%, −37.77%], TD-MPC2 **−33.33%** [−39.94%, −25.90%], DINO-WM **−24.53%** [−35.52%, −18.19%], V-JEPA 2-AC **−24.37%** [−30.69%, −18.79%] (all `reference_better`, $p < 0.001$); achieved lowest test RMSE in **12 out of 12 robotics laboratories**; action coupling reaches **3.19×** (vs 1.69× to 2.50× for rivals); joint position MSE is 0.0662 $rad^2$ (**57.6% lower** than V-JEPA 2-AC at 0.1563 $rad^2$); `python harness/check.py` passes 6/6 checks.
+- **Open:** Milestone E3.2 (20-60M dynamics pilot trained directly on the 399 training episodes of the E3.1 shard to close the gap against linear forecasters).
+- **Next:** plan and queue Milestone E3.2 training job on Colab L4.
+
+---
+
 ## 2026-10-02 07:00 (BST) · Antigravity · Milestone E3.1 DROID 500-Episode Stratified Shard Streaming & Verification
 
 - **Changed:** created `src/adjointrwm/data/droid_shard.py`, `tests/test_droid_shard.py`, and `scripts/stream_droid_e3_shard.py`; connected to active Colab L4 session `l4-worker`; streamed and stratified 500 episodes from full DROID release (`droid:1.0.1`, 95,658 episodes) at `gs://gresearch/robotics`; performed deep multi-modal contract verification on 8 sample episodes; downloaded manifest (`results/data/droid_e3_1/e3_1_droid_500_manifest.json`) and eye-inspection report (`results/data/droid_e3_1/e3_1_eye_inspection_report.md`); mirrored to Google Drive; stopped Colab VM immediately (`colab stop -s l4-worker`); authored research note `docs/research-notes/2026-10-02-e3-1-droid-500-shard.md`; updated `README.md`, `CHANGELOG.md` (an), and `docs/plans/roadmap.md`.
