@@ -21,6 +21,8 @@ from adjointrwm.allocators import (  # noqa: E402
     lcb_decision_scores,
     matched_critic_hidden,
     normalized_first_order_scores,
+    pairwise_margin_ranking_loss,
+    plackett_luce_loss,
     validation_regret,
 )
 from adjointrwm.data import WindowDataset, WindowSpec, fit_normaliser  # noqa: E402
@@ -203,4 +205,141 @@ def test_lcb_decision_scores_properties():
     assert torch.equal(lcb[:, 0], torch.zeros(b))
     # Active candidate scores must be strictly lower
     assert (lcb[:, 1:] < scores[:, 1:]).all()
+
+
+def test_pairwise_margin_ranking_loss_properties():
+    """Milestone B2.3: pairwise hinge loss is zero when ordered, positive when flipped."""
+    # Hand-checkable case: B=1, K=2, gains=[0, 1], scores=[0, 0].
+    # Only positive pair is (i=1, j=0): margin=1, score_diff=0 -> loss=1.
+    scores = torch.tensor([[0.0, 0.0]])
+    gains = torch.tensor([[0.0, 1.0]])
+    assert torch.allclose(pairwise_margin_ranking_loss(scores, gains), torch.tensor(1.0))
+
+    # Perfectly ordered scores (scores == gains) satisfy every margin with equality -> zero.
+    perfect = torch.tensor([[0.0, 0.5, 1.2], [2.0, 0.0, -1.0]])
+    assert torch.allclose(
+        pairwise_margin_ranking_loss(perfect, perfect), torch.tensor(0.0), atol=1e-6
+    )
+
+    # Fully reversed ordering incurs strictly positive loss, worse than perfect.
+    gains_r = torch.tensor([[0.0, 1.0, 2.0]])
+    reversed_scores = torch.tensor([[2.0, 1.0, 0.0]])
+    loss_reversed = pairwise_margin_ranking_loss(reversed_scores, gains_r)
+    loss_perfect = pairwise_margin_ranking_loss(gains_r, gains_r)
+    assert torch.isfinite(loss_reversed) and loss_reversed > 0
+    assert loss_perfect < loss_reversed
+
+    # Larger margin_scale cannot reduce the loss on a misordered pair.
+    small = pairwise_margin_ranking_loss(reversed_scores, gains_r, margin_scale=1.0)
+    large = pairwise_margin_ranking_loss(reversed_scores, gains_r, margin_scale=2.0)
+    assert large >= small
+
+    # All-equal gains -> no positive pairs -> differentiable zero.
+    tied = torch.tensor([[1.0, 1.0, 1.0]])
+    zero = pairwise_margin_ranking_loss(torch.tensor([[0.5, -0.2, 0.1]]), tied)
+    assert torch.allclose(zero, torch.tensor(0.0))
+    grad_scores = torch.tensor([[0.5, -0.2, 0.1]], requires_grad=True)
+    pairwise_margin_ranking_loss(grad_scores, tied).backward()
+    assert grad_scores.grad is not None
+
+    # Batching: mean over all positive pairs across the batch.
+    b_scores = torch.tensor([[0.0, 0.0], [1.0, 1.0]])
+    b_gains = torch.tensor([[0.0, 1.0], [0.0, 1.0]])
+    # Row 0 contributes loss 1.0, row 1 contributes relu(1 - 0) = 1.0 -> mean 1.0.
+    assert torch.allclose(pairwise_margin_ranking_loss(b_scores, b_gains), torch.tensor(1.0))
+
+    # Gradient flows through the score argument.
+    req = torch.tensor([[2.0, 1.0, 0.0]], requires_grad=True)
+    pairwise_margin_ranking_loss(req, gains_r).backward()
+    assert req.grad is not None and torch.isfinite(req.grad).all()
+
+
+def test_plackett_luce_loss_properties():
+    """Milestone B2.3: listwise KL is zero when distributions coincide, positive otherwise."""
+    import torch.nn.functional as F
+
+    # Identical scores and gains -> identical distributions -> KL == 0.
+    x = torch.tensor([[0.0, 0.5, -0.3], [1.0, 2.0, 0.5]])
+    assert torch.allclose(plackett_luce_loss(x, x), torch.tensor(0.0), atol=1e-6)
+
+    # Misordered scores incur strictly larger loss than matched scores.
+    gains = torch.tensor([[0.0, 1.0, 2.0]])
+    matched = plackett_luce_loss(gains, gains)
+    flipped = plackett_luce_loss(torch.tensor([[2.0, 1.0, 0.0]]), gains)
+    assert torch.isfinite(flipped) and flipped > 0
+    assert matched < flipped
+
+    # Manual KL cross-check against log_softmax/softmax.
+    scores = torch.tensor([[0.2, -0.1, 0.7]])
+    tgt = torch.tensor([[1.0, 0.0, -1.0]])
+    tau = 0.5
+    p = F.softmax(tgt / tau, dim=-1)
+    log_p = F.log_softmax(tgt / tau, dim=-1)
+    log_q = F.log_softmax(scores / tau, dim=-1)
+    expected = (p * (log_p - log_q)).sum(dim=-1).mean()
+    assert torch.allclose(plackett_luce_loss(scores, tgt, temperature=tau), expected)
+
+    # Non-negativity and finiteness on random inputs.
+    g = torch.Generator().manual_seed(0)
+    rs, rg = torch.randn(8, 5, generator=g), torch.randn(8, 5, generator=g)
+    loss = plackett_luce_loss(rs, rg)
+    assert torch.isfinite(loss) and loss >= 0
+
+    # Gradient flows and temperature validation.
+    req = torch.tensor([[0.2, -0.1, 0.7]], requires_grad=True)
+    plackett_luce_loss(req, tgt).backward()
+    assert req.grad is not None and torch.isfinite(req.grad).all()
+    with pytest.raises(ValueError):
+        plackett_luce_loss(scores, tgt, temperature=0.0)
+
+
+def test_allocator_job_ranking_loss_variants():
+    """Milestone B2.3: AllocatorJob supports ce/margin/listwise/hybrid ranking losses."""
+    import torch.nn.functional as F
+
+    data = batch()
+    # Default preserves backward compatibility (CE on unnormalised adjoint scores).
+    job_ce = AllocatorJob(teacher(), "costate", cost_weight=0.002)
+    assert job_ce.ranking_loss_type == "ce"
+    targets = exact_targets(job_ce.teacher, data, 0.002)
+    s = job_ce.scores(targets)
+    oracle = targets["exact_gain"].argmax(dim=1)
+    expected_ce = F.cross_entropy(s["adjoint"], oracle)
+    loss_ce, parts_ce = job_ce.training_loss(data)
+    assert torch.isfinite(loss_ce) and torch.isfinite(parts_ce["ranking"])
+    assert torch.allclose(parts_ce["ranking"], expected_ce.detach(), atol=1e-6)
+
+    # Each variant runs end-to-end, is finite, differentiable, and uses adjoint_norm.
+    for variant in ("margin", "listwise", "hybrid"):
+        job = AllocatorJob(teacher(), "costate", cost_weight=0.002, ranking_loss_type=variant)
+        loss, parts = job.training_loss(data)
+        assert torch.isfinite(loss), variant
+        assert torch.isfinite(parts["ranking"]), variant
+        if variant == "margin":
+            expected = pairwise_margin_ranking_loss(s["adjoint_norm"], targets["exact_gain"])
+            assert torch.allclose(parts["ranking"], expected.detach(), atol=1e-5), variant
+        elif variant == "listwise":
+            expected = plackett_luce_loss(s["adjoint_norm"], targets["exact_gain"])
+            assert torch.allclose(parts["ranking"], expected.detach(), atol=1e-5), variant
+        else:
+            m = pairwise_margin_ranking_loss(s["adjoint_norm"], targets["exact_gain"])
+            l = plackett_luce_loss(s["adjoint_norm"], targets["exact_gain"])
+            assert torch.allclose(parts["ranking"], (0.5 * m + 0.5 * l).detach(), atol=1e-5)
+        job.zero_grad()
+        loss.backward()
+        grads = [p.grad for p in job.costate.parameters() if p.grad is not None]
+        assert grads and all(torch.isfinite(g).all() for g in grads)
+
+    # Margin/listwise generally differ from CE (continuous gains carry extra signal).
+    job_margin = AllocatorJob(teacher(), "costate", cost_weight=0.002, ranking_loss_type="margin")
+    _, parts_margin = job_margin.training_loss(data)
+    assert not torch.equal(parts_margin["ranking"], parts_ce["ranking"])
+
+    # Invalid option rejected; non-costate heads ignore the ranking switch but still run.
+    with pytest.raises(ValueError):
+        AllocatorJob(teacher(), "costate", cost_weight=0.002, ranking_loss_type="bogus")
+    for head in ("critic", "gate"):
+        job = AllocatorJob(teacher(), head, cost_weight=0.002, ranking_loss_type="hybrid")
+        loss, _ = job.training_loss(data)
+        assert torch.isfinite(loss)
 

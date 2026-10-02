@@ -19,6 +19,15 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 - Next:
 ```
 
+## 2026-10-02 20:30 (BST) · Antigravity & OpenCode (Muse Spark 1.3) · Milestone B2.3 Pairwise Margin-Ranking Allocator & Research Agenda
+
+- **Changed:** authored research agenda for next steps post-E3.4 (`docs/plans/2026-10-02-next-research-steps-plan.md`) covering Direction 1 (Closing the Amortization Gap via Pairwise Margin Ranking & Listwise Losses), Direction 2 (HARP Selective Analytical Rescue Integration), Direction 3 (Belief-Space Value-of-Information via Second-Order Curvature), and Direction 4 (Closed-Loop Simulation in ManiSkill3); delegated Milestone B2.3 implementation to OpenCode using model `opencode/muse-spark-1.3-contributor-free`; implemented `pairwise_margin_ranking_loss` and `plackett_luce_loss` in `src/adjointrwm/allocators.py`; extended `AllocatorJob` with configurable `ranking_loss_type` (`ce`, `margin`, `listwise`, `hybrid`); added 3 new unit tests in `tests/test_allocators.py`; created `scripts/benchmark_ranking_allocator.py`; updated `CHANGELOG.md` (ar) and `docs/plans/WORKLOG.md`.
+- **Verified:** pairwise margin ranking and listwise KL losses verified on synthetic and edge-case inputs (perfectly ordered scores yield 0.0 loss, reversed order yields strictly positive differentiable loss, tied targets yield differentiable zero); all 15 allocator tests pass; `scripts/benchmark_ranking_allocator.py` verifies synthetic training convergence (margin ranking loss drops to 0.0198 vs 1.6056 for CE); `python harness/check.py` passes 6/6 checks.
+- **Open:** Real-data execution of Milestone B2.3 and HARP Selective Rescue on NVIDIA L4 GPU.
+- **Next:** queue real-data benchmark execution on Colab L4 runtime when provisioned.
+
+---
+
 ## 2026-10-02 20:15 (BST) · Antigravity · Milestones E3.3 Multi-Horizon Scaling & E3.4 HARP Hybrid Dynamics
 
 - **Changed:** connected to Colab L4 runtime `l4-worker`; verified Google Drive mount and 499 cached episodes in `data/cache_e3_1`; executed Multi-Horizon Rollout Decay Benchmark across $H \in \{1, 2, 4, 8, 12, 16\}$ on 50 held-out test episodes (`scripts/benchmark_horizon_scaling.py`); implemented `HybridAdjointRecursiveWorldModel` (HARP architecture) in `src/adjointrwm/models/hybrid_adjoint.py` combining linear state-space kinematics with a 24.7M parameter transformer-GRU residual; added unit tests in `tests/test_hybrid_adjoint.py` and registered arm; executed `scripts/train_hybrid_dynamics.py` on NVIDIA L4 across 2 paired seeds (1,500 steps each); downloaded artifacts to `results/runs/harp_hybrid_dynamics_20261002/`; terminated Colab VM immediately (`colab stop -s l4-worker`, verified 0 active assignments); authored research notes `docs/research-notes/2026-10-02-multi-horizon-rollout-decay.md` and `docs/research-notes/2026-10-02-harp-hybrid-kinematic-dynamics.md`; updated `docs/plans/roadmap.md`, `CHANGELOG.md` (aq), and `docs/plans/WORKLOG.md`.

@@ -33,6 +33,7 @@ from .training import _fork_rng, move_batch
 
 HOLD = 0
 HEAD_TYPES = ("costate", "critic", "gate")
+RANKING_LOSS_TYPES = ("ce", "margin", "listwise", "hybrid")
 DEPLOYABLE_POLICIES = ("adjoint", "critic", "hybrid", "uncertainty", "adjoint_randomized")
 DIAGNOSTIC_POLICIES = ("exact_costate",)
 
@@ -180,6 +181,59 @@ def with_hold_zero(scores_refinements):
     return torch.cat([torch.zeros_like(scores_refinements[:, :1]), scores_refinements], dim=1)
 
 
+def pairwise_margin_ranking_loss(
+    scores: torch.Tensor, gains: torch.Tensor, margin_scale: float = 1.0, eps: float = 1e-6
+) -> torch.Tensor:
+    """Pairwise hinge ranking loss over ordered candidate pairs (Milestone B2.3).
+
+    Over all ordered pairs ``(i, j)`` with ``gain_i - gain_j > eps``::
+
+        margin_ij = (gain_i - gain_j) * margin_scale
+        loss_ij = relu(margin_ij - (score_i - score_j))
+
+    Returns the mean over positive-difference pairs. If no pair satisfies
+    ``gain_i > gain_j + eps`` (all gains equal within ``eps``), returns a
+    differentiable zero.
+    """
+    if scores.shape != gains.shape:
+        raise ValueError(f"scores and gains must share shape, got {tuple(scores.shape)} vs {tuple(gains.shape)}")
+    if scores.dim() != 2:
+        raise ValueError(f"scores and gains must be 2D [B, K], got {tuple(scores.shape)}")
+    gain_diff = gains.unsqueeze(2) - gains.unsqueeze(1)
+    score_diff = scores.unsqueeze(2) - scores.unsqueeze(1)
+    mask = gain_diff > eps
+    if int(mask.sum()) == 0:
+        return scores.sum() * 0.0
+    margin = gain_diff * margin_scale
+    losses = F.relu(margin - score_diff)
+    return losses[mask].mean()
+
+
+def plackett_luce_loss(scores: torch.Tensor, gains: torch.Tensor, temperature: float = 0.1) -> torch.Tensor:
+    """Plackett-Luce listwise loss: KL(target || predicted) over candidates (Milestone B2.3).
+
+    Target distribution ``p = softmax(gains / temperature)`` and predicted
+    distribution ``q = softmax(scores / temperature)``::
+
+        L = KL(p || q) = sum_k p_k (log p_k - log q_k)
+
+    Equal to cross-entropy minus the (score-independent) target entropy, so it
+    preserves the same gradients as cross-entropy while being exactly zero when
+    the two distributions coincide.
+    """
+    if scores.shape != gains.shape:
+        raise ValueError(f"scores and gains must share shape, got {tuple(scores.shape)} vs {tuple(gains.shape)}")
+    if scores.dim() != 2:
+        raise ValueError(f"scores and gains must be 2D [B, K], got {tuple(scores.shape)}")
+    if not temperature > 0:
+        raise ValueError(f"temperature must be positive, got {temperature}")
+    log_target = F.log_softmax(gains / temperature, dim=-1)
+    log_pred = F.log_softmax(scores / temperature, dim=-1)
+    target = log_target.exp()
+    kl = (target * (log_target - log_pred)).sum(dim=-1)
+    return kl.mean()
+
+
 # ---------------------------------------------------------------------------
 # Jobs (one module per trained head, so each runs through training.train_job)
 # ---------------------------------------------------------------------------
@@ -198,18 +252,28 @@ class AllocatorJob(nn.Module):
     * gate: weighted BCE on ``1[critic_regret > adjoint_regret]``, ties weighted 0.
 
     The gate job needs trained ``costate`` and ``critic`` heads (frozen) and ``gate_pos_weight``.
+
+    ``ranking_loss_type`` (costate head only) selects the ranking term of the
+    co-state loss: ``'ce'`` (default, backward compatible: cross-entropy of the
+    unnormalised ``adjoint`` scores against the hard argmax oracle),
+    ``'margin'`` (pairwise hinge on ``adjoint_norm``), ``'listwise'``
+    (Plackett-Luce KL on ``adjoint_norm``), or ``'hybrid'`` (mean of the two).
     """
 
-    def __init__(self, teacher, head_type: str, cost_weight: float, costate=None, critic=None, gate_pos_weight: float = 1.0):
+    def __init__(self, teacher, head_type: str, cost_weight: float, costate=None, critic=None, gate_pos_weight: float = 1.0,
+                 ranking_loss_type: str = "ce"):
         super().__init__()
         if head_type not in HEAD_TYPES:
             raise ValueError(f"head_type must be one of {HEAD_TYPES}")
+        if ranking_loss_type not in RANKING_LOSS_TYPES:
+            raise ValueError(f"ranking_loss_type must be one of {RANKING_LOSS_TYPES}")
         d = teacher.d_model
         self.__dict__["teacher"] = teacher  # unregistered: excluded from state_dict and parameters()
         teacher.eval()
         for p in teacher.parameters():
             p.requires_grad_(False)
         self.head_type, self.cost_weight = head_type, cost_weight
+        self.ranking_loss_type = ranking_loss_type
         self.costate = costate if costate is not None else CostateEstimator(d)
         self.critic = critic if critic is not None else DirectCritic(d, matched_critic_hidden(d))
         self.gate = Gate(d)
@@ -280,7 +344,18 @@ class AllocatorJob(nn.Module):
             exact, pred = targets["exact_costate"], s["predicted_costate"]
             direction = (1.0 - F.cosine_similarity(pred, exact, dim=-1)).mean()
             magnitude = F.smooth_l1_loss(torch.log(pred.norm(dim=-1).clamp_min(1e-8)), torch.log(exact.norm(dim=-1).clamp_min(1e-8)))
-            ranking = F.cross_entropy(s["adjoint"], oracle)
+            if self.ranking_loss_type == "ce":
+                ranking = F.cross_entropy(s["adjoint"], oracle)
+            elif self.ranking_loss_type == "margin":
+                ranking = pairwise_margin_ranking_loss(s["adjoint_norm"], gain)
+            elif self.ranking_loss_type == "listwise":
+                ranking = plackett_luce_loss(s["adjoint_norm"], gain)
+            elif self.ranking_loss_type == "hybrid":
+                ranking = 0.5 * pairwise_margin_ranking_loss(s["adjoint_norm"], gain) + 0.5 * plackett_luce_loss(
+                    s["adjoint_norm"], gain
+                )
+            else:  # pragma: no cover - guarded in __init__
+                raise ValueError(f"ranking_loss_type must be one of {RANKING_LOSS_TYPES}")
             loss = direction + 0.1 * magnitude + 0.5 * ranking
             parts = {"direction": direction, "magnitude": magnitude, "ranking": ranking}
         elif self.head_type == "critic":

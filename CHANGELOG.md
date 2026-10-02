@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-10-02 (ar): Milestone B2.3: Pairwise Margin-Ranking Allocator and Delegation to Muse Spark 1.3 via OpenCode
+
+- **Next Steps Research Agenda (`docs/plans/2026-10-02-next-research-steps-plan.md`):** Formalized the strategic roadmap post-E3.4 across four research pillars: Direction 1 (Closing the Amortization Gap via Margin-Ranking & Listwise Losses), Direction 2 (HARP Selective Analytical Rescue Integration), Direction 3 (Belief-Space Value-of-Information via Second-Order Curvature), and Direction 4 (Closed-Loop Simulation in ManiSkill3).
+- **Delegation to OpenCode Muse Spark 1.3 (`opencode run`):** Delegated Milestone B2.3 algorithmic implementation to `opencode/muse-spark-1.3-contributor-free`.
+- **Pairwise Margin-Ranking and Listwise Allocator Losses (`src/adjointrwm/allocators.py`):**
+  - Implemented `pairwise_margin_ranking_loss(scores, gains, margin_scale=1.0, eps=1e-6)` computing continuous hinge loss over candidate pairs where target gains differ.
+  - Implemented `plackett_luce_loss(scores, gains, temperature=0.1)` computing KL divergence between ground truth gain distribution and predicted score distribution.
+  - Extended `AllocatorJob` with configurable `ranking_loss_type` (`ce`, `margin`, `listwise`, `hybrid`), maintaining 100% backward compatibility for existing callers.
+- **Verification and Benchmark Script:** Added unit tests in `tests/test_allocators.py` (all 15 allocator tests passing); created `scripts/benchmark_ranking_allocator.py`; verified all 6/6 `python harness/check.py` checks pass.
+
 ## 2026-10-02 (aq): Milestone E3.3: Multi-Horizon Rollout Scaling and HARP Architecture
 
 - **Multi-Horizon Rollout Decay Benchmark (`scripts/benchmark_horizon_scaling.py`):**
