@@ -23,9 +23,41 @@ python harness/check.py            # definition of done: tests + notebooks + har
 pytest -q                          # unit tests only (CPU, about 5 s with torch)
 python harness/sync.py             # regenerate CLAUDE.md, .claude/skills/, workflow/command shims after editing AGENTS.md or .agents/
 python scripts/analyze_allocation_traces.py <traces.parquet> --num-candidates 4
+
+# Colab CLI lifecycle & hardware validation
+colab sessions                     # discover existing remote sessions / assignments
+colab new -s l4-worker --gpu L4    # provision or attach to L4 GPU session
+colab status -s l4-worker          # inspect session status, hardware and kernel state
+echo "import torch; print(torch.cuda.get_device_name(0), round(torch.cuda.get_device_properties(0).total_memory / (1024**3), 2), 'GiB')" | colab exec -s l4-worker # validate hardware
+colab exec -s l4-worker -f scripts/train.py # execute script remotely on Colab
+colab stop -s l4-worker            # MANDATORY: stop session immediately when done (never leave idle)
+
+# OpenCode delegation
+opencode run --standalone --auto -m opencode/muse-spark-1.3-contributor-free -f <context_file> "<task>"
 ```
 
 The GPU training pipeline runs in **Google Colab** (`notebooks/01-production/`, `notebooks/02-diagnostics/`). Send jobs, execute notebooks, and monitor runs directly on Colab using the `colab-cli` skill (`colab exec` or `colab run`). Worker scripts (`scripts/colab_worker.py`, `notebooks/05-ops/colab_worker.ipynb`) and the Drive job queue (`jobs/inbox/`) serve as a fallback when direct CLI execution is not used. Do not execute GPU training notebooks locally in the CPU sandbox.
+
+## Colab Compute & Hardware Discipline (Hard Constraints)
+
+Running GPU sessions burn billable compute credits every second. All agents must enforce strict compute discipline:
+
+1. **Discover Before Provisioning:** Always run `colab sessions` to inspect existing active assignments before creating a new runtime. If an active session or compatible assignment exists (e.g. `[name]` or untracked `[?] <assignment_id>`), attach to it or adopt it. Never launch duplicate concurrent GPU sessions.
+2. **Hardware Validation Protocol:** Before launching training or benchmark jobs, probe and validate the remote hardware:
+   - Check CUDA availability and GPU model: `torch.cuda.get_device_name(0)` (e.g. `NVIDIA L4`, 22–24 GiB VRAM).
+   - Check VRAM and driver status: verify device properties and memory headroom.
+   - Verify filesystem and Google Drive mount: ensure `/content/drive/MyDrive/Colab Notebooks/AdjointRWM_Production` is accessible.
+   - Enforce the Hardware Policy: **Stay on L4** for standard runs. A100/H100/G4 require explicit profiler saturation or measured held-out gain justification (`docs/production/colab_l4_operator_brief.md`).
+3. **Execution Priority (Start Jobs First):** When a Colab session is provisioned or waiting, **launch the queued training/benchmark jobs immediately**. Never keep remote compute idling while reading review documents, analyzing PDFs, or planning locally. Conduct document analysis and planning in parallel while the remote GPU job executes.
+4. **Immediate Teardown (Zero Idle Burn):** Stop the session immediately upon job completion or unrecoverable error (`colab stop -s <session_id>`). Verify with `colab sessions` that 0 active billable assignments remain.
+
+## OpenCode Delegation & Execution Protocol
+
+When delegating coding tasks, algorithmic modules, or script workflows to OpenCode:
+
+1. **Targeted Invocation:** Use `opencode run --standalone --auto -m <model>` (default: `opencode/muse-spark-1.3-contributor-free`) with explicit context files (`-f <file>`). Provide concise, mathematically rigorous prompts specifying contracts, edge cases, and expected test coverage.
+2. **Autonomous Monitoring & Status Checks:** Monitor background OpenCode tasks to completion. Inspect command exit codes, stdout/stderr streams, and exported session summaries to verify that code changes match the requested specification.
+3. **Strict Definition of Done:** After OpenCode modifies files, always run unit tests (`pytest`) and verify repository invariants with `python harness/check.py`. Never mark a delegated task complete while checks fail.
 
 ## Map
 

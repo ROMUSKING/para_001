@@ -19,6 +19,15 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 - Next:
 ```
 
+## 2026-10-02 23:05 (BST) · Antigravity · Colab Session Lifecycle, Hardware Validation & OpenCode Alignment
+
+- **Changed:** updated `AGENTS.md`, `.agents/skills/colab-cli/SKILL.md`, `.agents/skills/opencode-delegate/SKILL.md`, and `docs/production/colab_l4_operator_brief.md` to establish strict protocols for Colab session discovery (`colab sessions`), attaching to existing assignments, remote hardware validation (`torch.cuda.get_device_name()`, VRAM and CUDA verification), hardware policy enforcement (L4 standard, no ungrounded A100/H100 upgrades), remote compute prioritization (launching jobs first before reading documents when compute is active), zero-idle immediate teardown (`colab stop`), and autonomous OpenCode delegation with `opencode/muse-spark-1.3-contributor-free`; ran `python harness/sync.py` to regenerate Claude skill mirrors; updated `CHANGELOG.md` (as) and `docs/plans/WORKLOG.md`.
+- **Verified:** discovered and verified remote assignment status using `colab sessions`; validated hardware one-liner on remote L4 instance (`CUDA available: True, Device: NVIDIA L4, VRAM: 22.03 GiB`); verified immediate session teardown (`colab stop -s l4-worker`); confirmed 6/6 checks pass in `python harness/check.py`.
+- **Open:** Real-data execution of Milestone B2.3 (ranking allocator) and Milestone B3c (HARP selective rescue).
+- **Next:** attach to Colab L4 runtime and execute Milestone B2.3 real-data training.
+
+---
+
 ## 2026-10-02 20:30 (BST) · Antigravity & OpenCode (Muse Spark 1.3) · Milestone B2.3 Pairwise Margin-Ranking Allocator & Research Agenda
 
 - **Changed:** authored research agenda for next steps post-E3.4 (`docs/plans/2026-10-02-next-research-steps-plan.md`) covering Direction 1 (Closing the Amortization Gap via Pairwise Margin Ranking & Listwise Losses), Direction 2 (HARP Selective Analytical Rescue Integration), Direction 3 (Belief-Space Value-of-Information via Second-Order Curvature), and Direction 4 (Closed-Loop Simulation in ManiSkill3); delegated Milestone B2.3 implementation to OpenCode using model `opencode/muse-spark-1.3-contributor-free`; implemented `pairwise_margin_ranking_loss` and `plackett_luce_loss` in `src/adjointrwm/allocators.py`; extended `AllocatorJob` with configurable `ranking_loss_type` (`ce`, `margin`, `listwise`, `hybrid`); added 3 new unit tests in `tests/test_allocators.py`; created `scripts/benchmark_ranking_allocator.py`; updated `CHANGELOG.md` (ar) and `docs/plans/WORKLOG.md`.

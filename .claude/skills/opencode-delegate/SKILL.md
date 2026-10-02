@@ -93,10 +93,30 @@ Each line contains a JSON object with `type` (`step_start`, `text`, etc.) and `s
 - In this repository, destructive git operations (`git push --force`, `git reset --hard`) and file wipes (`rm -rf *`) are strictly denied.
 - Operations requiring human sign-off (`git commit`, `git push`, `pip install`) prompt with `ask` unless explicitly managed.
 
+## Recommended Models
+
+Query available models via `opencode models`. In this repository, preferred models include:
+- `opencode/muse-spark-1.3-contributor-free`: Fast, capable model well-suited for autonomous algorithmic coding, math implementation, unit tests, and refactors.
+- `opencode/space-bunny-free`: Lightweight model for simple file edits and targeted fixes.
+
 ## Procedure for Delegating Agents
 
-1. **Scope the task clearly:** specify target files, expected behaviors, and constraints.
-2. **Select model & mode:** choose an available model from `opencode models` and use `--standalone` if isolation is needed.
-3. **Dispatch command:** execute via `opencode run [--standalone] [--auto] [-m <model>] [-f <file>] "<prompt>"`.
-4. **Inspect output:** check exit code and review text output or exported session JSON.
-5. **Verify repository invariants:** always run `python harness/check.py` after OpenCode modifies files to ensure tests pass, links resolve, and no immutable files were altered.
+1. **Scope the task clearly:** specify target files, expected mathematical formulations, boundary conditions, edge cases, and test requirements.
+2. **Select model & mode:** choose `opencode/muse-spark-1.3-contributor-free` or another available model. Always use `--standalone --auto` for non-interactive autonomous execution.
+3. **Dispatch command with context:**
+   ```bash
+   opencode run --standalone --auto -m opencode/muse-spark-1.3-contributor-free \
+     -f docs/plans/2026-10-02-next-research-steps-plan.md \
+     -f src/adjointrwm/allocators.py \
+     -f tests/test_allocators.py "<prompt>"
+   ```
+4. **Monitor and check job execution:**
+   - Wait for command termination. Check the command exit code (0 indicates success).
+   - Review stdout/stderr stream: ensure OpenCode completed all sub-steps, ran internal tests, and did not encounter uncaught exceptions.
+   - If executed as a background task, monitor task completion reactively before proceeding.
+5. **Inspect modifications:**
+   - Review file diffs via `git diff <path>` to confirm changes adhere to mathematical specifications and code style without collateral edits.
+6. **Verify repository invariants (Strict Definition of Done):**
+   - Run targeted unit tests: `pytest tests/test_<modified>.py -v`.
+   - Run the repository definition-of-done harness: `python harness/check.py`.
+   - All 6/6 checks (unit tests, harness sync, skills, notebooks, markdown links, secret/large-file filters) must pass before declaring completion.

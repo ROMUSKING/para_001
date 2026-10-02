@@ -18,6 +18,10 @@ The validated `optimized_adjoint_teacher.pt` checkpoint is a small `D=32` co-sta
 8. **All experiment state must be reproducible.** Save configuration, environment, data split, RNG state, model, optimizer, scheduler, scaler, sampler position and source snapshot.
 9. **Train from local Colab storage, persist to Drive.** Stage active shards under `/content`; write compact, atomic checkpoints to Drive. Do not perform high-frequency small-file training I/O through mounted Drive.
 10. **Keep the direct critic.** The critic is a production fallback, comparison arm and possible control variate. It is not deleted because the adjoint method performed better in research.
+11. **Discover sessions before provisioning.** Always run `colab sessions` to inspect active assignments before launching new compute. Attach to existing sessions rather than provisioning duplicate concurrent GPU VMs.
+12. **Validate remote hardware before execution.** Run an explicit hardware probe (`torch.cuda.get_device_name(0)`, VRAM capacity, CUDA status). Verify that the runtime accelerator matches the job requirements (L4 standard, 22–24 GiB VRAM; G4/A100 require explicit profiler justification) and verify Drive mount access (`/content/drive/MyDrive/Colab Notebooks/AdjointRWM_Production`).
+13. **Start jobs first when compute is active.** Never burn billable compute credits while an accelerator sits idle reading documents, reviewing PDFs, or planning offline. Launch queued remote jobs immediately, and conduct reading or analysis in parallel while remote execution progresses.
+14. **Immediate session teardown.** Stop the session (`colab stop -s <session>`) immediately upon job completion or failure. Never leave billable GPU runtimes running unattended.
 
 ## Recommended first production target
 

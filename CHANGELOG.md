@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-10-02 (as): Colab Session Discovery, Hardware Validation, and OpenCode Delegation Protocols
+
+- **Agent Operating Manual (`AGENTS.md`):**
+  - Added strict Colab Compute & Hardware Discipline constraints: session discovery protocol before provisioning (`colab sessions`), attaching to existing assignments, mandatory hardware validation probes (`torch.cuda.get_device_name()`, VRAM check), hardware policy enforcement (L4 standard, no ungrounded A100/H100 upgrades), remote execution prioritization (launch jobs before reading documents when compute is active), and zero-idle immediate teardown.
+  - Formalized OpenCode delegation protocol: targeted invocation via `opencode run --standalone --auto -m <model>` with explicit context files (`-f`), autonomous monitoring, and strict definition-of-done verification.
+- **Skill Updates (`.agents/skills/colab-cli/SKILL.md` & `.agents/skills/opencode-delegate/SKILL.md`):**
+  - Updated `colab-cli`: added detailed session discovery and attachment guide (distinguishing tracked `[name]` vs untracked `[?] <assignment_id>`), hardware validation protocol, and compute discipline guardrails.
+  - Updated `opencode-delegate`: documented recommended models (`opencode/muse-spark-1.3-contributor-free`), autonomous job monitoring procedures, and post-execution verification using `pytest` and `python harness/check.py`.
+- **Operator Brief (`docs/production/colab_l4_operator_brief.md`):**
+  - Added operating rules 11–14 governing session discovery, remote hardware probing, compute execution prioritization, and immediate teardown.
+- **Harness & Sync:** Synchronized Claude mirrors via `python harness/sync.py`; verified all 6/6 `python harness/check.py` checks pass.
+
 ## 2026-10-02 (ar): Milestone B2.3: Pairwise Margin-Ranking Allocator and Delegation to Muse Spark 1.3 via OpenCode
 
 - **Next Steps Research Agenda (`docs/plans/2026-10-02-next-research-steps-plan.md`):** Formalized the strategic roadmap post-E3.4 across four research pillars: Direction 1 (Closing the Amortization Gap via Margin-Ranking & Listwise Losses), Direction 2 (HARP Selective Analytical Rescue Integration), Direction 3 (Belief-Space Value-of-Information via Second-Order Curvature), and Direction 4 (Closed-Loop Simulation in ManiSkill3).

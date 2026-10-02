@@ -38,29 +38,56 @@ colab --auth=oauth2 sessions
 ```
 Prompts for browser consent on first use; caches token in `~/.config/colab-cli/token.json`.
 
-### Verification
+### Verification & Session Discovery
 
-Check authentication and server assignments:
+Always check authentication and discover existing server assignments before provisioning new compute:
 ```bash
 colab sessions
 colab whoami
 ```
-*Caution:* `colab auth` is for injecting VM-side GCP credentials into running kernels (for BigQuery/GCS calls from within the VM); it is NOT for authenticating the local CLI.
+*Interpreting `colab sessions`:*
+- `[name] <assignment_id> | Hardware: L4 ...`: Session tracked locally under `name`. Reattach directly via `-s name`.
+- `[?] <assignment_id> | Hardware: L4 ...`: Remote assignment active under the user's account (e.g. provisioned from Colab web UI or previous CLI session) but untracked in local `sessions.json`.
+- When an untracked assignment is already running, run `colab new -s <name> --gpu <TYPE>` to attach to and name that active assignment rather than creating duplicate VMs.
+
+## Session Lifecycle & Compute Discipline
+
+Running GPU runtimes burn billable compute credits every second. All agents must enforce strict compute discipline:
+
+1. **Discover Before Provisioning:** Always run `colab sessions` before launching new compute. If an active session or compatible assignment exists, attach to it. Never provision duplicate concurrent GPU sessions.
+2. **Execution Priority (Start Jobs First):** When a Colab session is provisioned and waiting, **start the remote jobs immediately**. Never keep remote compute idling while reading review documents, analyzing PDFs, or planning locally. Conduct document analysis and planning in parallel while the remote GPU job executes.
+3. **Immediate Teardown (Zero Idle Burn):** Stop the session immediately upon job completion or unrecoverable error (`colab stop -s <session_id>`). Verify with `colab sessions` that 0 active billable assignments remain.
+
+## Hardware Validation Protocol
+
+Before kicking off training or benchmark jobs, probe and validate the remote hardware to ensure it matches the task specification and adheres to the repository Hardware Policy:
+
+### 1. Probe GPU and Memory
+Execute a hardware check one-liner:
+```bash
+echo "import torch; print('CUDA available:', torch.cuda.is_available()); print('Device:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'None'); print('VRAM (GiB):', round(torch.cuda.get_device_properties(0).total_memory / (1024**3), 2) if torch.cuda.is_available() else 0)" | colab exec -s <session>
+```
+
+### 2. Verify Hardware Policy Compliance
+- **Standard Baseline (NVIDIA L4, 22–24 GiB VRAM):** Use for all primary training, rival benchmarking, and multi-horizon rollouts.
+- **Diagnostic / Smoke Tests (NVIDIA T4 or CPU):** Use for simple script validation or single-batch tests.
+- **Gated Accelerators (A100, H100, G4):** Strictly forbidden without prior profiler evidence or measured held-out gain justification (`docs/production/colab_l4_operator_brief.md`).
+
+### 3. Verify Filesystem and Storage Staging
+- High-throughput training must stage data on local Colab storage under `/content` (e.g. `/content/cache/` or `/content/data/`).
+- Persistent run outputs, manifests, and checkpoints must verify access to `/content/drive/MyDrive/Colab Notebooks/AdjointRWM_Production`.
 
 ## Common Workflows
 
-### 1. Provision a Session
+### 1. Provision or Attach to a Session
 
 Always assign an explicit session name via `-s <name>` to prevent ambiguous random hex IDs:
 ```bash
+# GPU runtime (options: L4, T4, G4, A100, H100)
+colab new -s l4-worker --gpu L4
+
 # CPU runtime
-colab new -s my-session
-
-# GPU runtime (options: T4, L4, G4, A100, H100)
-colab new -s my-session --gpu T4
-
-# TPU runtime (options: v5e1, v6e1)
-colab new -s my-session --tpu v6e1
+colab new -s cpu-worker
 ```
 *Notice:* GPU/TPU availability depends on account tier and quota. If an accelerator request fails (400), fall back to `--gpu T4` or CPU.
 
