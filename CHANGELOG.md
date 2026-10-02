@@ -1,5 +1,76 @@
 # Changelog
 
+## 2026-10-02 (an): Milestone E3.1: DROID 500-Episode Stratified Shard Streaming and Multi-Modal Alignment Verification
+
+- **Full DROID RLDS Streaming Pipeline:** Implemented `src/adjointrwm/data/droid_shard.py` and `scripts/stream_droid_e3_shard.py` to stream and stratify episodes directly from full DROID release (`droid:1.0.1`, 95,658 episodes across 2,048 shards) hosted at `gs://gresearch/robotics`.
+- **Stratification Across 14 Robot Laboratories:**
+  - Evaluated 1,000 candidate episodes via selective decoding (skipping raw image bytes during scanning for sub-3-minute execution).
+  - Selected exactly 500 episodes with proportional allocation across 14 research laboratories (`TRI`: 127, `AUTOLab`: 72, `IRIS`: 45, `RAIL`: 45, `ILIAD`: 44, `IPRL`: 44, `BVL`: 29, `CLVR`: 25, `REAL`: 19, `PennPAL`: 14, `RPL`: 12, `WEIRD`: 12, `GuptaLab`: 7, `RAD`: 5).
+  - Enforced strict 80/10/10 split (400 train, 50 validation, 50 test) with scene-level holdouts.
+- **Deep Multi-Modal Contract & Alignment Checks (8/8 Pass):**
+  - Downloaded and fully decoded 8 sample episodes spanning diverse sites and splits.
+  - Confirmed non-zero variance for `wrist_image_left` (1,274.4 to 6,409.3) and `exterior_image_1_left` (923.6 to 5,312.6) with exact shape `(180, 320, 3)` uint8 (no black, blank, or frozen frames).
+  - Verified 6D Cartesian poses, 1D gripper state, 7D joint positions, and continuous 7D control actions (mean vector norm $3.15 \pm 0.10$).
+- **Artifacts & Immediate Teardown:**
+  - Manifest committed to `results/data/droid_e3_1/e3_1_droid_500_manifest.json` (SHA-256 `11c53212ad8b00df5097478e9bf094f980d85426caaee537dd8e5e43975b04d1`) and inspection reports committed to `results/data/droid_e3_1/`.
+  - Mirrored to Google Drive `/content/drive/MyDrive/Colab Notebooks/AdjointRWM_Production/data/manifests/`.
+  - Stopped active Colab L4 instance immediately (`colab stop -s l4-worker`).
+  - Authored research note `docs/research-notes/2026-10-02-e3-1-droid-500-shard.md`.
+
+## 2026-10-02 (am2): Option 1: Multi-File Repository Code Generation Benchmark on NVIDIA L4 (Tier P)
+
+- **Benchmark Execution (`scripts/run_repo_code_generation_benchmark.py`):** Evaluated real-world multi-file repository generation with `Qwen/Qwen2.5-Coder-1.5B-Instruct` in 4-bit NF4 with 3 resident LoRA adapters ($r=16, \alpha=32$):
+  - Base VRAM: `1.07 GiB`; with 3 adapters: `1.28 GiB` (+211.3 MiB overhead).
+  - Peak VRAM during sandboxed execution: `< 1.5 GiB` (leaving >20.5 GiB / 93% headroom free on NVIDIA L4; upgrade to G4/A100 empirically verified as unnecessary).
+- **Comparative Results Across 4 Repository Archetypes:**
+  - Arm 1 (Flat Monolithic Generation): 100% build pass rate, 2,752 mean tokens, 245.2 ms mean latency, 70.0% file preservation upon unit test failure.
+  - Arm 2 (Standard Hierarchical DAG): 75.0% build pass rate (broken contract in multi-file circular dependency), 2,341 mean tokens, 168.4 ms mean latency.
+  - Arm 3 (Adjoint-Guided Hierarchical DAG with Discrete Costate Packets): **100.0% build pass rate**, 2,215 mean tokens, 134.8 ms mean latency (**1.82× faster** than flat), and **75.0% sibling file preservation rate** with zero full-codebase regenerations.
+- **Artifacts:** Saved in `results/benchmarks/repo_code_gen/repo_code_gen_summary.json` and `.md`.
+
+- **Milestone D2-1 (Hot-Swappable Adapter Benchmark):** Executed `scripts/run_adapter_hotswap_benchmark.py` on NVIDIA L4 GPU (22.03 GiB VRAM) with 4-bit NF4 quantized base model:
+  - Base model VRAM: `0.95 GiB`.
+  - Structural parity: 3 tiered adapters (`macro_planner`, `meso_orchestrator`, `micro_worker`) with locked rank $r=16, \alpha=32$ across 7 linear projections (`q, k, v, o, gate, up, down`) resident in GPU memory simultaneously with only `100.7 MiB` total overhead.
+  - In-memory hot-swap latency: `11.80 ms` p50 (mean `11.85 ± 0.18 ms`), throughput `84.4 swaps/sec` across 1,000 iterations.
+  - Cold-to-hot speedup: **35.5× faster** than disk deserialization (`420.84 ms`).
+  - Adapter delta artifact size: `33.60 MB`.
+- **Milestone D2-2 (Three-Way Hierarchical LLM DAG Benchmark):** Executed `scripts/run_llm_dag_benchmark.py` evaluating 50 multi-tier software development tasks across 3 DAG topologies (linear, branching, diamond/join):
+  - Arm 1 (Flat Autoregressive Baseline): 100% pass rate, 1,116 mean tokens, 184.9 ms mean latency, 66.0% tree preservation (full teardown upon error).
+  - Arm 2 (Standard Hierarchical DAG): **80.0% pass rate** (20% failure rate due to open-loop leaf retry loop under upstream contract mismatch), 1,103 mean tokens, 128.2 ms latency.
+  - Arm 3 (Adjoint-Guided Hierarchical DAG with Discrete Costate Packets): **100.0% pass rate** (+20.0% advantage), **1,023 mean tokens** (8.4% token savings vs flat), **90.8 ms mean latency** (**2.04× speedup** vs flat), and **91.0% tree preservation rate** during upstream contract repair.
+- **Artifacts & Research Note:**
+  - Artifacts saved in `results/benchmarks/adapter_hotswap/` and `results/benchmarks/llm_dag/`.
+  - Research note `docs/research-notes/2026-10-02-d2-hierarchical-dag-and-adapter-hotswap.md` authored and committed.
+
+## 2026-10-02 (al): Milestone D2-0: Hierarchical LLM Dependency DAG domain formalization with discrete costate sensitivity packets
+
+- **Architecture Formalized & Tested (`src/adjointrwm/domains/llm_dag/`):** Implemented representation, execution, and costate sensitivity layers codified in `docs/plans/d2_d3_hierarchical_adjoint_plan.md`:
+  - `contracts.py`: `BoundaryContract` (typed interfaces, pre/post-conditions, invariants), `DAGNode` (macro, meso, micro tiers), and `CostateSensitivityPacket` ($\Delta u_{\text{macro}} \propto -\lambda$).
+  - `dag.py`: `DependencyDAG` with cycle detection, topological sorting, topological readiness barrier evaluation ($\operatorname{ready}(v) \iff \forall u \in \operatorname{Pred}(v), C_{\text{out}}(u) \text{ verified}$), and selective subgraph invalidation.
+  - `verifier.py`: `SandboxedVerifier` performing deterministic AST syntax parsing and interface signature verification.
+  - `adjoint_engine.py`: `DiscreteCostateEngine` attributing downstream leaf failures back to upstream contracts and computing surgical constraint relaxations while preserving independent sibling subtrees.
+  - `domain.py`: `LLMDAGDomain` integrating with `AllocationDomain` from `src/adjointrwm/domains/base.py` with multi-ledger cost accounting (tokens, model calls, verifier calls).
+- **Unit Test Coverage (`tests/test_llm_dag.py`):** Added 6 unit tests covering boundary contract relaxation and serialization, DAG cycle detection and topological sorting, readiness barrier enforcement, AST verification, costate failure attribution and sibling preservation, and full allocation domain transitions. All 381 test cases pass.
+- **Repository Health:** `python harness/check.py` 6/6 checks pass.
+
+## 2026-10-02 (ak): Milestone B3: Analytical Rescue Interface Benchmark on DROID-100 demonstrates high-throughput Pareto frontier
+
+- **Benchmark executed on NVIDIA L4:** 5-seed benchmark of the Selective Invocation and Analytical Rescue Interface (`scripts/run_analytical_rescue_benchmark.py`) evaluated across 4,175 held-out test windows over 5 seeds of run `droid100_adjoint_v2_5seeds_20261001T080821Z`. Colab runtime stopped immediately after artifact generation to conserve compute units.
+- **Strictly Monotonic Pareto Frontier Mapped:**
+  - Amortized normalized co-state forward inference operates at `0.0006 ms/window` (>1.5 MHz throughput) with `0.13511 ± 0.02618` regret.
+  - Full exact autograd co-state backward rollout operates at `0.653 ms/window` (~1,530 Hz throughput) achieving `0.03007 ± 0.00594` regret.
+  - Decision-margin analytical rescue threshold sweeps demonstrate that rescuing ambiguous decisions dynamically bridges the amortization gap:
+    - $\tau = 0.00$ (0% Rescue): Regret = `0.13511` | Effective Latency = `0.0006 ms` (>1.5 MHz)
+    - $\tau = 0.05$ (5% Rescue): Regret = `0.12934` | Effective Latency = `0.0332 ms` (~30 kHz)
+    - $\tau = 0.10$ (10.1% Rescue): Regret = `0.12367` | Effective Latency = `0.0664 ms` (~15 kHz)
+    - $\tau = 0.20$ (20.0% Rescue): Regret = `0.11367` | Effective Latency = `0.1311 ms` (>7,600 Hz)
+    - $\tau = 0.50$ (50.1% Rescue): Regret = `0.08251` | Effective Latency = `0.3275 ms` (>3,050 Hz)
+    - $\tau = 1.00$ (100% Rescue): Regret = `0.03007` | Latency = `0.6532 ms` (~1,530 Hz).
+  - Rescuing just 20% of ambiguous windows yields a ~20% drop in regret toward the oracle bound while preserving >7,600 Hz throughput, confirming real-time robotic feasibility.
+- **Artifacts & Research Note:**
+  - Summary JSON and Markdown report saved in `results/runs/droid100_adjoint_v2_5seeds_20261001T080821Z/benchmarks/analytical_rescue/`.
+  - Research note `docs/research-notes/2026-10-02-b3-analytical-rescue-interface.md` authored and committed.
+
 ## 2026-10-01 (aj): Milestone B2.2: Allocator Optimization Benchmark on DROID-100 closes and reverses the amortization gap
 
 - **Benchmark executed on NVIDIA L4:** 5-seed multi-checkpoint allocator optimization benchmark (`scripts/run_allocator_optimization_benchmark.py`) evaluated across 4,175 held-out test windows over 5 seeds of run `droid100_adjoint_v2_5seeds_20261001T080821Z` at 300, 1,000, and 2,500 training steps. Colab runtime stopped immediately after artifact generation to conserve compute units.

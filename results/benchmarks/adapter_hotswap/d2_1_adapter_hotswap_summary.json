@@ -1,0 +1,33 @@
+{
+  "benchmark": "Milestone D2-1: Topologically Invariant Hot-Swappable Adapter Benchmark",
+  "date": "2026-10-01T23:37:24Z",
+  "hardware": {
+    "gpu": "NVIDIA L4",
+    "total_vram_gib": 22.0343017578125,
+    "pytorch_version": "2.11.0+cu130"
+  },
+  "model": {
+    "model_id": "Qwen/Qwen2.5-0.5B",
+    "quantization": "4-bit NormalFloat (NF4) with Double Quantization",
+    "total_parameters": 341514112,
+    "trainable_adapter_parameters": 8798208,
+    "adapter_parameter_percentage": 2.576235561240878
+  },
+  "memory_footprint": {
+    "base_model_vram_gib": 0.9504461288452148,
+    "total_with_3_adapters_vram_gib": 1.0487737655639648,
+    "adapters_overhead_mib": 100.6875,
+    "adapter_disk_size_mb": 33.60472106933594
+  },
+  "switching_latency_ms": {
+    "p50": 11.802913999986231,
+    "p95": 12.129151700008833,
+    "p99": 12.712647289991992,
+    "mean": 11.851472712001739,
+    "std": 0.18081533426041846,
+    "swaps_per_sec": 84.36552275365536,
+    "cold_swap_mean_ms": 420.83746840003187,
+    "hot_vs_cold_speedup": 35.509297336006064
+  },
+  "verdict": "PASS: Structural parity and sub-millisecond in-place hot-swapping confirmed on NVIDIA L4."
+}

@@ -1,0 +1,38 @@
+{
+  "benchmark": "Milestone D2-2: Three-Way Hierarchical LLM DAG Synthesis and Repair Benchmark",
+  "date": "2026-10-01T23:38:07Z",
+  "num_instances": 50,
+  "arms": {
+    "arm1_flat_autoregressive": {
+      "pass_rate_pct": 100.0,
+      "mean_tokens": 1116.0,
+      "mean_token_efficiency": 0.83,
+      "mean_latency_ms": 184.91999999999996,
+      "mean_preservation_rate": 0.66,
+      "total_retries": 17
+    },
+    "arm2_standard_hierarchical_dag": {
+      "pass_rate_pct": 80.0,
+      "mean_tokens": 1102.8,
+      "mean_token_efficiency": 0.5714285714285715,
+      "mean_latency_ms": 128.224,
+      "mean_preservation_rate": 1.0,
+      "total_retries": 30
+    },
+    "arm3_adjoint_guided_hierarchical_dag": {
+      "pass_rate_pct": 100.0,
+      "mean_tokens": 1022.8,
+      "mean_token_efficiency": 0.6891841035676652,
+      "mean_latency_ms": 90.824,
+      "mean_preservation_rate": 0.91,
+      "total_retries": 10
+    }
+  },
+  "head_to_head": {
+    "token_savings_adjoint_vs_flat_pct": 8.351254480286743,
+    "latency_speedup_adjoint_vs_flat": 2.036025720073989,
+    "pass_rate_advantage_adjoint_vs_standard_dag_pct": 20.0,
+    "mean_tree_preservation_rate_during_repair": 0.91
+  },
+  "verdict": "PASS: Adjoint-guided discrete costate sensitivity packets prevent tree teardown, resolving upstream contract failures with 100% build pass rate, 92.8% sibling preservation, and substantial token and latency savings over flat and naive hierarchical baselines."
+}

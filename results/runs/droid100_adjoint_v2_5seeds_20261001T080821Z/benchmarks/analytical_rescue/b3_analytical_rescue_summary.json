@@ -1,0 +1,651 @@
+{
+  "benchmark": "Milestone B3: Analytical Rescue Interface Benchmark",
+  "date": "2026-10-01T23:22:18Z",
+  "run_id": "droid100_adjoint_v2_5seeds_20261001T080821Z",
+  "num_seeds": 5,
+  "total_test_windows": 4175,
+  "tau_grid": [
+    0.0,
+    0.02,
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.3,
+    0.4,
+    0.5,
+    0.7,
+    1.0
+  ],
+  "baselines": {
+    "exact_oracle": {
+      "mean": 0.0,
+      "std": 0.0
+    },
+    "always_mode0": {
+      "mean": 0.14009053111076356,
+      "std": 0.05017082309657647
+    },
+    "allocator_critic": {
+      "mean": 0.1878949910402298,
+      "std": 0.04514532461360773
+    },
+    "allocator_costate_norm_pure": {
+      "mean": 0.1351122200489044,
+      "std": 0.02617773787284928
+    },
+    "latencies_ms": {
+      "amortized_mean": 0.0005685552095239396,
+      "exact_rollout_mean": 0.6531708735329919
+    }
+  },
+  "pareto_curve": [
+    {
+      "tau": 0.0,
+      "rescue_rate_pct": 0.0,
+      "regret_margin_gated_mean": 0.1351122200489044,
+      "regret_margin_gated_std": 0.02617773787284928,
+      "regret_uncert_gated_mean": 0.1351122200489044,
+      "regret_random_gated_mean": 0.1351122200489044,
+      "effective_latency_ms": 0.0005685552095239396,
+      "margin_advantage_over_random": 0.0
+    },
+    {
+      "tau": 0.02,
+      "rescue_rate_pct": 2.035928143712575,
+      "regret_margin_gated_mean": 0.13330866992473603,
+      "regret_margin_gated_std": 0.026368650422738102,
+      "regret_uncert_gated_mean": 0.13160763084888458,
+      "regret_random_gated_mean": 0.13142555207014084,
+      "effective_latency_ms": 0.013855069474792148,
+      "margin_advantage_over_random": -0.0018831178545951899
+    },
+    {
+      "tau": 0.05,
+      "rescue_rate_pct": 5.029940119760479,
+      "regret_margin_gated_mean": 0.12934039980173112,
+      "regret_margin_gated_std": 0.025920892021407127,
+      "regret_uncert_gated_mean": 0.12266372442245484,
+      "regret_random_gated_mean": 0.12969213724136353,
+      "effective_latency_ms": 0.03339406104136304,
+      "margin_advantage_over_random": 0.00035173743963240467
+    },
+    {
+      "tau": 0.1,
+      "rescue_rate_pct": 10.059880239520957,
+      "regret_margin_gated_mean": 0.12366635799407959,
+      "regret_margin_gated_std": 0.024749137193859596,
+      "regret_uncert_gated_mean": 0.10904847234487533,
+      "regret_random_gated_mean": 0.12375691533088684,
+      "effective_latency_ms": 0.06621956687320214,
+      "margin_advantage_over_random": 9.055733680725375e-05
+    },
+    {
+      "tau": 0.15,
+      "rescue_rate_pct": 15.089820359281436,
+      "regret_margin_gated_mean": 0.11864388138055801,
+      "regret_margin_gated_std": 0.025067416768589933,
+      "regret_uncert_gated_mean": 0.10231660455465316,
+      "regret_random_gated_mean": 0.12039555162191391,
+      "effective_latency_ms": 0.09904507270504123,
+      "margin_advantage_over_random": 0.0017516702413559043
+    },
+    {
+      "tau": 0.2,
+      "rescue_rate_pct": 20.0,
+      "regret_margin_gated_mean": 0.11367203891277314,
+      "regret_margin_gated_std": 0.022854990743565964,
+      "regret_uncert_gated_mean": 0.09703323096036912,
+      "regret_random_gated_mean": 0.1149740070104599,
+      "effective_latency_ms": 0.13108901887421756,
+      "margin_advantage_over_random": 0.001301968097686762
+    },
+    {
+      "tau": 0.3,
+      "rescue_rate_pct": 30.059880239520957,
+      "regret_margin_gated_mean": 0.10320255905389786,
+      "regret_margin_gated_std": 0.020458074515055664,
+      "regret_uncert_gated_mean": 0.08584750294685364,
+      "regret_random_gated_mean": 0.10098699778318405,
+      "effective_latency_ms": 0.19674003053789574,
+      "margin_advantage_over_random": -0.0022155612707138034
+    },
+    {
+      "tau": 0.4,
+      "rescue_rate_pct": 40.0,
+      "regret_margin_gated_mean": 0.09273801445960998,
+      "regret_margin_gated_std": 0.018186866989507507,
+      "regret_uncert_gated_mean": 0.07376903295516968,
+      "regret_random_gated_mean": 0.09604693055152894,
+      "effective_latency_ms": 0.26160948253891114,
+      "margin_advantage_over_random": 0.0033089160919189536
+    },
+    {
+      "tau": 0.5,
+      "rescue_rate_pct": 50.05988023952096,
+      "regret_margin_gated_mean": 0.0825140655040741,
+      "regret_margin_gated_std": 0.016880761291944397,
+      "regret_uncert_gated_mean": 0.0669434517621994,
+      "regret_random_gated_mean": 0.08368739858269691,
+      "effective_latency_ms": 0.32726049420258935,
+      "margin_advantage_over_random": 0.0011733330786228152
+    },
+    {
+      "tau": 0.7,
+      "rescue_rate_pct": 69.94011976047905,
+      "regret_margin_gated_mean": 0.062423433363437655,
+      "regret_margin_gated_std": 0.011760014421438009,
+      "regret_uncert_gated_mean": 0.05172959417104721,
+      "regret_random_gated_mean": 0.06054911464452743,
+      "effective_latency_ms": 0.4569993982046201,
+      "margin_advantage_over_random": -0.0018743187189102228
+    },
+    {
+      "tau": 1.0,
+      "rescue_rate_pct": 100.0,
+      "regret_margin_gated_mean": 0.030070978775620462,
+      "regret_margin_gated_std": 0.005942462248355789,
+      "regret_uncert_gated_mean": 0.030070978775620462,
+      "regret_random_gated_mean": 0.030070978775620462,
+      "effective_latency_ms": 0.6531708735329919,
+      "margin_advantage_over_random": 0.0
+    }
+  ],
+  "per_seed_results": [
+    {
+      "seed": 0,
+      "regret_oracle": 0.0,
+      "regret_mode0": 0.14594940841197968,
+      "regret_critic": 0.1921418458223343,
+      "regret_amort": 0.14626483619213104,
+      "lat_amort_ms": 0.000583694970106614,
+      "lat_exact_ms": 1.5316423449101007,
+      "tau_results": [
+        {
+          "tau": 0.0,
+          "actual_rescue_rate": 0.0,
+          "regret_margin_gated": 0.14626483619213104,
+          "regret_uncert_gated": 0.14626483619213104,
+          "regret_random_gated": 0.14626483619213104,
+          "effective_latency_ms": 0.000583694970106614
+        },
+        {
+          "tau": 0.02,
+          "actual_rescue_rate": 0.02035928143712575,
+          "regret_margin_gated": 0.1449674665927887,
+          "regret_uncert_gated": 0.14221148192882538,
+          "regret_random_gated": 0.13919150829315186,
+          "effective_latency_ms": 0.03175494892098074
+        },
+        {
+          "tau": 0.05,
+          "actual_rescue_rate": 0.05029940119760479,
+          "regret_margin_gated": 0.14131295680999756,
+          "regret_uncert_gated": 0.1320846527814865,
+          "regret_random_gated": 0.140560582280159,
+          "effective_latency_ms": 0.07759502826050152
+        },
+        {
+          "tau": 0.1,
+          "actual_rescue_rate": 0.10059880239520957,
+          "regret_margin_gated": 0.1338280439376831,
+          "regret_uncert_gated": 0.11595561355352402,
+          "regret_random_gated": 0.1362578570842743,
+          "effective_latency_ms": 0.1546063615508964
+        },
+        {
+          "tau": 0.15,
+          "actual_rescue_rate": 0.15089820359281436,
+          "regret_margin_gated": 0.1273730993270874,
+          "regret_uncert_gated": 0.11002402007579803,
+          "regret_random_gated": 0.12898865342140198,
+          "effective_latency_ms": 0.23161769484129133
+        },
+        {
+          "tau": 0.2,
+          "actual_rescue_rate": 0.2,
+          "regret_margin_gated": 0.12114125490188599,
+          "regret_uncert_gated": 0.10593731701374054,
+          "regret_random_gated": 0.12525752186775208,
+          "effective_latency_ms": 0.30679542495810547
+        },
+        {
+          "tau": 0.3,
+          "actual_rescue_rate": 0.3005988023952096,
+          "regret_margin_gated": 0.10766645520925522,
+          "regret_uncert_gated": 0.09005755931138992,
+          "regret_random_gated": 0.10312465578317642,
+          "effective_latency_ms": 0.46081809153889525
+        },
+        {
+          "tau": 0.4,
+          "actual_rescue_rate": 0.4,
+          "regret_margin_gated": 0.09694407880306244,
+          "regret_uncert_gated": 0.07324734330177307,
+          "regret_random_gated": 0.10274989157915115,
+          "effective_latency_ms": 0.6130071549461042
+        },
+        {
+          "tau": 0.5,
+          "actual_rescue_rate": 0.5005988023952096,
+          "regret_margin_gated": 0.08675218373537064,
+          "regret_uncert_gated": 0.06420786678791046,
+          "regret_random_gated": 0.09427449852228165,
+          "effective_latency_ms": 0.767029821526894
+        },
+        {
+          "tau": 0.7,
+          "actual_rescue_rate": 0.6994011976047905,
+          "regret_margin_gated": 0.0695979967713356,
+          "regret_uncert_gated": 0.050425268709659576,
+          "regret_random_gated": 0.06474728882312775,
+          "effective_latency_ms": 1.0714079483413121
+        },
+        {
+          "tau": 1.0,
+          "actual_rescue_rate": 1.0,
+          "regret_margin_gated": 0.026928067207336426,
+          "regret_uncert_gated": 0.026928067207336426,
+          "regret_random_gated": 0.026928067207336426,
+          "effective_latency_ms": 1.5316423449101007
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "regret_oracle": 0.0,
+      "regret_mode0": 0.11511734873056412,
+      "regret_critic": 0.135300874710083,
+      "regret_amort": 0.09365051984786987,
+      "lat_amort_ms": 0.0005508535329414905,
+      "lat_exact_ms": 0.4321957365271613,
+      "tau_results": [
+        {
+          "tau": 0.0,
+          "actual_rescue_rate": 0.0,
+          "regret_margin_gated": 0.09365051984786987,
+          "regret_uncert_gated": 0.09365051984786987,
+          "regret_random_gated": 0.09365051984786987,
+          "effective_latency_ms": 0.0005508535329414905
+        },
+        {
+          "tau": 0.02,
+          "actual_rescue_rate": 0.02035928143712575,
+          "regret_margin_gated": 0.09195256978273392,
+          "regret_uncert_gated": 0.09095577150583267,
+          "regret_random_gated": 0.09257439523935318,
+          "effective_latency_ms": 0.009338833186716026
+        },
+        {
+          "tau": 0.05,
+          "actual_rescue_rate": 0.05029940119760479,
+          "regret_margin_gated": 0.0890561044216156,
+          "regret_uncert_gated": 0.08561401069164276,
+          "regret_random_gated": 0.09064934402704239,
+          "effective_latency_ms": 0.022262332677560927
+        },
+        {
+          "tau": 0.1,
+          "actual_rescue_rate": 0.10059880239520957,
+          "regret_margin_gated": 0.08623494952917099,
+          "regret_uncert_gated": 0.08012901991605759,
+          "regret_random_gated": 0.08930380642414093,
+          "effective_latency_ms": 0.04397381182218037
+        },
+        {
+          "tau": 0.15,
+          "actual_rescue_rate": 0.15089820359281436,
+          "regret_margin_gated": 0.0805516242980957,
+          "regret_uncert_gated": 0.07638800889253616,
+          "regret_random_gated": 0.08160023391246796,
+          "effective_latency_ms": 0.0656852909667998
+        },
+        {
+          "tau": 0.2,
+          "actual_rescue_rate": 0.2,
+          "regret_margin_gated": 0.07919427007436752,
+          "regret_uncert_gated": 0.075266532599926,
+          "regret_random_gated": 0.08180814981460571,
+          "effective_latency_ms": 0.08687983013178546
+        },
+        {
+          "tau": 0.3,
+          "actual_rescue_rate": 0.3005988023952096,
+          "regret_margin_gated": 0.07272128760814667,
+          "regret_uncert_gated": 0.0719771459698677,
+          "regret_random_gated": 0.06965798139572144,
+          "effective_latency_ms": 0.13030278842102433
+        },
+        {
+          "tau": 0.4,
+          "actual_rescue_rate": 0.4,
+          "regret_margin_gated": 0.06525252014398575,
+          "regret_uncert_gated": 0.0666901096701622,
+          "regret_random_gated": 0.06862889230251312,
+          "effective_latency_ms": 0.17320880673062944
+        },
+        {
+          "tau": 0.5,
+          "actual_rescue_rate": 0.5005988023952096,
+          "regret_margin_gated": 0.06046367436647415,
+          "regret_uncert_gated": 0.06213939189910889,
+          "regret_random_gated": 0.06192987784743309,
+          "effective_latency_ms": 0.2166317650198683
+        },
+        {
+          "tau": 0.7,
+          "actual_rescue_rate": 0.6994011976047905,
+          "regret_margin_gated": 0.04728080704808235,
+          "regret_uncert_gated": 0.047440994530916214,
+          "regret_random_gated": 0.04638199135661125,
+          "effective_latency_ms": 0.30244380163907847
+        },
+        {
+          "tau": 1.0,
+          "actual_rescue_rate": 1.0,
+          "regret_margin_gated": 0.031857579946517944,
+          "regret_uncert_gated": 0.031857579946517944,
+          "regret_random_gated": 0.031857579946517944,
+          "effective_latency_ms": 0.4321957365271613
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "regret_oracle": 0.0,
+      "regret_mode0": 0.11830023676156998,
+      "regret_critic": 0.23253944516181946,
+      "regret_amort": 0.16108962893486023,
+      "lat_amort_ms": 0.000587009341113721,
+      "lat_exact_ms": 0.4301030467071607,
+      "tau_results": [
+        {
+          "tau": 0.0,
+          "actual_rescue_rate": 0.0,
+          "regret_margin_gated": 0.16108962893486023,
+          "regret_uncert_gated": 0.16108962893486023,
+          "regret_random_gated": 0.16108962893486023,
+          "effective_latency_ms": 0.000587009341113721
+        },
+        {
+          "tau": 0.02,
+          "actual_rescue_rate": 0.02035928143712575,
+          "regret_margin_gated": 0.15902626514434814,
+          "regret_uncert_gated": 0.15350010991096497,
+          "regret_random_gated": 0.15661317110061646,
+          "effective_latency_ms": 0.00933164722760809
+        },
+        {
+          "tau": 0.05,
+          "actual_rescue_rate": 0.05029940119760479,
+          "regret_margin_gated": 0.15658612549304962,
+          "regret_uncert_gated": 0.14990970492362976,
+          "regret_random_gated": 0.15242770314216614,
+          "effective_latency_ms": 0.02219140882539393
+        },
+        {
+          "tau": 0.1,
+          "actual_rescue_rate": 0.10059880239520957,
+          "regret_margin_gated": 0.1523481160402298,
+          "regret_uncert_gated": 0.12867726385593414,
+          "regret_random_gated": 0.1443357914686203,
+          "effective_latency_ms": 0.04379580830967414
+        },
+        {
+          "tau": 0.15,
+          "actual_rescue_rate": 0.15089820359281436,
+          "regret_margin_gated": 0.1486019641160965,
+          "regret_uncert_gated": 0.1185152530670166,
+          "regret_random_gated": 0.14242275059223175,
+          "effective_latency_ms": 0.06540020779395435
+        },
+        {
+          "tau": 0.2,
+          "actual_rescue_rate": 0.2,
+          "regret_margin_gated": 0.14167150855064392,
+          "regret_uncert_gated": 0.11040035635232925,
+          "regret_random_gated": 0.1349663883447647,
+          "effective_latency_ms": 0.08649021681432312
+        },
+        {
+          "tau": 0.3,
+          "actual_rescue_rate": 0.3005988023952096,
+          "regret_margin_gated": 0.12599320709705353,
+          "regret_uncert_gated": 0.0962737500667572,
+          "regret_random_gated": 0.12534289062023163,
+          "effective_latency_ms": 0.12969901578288354
+        },
+        {
+          "tau": 0.4,
+          "actual_rescue_rate": 0.4,
+          "regret_margin_gated": 0.11527686566114426,
+          "regret_uncert_gated": 0.07985764741897583,
+          "regret_random_gated": 0.11308717727661133,
+          "effective_latency_ms": 0.17239342428753252
+        },
+        {
+          "tau": 0.5,
+          "actual_rescue_rate": 0.5005988023952096,
+          "regret_margin_gated": 0.10822295397520065,
+          "regret_uncert_gated": 0.07237187772989273,
+          "regret_random_gated": 0.09798668324947357,
+          "effective_latency_ms": 0.21560222325609293
+        },
+        {
+          "tau": 0.7,
+          "actual_rescue_rate": 0.6994011976047905,
+          "regret_margin_gated": 0.08066161721944809,
+          "regret_uncert_gated": 0.060007624328136444,
+          "regret_random_gated": 0.06743307411670685,
+          "effective_latency_ms": 0.3009910402653909
+        },
+        {
+          "tau": 1.0,
+          "actual_rescue_rate": 1.0,
+          "regret_margin_gated": 0.040445536375045776,
+          "regret_uncert_gated": 0.040445536375045776,
+          "regret_random_gated": 0.040445536375045776,
+          "effective_latency_ms": 0.4301030467071607
+        }
+      ]
+    },
+    {
+      "seed": 3,
+      "regret_oracle": 0.0,
+      "regret_mode0": 0.2333994060754776,
+      "regret_critic": 0.241738423705101,
+      "regret_amort": 0.15847603976726532,
+      "lat_amort_ms": 0.0005580826346956968,
+      "lat_exact_ms": 0.4333158359264406,
+      "tau_results": [
+        {
+          "tau": 0.0,
+          "actual_rescue_rate": 0.0,
+          "regret_margin_gated": 0.15847603976726532,
+          "regret_uncert_gated": 0.15847603976726532,
+          "regret_random_gated": 0.15847603976726532,
+          "effective_latency_ms": 0.0005580826346956968
+        },
+        {
+          "tau": 0.02,
+          "actual_rescue_rate": 0.02035928143712575,
+          "regret_margin_gated": 0.15721838176250458,
+          "regret_uncert_gated": 0.15734007954597473,
+          "regret_random_gated": 0.15439310669898987,
+          "effective_latency_ms": 0.009368719528060563
+        },
+        {
+          "tau": 0.05,
+          "actual_rescue_rate": 0.05029940119760479,
+          "regret_margin_gated": 0.1504937708377838,
+          "regret_uncert_gated": 0.1509186327457428,
+          "regret_random_gated": 0.15200303494930267,
+          "effective_latency_ms": 0.022325538488891246
+        },
+        {
+          "tau": 0.1,
+          "actual_rescue_rate": 0.10059880239520957,
+          "regret_margin_gated": 0.14212526381015778,
+          "regret_uncert_gated": 0.13269774615764618,
+          "regret_random_gated": 0.14823192358016968,
+          "effective_latency_ms": 0.04409299434308679
+        },
+        {
+          "tau": 0.15,
+          "actual_rescue_rate": 0.15089820359281436,
+          "regret_margin_gated": 0.13728037476539612,
+          "regret_uncert_gated": 0.12266286462545395,
+          "regret_random_gated": 0.14165595173835754,
+          "effective_latency_ms": 0.06586045019728234
+        },
+        {
+          "tau": 0.2,
+          "actual_rescue_rate": 0.2,
+          "regret_margin_gated": 0.1302468180656433,
+          "regret_uncert_gated": 0.11472825706005096,
+          "regret_random_gated": 0.13343364000320435,
+          "effective_latency_ms": 0.08710963329304468
+        },
+        {
+          "tau": 0.3,
+          "actual_rescue_rate": 0.3005988023952096,
+          "regret_margin_gated": 0.1224086806178093,
+          "regret_uncert_gated": 0.10148333758115768,
+          "regret_random_gated": 0.12179020047187805,
+          "effective_latency_ms": 0.13064454500143577
+        },
+        {
+          "tau": 0.4,
+          "actual_rescue_rate": 0.4,
+          "regret_margin_gated": 0.10675369203090668,
+          "regret_uncert_gated": 0.08926435559988022,
+          "regret_random_gated": 0.11448660492897034,
+          "effective_latency_ms": 0.17366118395139366
+        },
+        {
+          "tau": 0.5,
+          "actual_rescue_rate": 0.5005988023952096,
+          "regret_margin_gated": 0.08925439417362213,
+          "regret_uncert_gated": 0.0798104852437973,
+          "regret_random_gated": 0.09703794866800308,
+          "effective_latency_ms": 0.21719609565978473
+        },
+        {
+          "tau": 0.7,
+          "actual_rescue_rate": 0.6994011976047905,
+          "regret_margin_gated": 0.06084837019443512,
+          "regret_uncert_gated": 0.05872604623436928,
+          "regret_random_gated": 0.07085335999727249,
+          "effective_latency_ms": 0.3032293735597005
+        },
+        {
+          "tau": 1.0,
+          "actual_rescue_rate": 1.0,
+          "regret_margin_gated": 0.028318539261817932,
+          "regret_uncert_gated": 0.028318539261817932,
+          "regret_random_gated": 0.028318539261817932,
+          "effective_latency_ms": 0.4333158359264406
+        }
+      ]
+    },
+    {
+      "seed": 4,
+      "regret_oracle": 0.0,
+      "regret_mode0": 0.08768625557422638,
+      "regret_critic": 0.13775436580181122,
+      "regret_amort": 0.11608007550239563,
+      "lat_amort_ms": 0.0005631355687621758,
+      "lat_exact_ms": 0.4385974035940961,
+      "tau_results": [
+        {
+          "tau": 0.0,
+          "actual_rescue_rate": 0.0,
+          "regret_margin_gated": 0.11608007550239563,
+          "regret_uncert_gated": 0.11608007550239563,
+          "regret_random_gated": 0.11608007550239563,
+          "effective_latency_ms": 0.0005631355687621758
+        },
+        {
+          "tau": 0.02,
+          "actual_rescue_rate": 0.02035928143712575,
+          "regret_margin_gated": 0.11337866634130478,
+          "regret_uncert_gated": 0.11403071135282516,
+          "regret_random_gated": 0.11435557901859283,
+          "effective_latency_ms": 0.009481198510595323
+        },
+        {
+          "tau": 0.05,
+          "actual_rescue_rate": 0.05029940119760479,
+          "regret_margin_gated": 0.10925304144620895,
+          "regret_uncert_gated": 0.09479162096977234,
+          "regret_random_gated": 0.11282002180814743,
+          "effective_latency_ms": 0.022595996954467592
+        },
+        {
+          "tau": 0.1,
+          "actual_rescue_rate": 0.10059880239520957,
+          "regret_margin_gated": 0.10379541665315628,
+          "regret_uncert_gated": 0.08778271824121475,
+          "regret_random_gated": 0.100655198097229,
+          "effective_latency_ms": 0.04462885834017301
+        },
+        {
+          "tau": 0.15,
+          "actual_rescue_rate": 0.15089820359281436,
+          "regret_margin_gated": 0.09941234439611435,
+          "regret_uncert_gated": 0.08399287611246109,
+          "regret_random_gated": 0.10731016844511032,
+          "effective_latency_ms": 0.06666171972587843
+        },
+        {
+          "tau": 0.2,
+          "actual_rescue_rate": 0.2,
+          "regret_margin_gated": 0.09610634297132492,
+          "regret_uncert_gated": 0.0788336917757988,
+          "regret_random_gated": 0.09940433502197266,
+          "effective_latency_ms": 0.08816998917382897
+        },
+        {
+          "tau": 0.3,
+          "actual_rescue_rate": 0.3005988023952096,
+          "regret_margin_gated": 0.08722316473722458,
+          "regret_uncert_gated": 0.06944572180509567,
+          "regret_random_gated": 0.08501926064491272,
+          "effective_latency_ms": 0.1322357119452398
+        },
+        {
+          "tau": 0.4,
+          "actual_rescue_rate": 0.4,
+          "regret_margin_gated": 0.0794629156589508,
+          "regret_uncert_gated": 0.05978570878505707,
+          "regret_random_gated": 0.08128208667039871,
+          "effective_latency_ms": 0.17577684277889577
+        },
+        {
+          "tau": 0.5,
+          "actual_rescue_rate": 0.5005988023952096,
+          "regret_margin_gated": 0.06787712126970291,
+          "regret_uncert_gated": 0.05618763715028763,
+          "regret_random_gated": 0.06720798462629318,
+          "effective_latency_ms": 0.2198425655503066
+        },
+        {
+          "tau": 0.7,
+          "actual_rescue_rate": 0.6994011976047905,
+          "regret_margin_gated": 0.0537283755838871,
+          "regret_uncert_gated": 0.04204803705215454,
+          "regret_random_gated": 0.05332985892891884,
+          "effective_latency_ms": 0.3069248272176185
+        },
+        {
+          "tau": 1.0,
+          "actual_rescue_rate": 1.0,
+          "regret_margin_gated": 0.022805171087384224,
+          "regret_uncert_gated": 0.022805171087384224,
+          "regret_random_gated": 0.022805171087384224,
+          "effective_latency_ms": 0.4385974035940961
+        }
+      ]
+    }
+  ]
+}

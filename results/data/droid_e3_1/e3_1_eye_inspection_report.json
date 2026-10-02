@@ -1,0 +1,386 @@
+[
+  {
+    "episode_id": "98ca4d8e47383c1482a0f17d",
+    "site": "AUTOLab",
+    "scene": "2023-11-11_Sat_Nov_11_16:50:39_2023",
+    "split": "train",
+    "num_steps": 265,
+    "task_instruction": "Put the black objects into the drawer and close the drawer.",
+    "wrist_image_shape": [
+      265,
+      180,
+      320,
+      3
+    ],
+    "wrist_pixel_variance": 2674.6513662859616,
+    "exterior_image_shape": [
+      265,
+      180,
+      320,
+      3
+    ],
+    "exterior_pixel_variance": 3867.5119508621,
+    "cartesian_min": [
+      0.4387756884098053,
+      -0.17174632847309113,
+      0.13393642008304596,
+      -3.141418933868408,
+      -0.6277931332588196,
+      -1.4556312561035156
+    ],
+    "cartesian_max": [
+      0.7837637066841125,
+      0.11451452225446701,
+      0.4318331480026245,
+      3.137327194213867,
+      0.19718313217163086,
+      0.10231339186429977
+    ],
+    "gripper_range": [
+      0.0,
+      0.0
+    ],
+    "joint_range": [
+      -2.514944076538086,
+      3.1765730381011963
+    ],
+    "action_norm_mean": 3.0321165278755475,
+    "status": "PASS_CONTRACT"
+  },
+  {
+    "episode_id": "fcfbe2da8ea2d12c55f3dbbf",
+    "site": "ILIAD",
+    "scene": "2023-08-30_Wed_Aug_30_16:09:41_2023",
+    "split": "train",
+    "num_steps": 245,
+    "task_instruction": "Pick up the lid and put it on top of the black pot",
+    "wrist_image_shape": [
+      245,
+      180,
+      320,
+      3
+    ],
+    "wrist_pixel_variance": 1274.432115952329,
+    "exterior_image_shape": [
+      245,
+      180,
+      320,
+      3
+    ],
+    "exterior_pixel_variance": 923.6448268660639,
+    "cartesian_min": [
+      0.3368971347808838,
+      -0.0820407122373581,
+      0.3075815439224243,
+      -3.1414742469787598,
+      -0.38530832529067993,
+      -0.9971625804901123
+    ],
+    "cartesian_max": [
+      0.536707878112793,
+      0.1512467861175537,
+      0.4793034791946411,
+      3.141289472579956,
+      0.24962817132472992,
+      0.08730733394622803
+    ],
+    "gripper_range": [
+      0.0,
+      0.6123347878456116
+    ],
+    "joint_range": [
+      -2.7368152141571045,
+      2.60813045501709
+    ],
+    "action_norm_mean": 3.209372971865909,
+    "status": "PASS_CONTRACT"
+  },
+  {
+    "episode_id": "50bf51d770bfb4a9b14d8090",
+    "site": "IRIS",
+    "scene": "2023-05-08_Mon_May__8_16:11:54_2023",
+    "split": "train",
+    "num_steps": 199,
+    "task_instruction": "Remove the pen from the cup and place it on the table",
+    "wrist_image_shape": [
+      199,
+      180,
+      320,
+      3
+    ],
+    "wrist_pixel_variance": 5550.622127063926,
+    "exterior_image_shape": [
+      199,
+      180,
+      320,
+      3
+    ],
+    "exterior_pixel_variance": 4943.690460879509,
+    "cartesian_min": [
+      0.3963800370693207,
+      -0.22383718192577362,
+      0.15202468633651733,
+      -3.140021562576294,
+      -0.34928303956985474,
+      0.08597791939973831
+    ],
+    "cartesian_max": [
+      0.5333370566368103,
+      0.1268882304430008,
+      0.4500912129878998,
+      3.1406548023223877,
+      0.32903286814689636,
+      0.5656418800354004
+    ],
+    "gripper_range": [
+      0.0,
+      0.8766520023345947
+    ],
+    "joint_range": [
+      -2.732438087463379,
+      2.8935294151306152
+    ],
+    "action_norm_mean": 3.2036110631867105,
+    "status": "PASS_CONTRACT"
+  },
+  {
+    "episode_id": "100a854030acdde2eaad3734",
+    "site": "TRI",
+    "scene": "2024-03-12_Tue_Mar_12_16:02:29_2024",
+    "split": "train",
+    "num_steps": 290,
+    "task_instruction": "Pick up the white and green brush from the table and hang it on the wall",
+    "wrist_image_shape": [
+      290,
+      180,
+      320,
+      3
+    ],
+    "wrist_pixel_variance": 6409.344704319161,
+    "exterior_image_shape": [
+      290,
+      180,
+      320,
+      3
+    ],
+    "exterior_pixel_variance": 4905.549587780724,
+    "cartesian_min": [
+      0.28538572788238525,
+      -0.1471555233001709,
+      0.32884639501571655,
+      -3.1280643939971924,
+      -1.41065514087677,
+      -0.05297345668077469
+    ],
+    "cartesian_max": [
+      0.5896338224411011,
+      0.1582605242729187,
+      0.8108897805213928,
+      3.128150701522827,
+      -0.09926871955394745,
+      1.8657140731811523
+    ],
+    "gripper_range": [
+      0.0,
+      0.8061674237251282
+    ],
+    "joint_range": [
+      -2.712841272354126,
+      2.8057045936584473
+    ],
+    "action_norm_mean": 3.2779026128216158,
+    "status": "PASS_CONTRACT"
+  },
+  {
+    "episode_id": "0834c3f39ebb9cbe6a31dace",
+    "site": "RAIL",
+    "scene": "2023-10-06_Fri_Oct__6_09:37:19_2023",
+    "split": "train",
+    "num_steps": 125,
+    "task_instruction": "Pick up the red pepper on the plate and put it on the table",
+    "wrist_image_shape": [
+      125,
+      180,
+      320,
+      3
+    ],
+    "wrist_pixel_variance": 4843.568728096298,
+    "exterior_image_shape": [
+      125,
+      180,
+      320,
+      3
+    ],
+    "exterior_pixel_variance": 5312.605706674783,
+    "cartesian_min": [
+      0.34433555603027344,
+      -0.18077492713928223,
+      0.09903732687234879,
+      -3.137208938598633,
+      0.11519160866737366,
+      -0.4662196636199951
+    ],
+    "cartesian_max": [
+      0.6698553562164307,
+      0.07625989615917206,
+      0.5382984280586243,
+      3.1410131454467773,
+      0.23881769180297852,
+      -0.2346382588148117
+    ],
+    "gripper_range": [
+      0.0,
+      0.44933921098709106
+    ],
+    "joint_range": [
+      -2.2647817134857178,
+      2.224407196044922
+    ],
+    "action_norm_mean": 3.1064335322074688,
+    "status": "PASS_CONTRACT"
+  },
+  {
+    "episode_id": "020ce061d83d879c0ed120c1",
+    "site": "TRI",
+    "scene": "2023-10-31_Tue_Oct_31_14:06:55_2023",
+    "split": "train",
+    "num_steps": 562,
+    "task_instruction": "Fold the yellow towel twice from left to right.",
+    "wrist_image_shape": [
+      562,
+      180,
+      320,
+      3
+    ],
+    "wrist_pixel_variance": 4542.852187544929,
+    "exterior_image_shape": [
+      562,
+      180,
+      320,
+      3
+    ],
+    "exterior_pixel_variance": 4160.307414829847,
+    "cartesian_min": [
+      0.28436464071273804,
+      -0.3929171860218048,
+      0.19501569867134094,
+      -3.141472101211548,
+      -0.6156596541404724,
+      -0.5925682187080383
+    ],
+    "cartesian_max": [
+      0.6154334545135498,
+      0.027491606771945953,
+      0.5557916760444641,
+      3.1413350105285645,
+      0.16893784701824188,
+      0.6646105647087097
+    ],
+    "gripper_range": [
+      0.0,
+      0.9911894202232361
+    ],
+    "joint_range": [
+      -2.5503296852111816,
+      3.0288307666778564
+    ],
+    "action_norm_mean": 2.985684915198565,
+    "status": "PASS_CONTRACT"
+  },
+  {
+    "episode_id": "7be49481735244064e493d28",
+    "site": "AUTOLab",
+    "scene": "2023-11-23_Thu_Nov_23_20:06:51_2023",
+    "split": "train",
+    "num_steps": 427,
+    "task_instruction": "Remove the two t-shirts and two towels from the white box and place them on the table",
+    "wrist_image_shape": [
+      427,
+      180,
+      320,
+      3
+    ],
+    "wrist_pixel_variance": 2694.4366832977225,
+    "exterior_image_shape": [
+      427,
+      180,
+      320,
+      3
+    ],
+    "exterior_pixel_variance": 1970.0903736178786,
+    "cartesian_min": [
+      0.4056452214717865,
+      -0.19089967012405396,
+      0.1794271469116211,
+      -3.141476631164551,
+      -0.5358909368515015,
+      -0.4167861342430115
+    ],
+    "cartesian_max": [
+      0.6318241953849792,
+      0.23820045590400696,
+      0.6835184693336487,
+      3.1410703659057617,
+      0.5536286234855652,
+      0.7955960631370544
+    ],
+    "gripper_range": [
+      0.0,
+      0.9603524208068848
+    ],
+    "joint_range": [
+      -2.201218843460083,
+      2.3668923377990723
+    ],
+    "action_norm_mean": 3.1996547828824093,
+    "status": "PASS_CONTRACT"
+  },
+  {
+    "episode_id": "543de661de988b9998cd3d1b",
+    "site": "AUTOLab",
+    "scene": "2023-11-12_Sun_Nov_12_16:48:10_2023",
+    "split": "train",
+    "num_steps": 286,
+    "task_instruction": "",
+    "wrist_image_shape": [
+      286,
+      180,
+      320,
+      3
+    ],
+    "wrist_pixel_variance": 4930.0978694776795,
+    "exterior_image_shape": [
+      286,
+      180,
+      320,
+      3
+    ],
+    "exterior_pixel_variance": 3961.5920389843004,
+    "cartesian_min": [
+      0.3816339373588562,
+      -0.008659598417580128,
+      0.26331841945648193,
+      -3.139164686203003,
+      -0.2660108208656311,
+      -0.09711296111345291
+    ],
+    "cartesian_max": [
+      0.7696609497070312,
+      0.18496717512607574,
+      0.5613998174667358,
+      3.138343095779419,
+      0.047709476202726364,
+      0.29259708523750305
+    ],
+    "gripper_range": [
+      0.0,
+      0.9911894202232361
+    ],
+    "joint_range": [
+      -2.2965972423553467,
+      2.5444140434265137
+    ],
+    "action_norm_mean": 3.1987703309022706,
+    "status": "PASS_CONTRACT"
+  }
+]

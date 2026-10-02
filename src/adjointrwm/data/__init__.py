@@ -11,6 +11,11 @@ from .droid import (
     load_droid,
     state_groups,
 )
+from .droid_shard import (
+    EpisodeMetadata,
+    parse_metadata_from_rlds,
+    stratify_episodes,
+)
 from .windows import (
     SPLITS,
     WindowDataset,
@@ -37,6 +42,7 @@ __all__ = [
     "IMAGE_KEYS",
     "SPLITS",
     "STATE_KEYS",
+    "EpisodeMetadata",
     "WindowDataset",
     "WindowSpec",
     "as_tokens",
@@ -52,8 +58,10 @@ __all__ = [
     "load_droid",
     "normalise_action",
     "normalise_state",
+    "parse_metadata_from_rlds",
     "slice_window",
     "split_sets",
     "state_groups",
+    "stratify_episodes",
     "window_starts",
 ]

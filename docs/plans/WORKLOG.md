@@ -19,6 +19,51 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 - Next:
 ```
 
+## 2026-10-02 07:00 (BST) · Antigravity · Milestone E3.1 DROID 500-Episode Stratified Shard Streaming & Verification
+
+- **Changed:** created `src/adjointrwm/data/droid_shard.py`, `tests/test_droid_shard.py`, and `scripts/stream_droid_e3_shard.py`; connected to active Colab L4 session `l4-worker`; streamed and stratified 500 episodes from full DROID release (`droid:1.0.1`, 95,658 episodes) at `gs://gresearch/robotics`; performed deep multi-modal contract verification on 8 sample episodes; downloaded manifest (`results/data/droid_e3_1/e3_1_droid_500_manifest.json`) and eye-inspection report (`results/data/droid_e3_1/e3_1_eye_inspection_report.md`); mirrored to Google Drive; stopped Colab VM immediately (`colab stop -s l4-worker`); authored research note `docs/research-notes/2026-10-02-e3-1-droid-500-shard.md`; updated `README.md`, `CHANGELOG.md` (an), and `docs/plans/roadmap.md`.
+- **Verified:** 500 episodes stratified across 14 robot laboratories (`TRI`: 127, `AUTOLab`: 72, `IRIS`: 45, `RAIL`: 45, `ILIAD`: 44, `IPRL`: 44, `BVL`: 29, `CLVR`: 25, `REAL`: 19, `PennPAL`: 14, `RPL`: 12, `WEIRD`: 12, `GuptaLab`: 7, `RAD`: 5) with exact 80/10/10 split (400 train, 50 val, 50 test); 8/8 deeply inspected episodes pass all multi-modal contracts: non-zero pixel variance for wrist (1,274.4 to 6,409.3) and exterior (923.6 to 5,312.6) cameras with shape `(180, 320, 3)` uint8, 6D Cartesian, 1D gripper, 7D joint, and continuous 7D actions ($3.15 \pm 0.10$ norm); `python harness/check.py` 6/6 checks PASS.
+- **Open:** Milestone B3b (repeating 5-seed rival world model benchmark B1 on E3.1 shard with site/scene holdouts); Milestone E3.2 (20-60M dynamics pilot).
+- **Next:** plan and queue Milestone B3b / E3.2 on Colab L4.
+
+---
+
+## 2026-10-02 06:15 (BST) · Antigravity · Option 1 Multi-File Repository Code Generation Benchmark on NVIDIA L4
+
+- **Changed:** created and executed `scripts/run_repo_code_generation_benchmark.py` on NVIDIA L4 VM (`l4-worker`); evaluated real-world multi-file repository generation with `Qwen/Qwen2.5-Coder-1.5B-Instruct` in 4-bit NF4 with 3 resident LoRA adapters ($r=16, \alpha=32$); profiled GPU VRAM and execution latency; downloaded benchmark summary and report to `results/benchmarks/repo_code_gen/`; updated `CHANGELOG.md` (am2).
+- **Verified:** 4-bit NF4 base model loads in `1.07 GiB` VRAM; 3 resident tiered adapters add `211.3 MiB` VRAM; peak execution VRAM was `< 1.5 GiB`, leaving >20.5 GiB (93%) free headroom on the NVIDIA L4 (proving G4/A100 upgrade is unnecessary); Arm 3 (Adjoint-Guided) achieves **100% build pass rate**, 2,215 tokens, 134.8 ms latency (**1.82× faster** than flat monolithic baseline), and **75.0% sibling file preservation rate** with zero full-codebase regenerations.
+- **Open:** integration with live compiler/unit-test feedback loops in user-facing IDE tools.
+- **Next:** proceed with Option 3 (Milestone E3.1 DROID shard streaming).
+
+---
+
+## 2026-10-02 01:15 (BST) · Antigravity · Milestones D2-1 & D2-2 Hot-Swappable Adapters & Hierarchical LLM DAG Benchmarks
+
+- **Changed:** verified active Colab L4 runtime `l4-worker`; installed `bitsandbytes` (0.50.2); created and executed `scripts/run_adapter_hotswap_benchmark.py` (Milestone D2-1) and `scripts/run_llm_dag_benchmark.py` (Milestone D2-2); downloaded benchmark summaries and markdown reports into `results/benchmarks/adapter_hotswap/` and `results/benchmarks/llm_dag/`; terminated Colab session immediately (verified 0 active sessions); authored research note `docs/research-notes/2026-10-02-d2-hierarchical-dag-and-adapter-hotswap.md`; updated `CHANGELOG.md` (am), `README.md`, and `docs/plans/roadmap.md`.
+- **Verified:** Milestone D2-1: 4-bit NF4 base model uses `0.95 GiB` VRAM; 3 tiered adapters ($r=16, \alpha=32$) reside simultaneously in GPU memory with only `100.7 MiB` total overhead (33.6 MB delta disk footprint); in-memory hot-swap latency is `11.80 ms` p50 (`84.4 swaps/sec`), achieving a **35.5× speedup** over cold disk load (`420.84 ms`); Milestone D2-2: evaluated across 50 multi-tier software tasks: Adjoint-Guided Hierarchical DAG achieves **100% build pass rate** (+20.0% advantage over naive hierarchical DAG), **91.0% tree preservation rate** during upstream contract repair, **8.4% token savings**, and **2.04× latency speedup** vs flat monolithic baseline; `python harness/check.py` passed.
+- **Open:** Track D2-3 full-scale code repository generation with multi-turn human instruction and unit test execution.
+- **Next:** proceed with dataset curation or Track E3 streaming setup.
+
+---
+
+## 2026-10-02 00:45 (BST) · Antigravity · Milestone D2-0 Hierarchical LLM DAG Domain Formalization & Tests
+
+- **Changed:** implemented Track D2/D3 package `src/adjointrwm/domains/llm_dag/` (`contracts.py`, `dag.py`, `verifier.py`, `adjoint_engine.py`, `domain.py`, `__init__.py`) integrating Rooted Dependency DAGs, typed boundary contracts, AST-based deterministic verification, discrete costate sensitivity packets ($\Delta u_{\text{macro}} \propto -\lambda$), and `AllocationDomain` interface; added 6 comprehensive unit tests in `tests/test_llm_dag.py`; exported classes in `src/adjointrwm/domains/__init__.py`; updated `CHANGELOG.md` (al).
+- **Verified:** all 6 new unit tests pass in 0.22s; full test suite passes (381 passed in 25s); `python harness/check.py` 6/6 checks PASS (unit tests, harness sync, skills, notebooks, links, immutability).
+- **Open:** Track D2-1 adapter training scripts and QLoRA configuration on Colab L4/G4; dataset curation of hierarchical code DAG instances.
+- **Next:** build synthesis dataset script or evaluate adapter hot-swapping microbenchmarks.
+
+---
+
+## 2026-10-02 00:30 (BST) · Antigravity · Milestone B3 Analytical Rescue Interface Benchmark & Pareto Frontier
+
+- **Changed:** verified L4 VM configuration (`l4-worker`: NVIDIA L4 22.03 GiB VRAM, 12 vCPUs, 53 GiB RAM); implemented and executed `scripts/run_analytical_rescue_benchmark.py` evaluating the Selective Invocation and Analytical Rescue Interface across 4,175 held-out test windows over 5 seeds of run `droid100_adjoint_v2_5seeds_20261001T080821Z`; evaluated decision-margin confidence gating sweeps $\tau \in [0.0, 1.0]$; downloaded summary JSON, markdown report, and full log into `results/runs/droid100_adjoint_v2_5seeds_20261001T080821Z/benchmarks/analytical_rescue/`; terminated Colab session immediately after execution (verified 0 active sessions); authored research note `docs/research-notes/2026-10-02-b3-analytical-rescue-interface.md`; updated `CHANGELOG.md` (ak), `README.md`, and `docs/plans/roadmap.md`.
+- **Verified:** mapped strictly monotonic Pareto frontier: sub-microsecond amortized forward pass (`0.0006 ms/window`, >1.5 MHz throughput, regret `0.13511 ± 0.02618`) to exact autograd co-state backward rollout (`0.653 ms/window`, ~1,530 Hz throughput, regret `0.03007 ± 0.00594`); rescuing just 20% of ambiguous decisions drops regret to `0.11367` (a ~20% improvement toward the oracle bound) while maintaining >7,600 Hz throughput; co-state advantage over matched direct critic expands from `-0.05278` at zero rescue to `-0.07422` at 20% rescue and `-0.15782` at 100% rescue; `python harness/check.py` passed all checks.
+- **Open:** Track D2/D3 implementation of hierarchical rooted dependency DAG generation, hot-swappable QLoRA adapters, and discrete costate sensitivity packets.
+- **Next:** implement `src/adjointrwm/domains/llm_dag/` and associated unit tests.
+
+---
+
 ## 2026-10-01 23:55 (BST) · Antigravity · Milestone B2.2 Allocator Optimization Benchmark & Amortization Gap Closure
 
 - **Changed:** formalized `normalized_first_order_scores` and `lcb_decision_scores` in `src/adjointrwm/allocators.py` with 5 unit tests in `tests/test_allocators.py`; created benchmark script `scripts/run_allocator_optimization_benchmark.py`; executed 5-seed benchmark on Colab L4 runtime `b2-worker` across 300, 1,000, and 2,500 training steps (4,175 held-out test windows); downloaded summary JSON, markdown report, and full logs into `results/runs/droid100_adjoint_v2_5seeds_20261001T080821Z/benchmarks/allocator_optimization/`; stopped Colab session immediately after execution (verified 0 active sessions); authored research note `docs/research-notes/2026-10-01-b2-2-allocator-optimization.md`; updated `CHANGELOG.md` (aj), `README.md`, and `docs/plans/roadmap.md`.
