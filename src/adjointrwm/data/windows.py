@@ -66,29 +66,39 @@ def episode_split(
     return assignment
 
 
+def normalize_split_name(split: str) -> str:
+    """Normalize split aliases (e.g. 'val' -> 'validation')."""
+    if split == "val":
+        return "validation"
+    return split
+
+
 def split_sets(assignment: Mapping[str, str]) -> dict[str, set]:
     sets = {split: set() for split in SPLITS}
-    for episode_id, split in assignment.items():
+    for episode_id, raw_split in assignment.items():
+        split = normalize_split_name(raw_split)
         if split not in sets:
-            raise ValueError(f"unknown split {split!r} for episode {episode_id}")
+            raise ValueError(f"unknown split {raw_split!r} for episode {episode_id}")
         sets[split].add(episode_id)
     return sets
 
 
 def compare_splits(assignment: Mapping[str, str], reference: Mapping[str, str]) -> dict:
     """Differences between two assignments, e.g. a new run versus the pilot's data manifest."""
-    shared = set(assignment) & set(reference)
+    norm_assignment = {e: normalize_split_name(s) for e, s in assignment.items()}
+    norm_reference = {e: normalize_split_name(s) for e, s in reference.items()}
+    shared = set(norm_assignment) & set(norm_reference)
     return {
-        "matches": not (set(assignment) ^ set(reference)) and all(assignment[e] == reference[e] for e in shared),
-        "only_in_new": sorted(set(assignment) - set(reference)),
-        "only_in_reference": sorted(set(reference) - set(assignment)),
-        "different_split": sorted(e for e in shared if assignment[e] != reference[e]),
+        "matches": not (set(norm_assignment) ^ set(norm_reference)) and all(norm_assignment[e] == norm_reference[e] for e in shared),
+        "only_in_new": sorted(set(norm_assignment) - set(norm_reference)),
+        "only_in_reference": sorted(set(norm_reference) - set(norm_assignment)),
+        "different_split": sorted(e for e in shared if norm_assignment[e] != norm_reference[e]),
     }
 
 
 def assignment_from_manifest(manifest: Mapping) -> dict[str, str]:
     """Read ``{episode_id: split}`` from a pilot-style ``data_manifest.json``."""
-    return {row["episode_id"]: row["split"] for row in manifest["episodes"]}
+    return {row["episode_id"]: normalize_split_name(row["split"]) for row in manifest["episodes"]}
 
 
 # ---------------------------------------------------------------------------

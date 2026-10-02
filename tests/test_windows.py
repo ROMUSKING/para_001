@@ -97,6 +97,22 @@ def test_compare_splits_reports_every_difference():
     assert diff["only_in_new"] == ["new_episode"]
 
 
+def test_assignment_from_manifest_handles_val_alias():
+    manifest = {
+        "episodes": [
+            {"episode_id": "ep1", "split": "train"},
+            {"episode_id": "ep2", "split": "val"},
+            {"episode_id": "ep3", "split": "test"},
+        ]
+    }
+    asgn = assignment_from_manifest(manifest)
+    assert asgn["ep2"] == "validation"
+    s = split_sets(asgn)
+    assert s["validation"] == {"ep2"}
+    assert s["train"] == {"ep1"}
+    assert s["test"] == {"ep3"}
+
+
 @pytest.mark.parametrize("length", [5, 12, 13, 50, 151])
 def test_window_starts_match_pilot_formula(length):
     spec = WindowSpec(context_len=8, horizon=4, stride=2)
