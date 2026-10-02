@@ -1,0 +1,38 @@
+{
+  "arm": "adjoint_rwm",
+  "best": {
+    "checkpoint": {
+      "path": "/content/drive/MyDrive/Colab Notebooks/AdjointRWM_Production/runs/e3_2_dynamics_pilot_20261002T172810Z/seed_0/best.pt",
+      "sha256": "5df35391907bc40c627faf97efc4cb1d939279882f935b9cb2cc543ee594ce90"
+    },
+    "score_name": "validation_rmse",
+    "step": 1400,
+    "validation_score": 0.2632270130659615
+  },
+  "best_checkpoint_kept": true,
+  "config_hash": "dbd078c7978523db5ddecfd886276a0a8e9f90cd11dfc7540c16b33582ca0ba7",
+  "data_manifest_hash": "1f7796331c8958b1c23e69bff8fac59f9ab83e9874ce3d3f9581e8d3f440c801",
+  "global_step": 1500,
+  "peak_vram_gib": 0.4964919090270996,
+  "run_id": "e3_2_dynamics_pilot_20261002T172810Z",
+  "seed": 0,
+  "session_seconds": 839.499546907,
+  "session_steps": 1500,
+  "session_steps_per_second": 1.7867788083108644,
+  "source_hash": "48c594e7052330203a6059799117925c94b07f3c6e84f9de38df7c620783c016",
+  "status": "DONE",
+  "train_config": {
+    "amp": true,
+    "batch_size": 64,
+    "checkpoint_interval": 250,
+    "eval_batch_size": 128,
+    "eval_interval": 100,
+    "grad_clip": 1.0,
+    "log_interval": 25,
+    "lr": 0.0003,
+    "seed": 20260928,
+    "steps": 1500,
+    "warmup_steps": 100,
+    "weight_decay": 0.05
+  }
+}

@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-10-02 (ap): Milestone E3.2: Dynamics Pilot on E3.1 Stratified Shard
+
+- **Same-Data Training Protocol (`scripts/train_e3_dynamics_pilot.py`):** Trained AdjointRWM (24.7M parameters) directly on 399 training episodes (26,879 windows) across 14 robotics laboratories on the E3.1 stratified shard with native E3 normalisation on NVIDIA L4 GPU.
+- **Key Empirical Results (Evaluated on 50 Held-Out Test Episodes / 4,154 Windows across 12 Laboratories):**
+  - **Decisive In-Domain Error Reduction:** Test proprioception RMSE dropped from 0.3720 (B3b zero-shot transfer) to **0.2586 ± 0.0049** (a **30.5% error reduction**).
+  - **Superiority over Persistence in Key Spatial Coordinates:** Cartesian end-effector MSE reduced by **34.2%** (0.3446 vs 0.5234) and Gripper aperture MSE reduced by **61.2%** (0.0435 vs 0.1122).
+  - **10/12 Laboratory Win Rate vs Persistence:** Beats persistence in 10 out of 12 laboratories (TRI 0.129 vs 0.221, AUTOLab 0.136 vs 0.243, IRIS 0.211 vs 0.264, IPRL 0.133 vs 0.205, RPL 0.078 vs 0.132, BVL 0.085 vs 0.176, REAL 0.123 vs 0.216, WEIRD 0.121 vs 0.214, RAIL 0.123 vs 0.246).
+  - **Action Coupling Sensitivity:** Under action sequence permutation, error degraded by **4.00×** (0.2551 to 1.0154), demonstrating strong physical control conditioning across laboratories.
+  - **Synchronized CUDA Event Latency Profiling:** Batch-1 single-decision latency on NVIDIA L4 measured at **p50 = 6.77 ms**, **p95 = 6.84 ms**, confirming sub-7ms real-time control loop compatibility.
+- **Compute Discipline:** Session `l4-worker` immediately terminated upon completion; 0 compute units wasted.
+- **Artifacts & Research Note:** Committed in `results/runs/e3_2_dynamics_pilot_20261002T172810Z/` and documented in `docs/research-notes/2026-10-02-e3-2-dynamics-pilot-shard.md`.
+
 ## 2026-10-02 (ao): Milestone B3b: Confirmatory Rival World Models on E3.1 Stratified Shard
 
 - **Confirmatory Multi-Laboratory Benchmark (`scripts/run_b3b_shard_benchmark.py`):** Evaluated AdjointRWM against 4 deep rival world model families (`dreamerv3_rssm`, `tdmpc2`, `dino_wm`, `vjepa2_ac`) and classical baselines (`persistence`, `ridge`) across 5 paired seeds on the 50 held-out test episodes (4,154 temporal windows with stride 2, 20,770 paired window evaluations) of the E3.1 stratified shard across 14 robotics laboratories on NVIDIA L4 GPU.

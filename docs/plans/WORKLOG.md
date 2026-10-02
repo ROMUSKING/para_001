@@ -19,6 +19,15 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 - Next:
 ```
 
+## 2026-10-02 19:00 (BST) · Antigravity · Milestone E3.2 Dynamics Pilot & Review Reconciliation
+
+- **Changed:** analyzed 3 review documents in Drive (`AdjointRWM_Progress_and_Valuation_Strategy.pdf`, `AI_Research_Validation_and_Reconciliation_Report.txt`, `Review_of_ROMUSKING_para_001.txt`); resolved site window accounting discrepancy in `scripts/run_b3b_shard_benchmark.py`; created `scripts/train_e3_dynamics_pilot.py`; trained AdjointRWM (24.7M params) directly on 399 training episodes (26,879 windows) of E3.1 stratified shard across 14 laboratories with native E3 normalisation on NVIDIA L4 GPU; profiled synchronized CUDA event batch-1 and batch-128 latency; evaluated on 50 held-out test episodes (4,154 windows) across 12 test laboratories; downloaded artifacts to `results/runs/e3_2_dynamics_pilot_20261002T172810Z/`; terminated Colab session immediately (`colab stop -s l4-worker`); authored research note `docs/research-notes/2026-10-02-e3-2-dynamics-pilot-shard.md`; updated `docs/plans/roadmap.md`, `CHANGELOG.md` (ap), and `docs/plans/WORKLOG.md`.
+- **Verified:** same-data training drops test proprioception RMSE from 0.3720 (B3b zero-shot) to 0.2586 ± 0.0049 (-30.5% relative error); beats persistence in 10/12 laboratories; Cartesian end-effector MSE reduced by 34.2% (0.3446 vs 0.5234) and Gripper aperture MSE reduced by 61.2% (0.0435 vs 0.1122); action coupling reaches 4.00× (0.2551 to 1.0154); batch-1 latency measured at p50 = 6.77 ms, p95 = 6.84 ms with CUDA event synchronisation; `python harness/check.py` passes 6/6 checks.
+- **Open:** Hybrid kinematic-residual model ($\hat{z}_{t+1} = Az_t + Bu_t + g_\theta(z, u, v)$); longer rollout horizons ($H \in \{8, 16, 32\}$).
+- **Next:** implement hybrid residual dynamics and test longer prediction horizons.
+
+---
+
 ## 2026-10-02 08:50 (BST) · Antigravity · Milestone B3b Confirmatory Rival World Models on E3.1 Stratified Shard
 
 - **Changed:** created `scripts/run_b3b_shard_benchmark.py`; connected to active Colab L4 session `l4-worker`; verified 499 cached episodes in `cache_e3_1` and 25 B1 model checkpoints on Drive; executed confirmatory rival benchmark across 5 paired seeds on 50 held-out test episodes (4,154 temporal windows with stride 2, 20,770 paired test windows total) across 14 robotics laboratories; computed paired relative differences with 5,000 episode-cluster bootstrap resamples; evaluated cross-site performance across 12 test laboratories; downloaded reports and CSV/JSON summaries to `results/benchmarks/b3b_rivals_shard/`; stopped Colab session immediately (`colab stop -s l4-worker`, verified 0 active assignments); authored research note `docs/research-notes/2026-10-02-b3b-rival-world-models-e3-shard.md`; updated `README.md`, `CHANGELOG.md` (ao), and `docs/plans/roadmap.md`.

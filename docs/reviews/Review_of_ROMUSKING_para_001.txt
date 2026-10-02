@@ -1,0 +1,646 @@
+﻿# Review of `ROMUSKING/para_001`
+
+
+## Overall assessment
+
+
+**Continue the project, but narrow its immediate research claim and strengthen the evidence before expanding into more architectures or domains.**
+
+
+My recommended focus is:
+
+
+> **Can co-state guidance improve the allocation of sensing and computation over a competent direct decision model, after accounting for information access, training effort, and actual deployment cost?**
+
+
+That is a more defensible—and potentially more valuable—research programme than trying to establish that AdjointRWM is generally a superior world-model architecture.
+
+
+The repository has a useful scientific foundation: an explicit hypothesis, comparison against direct critics, separation of research and engineering milestones, and documented negative outcomes. However, several headline conclusions currently go beyond what the inspected evidence establishes. The most important next work is **benchmark repair, baseline competence, and an untouched confirmatory experiment**, not another increase in model size. [GitHub](https://raw.githubusercontent.com/ROMUSKING/PARA_001/main/README.md)
+
+
+**Review scope:** I inspected the accessible README, roadmap, changelog, package configuration, B3b benchmark script, research note, and benchmark report. This is a source-and-evidence review, not an independent reproduction: I did not run the repository’s tests or obtain and execute its checkpoints. Some linked files were inaccessible, so I distinguish confirmed source issues from questions requiring execution.
+
+
+---
+
+
+## 1. What the current results actually support
+
+
+### 1.1 There is a promising neural comparison, but not an overall forecasting win
+
+
+The B3b report gives the following normalised proprioception errors:
+
+
+| Model or baseline | Reported test RMSE |
+|---|---:|
+| **AdjointRWM** | **0.3720 ± 0.0074** |
+| Local Dreamer-style model | 0.6719 ± 0.0059 |
+| Local TD-MPC2-style model | 0.5580 ± 0.0088 |
+| Local DINO-WM-style model | 0.4925 ± 0.0248 |
+| Local V-JEPA-2-AC-style model | 0.4915 ± 0.0222 |
+| Persistence | 0.2021 |
+| Ridge regression | **0.1002** |
+
+
+AdjointRWM beats the four local neural comparators. However, ridge is substantially better, while persistence has a better point estimate; the report classifies the persistence comparison as inconclusive, not a statistically established defeat. [GitHub](https://raw.githubusercontent.com/ROMUSKING/PARA_001/main/results/benchmarks/b3b_rivals_shard/b3b_shard_benchmark_report.md)
+
+
+There are two qualifications.
+
+
+**First, these are parameter-matched local implementations, not evaluations of the official pretrained systems.** The research note acknowledges this. The defensible claim is about those implementations under the repository’s protocol—not general superiority over DreamerV3, TD-MPC2, DINO-WM, or V-JEPA. [GitHub](https://raw.githubusercontent.com/ROMUSKING/PARA_001/main/docs/research-notes/2026-10-02-b3b-rival-world-models-e3-shard.md)
+
+
+This matters particularly for DINO-WM: its published approach uses spatial visual features and visual-goal planning. A reduced forecasting comparison does not test its complete intended capability. [DINO-WM](https://dino-wm.github.io/?utm_source=chatgpt.com)
+
+
+**Second, B3b mixes two different learning regimes:** the neural checkpoints are reused from B1, while ridge is fitted on the newer shard. That makes the ridge comparison informative operationally, but not a clean same-training-data architecture comparison. [GitHub](https://raw.githubusercontent.com/ROMUSKING/PARA_001/main/docs/research-notes/2026-10-02-b3b-rival-world-models-e3-shard.md)
+
+
+**My interpretation:** there is enough signal to investigate the neural architecture, but the simpler baselines should now become diagnostic tools rather than supporting cast.
+
+
+### 1.2 The amortisation gap has not been closed
+
+
+The repository reports:
+
+
+| Allocator/reference | Reported regret |
+|---|---:|
+| Best fixed sensing reference | 0.14009 |
+| Trained amortised co-state allocator | 0.13019 |
+| Exact co-state reference | 0.03007 |
+| Direct critic | Approximately 0.18956 |
+
+
+It also describes the critic as collapsing to effectively always choosing full sensing. [GitHub](https://raw.githubusercontent.com/ROMUSKING/PARA_001/main/CHANGELOG.md)
+
+
+Using those reported means, the proportion of fixed-to-exact headroom recovered by the learned allocator is:
+
+
+\[
+\frac{0.14009-0.13019}{0.14009-0.03007}
+\approx 9.0\%.
+\]
+
+
+The remaining learned-to-exact gap is:
+
+
+\[
+0.13019-0.03007=0.10012.
+\]
+
+
+**The learned allocator improves on the fixed reference at the reported point estimate; it does not close the gap to the exact reference.**
+
+
+That is not a reason to abandon it. It identifies a substantial remaining opportunity. But the distinction matters when deciding whether to scale, publish, or move to another domain.
+
+
+Likewise, beating a collapsed critic is encouraging but not yet decisive. An inductive bias that makes optimisation easier can be a genuine contribution. To establish that contribution, however, the comparison must demonstrate that the direct approach received a reasonable opportunity to learn.
+
+
+---
+
+
+## 2. Highest-priority issues to resolve
+
+
+### 2.1 Audit checkpoint normalisation before interpreting B3b further
+
+
+In `scripts/run_b3b_shard_benchmark.py`, evaluation loads normalisation from the new cache and then loads the earlier neural weights. I did not find an explicit assertion that the evaluation normaliser matches each checkpoint’s training normaliser. **This is a verification gap, not proof that the statistics differ.** [GitHub](https://raw.githubusercontent.com/ROMUSKING/PARA_001/main/scripts/run_b3b_shard_benchmark.py)
+
+
+The concern is straightforward. A model trained with
+
+
+\[
+x_{\mathrm{train}}=\frac{x-\mu_{\mathrm{train}}}{\sigma_{\mathrm{train}}}
+\]
+
+
+cannot generally be given
+
+
+\[
+x_{\mathrm{eval}}=\frac{x-\mu_{\mathrm{new}}}{\sigma_{\mathrm{new}}}
+\]
+
+
+without changing the meaning of its inputs. Output decoding must also remain consistent.
+
+
+**Required action:** make the normaliser, feature-encoder identity, state ordering, and action convention immutable checkpoint metadata. Fail evaluation when those contracts differ, unless an explicit, tested conversion is applied.
+
+
+Then run two separate protocols:
+
+
+**Frozen-transfer protocol:** every learned model, including ridge, is trained on the original training set and transferred unchanged.
+
+
+**Same-data protocol:** every learned model is trained on the same newer training split, with validation-only tuning.
+
+
+Do not combine those questions into one ranking.
+
+
+### 2.2 Repair benchmark accounting and make assertions executable
+
+
+The inspected script contains several concrete issues:
+
+
+| Finding | Required correction |
+|---|---|
+| Site-window counting removes seed and horizon duplication, but not model-arm duplication. | Count unique episode/window identities directly. |
+| The Markdown report hardcodes sample-count text. | Generate every count from the evaluated records. |
+| Missing training or validation cache files can be skipped silently. | Fail, or emit an explicit exclusion manifest requiring approval. |
+| Checkpoint checksum verification is conditional on a sidecar existing. | Require integrity metadata for confirmatory runs. |
+| `check_fairness` is imported but not invoked in this script. | Run and persist the relevant checks before evaluation. |
+
+
+These findings are visible in the benchmark source. [GitHub](https://raw.githubusercontent.com/ROMUSKING/PARA_001/main/scripts/run_b3b_shard_benchmark.py)
+
+
+The research note reports **4,154 windows**, whereas the report says **8,559**. My arithmetic on the site table gives **29,078**, exactly seven times 4,154—consistent with counting seven model arms. These accounting inconsistencies do not, by themselves, prove that the RMSE values are wrong. They do mean that the report cannot yet serve as a reliable audit record. [GitHub](https://raw.githubusercontent.com/ROMUSKING/PARA_001/main/docs/research-notes/2026-10-02-b3b-rival-world-models-e3-shard.md)
+
+
+Also distinguish **multi-site evaluation** from **generalisation to unseen sites**. Testing episodes drawn from several laboratories does not establish held-out-laboratory transfer unless laboratory membership itself was excluded from training.
+
+
+### 2.3 Separate retrospective teachers from deployable allocators
+
+
+For every experiment, explicitly declare what information is available **before** a sensing or compute decision.
+
+
+There are three different objects:
+
+
+- **An offline teacher:** may use future outcomes to label the value of decisions.
+- **A deployable allocator:** may use only currently available observations, history, and declared goals.
+- **An exact online calculation:** may be expensive, but must obey the same information restriction as the deployed allocator.
+
+
+A derivative computed against the realised future target can be a useful teacher. It is not automatically an online controller.
+
+
+The required test should cover the **entire decision path**, not just the world-model prediction:
+
+
+> Changing unavailable future targets or unrevealed sensor contents must not change the pre-acquisition decision.
+
+
+Apply this to candidate construction, co-state computation, critic inputs, rescue triggering, and uncertainty estimation. Training-only access should be clearly separated from inference-time access.
+
+
+This is especially important for sensing: the allocator cannot inspect a camera frame to decide whether acquiring that frame was worth paying for.
+
+
+### 2.4 Treat cosine coupling as a heuristic until it is calibrated
+
+
+The repository introduces a normalised coupling score of the form
+
+
+\[
+s_m=
+-\frac{\lambda^\top \Delta z_m}
+{\|\lambda\|\|\Delta z_m\|+\epsilon}
+-c_m.
+\]
+
+
+That is distinct from the ordinary first-order cost-change approximation. [GitHub](https://raw.githubusercontent.com/ROMUSKING/PARA_001/main/CHANGELOG.md)
+
+
+For a differentiable objective,
+
+
+\[
+J(z+\Delta z)-J(z)\approx \lambda^\top\Delta z.
+\]
+
+
+Normalising removes magnitude. Consequently, two interventions with the same direction but very different effects can receive similar scores. Subtracting a physical or computational cost also requires a calibrated conversion between score units and cost units.
+
+
+There is a coordinate issue too. Under ,
+
+
+\[
+\lambda'=A^{-T}\lambda,\qquad \Delta z'=A\Delta z,
+\]
+
+
+so the unnormalised pairing remains unchanged:
+
+
+\[
+{\lambda'}^\top\Delta z'=\lambda^\top\Delta z.
+\]
+
+
+The cosine denominator is not generally invariant under arbitrary invertible coordinate transformations.
+
+
+**Recommendation:** retain cosine similarity as a candidate feature, but compare it with raw first-order gain and a calibrated gain model that also receives the magnitudes and intervention cost. Test scalar rescaling, anisotropic rescaling, and coordinate transformations separately.
+
+
+### 2.5 Separate throughput from deployment latency
+
+
+The B3b script times model prediction using a batch size of 128 by default. That is not the same measurement as end-to-end, single-decision control latency. [GitHub](https://raw.githubusercontent.com/ROMUSKING/PARA_001/main/scripts/run_b3b_shard_benchmark.py)
+
+
+For deployment claims, measure acquisition or decoding, feature extraction, transfers, allocator execution, exact rescue when invoked, and downstream decision production. Report batch-one p50/p95/p99 separately from batched throughput.
+
+
+CUDA work is asynchronous, so measurements need appropriate synchronisation or CUDA events. PyTorch’s documentation explicitly warns that unsynchronised timing can be inaccurate. [PyTorch Documentation](https://docs.pytorch.org/docs/main/notes/cuda.html)
+
+
+Similarly, report **action sensitivity**, not established causality, from shuffled-action tests. Degradation after replacing actions demonstrates dependence on that input; it does not demonstrate correct predictions for executable counterfactual interventions.
+
+
+---
+
+
+## 3. Recommended research directions, in priority order
+
+
+## Direction A — Competent-critic-controlled selective sensing and exact rescue
+
+
+**This should be the main near-term research track.**
+
+
+Keep the world model fixed initially. Otherwise, changes in representation quality, allocator quality, and training all become entangled.
+
+
+The central experiment should compare:
+
+
+| Comparator family | Question it answers |
+|---|---|
+| Best validation-selected fixed policy | Is dynamic allocation worthwhile at all? |
+| Cheap uncertainty or periodic policy | Does the proposed structure beat inexpensive heuristics? |
+| Well-tuned direct gain/ranking critic | Does co-state structure add value over direct prediction? |
+| Learned co-state allocator | Does amortised sensitivity improve decisions? |
+| Randomised or mismatched co-state controls | Is the actual derivative information responsible? |
+| Selective exact-rescue variants | When is extra computation worth its cost? |
+
+
+A direct critic should not be limited to one regression formulation. Add a pairwise or listwise ranking objective over candidate net gains, because correct ordering may matter more than precise scalar prediction. This is directly aligned with decision-focused learning research that formulates decision quality through ranking feasible alternatives. [Proceedings of Machine Learning Research](https://proceedings.mlr.press/v162/mandi22a.html)
+
+
+Match information, teacher access, tuning opportunities, training compute, and candidate availability—not just parameter count. Report both a controlled scientific comparison and the best practical version of each approach.
+
+
+### The most important rescue comparison
+
+
+Compare co-state-based rescue against:
+
+
+**Direct-critic rescue**, **cheap-uncertainty rescue**, and **random rescue at the same invocation rate**.
+
+
+Otherwise, a result may only show that “occasionally using the better exact method helps,” rather than that the co-state mechanism knows when to invoke it.
+
+
+A useful target for the rescue policy is:
+
+
+\[
+\text{expected improvement from extra computation}
+-
+\text{price of that computation}.
+\]
+
+
+Uncertainty alone is insufficient: an uncertain decision may be unimportant, while a confident but costly mistake may warrant checking.
+
+
+This connects naturally to rational metareasoning—choosing whether further computation has enough expected value to justify its cost. [arXiv](https://arxiv.org/abs/2410.05563?utm_source=chatgpt.com)
+
+
+**Success criterion:** a reproducible improvement in realised net decision quality over a competent direct alternative, or equivalent quality at lower measured total cost.
+
+
+---
+
+
+## Direction B — Belief-space co-states and the value of information
+
+
+**This is the strongest deeper theoretical direction I see.**
+
+
+The distinction is between:
+
+
+> “How would the objective change if the state representation changed?”
+
+
+and
+
+
+> “Is it worth paying to obtain information whose contents I do not yet know?”
+
+
+For sensing, these are not interchangeable.
+
+
+Let  be current information,  a possible new measurement,  a downstream action, and  task loss. A decision-theoretic sensing value is:
+
+
+\[
+V_m(I)=
+\min_a \mathbb E[L(a,X)\mid I]
+-
+\mathbb E_{Y_m\mid I}
+\left[
+\min_a \mathbb E[L(a,X)\mid I,Y_m]
+\right]
+-c_m.
+\]
+
+
+The measurement is worthwhile when the expected improvement after adapting the decision exceeds its cost.
+
+
+Here is a useful analytical observation. If the state representation is a calibrated posterior mean,
+
+
+\[
+z=\mathbb E[X\mid I],
+\]
+
+
+then the expected posterior-mean update satisfies
+
+
+\[
+\mathbb E[\Delta z\mid I]=0.
+\]
+
+
+Nevertheless, the measurement can be valuable because it reduces uncertainty and changes which action should be chosen. A first-order derivative with respect to the mean alone can therefore miss the benefit.
+
+
+### Proposed experiments
+
+
+Restore the roadmap’s analytical N1 work as a prerequisite, not an optional side experiment. The existing plan already calls for known-answer co-states, numerical cross-checks, competent critics, and transformation tests. [GitHub](https://raw.githubusercontent.com/ROMUSKING/PARA_001/main/docs/plans/roadmap.md)
+
+
+Extend that suite with:
+
+
+**Noisy linear-quadratic sensing:** exact expected sensing value is available, allowing comparison of mean-only and mean-plus-covariance representations.
+
+
+**Complementary sensors:** neither measurement is sufficient alone, but their combination changes the optimal decision.
+
+
+**Nonlinear and delayed objectives:** test where first-order approximations become inaccurate and where selective exact computation should activate.
+
+
+Keep these explicitly labelled as analytical or simulated mechanism tests, separate from real-data evidence.
+
+
+A promising contribution would be:
+
+
+> Co-state allocation works best when the representation includes the uncertainty and decision structure needed to approximate value of information.
+
+
+That is a more informative result than a single aggregate win.
+
+
+---
+
+
+## Direction C — Determine when the world model is actually needed
+
+
+Before increasing the backbone, diagnose the source of the ridge advantage.
+
+
+I would run a small, controlled progression:
+
+
+**Action-conditioned linear prediction → linear residual dynamics → small multilayer perceptron → current world model.**
+
+
+Then ablate state, vision, action history, and future action inputs. Include shuffled-vision and state-only controls.
+
+
+The objective is to determine whether the benchmark requires visual understanding, or whether short-horizon proprioception is largely predictable from simpler inputs.
+
+
+Evaluate several horizons, subject to valid data support. Separate translation, orientation, joint, and gripper errors using appropriate units. Add task-relevant quantities such as object state or contact outcomes only where reliable labels exist.
+
+
+Most importantly, separate:
+
+
+**Prediction quality:** Does the model forecast held-out outcomes accurately?
+
+
+**Decision quality:** Does it select better actions, sensors, or computational refinements?
+
+
+A model can be adequate for allocation without being the best general forecaster. Conversely, low prediction error does not automatically imply useful planning.
+
+
+For later external validation, use an official implementation in at least one method’s intended task setting. TD-MPC2’s official control framework is a possible route; that would test a different question from the current reduced forecasting benchmark. [GitHub](https://github.com/nicklashansen/tdmpc2?utm_source=chatgpt.com)
+
+
+**Hardware recommendation:** keep the next phase within the present small-model regime. Upgrade only when profiling identifies a concrete memory or runtime constraint—not because a larger accelerator might produce a more impressive experiment.
+
+
+---
+
+
+## Direction D — One controlled transfer domain, not several simultaneous expansions
+
+
+The roadmap already spans multiple domains and preserves negative findings where adaptive policies did not justify their costs. Preserve those outcomes rather than restarting every branch with a more complex mechanism. [GitHub](https://raw.githubusercontent.com/ROMUSKING/PARA_001/main/docs/plans/roadmap.md)
+
+
+After the primary sensing result is stable, choose **one** transfer domain.
+
+
+My preference would be **contract-aware selective code repair**, provided the causal contribution is isolated carefully.
+
+
+The critical comparator is not a naive workflow that regenerates everything. It is a competent dependency-graph system that already has selective invalidation, caching, failure localisation, and bounded retries.
+
+
+The experiment should ask:
+
+
+> Does sensitivity-based prioritisation improve repair success per model call, token, verifier invocation, or unit of latency beyond ordinary dependency-aware repair?
+
+
+Use functional tests, not just syntactic validity. Record actual model requests, outputs, retries, verifier results, and timing boundaries. Define what the “discrete co-state” estimates; do not use the term merely as a new label for tracing a failure to an upstream dependency.
+
+
+**Context allocation is a reasonable alternative**, but should not become another concurrent programme. For that route, include strong prompt-compression baselines such as LLMLingua-2 and evaluate answer quality at matched context and end-to-end cost. LongBench v2 supplies a relevant long-context evaluation framework, although the particular task subset must match the proposed mechanism. [ACL Anthology](https://aclanthology.org/2024.findings-acl.57/?utm_source=chatgpt.com)
+
+
+---
+
+
+## 4. Concrete execution path
+
+
+I would implement the next phase as six ordered work packages.
+
+
+| Order | Work package | Deliverable | Exit condition |
+|---|---|---|---|
+| **1** | **Repair evidence and provenance** | Pinned commit, environment lock, checkpoint contracts, corrected reports, claim-to-artifact register. | Every headline number can be regenerated from identified records. |
+| **2** | **Re-run B3b under clean protocols** | Separate frozen-transfer and same-data comparisons; preserved raw predictions and exclusions. | Normalisation, overlap, counts, and comparison contracts pass automatically. |
+| **3** | **Establish mechanism and critic competence** | Analytical tests, deployability tests, ranking critics, co-state controls. | Known-answer cases pass; direct baselines learn demonstrably attainable decisions. |
+| **4** | **Freeze a confirmatory sensing experiment** | Preregistered endpoints, budgets, costs, splits, and decision rules. | An untouched evaluation set exists and all selection is completed without using it. |
+| **5** | **Measure selective rescue end to end** | Matched-rescue comparisons, latency distributions, training and deployment cost accounting. | A useful measured quality–cost improvement survives stronger comparators. |
+| **6** | **Replicate the retained claim** | Independent run plus one task-level or cross-domain replication. | The claimed effect survives outside the original development setting. |
+
+
+### Work package 1: make evidence mechanically traceable
+
+
+For each run, record:
+
+
+`commit_sha`, configuration hash, dataset/split hashes, normaliser hash, feature-encoder identity, checkpoint hash, environment, seeds, exclusions, and timing scope.
+
+
+Keep machine-readable status separate from narrative notes. Generate summary status from validated artifacts; do not allow prose alone to turn a run into “confirmed.”
+
+
+Preserve per-example outputs sufficiently to recompute metrics and paired comparisons without rerunning inference. Aggregated tables are not enough for an independent statistical audit.
+
+
+CI should report skipped tests explicitly. Require model-dependent tests to execute in a suitable environment rather than treating their absence as a successful scientific check.
+
+
+### Work package 2: audit across experiment boundaries
+
+
+Check overlap between **earlier checkpoint training data and later evaluation data**, not just disjointness inside the latest manifest.
+
+
+Use stable episode identifiers and, where feasible, scene and trajectory-content fingerprints. Record whether the evaluation tests new episodes, new scenes, new laboratories, or genuinely different task conditions. These are different generalisation claims.
+
+
+Make normalisation conversion a tested operation. Comparing native-unit predictions after valid decoding is preferable to allowing each system’s coordinate conventions to contaminate the comparison.
+
+
+### Work packages 3–4: stop treating development evidence as confirmation
+
+
+The changelog documents design choices evaluated using test results. Those observations remain useful for discovery, but the next confirmatory result needs genuinely untouched data. [GitHub](https://raw.githubusercontent.com/ROMUSKING/PARA_001/main/CHANGELOG.md)
+
+
+Define a primary paired difference:
+
+
+\[
+D=R_{\mathrm{adjoint}}-R_{\mathrm{comparator}},
+\]
+
+
+with the comparator selected by a declared validation procedure.
+
+
+Predeclare a practically meaningful margin . A strong superiority gate would require:
+
+
+\[
+\operatorname{upperCI}_{95\%}(D)<-\delta,
+\]
+
+
+alongside the relevant cost and task-quality requirements.
+
+
+Do not interpret thousands of overlapping windows as thousands of independent episodes. Preserve pairing and account for episode or scene clustering and training-seed variation. The wider reliability literature strongly supports interval estimates and uncertainty-aware comparison rather than relying on aggregate point estimates from a few runs. [arXiv](https://arxiv.org/abs/2108.13264)
+
+
+Report both aggregate regret and the fraction of attainable improvement recovered. This makes it harder for a weak baseline to create a misleadingly large percentage win.
+
+
+### Work package 5: include the cost of obtaining the policy
+
+
+Maintain two ledgers:
+
+
+**Deployment ledger:** sensing, encoding, allocator inference, rescue, downstream computation, latency, and memory.
+
+
+**Development ledger:** teacher-label generation, hyperparameter search, training, and model refresh.
+
+
+A policy with cheaper inference but expensive supervision may still be worthwhile, but the break-even workload should be explicit:
+
+
+\[
+N_{\mathrm{break-even}}
+=
+\frac{\text{additional development cost}}
+{\text{deployment saving per decision}},
+\]
+
+
+where the denominator is positive and both quantities use compatible units.
+
+
+This distinguishes a useful high-volume deployment technique from a method whose offline cost overwhelms its eventual savings.
+
+
+---
+
+
+## 5. How to decide what survives
+
+
+Retain the roadmap’s distinction between positive, teacher-only, direct-sufficient, and inconclusive outcomes. That is a strength of the existing research design. [GitHub](https://raw.githubusercontent.com/ROMUSKING/PARA_001/main/docs/plans/roadmap.md)
+
+
+| Result after the repaired experiment | Recommended direction |
+|---|---|
+| Learned co-states beat strong direct methods at useful total cost. | Develop the allocation method and test transfer. |
+| Exact co-states help, but learned co-states do not. | Focus on teacher quality, distillation, or selective exact computation. |
+| Direct critics match the co-state approach. | Use the simpler deployable method; retain any demonstrated sample-efficiency or transfer advantage. |
+| No adaptive method beats a strong fixed policy economically. | Stop that candidate formulation unless a clearly specified operating regime changes the opportunity. |
+| Uncertainty remains too large. | Add independent evaluation units, not merely more overlapping windows or architecture variants. |
+
+
+## Bottom line
+
+
+**The project’s best opportunity is not yet “a better universal world model.” It is a carefully demonstrated method for deciding where information and computation are worth spending.**
+
+
+The immediate sequence should be:
+
+
+**Verify checkpoint normalisation and repair B3b → establish a competent direct critic → validate sensing information access → run one untouched selective-sensing/rescue experiment.**
+
+
+Beyond that, **belief-space value of information** offers the most interesting theoretical direction, and **selective exact computation** offers the clearest practical direction.
+
+
+The next milestone should therefore be a result that survives stronger controls—not another broad “PASS” across additional domains.

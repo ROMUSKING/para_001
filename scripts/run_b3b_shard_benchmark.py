@@ -362,7 +362,9 @@ def run_b3b_benchmark(
 
     site_summary = []
     for site, group in nominal_errors_with_site.groupby("site"):
-        site_row = {"site": site, "num_episodes": int(group["episode_id"].nunique()), "num_windows": int(len(group) // (len(seeds) * 4))}
+        num_episodes = int(group["episode_id"].nunique())
+        num_windows = int(group[["episode_id", "window_start"]].drop_duplicates().shape[0])
+        site_row = {"site": site, "num_episodes": num_episodes, "num_windows": num_windows}
         for arm in [REFERENCE_ARM] + RIVAL_ARMS + BASELINES:
             arm_sub = group[group["arm"] == arm]
             if len(arm_sub) > 0:
@@ -399,6 +401,8 @@ def run_b3b_benchmark(
         latencies=latencies,
         seeds=seeds,
         total_time=total_time,
+        test_episodes=len(records_by_split["test"]),
+        test_windows=test_len,
     )
     report_path = out_dir / "b3b_shard_benchmark_report.md"
     report_path.write_text(report_md, encoding="utf-8")
@@ -455,6 +459,8 @@ def generate_b3b_report(
     latencies: Dict[str, Dict[str, float]],
     seeds: List[int],
     total_time: float,
+    test_episodes: int = 50,
+    test_windows: int = 4154,
 ) -> str:
     nom = summary_df[summary_df["condition"] == "nominal"]
 
@@ -462,7 +468,7 @@ def generate_b3b_report(
         "# Milestone B3b: Confirmatory Rival World Models on E3.1 Stratified Shard",
         "",
         f"**Date:** {datetime.date.today().isoformat()} · **Execution Time:** {total_time:.1f} s · **Device:** {torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'CPU'}",
-        f"**Manifest:** `{manifest_path.name}` · **Test Split:** 50 held-out episodes, 8,559 windows across {len(site_df)} robotics laboratories",
+        f"**Manifest:** `{manifest_path.name}` · **Test Split:** {test_episodes} held-out episodes, {test_windows:,} windows across {len(site_df)} robotics laboratories",
         f"**Checkpoints:** Trained on Milestone B1 (`runs/droid100_rivals_20261001T094713Z`) matched to ~25M parameters across 5 paired seeds",
         "",
         "---",
@@ -472,7 +478,7 @@ def generate_b3b_report(
         "This confirmatory study evaluates whether the **AdjointRWM** dynamics substrate generalizes across multi-laboratory robot domains compared to four established rival world-model families (`dreamerv3_rssm`, `tdmpc2`, `dino_wm`, `vjepa2_ac`) and classical baselines (`persistence`, `ridge`).",
         "",
         "### Key Findings:",
-        "- **Primary Endpoint Robustness:** Evaluated across **8,559 held-out test windows** from 50 episodes across 14 robotics laboratories (a 10.2× sample expansion over DROID-100's 835 windows):",
+        f"- **Primary Endpoint Robustness:** Evaluated across **{test_windows:,} held-out test windows** from {test_episodes} episodes across {len(site_df)} robotics laboratories (a 5.0× sample expansion over DROID-100's 835 windows):",
     ]
 
     for rival in RIVAL_ARMS:
