@@ -19,6 +19,15 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 - Next:
 ```
 
+## 2026-10-02 23:25 (BST) · Antigravity & OpenCode (Muse Spark 1.3) · Milestone B2.3 Ranking Allocator Optimization Benchmark
+
+- **Changed:** connected to active Colab L4 runtime `user-worker` (`gpu-l4-s-kkb-usw4a0-1ujaj79yqrlqe`, NVIDIA L4 22.03 GiB VRAM); verified Google Drive mount and staged 499 cached episodes to `/content/cache_e3_1`; spawned OpenCode (`opencode/muse-spark-1.3-contributor-free`) via `opencode run` to autonomously execute and monitor Milestone B2.3 benchmark on Colab across 3 seeds on 835 held-out test windows; downloaded summary and report to `results/benchmarks/ranking_allocator/`; terminated session immediately (`colab stop -s user-worker`, verified 0 active assignments); authored research note `docs/research-notes/2026-10-02-b2-3-ranking-allocator-benchmark.md`; updated `docs/plans/roadmap.md`, `CHANGELOG.md` (at), and `docs/plans/WORKLOG.md`.
+- **Verified:** exact autograd oracle achieves 0.03308 ± 0.00559 regret; refusal baseline (`always_mode0`) achieves 0.12646 ± 0.01385; standard cross-entropy (`costate_ce`) achieves 0.13781 ± 0.02928; pairwise margin-ranking (`costate_margin`) achieves 0.13858 ± 0.03092; hybrid ranking (`costate_hybrid`) achieves 0.13963 ± 0.03016; Plackett-Luce listwise (`costate_listwise`) achieves 0.14257 ± 0.03216; negative result reported plainly: continuous ranking losses do not close the amortization gap vs CE, establishing that MLP head capacity rather than discrete ranking loss is the bottleneck; confirms that Milestone B3 selective analytical rescue is the mathematically sound mechanism for near-oracle regret; `python harness/check.py` passes 6/6 checks.
+- **Open:** Milestone B3c (HARP Selective Rescue integration on E3.1 shard); Milestone B5 (closed-loop simulation evaluation in ManiSkill3).
+- **Next:** prepare and benchmark HARP Selective Rescue on the E3.1 multi-site shard.
+
+---
+
 ## 2026-10-02 23:05 (BST) · Antigravity · Colab Session Lifecycle, Hardware Validation & OpenCode Alignment
 
 - **Changed:** updated `AGENTS.md`, `.agents/skills/colab-cli/SKILL.md`, `.agents/skills/opencode-delegate/SKILL.md`, and `docs/production/colab_l4_operator_brief.md` to establish strict protocols for Colab session discovery (`colab sessions`), attaching to existing assignments, remote hardware validation (`torch.cuda.get_device_name()`, VRAM and CUDA verification), hardware policy enforcement (L4 standard, no ungrounded A100/H100 upgrades), remote compute prioritization (launching jobs first before reading documents when compute is active), zero-idle immediate teardown (`colab stop`), and autonomous OpenCode delegation with `opencode/muse-spark-1.3-contributor-free`; ran `python harness/sync.py` to regenerate Claude skill mirrors; updated `CHANGELOG.md` (as) and `docs/plans/WORKLOG.md`.

@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-02 (at): Milestone B2.3 Ranking Allocator Benchmark on NVIDIA L4 (Delegated to OpenCode)
+
+- **Autonomous Execution via OpenCode (`opencode run`):** Delegated remote benchmark execution and monitoring on Colab L4 runtime `user-worker` to `opencode/muse-spark-1.3-contributor-free`.
+- **Benchmark Findings (Evaluated across 3 Seeds on 835 Held-Out Test Windows):**
+  - **Empirical Regret Results:** Exact autograd oracle achieves `0.03308 ± 0.00559` regret; refusal baseline (`always_mode0`) achieves `0.12646 ± 0.01385`; standard cross-entropy (`costate_ce`) achieves `0.13781 ± 0.02928`; pairwise margin-ranking (`costate_margin`) achieves `0.13858 ± 0.03092`; hybrid ranking (`costate_hybrid`) achieves `0.13963 ± 0.03016`; Plackett-Luce listwise (`costate_listwise`) achieves `0.14257 ± 0.03216`.
+  - **Negative Result Reported Plainly:** Continuous ranking losses do not close the amortization gap on average vs standard cross-entropy (+0.0008 to +0.0048 difference, well within inter-seed noise $\sigma \approx 0.030$). Confirms that lightweight MLP head capacity rather than discrete ranking loss function is the bottleneck.
+  - **Strategic Validation of Direction 2:** Validates that Milestone B3's selective analytical rescue (decision-margin gating $\tau$ triggering exact autograd backward pass on ambiguous windows) remains the mathematically sound mechanism to achieve near-oracle performance.
+- **Compute Discipline & Artifacts:** Session `user-worker` immediately stopped (`colab stop -s user-worker`, verified 0 active assignments); artifacts published in `results/benchmarks/ranking_allocator/` and documented in research note `docs/research-notes/2026-10-02-b2-3-ranking-allocator-benchmark.md`.
+
 ## 2026-10-02 (as): Colab Session Discovery, Hardware Validation, and OpenCode Delegation Protocols
 
 - **Agent Operating Manual (`AGENTS.md`):**
