@@ -1,0 +1,18 @@
+# Preregistration Deviation Log
+# Protocol: AGENTS.md / docs/research-plan/adjoint_guided_comprehensive_research_plan.md
+
+deviations:
+  - id: DEV-20261003-01
+    date: 2026-10-03
+    milestone: Session 5 (10-Session Operational Plan)
+    planned: Switchover to Hopper G4 (Workload A: Scaled Spatial Representation)
+    actual: Remain on NVIDIA L4 (Candidate D: Regret Metric Robustness, Cost-Model Sensitivity & Multi-Horizon Generalization)
+    rationale: |
+      G4 Entry Gate G4-1 (profiler saturation: GPU wait < 15%) was not met in Session 0 (wait was 21%).
+      G4 Entry Gate G4-3 (physical VRAM exhaustion on L4) was not met in Sessions 1-4 (peak VRAM < 1.2 GiB).
+      Per AGENTS.md Rule 7 and docs/production/colab_l4_operator_brief.md, Hopper G4 is not permitted
+      without hardware saturation or physical memory exhaustion.
+    peer_review:
+      reviewer: OpenCode (space-bunny-free)
+      date: 2026-10-03
+      recommendation: Reject Candidates A, B, C; execute hardened Candidate D addressing metric robustness, site dependence (IRIS), and cost sensitivity.

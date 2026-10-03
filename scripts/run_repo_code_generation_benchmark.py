@@ -559,7 +559,7 @@ def main():
             "pass_rate_advantage_adjoint_vs_standard_dag_pct": pass_advantage_vs_std,
             "tree_preservation_rate_during_repair": agg3["mean_preservation_rate"],
         },
-        "verdict": "PASS: Adjoint-guided discrete costate sensitivity packets resolve real multi-file unit test failures with 100% build pass rate, 75.0% sibling file preservation, and 47.1% token savings over flat regeneration on NVIDIA L4 (peak VRAM < 1.5 GiB, 93% VRAM headroom).",
+        "verdict": f"{'PASS' if agg3['mean_pass_rate'] >= agg1['mean_pass_rate'] else 'FAIL'}: Adjoint-guided discrete costate sensitivity packets achieved {agg3['mean_pass_rate']*100:.1f}% pass rate, {agg3['mean_preservation_rate']*100:.1f}% sibling file preservation, and {token_savings_vs_flat:.1f}% token savings vs flat regeneration on NVIDIA L4.",
     }
 
     json_path = out_dir / "repo_code_gen_summary.json"
