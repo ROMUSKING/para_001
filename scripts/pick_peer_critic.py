@@ -29,7 +29,9 @@ import argparse
 import csv
 import datetime as dt
 import fcntl
+import os
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -38,6 +40,7 @@ DEFAULT_LOG = ROOT / "docs" / "plans" / "peer-critic-log.csv"
 # `source` is provenance metadata only; it never influences the rotation.
 FIELDS = ["date", "milestone", "artefact", "lead", "critic", "outcome", "source"]
 REQUIRED = ["date", "milestone", "artefact", "lead", "critic"]
+PROBE_TIMEOUT = 10  # seconds; every CLI installed here answers --version in under a second
 
 # Canonical order (used to break ties) -> (CLI executable, skill that documents it).
 # Add an agent here and to the Skills table in AGENTS.md to widen the rotation.
@@ -47,7 +50,22 @@ CRITICS: dict[str, tuple[str, str]] = {
     "agy": ("agy", "agy-cli"),
     "copilot": ("copilot", "copilot-cli"),
     "cline": ("cline", "cline-cli"),
+    "kilo": ("kilo", "kilo-cli"),
 }
+
+# Agents are named inconsistently across the repository and the log: AGENTS.md says
+# "Antigravity (`agy`)" and every recorded lead is `antigravity`, while the pool key is
+# `agy`. Without normalisation `--exclude antigravity` hands Antigravity its own review,
+# which the protocol forbids. Map every spelling to the pool key, for both sides.
+ALIASES: dict[str, str] = {
+    "antigravity": "agy",
+    "gemini": "copilot",  # only if a host ever aliases them; harmless otherwise
+}
+
+
+def canonical(agent: str) -> str:
+    agent = (agent or "").strip().lower()
+    return ALIASES.get(agent, agent)
 
 
 def _fail(message: str) -> None:
@@ -71,7 +89,9 @@ def read_rows(path: Path) -> list[dict]:
             for lineno, row in enumerate(reader, start=2):
                 if not any((v or "").strip() for v in row.values()):
                     continue
-                rows.append({k: (row.get(k) or "").strip() for k in FIELDS})
+                clean = {k: (row.get(k) or "").strip() for k in FIELDS}
+                clean["critic"] = canonical(clean["critic"])  # so `antigravity` counts as `agy`
+                rows.append(clean)
             return rows
     except (OSError, csv.Error, UnicodeDecodeError) as exc:
         _fail(f"{path}: cannot parse rotation log ({exc}); refusing to guess")
@@ -84,11 +104,11 @@ def last_index(rows: list[dict]) -> dict[str, int]:
     Position, not date, drives the rotation: the log has day granularity, so
     reviews recorded on the same day share a date and a date-keyed rotation could
     keep selecting the same agent. Row order is strictly increasing, so it always
-    advances.
+    advances. Ids are canonicalised, so an `antigravity` row counts as `agy`.
     """
     seen: dict[str, int] = {}
     for i, row in enumerate(rows):
-        critic = (row.get("critic") or "").strip()
+        critic = canonical(row.get("critic") or "")
         if critic:
             seen[critic] = i
     return seen
@@ -98,32 +118,110 @@ def last_used(rows: list[dict]) -> dict[str, str]:
     """Map critic id -> the latest date it reviewed (display only)."""
     seen: dict[str, str] = {}
     for row in rows:
-        critic = (row.get("critic") or "").strip()
+        critic = canonical(row.get("critic") or "")
         if critic:
             seen[critic] = max(seen.get(critic, ""), (row.get("date") or "").strip())
     return seen
 
 
-def choose(rows, exclude=(), available=False, which=shutil.which, critics=CRITICS):
+def path_entries() -> list[str]:
+    """PATH for availability checks: the caller's PATH plus common version-manager dirs.
+
+    Agent CLIs are often installed somewhere the calling process never sourced - the
+    nvm-managed node CLIs (`copilot`, `cline`) on this host live in
+    `~/.nvm/versions/node/*/bin`, and a non-interactive shell that skipped `~/.bashrc`
+    cannot see them. Reporting those agents as missing would silently narrow the
+    rotation, so the usual install locations are searched too. Existing directories only.
+    """
+    entries = [e for e in os.environ.get("PATH", "").split(os.pathsep) if e]
+    seen = set(entries)
+    extras = [str(Path.home() / ".local" / "bin")]
+    nvm = Path.home() / ".nvm" / "versions" / "node"
+    if nvm.is_dir():
+        extras += [str(p / "bin") for p in sorted(nvm.iterdir()) if p.is_dir()]
+    for extra in extras:
+        if extra not in seen and Path(extra).is_dir():
+            seen.add(extra)
+            entries.append(extra)
+    return entries
+
+
+def runs(binary: str, timeout: int = PROBE_TIMEOUT) -> bool:
+    """True when the CLI actually executes.
+
+    `shutil.which` alone is not availability: a launcher can sit on PATH while the
+    real binary is missing (measured 2026-10-03: `cline --version` exits 1 with
+    "Could not find the Cline CLI binary for your platform"). Dispatching a review
+    to such a CLI wastes the lead's turn, so `--available` probes instead.
+
+    `stdin` is closed so a CLI that asks a first-run question cannot block until the
+    timeout, and `binary` is a resolved path, so the probe runs exactly the executable
+    that was found.
+    """
+    try:
+        done = subprocess.run(
+            [binary, "--version"],
+            stdin=subprocess.DEVNULL,
+            capture_output=True,
+            timeout=timeout,
+            check=False,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return False
+    return done.returncode == 0
+
+
+def which_runs(binary: str, probe=runs) -> str | None:
+    """First executable named `binary` on the augmented PATH that actually runs.
+
+    A launcher earlier in PATH can shadow a working install (measured 2026-10-03: the
+    Windows npm shim `cline` came before the working nvm `cline` and exited 1), so
+    candidates are probed in order and the first one that runs wins. When none run, the
+    first candidate is returned so callers can report `broken` rather than `missing`.
+    """
+    first = None
+    for entry in path_entries():
+        candidate = os.path.join(entry, binary)
+        if os.path.isfile(candidate) and os.access(candidate, os.X_OK):
+            if first is None:
+                first = candidate
+            if probe(candidate):
+                return candidate
+    return first
+
+
+def choose(rows, exclude=(), available=False, which=which_runs, critics=CRITICS, probe=runs):
     """Return the next critic id, or None if every candidate is excluded/absent.
 
     Order: never-reviewed critics first (canonical order), then the critic whose
     most recent review sits earliest in the log, so the pairing always rotates.
-    `available=True` drops critics whose CLI is absent.
+    `available=True` drops critics whose CLI is absent or does not run. `exclude`
+    accepts any spelling of an agent (see ALIASES).
     """
     order = {c: i for i, c in enumerate(critics)}
     seen = last_index(rows)
-    candidates = [c for c in critics if c not in set(exclude)]
+    excluded = {canonical(e) for e in exclude}
+    candidates = [c for c in critics if c not in excluded]
     if available:
-        candidates = [c for c in candidates if which(critics[c][0])]
+        candidates = [c for c in candidates
+                      if (found := which(critics[c][0])) and probe(found)]
     if not candidates:
         return None
     # ``-1`` for never-reviewed sorts before any index; then the earliest index wins.
     return min(candidates, key=lambda c: (seen.get(c, -1), order[c]))
 
 
-def installed(which=shutil.which, critics=CRITICS) -> dict[str, bool]:
-    return {c: bool(which(critics[c][0])) for c in critics}
+def installed(which=which_runs, critics=CRITICS, probe=runs) -> dict[str, str]:
+    """Map critic id -> "installed" | "broken" | "missing".
+
+    Returns strings, not booleans: "broken" (on PATH but will not run) is the case that
+    matters most and must not collapse into "missing".
+    """
+    state = {}
+    for critic in critics:
+        found = which(critics[critic][0])
+        state[critic] = "missing" if not found else ("installed" if probe(found) else "broken")
+    return state
 
 
 def append_row(path: Path, row: dict) -> None:
@@ -182,8 +280,8 @@ def main(argv: list[str] | None = None) -> int:
             "date": when,
             "milestone": args.milestone.strip(),
             "artefact": args.artefact.strip(),
-            "lead": args.lead.strip(),
-            "critic": args.critic,
+            "lead": canonical(args.lead),
+            "critic": canonical(args.critic),
             "outcome": (args.outcome or "").strip(),
             "source": (args.source or "").strip(),
         }
@@ -201,12 +299,17 @@ def main(argv: list[str] | None = None) -> int:
         nxt = choose(rows, args.exclude, args.available)
         print(f"log: {_display(args.log)} ({len(rows)} recorded reviews)")
         print(f"pool: exactly these {len(CRITICS)} agents ({', '.join(CRITICS)})")
-        print(f"available means the CLI binary is on PATH here; nothing about its credentials or config")
+        print("available means an executable named after the agent was found on PATH (plus "
+              "version-manager dirs) and its --version exits 0; nothing about credentials or config")
         for critic in CRITICS:
             mark = "*" if critic == nxt else " "
-            state = "installed" if present[critic] else "missing  "
-            print(f"{mark} {critic:<8} {state}  last={seen.get(critic) or 'never':<10}  skill={CRITICS[critic][1]}")
+            print(f"{mark} {critic:<8} {present[critic]:<10} last={seen.get(critic) or 'never':<10}  "
+                  f"skill={CRITICS[critic][1]}")
         print("rotation applies to recorded reviews; pick does not reserve, and an unrecorded review changes nothing")
+        unfiltered = choose(rows, args.exclude)
+        if nxt != unfiltered:
+            print(f"note: rotation would pick {unfiltered}, but it is not available on this host; "
+                  f"--available picks {nxt}")
         return 0
 
     pick = choose(rows, args.exclude, args.available)

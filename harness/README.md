@@ -1,6 +1,6 @@
 # Agent harness
 
-This is a single harness shared by every coding agent that works in this repo: **Claude Code, OpenAI Codex, Google Antigravity (IDE and `agy` CLI), OpenCode, Gemini CLI and Cursor**, plus anything else that reads `AGENTS.md` or Agent Skills.
+This is a single harness shared by every coding agent that works in this repo: **Claude Code, OpenAI Codex, Google Antigravity (IDE and `agy` CLI), OpenCode, Gemini CLI, Cursor, xAI Grok Build and Kilo Code (CLI, VS Code extension, Agent Manager)**, plus anything else that reads `AGENTS.md` or Agent Skills.
 
 ## Design
 
@@ -9,8 +9,9 @@ This is a single harness shared by every coding agent that works in this repo: *
    AGENTS.md  notebooks/AGENTS.md  results/AGENTS.md    .agents/skills/<name>/SKILL.md    harness/mcp.json
         │                                                       │                            │
         │ read natively by Codex, Antigravity, OpenCode,        │ read natively by Codex,     │ (empty today)
-        │ Cursor; Gemini CLI via .gemini/settings.json          │ Antigravity, OpenCode,      │
-        │                                                       │ Gemini CLI                  │
+        │ Cursor, Grok Build, Kilo; Gemini CLI via               │ Antigravity, OpenCode,      │
+        │ .gemini/settings.json                                  │ Gemini CLI, Grok Build,     │
+        │                                                         │ Kilo                        │
         ▼                     harness/sync.py                   ▼                            ▼
    CLAUDE.md (@AGENTS.md import)            .claude/skills/  (mirror)           .mcp.json, .gemini/settings.json,
    notebooks/CLAUDE.md, results/CLAUDE.md   .agents/workflows/  (Antigravity)   opencode.json, .codex/config.toml
@@ -36,7 +37,7 @@ This is a single harness shared by every coding agent that works in this repo: *
    CI runs the same command, so every agent is held to the same bar.
 4. **Guardrails are deterministic code, not prose.**
    - `protect_paths.py` blocks edits to immutable run artefacts, append-only audits and generated files. Claude Code runs it as a PreToolUse hook, and every tool is held to the same rules in CI.
-   - Permission rules deny force-push, hard reset and `rm -rf`, and ask before commit, push or installing packages. These live in `.claude/settings.json` and `opencode.json`.
+   - Permission rules deny force-push, hard reset and `rm -rf`, and ask before commit, push or installing packages. These live in `.claude/settings.json`, `opencode.json` and `kilo.json`.
 5. **State outlives the session.** `docs/plans/WORKLOG.md` is an append-only handoff log, and roadmap milestone IDs name the work. Any agent, in any tool, can pick up where another stopped.
 6. **Domain rules come first.** The research-integrity rules in `AGENTS.md` are hard constraints: no fabricated data, no number without a source file, report failures plainly. They exist because earlier Colab chat runs broke exactly these (see `docs/audits/`).
 
@@ -52,7 +53,7 @@ python harness/check.py --fast --base origin/main   # quick pre-commit incl. imm
 
 ## Tool support matrix
 
-These paths were verified on 2026-09-29 against each tool's docs, except where the last column says otherwise.
+These paths were verified on 2026-09-29 against each tool's docs, except where the last column says otherwise. The Grok Build row was verified on 2026-10-03 against the local user guide at `~/.grok/docs/user-guide/` (`12-project-rules.md`, `08-skills.md`, `07-mcp-servers.md`). The Kilo row was verified on 2026-10-03 against [agents.md](https://kilo.ai/docs/customize/agents-md), [skills](https://kilo.ai/docs/customize/skills) and [agent permissions](https://kilo.ai/docs/customize/agent-permissions), plus a live session in this repo.
 
 | Tool | Instructions | Skills | Slash commands | Permissions / hooks | MCP (when `harness/mcp.json` is non-empty) |
 |---|---|---|---|---|---|
@@ -62,16 +63,20 @@ These paths were verified on 2026-09-29 against each tool's docs, except where t
 | **OpenCode** | `AGENTS.md`, native | `.agents/skills/`, native (also reads `.claude/skills/`, `.opencode/skills/`) | `.opencode/commands/` (generated shims) | `opencode.json` `permission.bash`, where the **last matching rule wins** | `opencode.json` `mcp` (merged) |
 | **Gemini CLI** | `AGENTS.md` via `.gemini/settings.json` `context.fileName` | `.agents/skills/`, native (takes precedence over `.gemini/skills/`) | skills | CI | `.gemini/settings.json` `mcpServers` (merged) |
 | **Cursor** and others following the AGENTS.md standard | `AGENTS.md`, native | read `.agents/skills/` or the SKILL.md directly | — | CI | — |
+| **Grok Build** (xAI) | `AGENTS.md`, nested, native. Also loads `CLAUDE.md` when Claude compatibility is on (the generated stub plus Claude Code notes). No `GROK.md`: Grok already loads `AGENTS.md`. | `.agents/skills/`, native (scanned with `.grok/skills/`). Also `.claude/skills/` via Claude compatibility; same-name skills dedupe, higher-priority path wins. | skills are `/name` | project `[permission]` in `.grok/config.toml` when that file exists; CI enforces the rest | project `.grok/config.toml` `[mcp_servers]`, and `.mcp.json` via Claude compatibility. Nothing is generated while `harness/mcp.json` has no servers. |
+| **Kilo Code** (CLI, VS Code extension, Agent Manager) | `AGENTS.md` and nested `AGENTS.md`, native and automatic; per-directory files load when a file in that directory is read. Kilo also treats `AGENTS.md` as write-protected and asks before the agent changes it. No `KILO.md`: Kilo loads `AGENTS.md` natively, and `CLAUDE.md` as well (the generated stub, so the rules are not duplicated by hand). | `.agents/skills/<name>/SKILL.md`, native, loaded by default (as is `~/.agents/skills/`); `.claude/skills/` when Claude Code compatibility is on; `.kilo/skills/` for Kilo-only skills; more directories via `skills.paths`. Every skill is also a `/name` slash command. | skills are `/name`; extra project commands in `.kilo/command/*.md` (hand-written, nothing generated) | `kilo.json` `permission`: glob patterns where the **last match wins**, so the catch-all comes first. `kilo.json` denies edits to the paths `harness/sync.py` generates; the existence-dependent rules (already-imported run artefacts, dated audits) stay CI-only, as for every tool without a pre-edit hook. | `kilo.json` `mcp` (hand-written). Nothing is generated while `harness/mcp.json` has no servers. |
 
-**Duplicate skills in OpenCode.** OpenCode reads both `.agents/skills/` and the `.claude/skills/` mirror. The two copies are identical, and `sync.py --check` keeps them that way, so a duplicate listing is harmless. If it becomes a nuisance, check OpenCode's current docs for a setting that disables `.claude/` compatibility. Don't delete the mirror, because Claude Code needs it.
+**Duplicate skills in OpenCode, Grok Build and Kilo.** All three read `.agents/skills/` and the `.claude/skills/` mirror (Grok and Kilo only when their Claude compatibility is on; Kilo dedupes `.agents/` and `.claude/` by name). The two copies are identical, and `sync.py --check` keeps them that way, so a duplicate listing is harmless. If it becomes a nuisance, check that tool's current docs for a setting that disables `.claude/` compatibility. Don't delete the mirror, because Claude Code needs it. Kilo can also be told to skip the compatibility directories entirely with `KILO_DISABLE_EXTERNAL_SKILLS=true`.
 
-**Why no `GEMINI.md`?** Antigravity reads both `AGENTS.md` and `GEMINI.md`, so a generated `GEMINI.md` copy would load the same instructions twice. Gemini CLI is pointed at `AGENTS.md` through `.gemini/settings.json` instead.
+**Kilo also reads `./opencode.json`.** That is a legacy Kilo config path, so a Kilo session sees both `kilo.json` and this repo's `opencode.json`. The two `permission.bash` blocks are therefore kept identical in content and order; which one is applied last does not change the outcome. `kilo.json` holds only what `opencode.json` has no equivalent for (the `read` and `edit`/`write` rules).
+
+**Why no `GEMINI.md`, `GROK.md` or `KILO.md`?** Antigravity reads both `AGENTS.md` and `GEMINI.md`, so a generated `GEMINI.md` copy would load the same instructions twice. Gemini CLI is pointed at `AGENTS.md` through `.gemini/settings.json` instead. Grok Build and Kilo Code read `AGENTS.md` natively and also load `CLAUDE.md`, so a generated copy for either would add a third instruction file for the same rules.
 
 ## Extending
 
 - **Add a skill.** Create `.agents/skills/<name>/SKILL.md`. The frontmatter needs `name` (equal to the folder name, lowercase-hyphenated, ≤ 64 chars) and `description` (≤ 1024 chars, saying *what* the skill does and *when* to use it). Then run `harness/sync.py` and add a row to the skills table in `AGENTS.md`.
 - **Add an MCP server.** Add it to `harness/mcp.json` using env-var *names* for secrets, then run `harness/sync.py`.
-- **Add a tool.** If it reads `AGENTS.md` and `.agents/skills/`, nothing is needed beyond a row in the matrix above. Otherwise add an entry to `manifest.json`: an `instruction_targets` entry with `import` or `copy` mode, or a `skills_targets` or `command_targets` entry. Then run sync and add a test to `tests/test_harness.py`.
+- **Add a tool.** If it reads `AGENTS.md` and `.agents/skills/`, nothing is needed beyond a row in the matrix above. Otherwise add an entry to `manifest.json`: an `instruction_targets` entry with `import` or `copy` mode, or a `skills_targets` or `command_targets` entry. Then run sync and add a test to `tests/test_harness.py`. Permissions are never generated: each tool keeps its own hand-written file (`.claude/settings.json`, `opencode.json`, `kilo.json`), mirroring the same ask/deny rules, and `tests/test_harness.py` checks that any such file still blocks the paths `harness/sync.py` owns.
 - **Add a guardrail.** Put deterministic checks in `harness/check.py` (so every tool gets them via CI) and, where the tool supports it, in a pre-edit hook.
 
 ## Sources
@@ -84,3 +89,6 @@ These paths were verified on 2026-09-29 against each tool's docs, except where t
 - Antigravity CLI best practices: [antigravity.google/docs/cli/best-practices](https://antigravity.google/docs/cli/best-practices/)
 - OpenCode skills, commands and permissions: [opencode.ai/docs/skills](https://opencode.ai/docs/skills/), [/commands](https://opencode.ai/docs/commands/), [/permissions](https://opencode.ai/docs/permissions/)
 - Gemini CLI skills (`.agents/skills` alias): [geminicli.com/docs/cli/skills](https://geminicli.com/docs/cli/skills/)
+- Kilo Code `AGENTS.md` support (native load, nested files, write protection): [kilo.ai/docs/customize/agents-md](https://kilo.ai/docs/customize/agents-md)
+- Kilo Code skills (`.agents/skills/` by default, `.claude/skills/` compatibility, `skills.paths`): [kilo.ai/docs/customize/skills](https://kilo.ai/docs/customize/skills)
+- Kilo Code permissions (`allow`/`ask`/`deny`, glob patterns, last match wins, sensitive files): [kilo.ai/docs/customize/agent-permissions](https://kilo.ai/docs/customize/agent-permissions)

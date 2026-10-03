@@ -1,0 +1,47 @@
+{
+  "$schema": "https://app.kilo.ai/config.json",
+  "permission": {
+    "bash": {
+      "*": "allow",
+      "pip install*": "ask",
+      "git *commit*": "ask",
+      "git *push*": "ask",
+      "git *push*--force*": "deny",
+      "git *push* +*": "deny",
+      "git *reset*--hard*": "deny",
+      "rm -rf *": "deny",
+      "rm -rf": "deny",
+      "rm *-r*-f*": "deny",
+      "rm *--recursive*--force*": "deny"
+    },
+    "read": {
+      "*": "allow",
+      "*.env": "deny",
+      "*.env.*": "deny",
+      "*.env.example": "allow",
+      "*credentials*.json": "deny",
+      "*service_account*.json": "deny",
+      "*client_secret*.json": "deny",
+      "*.netrc": "deny",
+      "gcloud/*": "deny"
+    },
+    "edit": {
+      "*": "allow",
+      "CLAUDE.md": "deny",
+      "notebooks/CLAUDE.md": "deny",
+      "results/CLAUDE.md": "deny",
+      ".claude/skills/*": "deny",
+      ".agents/workflows/*": "deny",
+      ".opencode/commands/*": "deny"
+    },
+    "write": {
+      "*": "allow",
+      "CLAUDE.md": "deny",
+      "notebooks/CLAUDE.md": "deny",
+      "results/CLAUDE.md": "deny",
+      ".claude/skills/*": "deny",
+      ".agents/workflows/*": "deny",
+      ".opencode/commands/*": "deny"
+    }
+  }
+}

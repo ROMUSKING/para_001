@@ -67,8 +67,8 @@ When delegating coding tasks, algorithmic modules, or script workflows to OpenCo
 
 Before finalizing any major decision on research planning, architectural design, mathematical formulations, or benchmark protocols, submit it for adversarial peer review. The reviewer **rotates** across the available coding agents, so no single agent always reviews.
 
-1. **Pick the critic by rotation.** Run `python scripts/pick_peer_critic.py --exclude <this-agent> --available` and use the returned agent. The rotation is least-recently-used over `docs/plans/peer-critic-log.csv`, and `--available` drops agents whose CLI is not installed on this host. **You may not be your own critic:** always `--exclude` the agent doing the work.
-2. **Invoke it with its skill.** `opencode-delegate`, `codex-cli`, `agy-cli`, `copilot-cli` or `cline-cli`, attaching all relevant context files. Give it the draft, the constraints and the specific questions to attack.
+1. **Pick the critic by rotation.** Run `python scripts/pick_peer_critic.py --exclude <this-agent> --available` and use the returned agent. The rotation is least-recently-used over `docs/plans/peer-critic-log.csv`; `--available` drops agents whose CLI is missing from `PATH` **or is present but does not run** (it probes `--version`), and `--exclude` accepts any spelling of an agent (`antigravity` = `agy`). **You may not be your own critic:** always `--exclude` the agent doing the work. If the returned agent fails, exclude it and pick again; record only reviews that actually happened.
+2. **Invoke it with its skill.** `opencode-delegate`, `codex-cli`, `agy-cli`, `copilot-cli`, `cline-cli` or `kilo-cli`, attaching all relevant context files. Give it the draft, the constraints and the specific questions to attack.
 3. **Semantics of "Peer":** a peer critique **needs thorough, honest consideration, but does NOT automatically override the lead agent's decision.** The critic is an adversarial sounding board for blind spots, false assumptions, hardware/memory scaling traps and protocol violations.
 4. **Evaluate and record.** The lead agent must decide, per point, to accept, partially adopt or reject, and document the rationale in the plan, research note or worklog. Then append the review with `python scripts/pick_peer_critic.py record --milestone <id> --artefact <path> --lead <agent> --critic <agent> --outcome <verdict>`, so the next decision goes to a different critic.
 
@@ -127,6 +127,7 @@ Portable skills live in `.agents/skills/<name>/SKILL.md` (Agent Skills format). 
 | `codex-cli` | Starting, continuing, and handing work to separate Codex CLI sessions or integrations |
 | `copilot-cli` | Launching and safely operating separate GitHub Copilot CLI sessions from agents and scripts |
 | `cline-cli` | Starting, coordinating, and handing work to separate Cline CLI sessions, or invoking Cline from another agent or script |
+| `kilo-cli` | Launching, supervising and handing off work to separate Kilo Code CLI instances, sessions, worktrees and subagents |
 
 ## Boundaries
 

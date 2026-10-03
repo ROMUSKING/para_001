@@ -102,6 +102,12 @@ gcloud/
 .DS_Store
 Thumbs.db
 
+# --- Agent session state (checkouts and UI state, never evidence) ---------
+# Kilo Agent Manager puts its worktrees and session records here; the source of
+# truth stays in the repository, so nothing under these paths is committed.
+.kilo/worktrees/
+.kilo/agent-manager.json
+
 # --- Logs -----------------------------------------------------------------
 *.log
 nohup.out

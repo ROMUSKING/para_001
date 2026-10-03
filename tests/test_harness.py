@@ -1,5 +1,6 @@
 """Tests for the cross-tool agent harness (harness/sync.py, harness/hooks/protect_paths.py)."""
 
+import fnmatch
 import importlib.util
 import json
 import subprocess
@@ -78,3 +79,86 @@ def test_guard_blocks_immutable_and_generated_paths_only():
     assert guard.verdict(str(ROOT / ".agents/workflows/audit-run.md")) is not None
     assert guard.verdict(str(ROOT / "docs/audits/2026-09-28_run_v2_ailerons_audit.md")) is not None
     assert guard.verdict("/tmp/outside_repo.txt") is None
+
+
+def _globs(config_name: str, tool_key: str, *actions: str) -> list[str]:
+    config = json.loads((ROOT / config_name).read_text(encoding="utf-8"))
+    return [pat for pat, action in config["permission"][tool_key].items() if action in actions]
+
+
+def _effective(config_name: str, tool_key: str, target: str) -> str | None:
+    """The action that actually applies, resolving patterns the way Kilo does: config order, last match wins."""
+    rules = json.loads((ROOT / config_name).read_text(encoding="utf-8"))["permission"][tool_key]
+    action = None
+    for pattern, candidate in rules.items():
+        if fnmatch.fnmatch(target, pattern):
+            action = candidate
+    return action
+
+
+MUST_STAY_EDITABLE = (
+    "AGENTS.md",
+    "kilo.json",
+    "opencode.json",
+    "harness/sync.py",
+    "harness/manifest.json",
+    ".agents/skills/audit-run/SKILL.md",
+    "src/adjointrwm/training.py",
+    "results/runs/some_new_run/README.md",
+    "results/benchmarks/some_new_benchmark/summary.json",
+    "docs/audits/2026-10-03_some_new_audit.md",
+)
+
+
+def test_kilo_json_denies_every_path_the_harness_generates():
+    # Kilo has no pre-edit hook, so the deny globs are its copy of protect_paths.py. The
+    # expected set is derived from the manifest, so a new sync target cannot slip past.
+    # Existence-dependent rules (imported runs, dated audits) are deliberately absent:
+    # a glob cannot tell a new artefact from an immutable one.
+    generated, _ = sync.plan(json.loads((ROOT / "harness/manifest.json").read_text()))
+    assert generated
+    for tool_key in ("edit", "write"):
+        denied = _globs("kilo.json", tool_key, "deny")
+        for rel_path in sorted(generated):
+            assert any(fnmatch.fnmatch(rel_path, pat) for pat in denied), f"kilo.json {tool_key} allows {rel_path}"
+        for rel_path in MUST_STAY_EDITABLE:
+            assert not any(fnmatch.fnmatch(rel_path, pat) for pat in denied), f"kilo.json {tool_key} blocks {rel_path}"
+
+
+def test_kilo_json_denies_the_same_paths_as_the_pre_edit_guard():
+    # protect_paths.py is the reference; kilo.json must not be weaker on generated files.
+    denied = _globs("kilo.json", "edit", "deny")
+    for rel_path in ("CLAUDE.md", "notebooks/CLAUDE.md", "results/CLAUDE.md",
+                     ".claude/skills/audit-run/SKILL.md", ".agents/workflows/audit-run.md",
+                     ".opencode/commands/audit-run.md"):
+        assert guard.verdict(str(ROOT / rel_path)) is not None
+        assert any(fnmatch.fnmatch(rel_path, pat) for pat in denied), f"kilo.json allows {rel_path}"
+
+
+def test_kilo_json_denies_credential_reads_at_any_depth():
+    # Patterns are anchored at both ends, so a leading "*" is what makes them match nested paths.
+    for rel_path in (".env", "apps/web/.env", "config/credentials.json",
+                     "deploy/service_account.json", "keys/client_secret.json",
+                     "home/.netrc", "gcloud/application_default_credentials.json"):
+        assert _effective("kilo.json", "read", rel_path) == "deny", f"kilo.json allows reading {rel_path}"
+    # .env.example is documentation, so the later allow rule has to win over "*.env.*".
+    for rel_path in (".env.example", "docs/env.md", "src/adjointrwm/training.py"):
+        assert _effective("kilo.json", "read", rel_path) == "allow", f"kilo.json blocks reading {rel_path}"
+
+
+def test_permission_files_agree_on_bash_guardrails():
+    # Kilo also loads ./opencode.json as a legacy config path, so the two blocks must agree.
+    # Order is part of the contract: both tools resolve permission patterns last-match-wins,
+    # so a reordered deny would degrade to ask while this assertion still passed.
+    assert _globs("kilo.json", "bash", "ask", "deny") == _globs("opencode.json", "bash", "ask", "deny")
+
+
+def test_bash_guardrails_are_not_bypassed_by_reordering_flags():
+    # "git -C <repo> push --force" is the natural form inside an Agent Manager worktree,
+    # so a prefix-anchored "git push --force*" deny would never match it.
+    denied = _globs("opencode.json", "bash", "deny")
+    for command in ("git push --force", "git -C /repo push --force", "git -C /repo push --force-with-lease origin main",
+                    "git -C /repo push origin +main:main", "git -C /repo reset --hard", "rm -rf /", "rm -r -f /"):
+        assert any(fnmatch.fnmatch(command, pat) for pat in denied), f"nothing denies: {command}"
+    for command in ("git status", "git -C /repo log --oneline", "pytest -q"):
+        assert not any(fnmatch.fnmatch(command, pat) for pat in denied), f"denies a safe command: {command}"

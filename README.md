@@ -121,7 +121,7 @@ These are condensed from the operator brief and the comprehensive plan:
 
 ## Working with AI agents
 
-Coding agents (Claude Code, Codex, Antigravity/`agy`, OpenCode, Gemini CLI, Cursor) share one harness:
+Coding agents (Claude Code, Codex, Antigravity/`agy`, OpenCode, Gemini CLI, Cursor, Grok Build, Kilo) share one harness:
 
 - **[`AGENTS.md`](AGENTS.md):** the instructions every agent follows.
 - **`.agents/skills/`:** reusable procedures.

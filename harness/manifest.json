@@ -1,5 +1,5 @@
 {
-  "_comment": "Adapter map for harness/sync.py. Sources of truth: AGENTS.md (root + nested), .agents/skills/, harness/mcp.json. Everything listed here is GENERATED. Tools that natively read AGENTS.md and .agents/skills (Codex, Antigravity, OpenCode, Gemini CLI via .gemini/settings.json, Cursor) need no generated copies. Verified paths and sources: harness/README.md.",
+  "_comment": "Adapter map for harness/sync.py. Sources of truth: AGENTS.md (root + nested), .agents/skills/, harness/mcp.json. Everything listed here is GENERATED. Tools that natively read AGENTS.md and .agents/skills (Codex, Antigravity, OpenCode, Gemini CLI via .gemini/settings.json, Cursor, Grok Build, Kilo) need no generated copies. Verified paths and sources: harness/README.md.",
 
   "instruction_sources": ["AGENTS.md", "notebooks/AGENTS.md", "results/AGENTS.md"],
 

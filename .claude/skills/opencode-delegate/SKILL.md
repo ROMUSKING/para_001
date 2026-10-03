@@ -104,7 +104,7 @@ Query available models via `opencode models`. In this repository, preferred mode
 The peer (decision) critic **rotates** across the available agents (see the Peer Critic Protocol in `AGENTS.md`); do not default to OpenCode for every review. Pick the next critic with `python scripts/pick_peer_critic.py --exclude <this-agent> --available`. When the rotation returns `opencode`, review with the command below, attaching every relevant context file, and record the review afterwards with `python scripts/pick_peer_critic.py record --milestone <id> --artefact <path> --lead <agent> --critic opencode --outcome <verdict>` so the next decision goes to a different agent.
 
 ```bash
-opencode run --standalone --auto -m opencode/muse-spark-1.3-contributor-free \
+opencode run --standalone --agent critic --auto -m opencode/muse-spark-1.3-contributor-free \
   -f docs/plans/<plan_or_spec>.md \
   "Act as an adversarial Peer Critic reviewing this proposed plan/design. Critically evaluate:
   1. Theoretical validity: does it adhere strictly to AGENTS.md research integrity rules (no synthetic data, no weakened direct critic, true co-state definitions)?
@@ -112,6 +112,8 @@ opencode run --standalone --auto -m opencode/muse-spark-1.3-contributor-free \
   3. Hardware feasibility: does it respect the L4 standard policy and G4 Hopper gating criteria?
   Provide concise, prioritized critique points with constructive counter-proposals. Note: your review serves as peer feedback requiring explicit consideration by the lead agent, not an automatic override."
 ```
+
+`--agent critic` is defined in this repository's `opencode.json` and verified through `opencode debug agents`: a `primary` agent whose only rule is `edit: * deny`, so a reviewer cannot write even with `--auto`. `--auto` is safe **because** of that deny — without it a headless reviewer stalls on any approval prompt, which is the failure mode to avoid. Keep `--agent critic` for reviews and the default `build` agent for implementation delegation; `--auto` alone would let a reviewer edit the tree it is reviewing. Verify with `git status --porcelain` after the run, and re-check the agent list after an OpenCode upgrade, since the built-in agent ids are not a stable contract.
 
 ### Core Tenet: Peer Feedback Semantics
 - **"Peer" means the critique requires explicit, documented consideration, but does NOT automatically override the lead agent's decision.**

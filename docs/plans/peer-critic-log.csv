@@ -6,3 +6,4 @@ date,milestone,artefact,lead,critic,outcome,source
 2026-10-03,D2-D3-audit,docs/audits/2026-10-03_repo_code_gen_verdict_audit.md,antigravity,opencode,accepted,reconstructed
 2026-10-03,cline-cli-skill,.agents/skills/cline-cli/SKILL.md,cline,opencode,accepted,reconstructed
 2026-10-03,peer-critic-rotation,scripts/pick_peer_critic.py,cline,codex,partially adopted (see docs/plans/WORKLOG.md),recorded
+2026-10-03,harness-governance,.agents/skills/kilo-cli/SKILL.md,kilo,agy,"partially adopted: alias fix, probe hardening, plan-agent facts and --sanitize accepted; OpenCode edit-permission claim rejected with schema evidence",recorded

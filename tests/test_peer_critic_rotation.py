@@ -8,6 +8,7 @@ lead/excluded and installed-only filters, and the append-only log round-trip.
 from __future__ import annotations
 
 import importlib.util
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -59,9 +60,94 @@ def test_exclude_skips_the_lead():
 
 
 def test_available_filter_respects_which():
-    only_copilot = lambda bin_name: bin_name == "copilot"
-    assert ppc.choose([], available=True, which=only_copilot) == "copilot"
-    assert ppc.choose([], exclude=["copilot"], available=True, which=only_copilot) is None
+    # `which` resolves a path and `probe` is handed that path, so the probe runs the
+    # executable that was actually found rather than resolving PATH a second time.
+    only_copilot = lambda bin_name: f"/usr/bin/{bin_name}" if bin_name == "copilot" else None
+    yes = lambda path: True
+    assert ppc.choose([], available=True, which=only_copilot, probe=yes) == "copilot"
+    assert ppc.choose([], exclude=["copilot"], available=True, which=only_copilot, probe=yes) is None
+
+
+def test_available_filter_rejects_a_cli_that_is_on_path_but_broken():
+    # Measured 2026-10-03: `cline` is on PATH and `cline --version` exits 1 with
+    # "Could not find the Cline CLI binary for your platform". A rotation that trusts
+    # `which` alone hands the review to a CLI that cannot run it.
+    launcher_on_path = lambda bin_name: f"/usr/bin/{bin_name}"
+    assert ppc.choose([], available=True, which=launcher_on_path, probe=lambda p: False) is None
+    # one broken candidate is skipped, the next available one is still returned
+    picked = ppc.choose([], available=True, which=launcher_on_path, probe=lambda p: not p.endswith("/opencode"))
+    assert picked == "codex"
+
+
+def test_runs_reports_a_non_executable_cli_as_unavailable():
+    assert ppc.runs("this-binary-does-not-exist") is False
+
+
+def test_installed_distinguishes_missing_from_broken():
+    # strings, not booleans: "broken" (present but will not run) must not collapse into "missing"
+    on_path = lambda bin_name: None if bin_name == "copilot" else f"/usr/bin/{bin_name}"
+    state = ppc.installed(which=on_path, probe=lambda p: not p.endswith("/cline"))
+    assert state["copilot"] == "missing"
+    assert state["cline"] == "broken"
+    assert state["codex"] == "installed"
+
+
+def test_exclude_accepts_any_spelling_of_an_agent():
+    # The log records every lead as `antigravity` while the pool key is `agy`; without
+    # normalisation `--exclude antigravity` would let Antigravity review its own work.
+    assert ppc.canonical("antigravity") == "agy"
+    assert ppc.canonical("AGY") == "agy"
+    assert ppc.choose([], exclude=["antigravity"]) != "agy"
+    assert ppc.choose([], exclude=["claude", "antigravity"], available=False) == "opencode"
+
+
+def test_a_backfilled_alias_critic_still_counts_toward_the_rotation():
+    rows = [_row("antigravity"), _row("opencode"), _row("codex")]
+    assert ppc.last_index(rows)["agy"] == 0  # the alias resolves to the pool key
+    assert ppc.choose(rows) not in {"agy", "opencode", "codex"}  # picks a never-reviewed agent
+
+
+def test_path_entries_covers_version_manager_install_dirs(tmp_path, monkeypatch):
+    # Measured 2026-10-03: `copilot` and `cline` live in ~/.nvm/versions/node/*/bin,
+    # which a non-interactive shell that skipped ~/.bashrc never puts on PATH.
+    home = tmp_path / "home"
+    node_bin = home / ".nvm" / "versions" / "node" / "v24.21.0" / "bin"
+    node_bin.mkdir(parents=True)
+    monkeypatch.setenv("HOME", str(home))
+    monkeypatch.setenv("PATH", "")
+    entries = ppc.path_entries()
+    assert str(node_bin) in entries
+    assert str(home / ".local" / "bin") not in entries  # only directories that exist
+
+
+def test_which_runs_skips_a_broken_launcher_that_shadows_a_working_install(tmp_path, monkeypatch):
+    shadow, real = tmp_path / "shadow", tmp_path / "real"
+    shadow.mkdir()
+    real.mkdir()
+    for directory in (shadow, real):
+        launcher = directory / "agentcli"
+        launcher.write_text("#!/bin/sh\nexit 1\n")
+        launcher.chmod(0o755)
+    monkeypatch.setenv("HOME", str(tmp_path / "home"))
+    monkeypatch.setenv("PATH", f"{shadow}{os.pathsep}{real}")
+    working = lambda path: str(path).startswith(str(real))
+    assert ppc.which_runs("agentcli", probe=working) == str(real / "agentcli")
+    # when nothing runs the first candidate is returned, so callers report "broken", not "missing"
+    assert ppc.which_runs("agentcli", probe=lambda p: False) == str(shadow / "agentcli")
+
+
+def test_every_critic_has_a_skill_and_is_named_in_agents_md():
+    # The rotation is only as wide as the pool: a critic with no skill, or one the
+    # Peer Critic Protocol never mentions, silently never gets used.
+    agents_md = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    for critic, (_, skill) in ppc.CRITICS.items():
+        assert (ROOT / ".agents" / "skills" / skill / "SKILL.md").exists(), f"{critic} has no {skill} skill"
+        assert f"`{skill}`" in agents_md, f"AGENTS.md never mentions {skill}"
+
+
+def test_the_pool_includes_kilo():
+    assert "kilo" in ppc.CRITICS
+    assert ppc.CRITICS["kilo"] == ("kilo", "kilo-cli")
 
 
 def test_none_when_every_candidate_is_excluded():

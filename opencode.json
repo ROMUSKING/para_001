@@ -1,15 +1,27 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "agent": {
+    "critic": {
+      "description": "Read-only adversarial peer critic. May read, search and run commands, but never edits or creates files. Use for the rotating peer/decision critic.",
+      "mode": "primary",
+      "permission": {
+        "edit": "deny"
+      }
+    }
+  },
   "permission": {
     "bash": {
       "*": "allow",
-      "pip install *": "ask",
-      "git commit *": "ask",
-      "git push *": "ask",
-      "git push --force*": "deny",
-      "git push -f*": "deny",
-      "git reset --hard*": "deny",
-      "rm -rf *": "deny"
+      "pip install*": "ask",
+      "git *commit*": "ask",
+      "git *push*": "ask",
+      "git *push*--force*": "deny",
+      "git *push* +*": "deny",
+      "git *reset*--hard*": "deny",
+      "rm -rf *": "deny",
+      "rm -rf": "deny",
+      "rm *-r*-f*": "deny",
+      "rm *--recursive*--force*": "deny"
     }
   }
 }
