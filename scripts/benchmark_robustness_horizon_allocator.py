@@ -543,8 +543,8 @@ def main():
     cost_regimes = {
         "zero": torch.tensor([0.0, 0.0, 0.0, 0.0], device=device),
         "uniform": torch.tensor([0.0, 1.0, 1.0, 1.0], device=device) * args.cost_weight,
-        "default": torch.tensor([0.0, 1.0, 1.0, 1.5, 2.0], device=device) * args.cost_weight,
-        "high_penalty": torch.tensor([0.0, 1.0, 1.0, 3.0, 5.0], device=device) * args.cost_weight,
+        "default": torch.tensor([0.0, 1.0, 1.0, 2.0], device=device) * args.cost_weight,
+        "high_penalty": torch.tensor([0.0, 1.0, 1.0, 5.0], device=device) * args.cost_weight,
         "latency_weighted": torch.tensor([0.0, 0.8, 0.8, 1.8], device=device) * args.cost_weight,
     }
 
