@@ -11,6 +11,15 @@ Each entry records:
 
 Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 lines.
 
+## 2026-10-03 10:14 (BST) · Antigravity · Agent Harness Peer Critic Protocol
+
+- **Changed:** updated `AGENTS.md` and `.agents/skills/opencode-delegate/SKILL.md` to formalize the Peer Critic Protocol for planning and architectural design decisions; codified that peer critique requires explicit consideration but does not automatically override lead decisions; updated Working Loop step 2 to "Plan & Peer Critique"; synchronized harness mirrors via `python harness/sync.py`.
+- **Verified:** `python harness/sync.py` cleanly mirrored to `.claude/skills/opencode-delegate/SKILL.md`; `python harness/check.py` passed all 6/6 checks.
+- **Open:** Session 2 (Spatial Token Headroom Proof on L4).
+- **Next:** submit Session 2 design to OpenCode as peer critic before finalizing benchmark execution.
+
+---
+
 ## 2026-10-03 10:04 (BST) · Antigravity & OpenCode · Session 1 Horizon Stress & Research Study
 
 - **Changed:** adopted active Colab L4 runtime `l4-worker` (`gpu-l4-s-kkb-ass1b1-398qxbzgv6ojy`, NVIDIA L4 22.03 GiB VRAM) with Google Drive mounted; authored `scripts/benchmark_horizon_stress.py`; identified that cuDNN FlashAttention lacks double-backprop support (`create_graph=True`), resolved via Math SDP context; executed Session 1 Horizon Stress benchmark across $H \in \{4, 8, 16, 32, 64\}$ and batch sizes $B \in \{16, 32, 64\}$ on NVIDIA L4; downloaded artifacts to `results/benchmarks/horizon_stress/`; conducted concurrent research study on spatial token activation memory scaling, memory-mapped `.npy` caching (1,462× speedup over `.npz`), and curvature autograd mechanics; authored research note `docs/research-notes/2026-10-03-spatial-tokens-and-curvature-architecture-study.md`.

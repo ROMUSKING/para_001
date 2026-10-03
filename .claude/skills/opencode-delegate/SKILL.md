@@ -99,6 +99,24 @@ Query available models via `opencode models`. In this repository, preferred mode
 - `opencode/muse-spark-1.3-contributor-free`: Fast, capable model well-suited for autonomous algorithmic coding, math implementation, unit tests, and refactors.
 - `opencode/space-bunny-free`: Lightweight model for simple file edits and targeted fixes.
 
+## Peer Critic Protocol (Planning & Design)
+
+When finalizing any major architectural decision, research plan, mathematical loss design, candidate redesign, or benchmark protocol, consult OpenCode as an adversarial **Peer Critic**:
+
+```bash
+opencode run --standalone --auto -m opencode/muse-spark-1.3-contributor-free \
+  -f docs/plans/<plan_or_spec>.md \
+  "Act as an adversarial Peer Critic reviewing this proposed plan/design. Critically evaluate:
+  1. Theoretical validity: does it adhere strictly to AGENTS.md research integrity rules (no synthetic data, no weakened direct critic, true co-state definitions)?
+  2. Failure modes & edge cases: what false assumptions, memory bottlenecks, or regression risks exist?
+  3. Hardware feasibility: does it respect the L4 standard policy and G4 Hopper gating criteria?
+  Provide concise, prioritized critique points with constructive counter-proposals. Note: your review serves as peer feedback requiring explicit consideration by the lead agent, not an automatic override."
+```
+
+### Core Tenet: Peer Feedback Semantics
+- **"Peer" means the critique requires explicit, documented consideration, but does NOT automatically override the lead agent's decision.**
+- The lead agent must review each point raised by the peer critic, decide whether to accept, partially adopt, or reject each criticism, and document the rationale in the plan or worklog before proceeding to implementation.
+
 ## Procedure for Delegating Agents
 
 1. **Scope the task clearly:** specify target files, expected mathematical formulations, boundary conditions, edge cases, and test requirements.

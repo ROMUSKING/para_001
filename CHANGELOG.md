@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-10-03 (ax): Agent Harness Peer Critic Protocol for Planning & Architectural Decisions
+
+- **Peer Critic Protocol Added (`AGENTS.md` & `.agents/skills/opencode-delegate/SKILL.md`):**
+  - Updated `AGENTS.md` and `SKILL.md` to formalize the mandatory consultation of OpenCode (`opencode/muse-spark-1.3-contributor-free`) or an available peer agent before finalizing major plans, architectural designs, or protocol changes.
+  - Defined explicit semantics of "Peer": peer critique serves as an adversarial sounding board requiring thorough, honest consideration, but does NOT automatically override the lead agent's decision.
+  - Updated working loop step 2 to "Plan & Peer Critique", requiring evaluation, rationale documentation, and decision records for each critique point before implementation.
+- **Harness Synchronization & Verification:**
+  - Regenerated Claude mirrors (`.claude/skills/opencode-delegate/SKILL.md`) via `python harness/sync.py`.
+  - Verified repository health via `python harness/check.py` (6/6 checks passing).
+
 ## 2026-10-03 (aw): Sessions 0 & 1 Benchmarks on NVIDIA L4 and Spatial Token Activation Research
 
 - **Session 0 Profiler Baseline (`results/benchmarks/profiler/`):**

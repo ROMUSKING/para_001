@@ -59,6 +59,14 @@ When delegating coding tasks, algorithmic modules, or script workflows to OpenCo
 2. **Autonomous Monitoring & Status Checks:** Monitor background OpenCode tasks to completion. Inspect command exit codes, stdout/stderr streams, and exported session summaries to verify that code changes match the requested specification.
 3. **Strict Definition of Done:** After OpenCode modifies files, always run unit tests (`pytest`) and verify repository invariants with `python harness/check.py`. Never mark a delegated task complete while checks fail.
 
+## Peer Critic Protocol for Planning & Design (OpenCode / Alternative Agents)
+
+Before finalizing any major decision on research planning, architectural design, mathematical formulations, or benchmark protocols:
+
+1. **Mandatory Peer Consultation:** Submit the draft plan or design specification to OpenCode (`opencode/muse-spark-1.3-contributor-free`) or an available peer coding agent as a **Peer Critic**. Attach all relevant context files (`-f`).
+2. **Semantics of "Peer":** A peer critique **needs thorough, honest consideration, but does NOT automatically override the lead agent's decision.** The peer critic acts as an adversarial sounding board to uncover blind spots, false assumptions, hardware/memory scaling traps, or protocol violations.
+3. **Evaluation & Rationale:** The lead agent must review each point raised by the peer critic, decide whether to accept, partially adopt, or reject each recommendation, and document the rationale in the plan, research note, or worklog before proceeding to implementation.
+
 ## Map
 
 | Path | Contents | Rules |
@@ -89,7 +97,7 @@ Breaking any of these invalidates the work, however good the rest of it is.
 ## Working loop
 
 1. **Orient.** Read `docs/plans/WORKLOG.md` (latest entries first) and the roadmap row for your task.
-2. **Plan.** For anything touching more than 3 files or any evidence document, write a short plan first. Ask when the task is ambiguous about scientific meaning; don't guess.
+2. **Plan & Peer Critique.** For anything touching more than 3 files, architectural changes, or any evidence/protocol document, write a short plan first. Consult OpenCode (or an available peer coding agent) as a peer critic. Carefully consider the critique, document decisions, and refine the plan before executing. Ask when the task is ambiguous about scientific meaning; don't guess.
 3. **Change in small steps.** Change code together with its tests. Keep diffs reviewable.
 4. **Verify.** Run `python harness/check.py`. Don't call a task done while it fails, and don't skip or weaken tests to make it pass.
 5. **Record.** Append a dated entry to `docs/plans/WORKLOG.md`: what changed, what was verified and how, and what is open. Add a `CHANGELOG.md` line for user-visible changes.
