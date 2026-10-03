@@ -291,6 +291,7 @@ class TrainConfig:
     seed: int = 20260928
     amp: bool = True
     eval_batch_size: int = 128
+    num_workers: int = 0
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -351,7 +352,8 @@ def train_job(
     # A dedicated generator: every iter(DataLoader) draws a worker base seed, and drawing it
     # from the global RNG would shift dropout noise after a resume (caught by the N0.3 test).
     loader = DataLoader(
-        train_dataset, batch_sampler=sampler, num_workers=0, pin_memory=device.type == "cuda",
+        train_dataset, batch_sampler=sampler, num_workers=cfg.num_workers,
+        pin_memory=device.type == "cuda", persistent_workers=(cfg.num_workers > 0),
         generator=torch.Generator().manual_seed(cfg.seed),
     )
 

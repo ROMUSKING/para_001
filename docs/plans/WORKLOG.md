@@ -11,6 +11,21 @@ Each entry records:
 
 Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 lines.
 
+## 2026-10-03 10:04 (BST) · Antigravity & OpenCode · Session 1 Horizon Stress & Research Study
+
+- **Changed:** adopted active Colab L4 runtime `l4-worker` (`gpu-l4-s-kkb-ass1b1-398qxbzgv6ojy`, NVIDIA L4 22.03 GiB VRAM) with Google Drive mounted; authored `scripts/benchmark_horizon_stress.py`; identified that cuDNN FlashAttention lacks double-backprop support (`create_graph=True`), resolved via Math SDP context; executed Session 1 Horizon Stress benchmark across $H \in \{4, 8, 16, 32, 64\}$ and batch sizes $B \in \{16, 32, 64\}$ on NVIDIA L4; downloaded artifacts to `results/benchmarks/horizon_stress/`; conducted concurrent research study on spatial token activation memory scaling, memory-mapped `.npy` caching (1,462× speedup over `.npz`), and curvature autograd mechanics; authored research note `docs/research-notes/2026-10-03-spatial-tokens-and-curvature-architecture-study.md`.
+- **Verified:** $H=64, B=64$ with exact 2nd-order curvature HVP executes in 222.8 ms with only 904.3 MiB peak VRAM (4.0% of L4 capacity); proves that long horizons alone on 1D pooled states do not justify Hopper G4; confirmed via activation memory model that Workload A ($3 \times 256$ spatial patches, $B=32$) requires 76.9 GiB VRAM, strictly justifying Hopper G4 at Session 5; `python harness/check.py` passes 6/6 checks.
+- **Open:** Session 2 (Spatial Token Headroom Proof on L4).
+- **Next:** execute Session 2 comparing multi-token spatial representation vs 1D pooled on E3.1 subset.
+
+---
+
+## 2026-10-03 09:45 (UTC) · OpenCode (muse-spark-1.3) · Session 0 (10-session campaign)
+- Changed: `TrainConfig.num_workers: int = 0` + `train_job` DataLoader now uses `num_workers=cfg.num_workers`, `pin_memory=(cuda)`, `persistent_workers=(>0)` (default 0 = old behaviour); new `scripts/profile_training_pipeline.py` (torch.profiler CPU+CUDA, wait2/warmup2/active10; pooled D=512 vs spatial 3×256×384; nw∈{0,2,4}, B=32).
+- Verified: `pytest tests/test_training.py` 11 passed; full `pytest` 401 passed; `harness/check.py` 6/6. L4 run on `l4-worker` (NVIDIA L4, 22.03 GiB, torch 2.11+cu130): pooled nw0→nw4 step 3.26→2.27 ms, wait 55.9→21.0%, kernel 35.0→48.3%; spatial nw0→nw4 step 158.9→7.2 ms, wait ~95→84%, kernel 9→29%, VRAM 214/270 MiB. Artefacts in `results/benchmarks/profiler/` (summary.json + report.md + 0.93 MiB chrome trace, all one run 08:43:27Z). Gate G4-1 verdict: NOT GPU-saturated (wait >15%), reported plainly.
+- Open: `l4-worker` left running (pre-existing session; S1 needs it — stop explicitly if campaign pauses). One accidental duplicate remote run burned a few GPU-minutes; local artefacts kept to the single consistent run.
+- Next: Session 1 horizon stress (`scripts/benchmark_horizon_scaling.py`, H=4..32) on `l4-worker`.
+
 ```
 ## YYYY-MM-DD HH:MM (tz) · <agent/tool> · <roadmap IDs>
 - Changed:

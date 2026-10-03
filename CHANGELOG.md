@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-10-03 (aw): Sessions 0 & 1 Benchmarks on NVIDIA L4 and Spatial Token Activation Research
+
+- **Session 0 Profiler Baseline (`results/benchmarks/profiler/`):**
+  - Added multi-worker prefetching support to `TrainConfig.num_workers` (`src/adjointrwm/training.py`).
+  - Evaluated on NVIDIA L4 GPU (`l4-worker`, 22.03 GiB): multi-worker loading (`nw=4`) yielded 22.1× speedup (158.9 ms down to 7.19 ms) for spatial representations, while 1D pooled vectors consume only 37.5 MiB VRAM.
+  - Gate G4-1 verdict: NOT GPU-saturated (dataloader wait >15%), reported plainly.
+- **Session 1 Horizon Stress & Curvature Autograd Benchmark (`results/benchmarks/horizon_stress/`):**
+  - Evaluated unrolled recurrent dynamics across horizons $H \in \{4, 8, 16, 32, 64\}$ and batch sizes $B \in \{16, 32, 64\}$ on NVIDIA L4 GPU (`gpu-l4-s-kkb-ass1b1-398qxbzgv6ojy`).
+  - Discovered that cuDNN FlashAttention SDPA lacks double-derivative support for second-order curvature (`create_graph=True`); resolved via Math SDP context.
+  - Measured scaling: $H=64, B=64$ with full exact 2nd-order curvature HVP executes in 222.8 ms with only 904.3 MiB peak allocated VRAM (4.0% of L4 capacity).
+  - Crucial Gate Insight: Long-horizon rollouts on 1D pooled states do not justify Hopper G4 ($B \le 64$ fits L4 easily); G4 is strictly gated on multi-camera spatial patch token scaling (Workload A).
+- **Spatial Token & Curvature Architecture Research Study (`docs/research-notes/2026-10-03-spatial-tokens-and-curvature-architecture-study.md`):**
+  - Identified 1,462× disk read penalty from compressed `.npz` on spatial tokens (356 ms/item vs 0.24 ms for uncompressed `.npy` with memory-mapped `mmap_mode='r'`).
+  - Formulated and verified empirical activation memory model: Workload A ($3 \times 256$ spatial tokens, $T=16$, $B=32$) requires 76.9 GiB VRAM, strictly justifying Hopper G4 at Session 5.
+
 ## 2026-10-03 (av): 10-Session Colab Operational Campaign & Hopper G4 Hardware Scaling Strategy
 
 - **Operational Campaign Formalization (`docs/plans/2026-10-03-10-session-colab-hopper-plan.md`):**
