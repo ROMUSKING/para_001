@@ -1,0 +1,43 @@
+{
+  "arms": {
+    "dinov2_pooled": {
+      "params": 17158146,
+      "peak_vram_mib": 442.244140625,
+      "rmse": 1.1078797578811646,
+      "time_s": 3.9843735694885254
+    },
+    "dinov2_spatial_vit": {
+      "params": 17148546,
+      "peak_vram_mib": 1109.51806640625,
+      "rmse": 0.9244706630706787,
+      "time_s": 7.588564395904541
+    },
+    "spatial_adjoint_rwm": {
+      "params": 25388188,
+      "peak_vram_mib": 616.83203125,
+      "rmse": 0.5679950714111328,
+      "time_s": 8.944063901901245
+    }
+  },
+  "baselines": {
+    "persistence_rmse": 0.17773363840696593,
+    "ridge_rmse": 0.19684378077064596
+  },
+  "benchmark": "session_2_spatial_token_headroom",
+  "created_utc": "2026-10-03T11:14:18.761202+00:00",
+  "device": "NVIDIA L4",
+  "gate_g4_2": {
+    "best_delta_rel": -0.4873134314707299,
+    "delta_rel_adjoint": -0.4873134314707299,
+    "delta_rel_vit": -0.16554963975626585,
+    "notes": "Gate G4-2 contributes one of three conjunctive gates for Hopper G4. Pass requires >=10% held-out RMSE reduction over pooled baseline.",
+    "passed": true,
+    "verdict": "PASS"
+  },
+  "grid": 4,
+  "num_test_episodes": 5,
+  "num_train_episodes": 5,
+  "test_windows": 1898,
+  "tokens_per_cam": 16,
+  "train_windows": 472
+}

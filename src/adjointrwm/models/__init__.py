@@ -32,6 +32,8 @@ from .hybrid_adjoint import (
 )
 from .registry import BUILDERS, RECIPE_DEFAULTS, REFERENCE_ARM, WIDTH_GRIDS, build_arm, count_prediction_parameters, match_width
 from .rssm import RSSMWorldModel
+from .spatial_adapter import SpatialPatchAdapter
+from .spatial_adjoint import SpatialAdjointRecursiveWorldModel, build_spatial_adjoint_rwm
 from .tdmpc2 import SimNorm, TDMPC2WorldModel
 
 __all__ = [
@@ -49,6 +51,8 @@ __all__ = [
     "REFERENCE_ARM",
     "RSSMWorldModel",
     "SimNorm",
+    "SpatialAdjointRecursiveWorldModel",
+    "SpatialPatchAdapter",
     "TARGET_KEYS",
     "TDMPC2WorldModel",
     "WIDTH_GRIDS",
@@ -56,6 +60,7 @@ __all__ = [
     "block_causal_mask",
     "build_arm",
     "build_hybrid_adjoint_rwm",
+    "build_spatial_adjoint_rwm",
     "count_prediction_parameters",
     "flatten_visual",
     "hybrid_stage1_loss",

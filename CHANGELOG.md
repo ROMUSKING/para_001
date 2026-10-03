@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-10-03 (ay): Milestone Session 2: Multi-Token Spatial Representation Headroom Benchmark on NVIDIA L4 (Gate G4-2 PASS)
+
+- **Peer Critic Consultation & Architectural Hardening:**
+  - Submitted draft spec (`docs/plans/2026-10-03-session-2-spatial-headroom-spec.md`) to OpenCode (`space-bunny-free`) as adversarial peer critic.
+  - Implemented all P0/P1 recommendations: eliminated the ResNet vs ViT confounding by benchmarking both pooled and spatial arms under the identical DINOv2 ViT-S/14 backbone ($D=384$); added classical `persistence` and linear `ridge` controls; evaluated on the exact held-out test split from `e3_1_droid_500_manifest.json`.
+- **Spatial Patch Adapter & World Model (`src/adjointrwm/models/`):**
+  - Implemented `SpatialPatchAdapter` (`src/adjointrwm/models/spatial_adapter.py`) with learned spatial positional encodings and multi-head attention pooling.
+  - Implemented `SpatialAdjointRecursiveWorldModel` and builder `build_spatial_adjoint_rwm`, registered in `src/adjointrwm/models/registry.py`. Added unit test suite in `tests/test_spatial_adapter.py` (all 406 test cases passing).
+- **Benchmark Execution on NVIDIA L4 GPU (`scripts/benchmark_spatial_token_headroom.py`):**
+  - Evaluated on Colab runtime `l4-worker` (NVIDIA L4 22.03 GiB VRAM) on real DROID multi-camera trajectories.
+  - **Empirical Results:** `dinov2_pooled` (P=2) achieved test RMSE of `1.10788` (442.2 MiB VRAM); `dinov2_spatial_vit` (P=32) achieved `0.92447` (**−16.55%** error reduction, 1,109.5 MiB VRAM); `spatial_adjoint_rwm` (P=32) achieved **`0.56800`** (**−48.73%** error reduction, 616.8 MiB VRAM).
+- **Gate G4-2 Verdict & Hardware Discipline:**
+  - **Gate G4-2 Verdict: PASS** (−48.73% relative error reduction exceeds the 10% gate threshold).
+  - Evaluated conjunctive G4 gating: because G4-1 currently reports DataLoader wait >15%, and peak VRAM (1.1 GiB) fits easily in L4, the campaign strictly remains on NVIDIA L4, moving to Session 3.
+  - Artifacts published in `results/benchmarks/spatial_headroom/` and documented in research note `docs/research-notes/2026-10-03-session-2-spatial-headroom-proof.md`.
+
 ## 2026-10-03 (ax): Agent Harness Peer Critic Protocol for Planning & Architectural Decisions
 
 - **Peer Critic Protocol Added (`AGENTS.md` & `.agents/skills/opencode-delegate/SKILL.md`):**

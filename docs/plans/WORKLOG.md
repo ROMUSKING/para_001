@@ -11,6 +11,15 @@ Each entry records:
 
 Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 lines.
 
+## 2026-10-03 12:15 (BST) · Antigravity & OpenCode (space-bunny) · Session 2 Spatial Token Headroom (Gate G4-2 PASS)
+
+- **Changed:** authored `docs/plans/2026-10-03-session-2-spatial-headroom-spec.md`; submitted to OpenCode (`space-bunny-free`) as adversarial peer critic; accepted all P0/P1 points (matched DINOv2 ViT-S/14 encoder for pooled and spatial arms, added persistence and ridge controls, exact B3b test split); implemented `SpatialPatchAdapter` (`src/adjointrwm/models/spatial_adapter.py`) and `SpatialAdjointRecursiveWorldModel` (`src/adjointrwm/models/spatial_adjoint.py`); added tests in `tests/test_spatial_adapter.py`; authored `scripts/benchmark_spatial_token_headroom.py`; executed benchmark on Colab L4 runtime `l4-worker`; downloaded artifacts to `results/benchmarks/spatial_headroom/`; authored research note `docs/research-notes/2026-10-03-session-2-spatial-headroom-proof.md`.
+- **Verified:** `dinov2_pooled` (P=2) test RMSE = 1.10788; `dinov2_spatial_vit` (P=32) test RMSE = 0.92447 (−16.55%); `spatial_adjoint_rwm` (P=32) test RMSE = 0.56800 (−48.73%); Gate G4-2 PASS (−48.73% > 10% gate); peak VRAM 1,109.5 MiB (uses 5.0% L4 capacity); all 406 unit tests pass; `python harness/check.py` passes 6/6 checks.
+- **Open:** Session 3 (HARP Selective Analytical Rescue on full E3.1 shard).
+- **Next:** submit Session 3 design to OpenCode as peer critic and execute on Colab `l4-worker`.
+
+---
+
 ## 2026-10-03 10:14 (BST) · Antigravity · Agent Harness Peer Critic Protocol
 
 - **Changed:** updated `AGENTS.md` and `.agents/skills/opencode-delegate/SKILL.md` to formalize the Peer Critic Protocol for planning and architectural design decisions; codified that peer critique requires explicit consideration but does not automatically override lead decisions; updated Working Loop step 2 to "Plan & Peer Critique"; synchronized harness mirrors via `python harness/sync.py`.
