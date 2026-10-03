@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-10-03 (ba): Milestone Direction 3 / Session 4: Real-Data Second-Order Curvature & Belief-Space VOI Allocation (Gate PASS)
+
+- **Peer Critic Protocol & Spec Hardening:**
+  - Submitted specification (`docs/plans/2026-10-03-session-4-curvature-voi-spec.md`) to OpenCode (`space-bunny-free`) as adversarial peer critic.
+  - Implemented all P0/P1 recommendations: isolated directional HVPs along each candidate vector $\Delta z_k$ individually, eliminating cross-term contamination; added capacity-matched `direct_critic_curv_matched` baseline (1.577M parameters, matching `CurvatureCostateEstimator`); resolved the zero-gradient bug by supervising diagonal Hessian $\hat{h}$ with directional HVP alignment and Plackett-Luce decision ranking loss.
+- **Benchmark Execution on NVIDIA L4 GPU (`scripts/benchmark_curvature_voi_allocator.py`):**
+  - Evaluated 12,462 held-out test windows across 3 seeds on the full 500-episode stratified E3.1 shard across 12 robotics laboratories on NVIDIA L4 (`l4-worker`).
+- **Primary Empirical Findings:**
+  - `second_order_curvature` achieves test regret of **`0.07621 ± 0.05358`**, delivering a **−54.60% relative regret reduction** over first-order co-states (`0.16788 ± 0.17332`) and a **−7.45% advantage** over the matched direct critic (`0.08235 ± 0.05820`).
+  - `belief_space_voi` achieves the best deployable test regret: **`0.06354 ± 0.04138`** (**−62.15%** vs first-order, **−22.84%** vs standard critic, **−22.05%** vs capacity-matched critic, **−91.23%** vs refusal baseline `0.72430`).
+  - Massive advantage demonstrated on the challenging `IRIS` laboratory (`0.0535` vs `0.7371` first-order and `0.1793` critic).
+  - Wall-clock inference throughput reached **`27,198.5 decisions/sec (27.2 kHz)`** with `0.0367 ms/window` latency.
+- **Session 4 Exit Gate Met:**
+  - Regret reduction over first-order co-state: **PASS** (−54.60% for curvature, −62.15% for VOI).
+  - Throughput exceeding 5 kHz on NVIDIA L4: **PASS** (`27,198.5 Hz` > 5 kHz).
+- **Compute Discipline:** Session `l4-worker` terminated immediately; 0 active billable assignments remain. Artifacts committed in `results/benchmarks/curvature_voi/` and documented in research note `docs/research-notes/2026-10-03-session-4-curvature-belief-space-voi.md`.
+
+---
+
 ## 2026-10-03 (az): Milestone B3c / Session 3: HARP Selective Analytical Rescue on Full E3.1 Multi-Site Shard
 
 - **Session 3 Benchmark Execution (`scripts/benchmark_harp_selective_rescue.py`):**

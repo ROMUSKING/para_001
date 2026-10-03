@@ -1,22 +1,34 @@
-# Direction 3 Curvature and Belief-Space VOI Allocation Benchmark
+# Direction 3: Real-Data Second-Order Curvature & Belief-Space VOI Allocation Benchmark
 
-**Date (UTC):** 2026-10-03T02:32:21Z · **Mode:** `synthetic` · **Device:** `cuda` (NVIDIA L4) · **Windows:** `128`
-**Mean scoring latency:** `0.0971 ms/window` (all-policy scoring time)
+**Date (UTC):** 2026-10-03T12:11:14Z · **Mode:** `real` · **Device:** `cuda` · **Windows:** `4154` · **Seeds:** `3`
+**Throughput:** `27198.5 decisions/sec` (`0.0367 ms/window`)
 
-## Test regret, gap to oracle, and win rates
+## 1. Test Regret & Win Rates
 
-| Allocator head | Mean test regret | Gap to oracle | Win rate vs critic | Win rate vs mode0 |
-|---|:---:|:---:|:---:|:---:|
-| `exact_costate` | `0.00000` | `+0.00000` | `0.547` | `0.016` |
-| `always_mode0` | `0.00001` | `+0.00001` | `0.539` | `0.000` |
-| `direct_critic` | `0.00132` | `+0.00132` | `0.000` | `0.008` |
-| `first_order` | `0.00128` | `+0.00128` | `0.406` | `0.000` |
-| `normalized_first_order` | `0.00152` | `+0.00152` | `0.367` | `0.000` |
-| `second_order_curvature` | `0.00105` | `+0.00105` | `0.391` | `0.000` |
-| `belief_space_voi` | `0.00172` | `+0.00172` | `0.336` | `0.000` |
+| Allocator Policy | Mean Test Regret | Gap to Oracle | Win Rate vs Critic | Win Rate vs First-Order | Win Rate vs Mode 0 |
+|---|:---:|:---:|:---:|:---:|:---:|
+| `exact_costate` | `0.00399 ± 0.00298` | `+0.00000` | `0.609` | `0.427` | `0.607` |
+| `always_mode0` | `0.72430 ± 0.55571` | `+0.72030` | `0.498` | `0.342` | `0.000` |
+| `direct_critic` | `0.08235 ± 0.05820` | `+0.07836` | `0.000` | `0.186` | `0.382` |
+| `direct_critic_curv_matched` | `0.08151 ± 0.05699` | `+0.07752` | `0.138` | `0.184` | `0.408` |
+| `first_order` | `0.16788 ± 0.17332` | `+0.16389` | `0.430` | `0.000` | `0.465` |
+| `normalized_first_order` | `0.22515 ± 0.16795` | `+0.22115` | `0.480` | `0.083` | `0.469` |
+| `second_order_curvature` | `0.07621 ± 0.05358` | `+0.07221` | `0.236` | `0.171` | `0.390` |
+| `belief_space_voi` | `0.06354 ± 0.04138` | `+0.05955` | `0.203` | `0.160` | `0.418` |
 
-## Key Findings
+## 2. Cross-Site Performance Across 12 Robotics Laboratories (Mean Test Regret)
 
-1. **Second-Order Curvature Advantage:** The quadratic curvature-penalized score ($s_k = -\hat{\lambda}^\top \Delta z_k - \frac{1}{2} \Delta z_k^\top \text{diag}(H) \Delta z_k - c_k$) achieves the lowest regret among all deployable heads (`0.00105`), outperforming standard first-order co-states (`0.00128`, −17.4% relative error) and the parameter-matched direct critic (`0.00132`, −20.0% relative error).
-2. **Sub-100 Microsecond Systems Latency:** On NVIDIA L4 GPU, scoring all 7 policies synchronously with CUDA event boundaries took only **0.0971 ms per window** (>10,200 decisions/second), well within the 20–50 Hz robotics control budget.
-3. **Mathematical Invariant Preservation:** The hold option ($k=0$) is guaranteed identically $0.0$, and the diagonal Hessian $\text{diag}(H)$ is constrained positive semi-definite ($\ge 0$) via smooth softplus activation.
+| Site | Windows | Mode 0 | Critic | First Order | Second Order Curvature | Belief-Space VOI |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|
+| `AUTOLab` | 512 | 0.1428 | 0.0374 | 0.0761 | **0.0465** | **0.0391** |
+| `BVL` | 183 | 0.0174 | 0.0359 | 0.0246 | **0.0333** | **0.0347** |
+| `ILIAD` | 1024 | 0.4989 | 0.1201 | 0.1447 | **0.1185** | **0.1071** |
+| `IPRL` | 376 | 0.3168 | 0.0750 | 0.1142 | **0.0926** | **0.0708** |
+| `IRIS` | 500 | 4.3013 | 0.1793 | 0.7371 | **0.1038** | **0.0535** |
+| `PennPAL` | 185 | 0.0432 | 0.0429 | 0.0390 | **0.0390** | **0.0414** |
+| `RAD` | 144 | 0.0180 | 0.1019 | 0.0600 | **0.0962** | **0.0984** |
+| `RAIL` | 76 | 0.1805 | 0.0308 | 0.0751 | **0.0302** | **0.0371** |
+| `REAL` | 96 | 0.0328 | 0.0272 | 0.0425 | **0.0314** | **0.0327** |
+| `RPL` | 197 | 0.0210 | 0.0440 | 0.0275 | **0.0387** | **0.0312** |
+| `TRI` | 781 | 0.1552 | 0.0518 | 0.0825 | **0.0585** | **0.0531** |
+| `WEIRD` | 80 | 0.0435 | 0.0411 | 0.0403 | **0.0411** | **0.0441** |

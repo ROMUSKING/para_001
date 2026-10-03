@@ -11,6 +11,15 @@ Each entry records:
 
 Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 lines.
 
+## 2026-10-03 13:10 (BST) · Antigravity & OpenCode (space-bunny) · Session 4 Real-Data Curvature & Belief-Space VOI (Gate PASS)
+
+- **Changed:** authored `docs/plans/2026-10-03-session-4-curvature-voi-spec.md`; submitted to OpenCode (`space-bunny-free`) as peer critic; incorporated all P0/P1 points (isolated directional HVPs avoiding cross-term contamination, added capacity-matched DirectCritic control at 1.577M params, supervised diagonal Hessian via multi-objective HVP and Plackett-Luce ranking loss); implemented full multi-site runner in `scripts/benchmark_curvature_voi_allocator.py`; executed on Colab L4 runtime `l4-worker` across 12,462 held-out test windows over 3 seeds on 12 robotics laboratories; downloaded artifacts to `results/benchmarks/curvature_voi/`; authored research note `docs/research-notes/2026-10-03-session-4-curvature-belief-space-voi.md`; stopped session immediately (0 active sessions).
+- **Verified:** `second_order_curvature` test regret = 0.07621 ± 0.05358 (−54.60% vs first-order 0.16788; −7.45% vs critic 0.08235); `belief_space_voi` test regret = 0.06354 ± 0.04138 (−62.15% vs first-order; −22.84% vs critic 0.08235; −22.05% vs capacity-matched critic 0.08151; −91.23% vs refusal 0.72430); extreme advantage on occluded `IRIS` lab (0.0535 vs 0.7371 first-order and 0.1793 critic); throughput measured at 27,198.5 decisions/sec (27.2 kHz, 0.0367 ms latency), exceeding 5 kHz gate by 5.44×; Session 4 Exit Gate PASS; 406/406 unit tests pass; `python harness/check.py` passes 6/6 checks.
+- **Open:** Session 5 (G4 Hopper Gating Evaluation & Scaled Multi-View Dynamics).
+- **Next:** evaluate conjunctive Hopper G4 entry gates (G4-1, G4-2, G4-3) before provisioning Session 5.
+
+---
+
 ## 2026-10-03 12:25 (BST) · Antigravity & OpenCode · Session 3 HARP Selective Rescue on Full E3.1 Multi-Site Shard
 
 - **Changed:** authored `docs/plans/2026-10-03-session-3-harp-selective-rescue-spec.md`; authored `scripts/benchmark_harp_selective_rescue.py` with multi-site evaluation and throughput benchmarking; executed on Colab L4 runtime `l4-worker` across 12,462 held-out test windows over 3 seeds on 12 robotics laboratories; downloaded artifacts to `results/benchmarks/harp_selective_rescue/`; authored research note `docs/research-notes/2026-10-03-b3c-harp-selective-rescue-multisite.md`; stopped Colab session immediately (`colab stop -s l4-worker`, 0 active sessions).
