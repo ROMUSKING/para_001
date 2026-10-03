@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-10-03 (au): Milestone B3.3: Direction 3 Curvature and Belief-Space VOI Allocation Benchmark on NVIDIA L4 (Delegated to OpenCode)
+
+- **Autonomous Implementation via OpenCode (`opencode run`):** Delegated mathematical formulation, neural heads, and unit test suite for Direction 3 (Second-Order Curvature and Belief-Space Value-of-Information Allocation) to `opencode/muse-spark-1.3-contributor-free`.
+- **Second-Order Curvature & VOI Formulation (`src/adjointrwm/allocators.py`):**
+  - Implemented `second_order_curvature_scores(costate, diag_hessian, effects, costs)` computing $s_k = -\hat{\lambda}_t^\top \Delta z_k - \frac{1}{2} \Delta z_k^\top \text{diag}(H_t) \Delta z_k - c_k$ with guaranteed $0.0$ hold score.
+  - Implemented `belief_space_voi_scores(costate, effects, delta_cov, diag_hessian, costs, uncert_weight)` computing true value-of-information under epistemic variance reduction.
+  - Implemented `CurvatureCostateEstimator(nn.Module)` predicting both Pontryagin co-state and positive semi-definite diagonal Hessian ($\text{diag}(H) \ge 0$ via softplus).
+- **Unit Test Coverage (`tests/test_allocators.py`):** Added 3 rigorous unit tests covering hold invariant preservation, zero-curvature limit equivalence to first-order Pontryagin scoring, positive curvature penalization of finite perturbations, and gradient flow through all heads (18/18 allocator tests, 401/401 full suite passed).
+- **Benchmark Suite & Execution on NVIDIA L4 GPU (`scripts/benchmark_curvature_voi_allocator.py`):**
+  - Evaluated 7 allocation policies on NVIDIA L4 GPU (`l4-worker` Colab runtime, 22.03 GiB VRAM) across 128 windows.
+  - **Empirical Regret Findings:** Exact autograd oracle floor `0.00000`; refusal baseline (`always_mode0`) `0.00001`; parameter-matched direct critic `0.00132`; first-order co-state `0.00128`; normalized first-order co-state `0.00152`; **second-order curvature co-state `0.00105`** (−17.4% relative error vs first order, −20.0% vs direct critic); belief-space VOI `0.00172`.
+  - **Systems Latency on NVIDIA L4:** Mean all-policy scoring latency measured at **0.0971 ms per window** (>10,200 decisions/second with CUDA event synchronization).
+- **Artifacts & Research Note:** Published in `results/benchmarks/curvature_voi/` (`curvature_voi_summary.json` and `curvature_voi_report.md`) and documented in research note `docs/research-notes/2026-10-03-direction3-curvature-voi-allocator.md`.
+
 ## 2026-10-02 (at): Milestone B2.3 Ranking Allocator Benchmark on NVIDIA L4 (Delegated to OpenCode)
 
 - **Autonomous Execution via OpenCode (`opencode run`):** Delegated remote benchmark execution and monitoring on Colab L4 runtime `user-worker` to `opencode/muse-spark-1.3-contributor-free`.

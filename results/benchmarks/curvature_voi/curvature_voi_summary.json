@@ -1,0 +1,79 @@
+{
+  "mode": "synthetic",
+  "device": "cuda",
+  "num_batches": 8,
+  "batch_size": 16,
+  "max_steps": 20,
+  "num_seeds": 1,
+  "cost_weight": 0.002,
+  "n_windows": 128,
+  "mean_latency_ms_per_window": 0.09714716406250545,
+  "per_policy": {
+    "exact_costate": {
+      "mean_regret": 0.0,
+      "std_regret": 0.0,
+      "mean_gain": 5.581478035310283e-06,
+      "gap_to_oracle": 0.0,
+      "win_rate_vs_critic": 0.546875,
+      "win_rate_vs_mode0": 0.015625
+    },
+    "always_mode0": {
+      "mean_regret": 5.581478035310283e-06,
+      "std_regret": 4.606746369972825e-05,
+      "mean_gain": 0.0,
+      "gap_to_oracle": 5.581478035310283e-06,
+      "win_rate_vs_critic": 0.5390625,
+      "win_rate_vs_mode0": 0.0
+    },
+    "direct_critic": {
+      "mean_regret": 0.0013173966435715556,
+      "std_regret": 0.0015063449973240495,
+      "mean_gain": -0.0013118151109665632,
+      "gap_to_oracle": 0.0013173966435715556,
+      "win_rate_vs_critic": 0.0,
+      "win_rate_vs_mode0": 0.0078125
+    },
+    "first_order": {
+      "mean_regret": 0.001275884686037898,
+      "std_regret": 0.0013775905827060342,
+      "mean_gain": -0.0012703030370175838,
+      "gap_to_oracle": 0.001275884686037898,
+      "win_rate_vs_critic": 0.40625,
+      "win_rate_vs_mode0": 0.0
+    },
+    "normalized_first_order": {
+      "mean_regret": 0.0015162709169089794,
+      "std_regret": 0.0014937306987121701,
+      "mean_gain": -0.0015106895007193089,
+      "gap_to_oracle": 0.0015162709169089794,
+      "win_rate_vs_critic": 0.3671875,
+      "win_rate_vs_mode0": 0.0
+    },
+    "second_order_curvature": {
+      "mean_regret": 0.0010537875350564718,
+      "std_regret": 0.0014312326675280929,
+      "mean_gain": -0.0010482061188668013,
+      "gap_to_oracle": 0.0010537875350564718,
+      "win_rate_vs_critic": 0.390625,
+      "win_rate_vs_mode0": 0.0
+    },
+    "belief_space_voi": {
+      "mean_regret": 0.0017229679506272078,
+      "std_regret": 0.001569535001181066,
+      "mean_gain": -0.0017173865344375372,
+      "gap_to_oracle": 0.0017229679506272078,
+      "win_rate_vs_critic": 0.3359375,
+      "win_rate_vs_mode0": 0.0
+    }
+  },
+  "date_utc": "2026-10-03T02:32:21Z",
+  "policies": [
+    "exact_costate",
+    "always_mode0",
+    "direct_critic",
+    "first_order",
+    "normalized_first_order",
+    "second_order_curvature",
+    "belief_space_voi"
+  ]
+}

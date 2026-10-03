@@ -19,6 +19,8 @@ policy reads them at decision time.
 
 from __future__ import annotations
 
+from typing import Tuple
+
 import numpy as np
 import pandas as pd
 import torch
@@ -174,6 +176,58 @@ def lcb_decision_scores(scores: torch.Tensor, uncert: torch.Tensor, kappa: float
         return scores
     active_lcb = scores[:, 1:] - kappa * uncert[:, 1:]
     return torch.cat([scores.new_zeros(scores.shape[0], 1), active_lcb], dim=1)
+
+
+def second_order_curvature_scores(
+    costate: torch.Tensor, diag_hessian: torch.Tensor, effects: torch.Tensor, costs: torch.Tensor
+) -> torch.Tensor:
+    """Second-order curvature-corrected scores (Direction 3).
+
+    ``s_k = -<costate, effects_k> - 0.5 * sum_d(diag_hessian_d * effects_k_d^2) - costs_k``.
+    Hold (k=0) is identically 0.0.
+    """
+    first = -(costate.unsqueeze(1) * effects).sum(-1)
+    curvature = 0.5 * (diag_hessian.unsqueeze(1) * effects.pow(2)).sum(-1)
+    scores = first - curvature - costs.view(1, -1)
+    return torch.cat([scores.new_zeros(scores.shape[0], 1), scores[:, 1:]], dim=1)
+
+
+def belief_space_voi_scores(
+    costate: torch.Tensor,
+    effects: torch.Tensor,
+    delta_cov: torch.Tensor,
+    diag_hessian: torch.Tensor,
+    costs: torch.Tensor,
+    uncert_weight: float = 0.5,
+) -> torch.Tensor:
+    """Belief-space value-of-information scores (Direction 3).
+
+    ``s_k = -<costate, effects_k> + 0.5 * uncert_weight * sum_d(diag_hessian_d * delta_cov_k_d) - costs_k``.
+    Hold (k=0) is identically 0.0.
+    """
+    first = -(costate.unsqueeze(1) * effects).sum(-1)
+    info = 0.5 * uncert_weight * (diag_hessian.unsqueeze(1) * delta_cov).sum(-1)
+    scores = first + info - costs.view(1, -1)
+    return torch.cat([scores.new_zeros(scores.shape[0], 1), scores[:, 1:]], dim=1)
+
+
+class CurvatureCostateEstimator(nn.Module):
+    """Joint co-state + diagonal-Hessian estimator (Direction 3)."""
+
+    def __init__(self, d: int):
+        super().__init__()
+        self.objective_condition = MLP(d + 2, 2 * d, d)
+        self.costate_head = nn.Linear(d, d)
+        self.hessian_head = nn.Linear(d, d)
+
+    def forward(self, latent, budget_fraction, horizon_fraction) -> Tuple[torch.Tensor, torch.Tensor]:
+        condition = torch.cat(
+            [latent, budget_fraction.view(-1, 1), horizon_fraction.view(-1, 1)], dim=-1
+        )
+        h = self.objective_condition(condition)
+        costate = self.costate_head(h)
+        diag_hessian = F.softplus(self.hessian_head(h))
+        return costate, diag_hessian
 
 
 def with_hold_zero(scores_refinements):

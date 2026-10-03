@@ -14,15 +14,19 @@ torch = pytest.importorskip("torch")
 from adjointrwm.allocators import (  # noqa: E402
     AllocatorJob,
     CostateEstimator,
+    CurvatureCostateEstimator,
     DirectCritic,
     allocation_traces,
+    belief_space_voi_scores,
     exact_targets,
+    first_order_scores,
     gate_positive_weight,
     lcb_decision_scores,
     matched_critic_hidden,
     normalized_first_order_scores,
     pairwise_margin_ranking_loss,
     plackett_luce_loss,
+    second_order_curvature_scores,
     validation_regret,
 )
 from adjointrwm.data import WindowDataset, WindowSpec, fit_normaliser  # noqa: E402
@@ -342,4 +346,92 @@ def test_allocator_job_ranking_loss_variants():
         job = AllocatorJob(teacher(), head, cost_weight=0.002, ranking_loss_type="hybrid")
         loss, _ = job.training_loss(data)
         assert torch.isfinite(loss)
+
+
+def test_second_order_curvature_scores():
+    """Direction 3: hold is 0, zero Hessian recovers first-order, curvature penalizes."""
+    g = torch.Generator().manual_seed(0)
+    b, k1, d = 4, 3, 5
+    costate = torch.randn(b, d, generator=g)
+    effects = torch.randn(b, k1 + 1, d, generator=g)
+    diag_hessian = torch.rand(b, d, generator=g)
+    costs = torch.tensor([0.0, 0.01, 0.02, 0.03])
+
+    scores = second_order_curvature_scores(costate, diag_hessian, effects, costs)
+    assert scores.shape == (b, k1 + 1)
+    assert torch.equal(scores[:, 0], torch.zeros(b))
+
+    # Zero Hessian matches first-order scores (except hold, both zero).
+    zero_h = torch.zeros_like(diag_hessian)
+    s_second = second_order_curvature_scores(costate, zero_h, effects, costs)
+    s_first = first_order_scores(costate, effects, costs)
+    # first_order already has hold == 0 since effects_0/costs_0 are 0 here only
+    # if effects_0 arbitrary; force comparison on active candidates.
+    assert torch.allclose(s_second[:, 1:], s_first[:, 1:], atol=1e-6)
+    assert torch.equal(s_second[:, 0], torch.zeros(b))
+
+    # Positive curvature penalizes large effects: scaling effects up lowers scores.
+    big = effects * 4.0
+    s_big = second_order_curvature_scores(costate, diag_hessian, big, costs)
+    s_small = second_order_curvature_scores(costate, diag_hessian, effects, costs)
+    # Curvature term is -0.5*h*||delta||^2, quadratic, so for large effects the
+    # curvature penalty dominates: check explicit penalty form on one row.
+    manual = -(costate[:1].unsqueeze(1) * big[:1]).sum(-1) - 0.5 * (
+        diag_hessian[:1].unsqueeze(1) * big[:1].pow(2)
+    ).sum(-1) - costs.view(1, -1)
+    assert torch.allclose(s_big[:1, 1:], manual[:, 1:], atol=1e-6)
+    # With positive Hessian, doubling effects more than doubles the penalty.
+    s1 = second_order_curvature_scores(costate, torch.ones_like(diag_hessian), effects, torch.zeros(k1 + 1))
+    s2 = second_order_curvature_scores(costate, torch.ones_like(diag_hessian), 2 * effects, torch.zeros(k1 + 1))
+    penalty1 = (first_order_scores(costate, effects, torch.zeros(k1 + 1)) - s1)[:, 1:]
+    penalty2 = (first_order_scores(costate, 2 * effects, torch.zeros(k1 + 1)) - s2)[:, 1:]
+    assert torch.allclose(penalty2, 4 * penalty1, atol=1e-5)
+    assert (penalty1 >= 0).all()
+
+
+def test_belief_space_voi_scores():
+    """Direction 3: hold is 0, positive delta_cov increases VOI score."""
+    g = torch.Generator().manual_seed(1)
+    b, k1, d = 4, 3, 5
+    costate = torch.randn(b, d, generator=g)
+    effects = torch.randn(b, k1 + 1, d, generator=g)
+    diag_hessian = torch.rand(b, d, generator=g) + 0.5
+    costs = torch.tensor([0.0, 0.01, 0.02, 0.03])
+    delta_cov = torch.rand(b, k1 + 1, d, generator=g)
+
+    scores = belief_space_voi_scores(costate, effects, delta_cov, diag_hessian, costs)
+    assert scores.shape == (b, k1 + 1)
+    assert torch.equal(scores[:, 0], torch.zeros(b))
+
+    # Positive delta_cov increases the score vs zero uncertainty reduction.
+    s_zero = belief_space_voi_scores(costate, effects, torch.zeros_like(delta_cov), diag_hessian, costs)
+    assert (scores[:, 1:] > s_zero[:, 1:]).all()
+
+    # Manual form check.
+    manual = -(costate.unsqueeze(1) * effects).sum(-1) + 0.5 * 0.5 * (
+        diag_hessian.unsqueeze(1) * delta_cov
+    ).sum(-1) - costs.view(1, -1)
+    manual = torch.cat([manual.new_zeros(b, 1), manual[:, 1:]], dim=1)
+    assert torch.allclose(scores, manual, atol=1e-6)
+
+
+def test_curvature_costate_estimator():
+    """Direction 3: shapes, non-negative Hessian, grad flow."""
+    d = 8
+    est = CurvatureCostateEstimator(d)
+    b = 5
+    latent = torch.randn(b, d)
+    budget = torch.full((b,), 0.25)
+    horizon = torch.ones(b)
+    costate, diag_hessian = est(latent, budget, horizon)
+    assert costate.shape == (b, d)
+    assert diag_hessian.shape == (b, d)
+    assert (diag_hessian >= 0).all()
+
+    # Grad flows to all parameters through both heads.
+    loss = costate.sum() + diag_hessian.sum()
+    loss.backward()
+    grads = [p.grad for p in est.parameters() if p.grad is not None]
+    assert len(grads) == len(list(est.parameters()))
+    assert all(torch.isfinite(g).all() for g in grads)
 
