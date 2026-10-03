@@ -101,7 +101,7 @@ Query available models via `opencode models`. In this repository, preferred mode
 
 ## Peer Critic Protocol (Planning & Design)
 
-When finalizing any major architectural decision, research plan, mathematical loss design, candidate redesign, or benchmark protocol, consult OpenCode as an adversarial **Peer Critic**:
+The peer (decision) critic **rotates** across the available agents (see the Peer Critic Protocol in `AGENTS.md`); do not default to OpenCode for every review. Pick the next critic with `python scripts/pick_peer_critic.py --exclude <this-agent> --available`. When the rotation returns `opencode`, review with the command below, attaching every relevant context file, and record the review afterwards with `python scripts/pick_peer_critic.py record --milestone <id> --artefact <path> --lead <agent> --critic opencode --outcome <verdict>` so the next decision goes to a different agent.
 
 ```bash
 opencode run --standalone --auto -m opencode/muse-spark-1.3-contributor-free \

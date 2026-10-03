@@ -1,8 +1,8 @@
 # AGENTS.md
 
-Operating manual for AI coding agents working in this repository: Claude Code, Codex, Antigravity (`agy`), OpenCode, Gemini CLI, Cursor and others.
+Operating manual for AI coding agents working in this repository: Claude Code, Codex, Antigravity (`agy`), OpenCode, Gemini CLI, Cursor, Grok Build, Kilo and others.
 
-This file is the **single source of truth**. Codex, Antigravity, OpenCode, Cursor and Gemini CLI (through `.gemini/settings.json`) read it directly. Claude Code reads the generated `CLAUDE.md`, which imports this file. Skills live in `.agents/skills/`. `python harness/sync.py` generates the few per-tool copies; edit this file or `.agents/`, never the generated ones. Details are in `harness/README.md`.
+This file is the **single source of truth**. Codex, Antigravity, OpenCode, Cursor, Grok Build, Kilo and Gemini CLI (through `.gemini/settings.json`) read it directly. Claude Code reads the generated `CLAUDE.md`, which imports this file. Skills live in `.agents/skills/`. `python harness/sync.py` generates the few per-tool copies; edit this file or `.agents/`, never the generated ones. Details are in `harness/README.md`.
 
 ## What this repo is
 
@@ -34,6 +34,10 @@ colab stop -s l4-worker            # MANDATORY: stop session immediately when do
 
 # OpenCode delegation
 opencode run --standalone --auto -m opencode/muse-spark-1.3-contributor-free -f <context_file> "<task>"
+
+# Peer / decision critic (rotates across the available agents)
+python scripts/pick_peer_critic.py --exclude <this-agent> --available   # next critic
+python scripts/pick_peer_critic.py record --milestone <id> --artefact <path> --lead <agent> --critic <agent> --outcome <verdict>
 ```
 
 The GPU training pipeline runs in **Google Colab** (`notebooks/01-production/`, `notebooks/02-diagnostics/`). Send jobs, execute notebooks, and monitor runs directly on Colab using the `colab-cli` skill (`colab exec` or `colab run`). Worker scripts (`scripts/colab_worker.py`, `notebooks/05-ops/colab_worker.ipynb`) and the Drive job queue (`jobs/inbox/`) serve as a fallback when direct CLI execution is not used. Do not execute GPU training notebooks locally in the CPU sandbox.
@@ -59,13 +63,14 @@ When delegating coding tasks, algorithmic modules, or script workflows to OpenCo
 2. **Autonomous Monitoring & Status Checks:** Monitor background OpenCode tasks to completion. Inspect command exit codes, stdout/stderr streams, and exported session summaries to verify that code changes match the requested specification.
 3. **Strict Definition of Done:** After OpenCode modifies files, always run unit tests (`pytest`) and verify repository invariants with `python harness/check.py`. Never mark a delegated task complete while checks fail.
 
-## Peer Critic Protocol for Planning & Design (OpenCode / Alternative Agents)
+## Peer Critic Protocol for Planning & Design (rotating decision critic)
 
-Before finalizing any major decision on research planning, architectural design, mathematical formulations, or benchmark protocols:
+Before finalizing any major decision on research planning, architectural design, mathematical formulations, or benchmark protocols, submit it for adversarial peer review. The reviewer **rotates** across the available coding agents, so no single agent always reviews.
 
-1. **Mandatory Peer Consultation:** Submit the draft plan or design specification to OpenCode (`opencode/muse-spark-1.3-contributor-free`) or an available peer coding agent as a **Peer Critic**. Attach all relevant context files (`-f`).
-2. **Semantics of "Peer":** A peer critique **needs thorough, honest consideration, but does NOT automatically override the lead agent's decision.** The peer critic acts as an adversarial sounding board to uncover blind spots, false assumptions, hardware/memory scaling traps, or protocol violations.
-3. **Evaluation & Rationale:** The lead agent must review each point raised by the peer critic, decide whether to accept, partially adopt, or reject each recommendation, and document the rationale in the plan, research note, or worklog before proceeding to implementation.
+1. **Pick the critic by rotation.** Run `python scripts/pick_peer_critic.py --exclude <this-agent> --available` and use the returned agent. The rotation is least-recently-used over `docs/plans/peer-critic-log.csv`, and `--available` drops agents whose CLI is not installed on this host. **You may not be your own critic:** always `--exclude` the agent doing the work.
+2. **Invoke it with its skill.** `opencode-delegate`, `codex-cli`, `agy-cli`, `copilot-cli` or `cline-cli`, attaching all relevant context files. Give it the draft, the constraints and the specific questions to attack.
+3. **Semantics of "Peer":** a peer critique **needs thorough, honest consideration, but does NOT automatically override the lead agent's decision.** The critic is an adversarial sounding board for blind spots, false assumptions, hardware/memory scaling traps and protocol violations.
+4. **Evaluate and record.** The lead agent must decide, per point, to accept, partially adopt or reject, and document the rationale in the plan, research note or worklog. Then append the review with `python scripts/pick_peer_critic.py record --milestone <id> --artefact <path> --lead <agent> --critic <agent> --outcome <verdict>`, so the next decision goes to a different critic.
 
 ## Map
 
@@ -81,6 +86,8 @@ Before finalizing any major decision on research planning, architectural design,
 | `docs/research-plan/`, `docs/production/` | Protocols and briefs | Change them only on explicit instruction; log deviations in `prereg/deviation_log.yaml` |
 | `papers/` | Drafts + `REVIEW.md` | Every claim must trace to a gate artefact |
 | `.agents/skills/` | Portable agent skills (source of truth) | Run `harness/sync.py` after editing |
+| `docs/plans/peer-critic-log.csv` | Append-only rotation log for the peer/decision critic | Append rows via `scripts/pick_peer_critic.py record`; never rewrite past rows |
+| `kilo.json` | Kilo Code project config: the permission guardrails it applies to itself | Hand-written, mirrors `opencode.json`; `tests/test_harness.py` checks it still blocks generated paths |
 
 ## Research-integrity rules (hard constraints)
 
@@ -97,7 +104,7 @@ Breaking any of these invalidates the work, however good the rest of it is.
 ## Working loop
 
 1. **Orient.** Read `docs/plans/WORKLOG.md` (latest entries first) and the roadmap row for your task.
-2. **Plan & Peer Critique.** For anything touching more than 3 files, architectural changes, or any evidence/protocol document, write a short plan first. Consult OpenCode (or an available peer coding agent) as a peer critic. Carefully consider the critique, document decisions, and refine the plan before executing. Ask when the task is ambiguous about scientific meaning; don't guess.
+2. **Plan & Peer Critique.** For anything touching more than 3 files, architectural changes, or any evidence/protocol document, write a short plan first. Consult the **rotating** peer critic (`python scripts/pick_peer_critic.py --exclude <this-agent> --available`). Carefully consider the critique, document decisions, and refine the plan before executing. Ask when the task is ambiguous about scientific meaning; don't guess.
 3. **Change in small steps.** Change code together with its tests. Keep diffs reviewable.
 4. **Verify.** Run `python harness/check.py`. Don't call a task done while it fails, and don't skip or weaken tests to make it pass.
 5. **Record.** Append a dated entry to `docs/plans/WORKLOG.md`: what changed, what was verified and how, and what is open. Add a `CHANGELOG.md` line for user-visible changes.
@@ -105,17 +112,21 @@ Breaking any of these invalidates the work, however good the rest of it is.
 
 ## Skills (reusable procedures)
 
-Portable skills live in `.agents/skills/<name>/SKILL.md` (Agent Skills format). Codex, Antigravity, OpenCode and Gemini CLI load them from there. Claude Code loads the mirror in `.claude/skills/`. Antigravity (`.agents/workflows/`) and OpenCode (`.opencode/commands/`) also get `/name` shims. Any other agent can simply read the file.
+Portable skills live in `.agents/skills/<name>/SKILL.md` (Agent Skills format). Codex, Antigravity, OpenCode, Gemini CLI, Grok Build and Kilo load them from there. Claude Code loads the mirror in `.claude/skills/`. Grok Build also sees that mirror when Claude compatibility is on, and dedupes by skill name. Antigravity (`.agents/workflows/`) and OpenCode (`.opencode/commands/`) also get `/name` shims. Any other agent can simply read the file.
 
 | Skill | Use when |
 |---|---|
 | `import-run` | Copying a Colab run's artefacts from Drive into `results/runs/` |
 | `audit-run` | Deciding whether a run or notebook counts as evidence |
 | `claim-check` | Reviewing a paper draft, README or research note for unsupported claims |
+| `agy-cli` | Launching, resuming, and handing off work to separate Antigravity CLI sessions |
 | `notebook-hygiene` | Adding or updating a notebook (convert, strip outputs, validate) |
 | `research-note` | Writing up findings from a run |
 | `colab-cli` | Provisioning, executing, and managing workloads on Google Colab remote runtimes |
 | `opencode-delegate` | Delegating prompt workflows, headless coding tasks, and multi-turn runs to OpenCode |
+| `codex-cli` | Starting, continuing, and handing work to separate Codex CLI sessions or integrations |
+| `copilot-cli` | Launching and safely operating separate GitHub Copilot CLI sessions from agents and scripts |
+| `cline-cli` | Starting, coordinating, and handing work to separate Cline CLI sessions, or invoking Cline from another agent or script |
 
 ## Boundaries
 

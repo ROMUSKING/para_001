@@ -1,5 +1,35 @@
 # Changelog
 
+## 2026-10-03 (bj): Rotating peer/decision critic
+
+- Added `scripts/pick_peer_critic.py` and the append-only `docs/plans/peer-critic-log.csv`, and rewrote the Peer Critic Protocol in `AGENTS.md` so the reviewer **rotates** across the available coding agents (least-recently-used) instead of defaulting to OpenCode. `--exclude` stops an agent reviewing its own work; `--available` limits the pick to installed CLIs.
+- Added a "Peer critic rotation" section to each critic skill (`opencode-delegate`, `codex-cli`, `agy-cli`, `copilot-cli`, `cline-cli`) with that agent's exact review command, and `tests/test_peer_critic_rotation.py` covering the ordering, filters and log round-trip.
+- First review ran under the new rotation with Codex as critic; it found and the lead fixed a same-day timestamp-granularity stall (rotation now keys on log position), unvalidated log/date inputs, mislabeled Copilot review scope, and unlabeled backfilled provenance.
+
+## 2026-10-03 (bi): Session 5 Evidence Reconciliation, Mathematical Verification & Audit
+
+- **LOSO Multi-Seed Aggregation Remediation:** Fixed indexing bug in `scripts/benchmark_robustness_horizon_allocator.py` where single-seed omission metrics were juxtaposed against 3-seed pooled averages; regenerated `results/benchmarks/robustness_horizon/robustness_horizon_report.md`.
+- **Mathematical Audit & Verification:** Authored `scripts/reconcile_session5_evidence.py` and canonical audit `docs/audits/2026-10-03_session_5_loso_and_cost_reconciliation_audit.md`, proving the pooled-averaging identity $\min_s \bar r_{-s} \le \bar r \le \max_s \bar r_{-s}$ holds to $10^{-8}$ precision.
+- **Narrowed Findings & Empirical Integrity:**
+  - Omitting `IRIS` reduces the VOI advantage over direct critic from +16.98% to +4.20% (positive across all 12 deletion subsets: +4.20% to +19.78%).
+  - Clarified distinction between omission sensitivity (re-aggregating evaluation records) and unseen-site generalization.
+  - Documented conditional cost robustness (+8.29% to +24.42% vs matched critic under moderate costs; -22.73% under `high_penalty` due to uncertainty-driven over-exploration).
+  - Corrected statistical terminology (standard deviation reduction vs variance reduction; 4,154 unique windows × 3 seeds = 12,462 evaluations; autograd reference vs decision oracle).
+  - Formally marked Track D2/D3 cross-domain code generation claims as superseded pending raw trace revalidation.
+
+## 2026-10-03 (bh): Cline CLI operating skill
+
+- Added a shared `cline-cli` skill for launching and coordinating separate Cline CLI sessions, choosing plan/act mode and auto-approval, parsing the newline-delimited JSON stream, resuming sessions via `--id`, and invoking Cline from other agents or ACP clients. Registered in `AGENTS.md`.
+- Verified against `cline` 3.0.68 with a live OpenCode peer review: corrected three false safety claims (plan mode still runs bash; `--auto-approve false` denies all tools yet exits 0; `--data-dir` drops credentials). `CLINE_COMMAND_PERMISSIONS` is documented by Cline but absent from the 3.0.68 binary, so no command sandbox is claimed — see the `cline-cli` skill and WORKLOG.
+
+## 2026-10-03 (bg): Copilot CLI operating skill
+
+- Added a shared `copilot-cli` skill for launching and resuming separate Copilot CLI sessions, controlling permissions, invoking it safely from other agents and scripts, and independently verifying delegated work.
+
+## 2026-10-03 (bf): Antigravity CLI operating skill
+
+- Added a shared `agy-cli` skill for headless Antigravity calls, structured output, deterministic conversation continuation, permissions, and agent handoffs.
+
 ## 2026-10-03 (be): Milestone Direction 3 / Session 5: Regret Robustness, Cost Sensitivity & Multi-Horizon Generalization (Gate PASS)
 
 - **Peer Critic Protocol Consultation & Integrity Remediation:**
@@ -21,10 +51,12 @@
 ## 2026-10-03 (bc): Kilo Code on the shared agent harness
 
 - **Kilo Code registered** in `harness/README.md`, `AGENTS.md` and `README.md` as a native reader of `AGENTS.md` (including the nested files) and `.agents/skills/`. Paths verified against Kilo's `agents.md`, `skills` and `agent-permissions` docs and against a live session in this repo.
-- **New `kilo.json`**: hand-written project config that gives a Kilo session the same guardrails as `.claude/settings.json` and `opencode.json` — ask before commit/push/`pip install`, deny force-push, hard reset and `rm -rf`, deny reads of credential files, and deny edits to the paths `harness/sync.py` generates. Existence-dependent rules (imported run artefacts, dated audits) stay CI-only, as for any tool without a pre-edit hook.
+- **New `kilo.json`**: hand-written project config that gives a Kilo session the same guardrails as `.claude/settings.json` and `opencode.json` — ask before commit/push/`pip install`, deny force-push, hard reset and `rm -rf`, deny reads of credential files at any depth, and deny edits to the paths `harness/sync.py` generates. Existence-dependent rules (imported run artefacts, dated audits) stay CI-only, as for any tool without a pre-edit hook.
+- **Hardened the bash denies in both `kilo.json` and `opencode.json`**: the rules now match the dangerous token rather than a fixed command spelling, so `git -C <repo> push --force`, `git push --force-with-lease`, `git push origin +main:main` and `git -C <repo> reset --hard` are denied instead of silently allowed, and `rm -r -f` / `rm --recursive --force` are covered. The two files keep identical blocks because Kilo also loads `opencode.json` as a legacy config path.
 - **No generated `KILO.md` or `.kilo/skills/` mirror.** Kilo loads `AGENTS.md` natively (and treats it as write-protected), so `python harness/sync.py` still owns only the Claude mirror.
-- `tests/test_harness.py` now asserts that `kilo.json` keeps denying exactly the generated paths and that its bash rules stay identical to `opencode.json` (Kilo reads that file as a legacy config path).
+- `tests/test_harness.py` now derives the paths that must stay denied from `harness/manifest.json` (so a new sync target cannot slip past), resolves permission patterns the way Kilo does (last match wins, so `.env.example` stays readable), covers the credential read denies at nested paths, and asserts the two bash blocks agree **in order**, not just as sets.
 - `.gitignore` ignores Kilo Agent Manager worktrees and session records.
+- Known limit, recorded in `docs/plans/WORKLOG.md`: with `bash` allow-by-default the path denies are advisory rather than a boundary (`sed -i`, `tee`, `cp` bypass them). Closing that needs a Bash allowlist as in `.claude/settings.json`.
 
 ## 2026-10-03 (bb): Grok Build on the shared agent harness
 
