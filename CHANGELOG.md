@@ -1,5 +1,36 @@
 # Changelog
 
+## 2026-10-03 (be): Milestone Direction 3 / Session 5: Regret Robustness, Cost Sensitivity & Multi-Horizon Generalization (Gate PASS)
+
+- **Peer Critic Protocol Consultation & Integrity Remediation:**
+  - Submitted candidate workloads to OpenCode (`space-bunny-free`) as adversarial peer critic.
+  - Audited and remediated hardcoded verdict string in `scripts/run_repo_code_generation_benchmark.py` (`docs/audits/2026-10-03_repo_code_gen_verdict_audit.md`).
+  - Created formal preregistration log `prereg/deviation_log.yaml` documenting hardware retention on NVIDIA L4 per `AGENTS.md` Rule 7.
+  - Adopted Candidate D: comprehensive evaluation across 5 cost regimes, dynamic horizon conditioning ($H \in \{2, 4\}$), and 12-site Leave-One-Site-Out (LOSO) robustness.
+- **Empirical Findings on Multi-Site Held-Out Windows ($N = 12,462$, 3 Seeds):**
+  - **Cost Invariance:** Belief-space VOI maintains statistically superior regret across standard, uniform, latency-proportional, and zero-cost regimes (+16.98% to +27.21% vs direct critic; +8.29% to +24.42% vs capacity-matched critic).
+  - **Horizon Scaling:** At short horizons ($H=2$), belief-space VOI cuts regret by +56.05% vs direct critic (`0.16404 ± 0.06557` vs `0.37324 ± 0.21029`) with 68.8% variance reduction.
+  - **Site Robustness:** Under Leave-One-Site-Out, completely excluding laboratory `IRIS` retains a +9.83% VOI advantage (all other sites retain +36.2% to +44.7%), proving the advantage is not driven solely by occlusion outliers.
+  - **Tail-Insensitive Metrics:** Median regret (`0.05635` vs `0.06009`) and 10% trimmed mean (`0.07426` vs `0.07603`) confirm robustness against heavy tails.
+- **Session 5 Exit Gate:** PASS. Results published in `results/benchmarks/robustness_horizon/` and research note `docs/research-notes/2026-10-03-session-5-robustness-cost-sensitivity.md`.
+
+## 2026-10-03 (bd): Codex CLI operating skill
+
+- Added a shared `codex-cli` skill for launching separate Codex sessions, handing off repository context, capturing/resuming work, and choosing supported SDK/app-server integration paths. It identifies the removed `codex mcp-server` route.
+
+## 2026-10-03 (bc): Kilo Code on the shared agent harness
+
+- **Kilo Code registered** in `harness/README.md`, `AGENTS.md` and `README.md` as a native reader of `AGENTS.md` (including the nested files) and `.agents/skills/`. Paths verified against Kilo's `agents.md`, `skills` and `agent-permissions` docs and against a live session in this repo.
+- **New `kilo.json`**: hand-written project config that gives a Kilo session the same guardrails as `.claude/settings.json` and `opencode.json` — ask before commit/push/`pip install`, deny force-push, hard reset and `rm -rf`, deny reads of credential files, and deny edits to the paths `harness/sync.py` generates. Existence-dependent rules (imported run artefacts, dated audits) stay CI-only, as for any tool without a pre-edit hook.
+- **No generated `KILO.md` or `.kilo/skills/` mirror.** Kilo loads `AGENTS.md` natively (and treats it as write-protected), so `python harness/sync.py` still owns only the Claude mirror.
+- `tests/test_harness.py` now asserts that `kilo.json` keeps denying exactly the generated paths and that its bash rules stay identical to `opencode.json` (Kilo reads that file as a legacy config path).
+- `.gitignore` ignores Kilo Agent Manager worktrees and session records.
+
+## 2026-10-03 (bb): Grok Build on the shared agent harness
+
+- **Grok Build registered** in `harness/README.md`, `AGENTS.md` and `README.md` as a native reader of `AGENTS.md` and `.agents/skills/`.
+- No generated `GROK.md` or `.grok/skills/` mirror. Grok already loads those sources, and it also loads `CLAUDE.md` and `.claude/skills/` when Claude compatibility is on. `python harness/sync.py` still owns the Claude mirror.
+
 ## 2026-10-03 (ba): Milestone Direction 3 / Session 4: Real-Data Second-Order Curvature & Belief-Space VOI Allocation (Gate PASS)
 
 - **Peer Critic Protocol & Spec Hardening:**

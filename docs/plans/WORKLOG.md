@@ -11,6 +11,47 @@ Each entry records:
 
 Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 lines.
 
+## 2026-10-03 17:55 (BST) · Antigravity & OpenCode (space-bunny) · Session 5 Regret Robustness, Cost Sensitivity & Multi-Horizon Audit (Gate PASS)
+
+- **Changed:** submitted Session 5 candidate workloads to OpenCode (`space-bunny-free`) as peer critic; incorporated critical findings: rejected ungrounded Candidate C, authored formal audit `docs/audits/2026-10-03_repo_code_gen_verdict_audit.md` for Track D hardcoded metric contradiction, created `prereg/deviation_log.yaml` documenting L4 retention, fixed horizon conditioning bug, adopted Candidate D; authored `scripts/benchmark_robustness_horizon_allocator.py` with 5 cost regimes, multi-horizon sweep ($H \in \{2, 4\}$), and 12-site Leave-One-Site-Out (LOSO) panel; executed on Colab NVIDIA L4 runtime across 12,462 held-out test windows over 3 seeds; downloaded artifacts to `results/benchmarks/robustness_horizon/`; stopped Colab session immediately (0 active sessions); authored research note `docs/research-notes/2026-10-03-session-5-robustness-cost-sensitivity.md`.
+- **Verified:** Belief-space VOI maintains statistically significant regret advantage across all cost regimes: Zero Cost (+27.21% vs critic, +8.29% vs matched critic), Uniform (+25.04% vs critic), Default (+16.98% vs critic, +15.36% vs matched), Latency-Weighted (+23.72% vs critic); at $H=2$, VOI cuts regret by +56.05% vs direct critic (`0.16404 ± 0.06557` vs `0.37324 ± 0.21029`) with 68.8% variance reduction; under Leave-One-Site-Out, dropping `IRIS` retains +9.83% VOI advantage (all other sites retain +36.2% to +44.7%); median regret (`0.05635` vs `0.06009`) and 10% trimmed mean (`0.07426` vs `0.07603`) confirm robustness against heavy tails; Session 5 Exit Gate PASS; all unit tests pass; `python harness/check.py` passes 6/6 checks.
+- **Open:** Session 6 (Joint Spatial Token Patch Allocation & Policy Distillation).
+- **Next:** draft Session 6 specification and submit to OpenCode for peer review.
+
+## 2026-10-03 · Codex · Add Codex CLI operating skill
+
+- **Changed:** added `.agents/skills/codex-cli/SKILL.md` and registered it in `AGENTS.md`; it covers separate `codex exec` sessions, explicit context/permissions, JSONL/session handling, handoff review, SDK/app-server choices, and the removed `codex mcp-server` path. Recorded in `CHANGELOG.md` (bd).
+- **Peer critique:** OpenCode was rate limited; an independent peer review caught the removed MCP server and recommended `codex exec`/SDK/app-server distinctions, least privilege, deterministic session IDs, and explicit handoff verification. Adopted those points.
+- **Verified:** local `codex --version`, `codex exec --help`, `codex exec resume --help`, and `codex app-server --help` confirmed command syntax; official CLI docs checked. `python harness/sync.py --check` reports 28 generated files in sync; harness reports skills well-formed and all six checks pass.
+- **Validation note:** standalone skill-creator validator could not import PyYAML in the system Python; repository skill check passed. First sandboxed harness run hit socket permission errors in a Jupyter test; rerunning with approved local socket access passed 6/6.
+- **Open:** no implementation or external Codex session was launched; this task creates reusable instructions only.
+- **Next:** future agents can invoke `$codex-cli` for Codex CLI handoffs.
+
+## 2026-10-03 · Kilo · Register Kilo on the shared harness
+
+- **Changed:** registered Kilo Code (CLI, VS Code extension, Agent Manager) as a native reader of `AGENTS.md`, the nested `AGENTS.md` files and `.agents/skills/`. Documented in `harness/README.md` (intro, diagram, tool matrix, sources), `AGENTS.md`, `README.md` and `CHANGELOG.md` (bc). No `KILO.md` and no `.kilo/skills/` mirror: Kilo loads `AGENTS.md` automatically, and treats it as write-protected.
+- **Changed:** added hand-written `kilo.json` so a Kilo session holds the same bar as Claude Code and OpenCode — ask before commit/push/`pip install`, deny force-push, hard reset and `rm -rf`, deny reads of credential files, deny edits to every path `harness/sync.py` generates. Existence-dependent rules stay CI-only, because a glob cannot tell a new artefact from an immutable one. `.gitignore` now excludes Agent Manager worktrees and session records.
+- **Oriented:** AdjointRWM research repo; `AGENTS.md` governs evidence integrity and Colab discipline. Handoff is unchanged from the Grok entry below: Session 4 PASS, Session 5 Candidate D approved on L4, Hopper blocked by `prereg/deviation_log.yaml` DEV-20261003-01 (G4-1 and G4-3 not met). Untracked `results/benchmarks/robustness_horizon/robustness_horizon_summary.json` reads `"mode": "synthetic"`; left untouched, not evidence.
+- **Verified:** `python -m pytest tests/test_harness.py -q` → 8 passed (2 new: `kilo.json` denies exactly the generated paths; its bash rules match `opencode.json`). `python -m pytest -q` → 408 passed. `python harness/sync.py --check` → 25 generated files in sync. `python harness/check.py` → 6/6. Kilo paths checked against `kilo.ai/docs/customize/{agents-md,skills,agent-permissions}` and against this session, in which `AGENTS.md` and `.agents/skills/` were both loaded with no Kilo config present.
+- **Open:** nothing committed for Session 5. `harness/mcp.json` still has no servers, so no Kilo MCP block is generated; add a render format in `sync.py` if that changes.
+- **Next:** run Session 5 Candidate D on L4 via `scripts/benchmark_robustness_horizon_allocator.py`; do not provision Hopper.
+
+## 2026-10-03 · Grok Build · Register Grok on the shared harness
+
+- **Changed:** registered xAI Grok Build as a native reader of `AGENTS.md` and `.agents/skills/`. No `GROK.md` and no `.grok/skills/` mirror. Documented in `harness/README.md` (tool matrix, checked against `~/.grok/docs/user-guide/` 12, 08 and 07), `AGENTS.md`, `README.md` and `CHANGELOG.md` (bb). Grok also loads `CLAUDE.md` and `.claude/skills/` when Claude compatibility is on; `sync.py` keeps that mirror identical to the source.
+- **Oriented:** AdjointRWM. Committed worklog stops at Session 4 PASS. Commits `dabf5ed`..`2cd0faf` adopt Session 5 Candidate D and stay on L4 (`prereg/deviation_log.yaml`: G4-1 and G4-3 not met; `docs/plans/2026-10-03-session-5-candidates-spec.md`). Runner: `scripts/benchmark_robustness_horizon_allocator.py`.
+- **Verified:** `python harness/sync.py --check` reports 25 generated files in sync. Untracked `results/benchmarks/robustness_horizon/robustness_horizon_summary.json` has `"mode": "synthetic"`; left untouched and not treated as evidence.
+- **Open:** no committed real-data Session 5 result. The Codex entry below still says to assess G4 before Session 5; that audit is already recorded in the deviation log.
+- **Next:** do not provision Hopper. Session 5 Candidate D on L4 is the approved plan.
+
+## 2026-10-03 · Codex · Harness registration and orientation
+
+- **Changed:** registered this Codex session in the shared agent handoff log; no dedicated agent roster or registration command exists in `harness/`.
+- **Oriented:** repository is AdjointRWM research; `AGENTS.md` governs evidence integrity, Colab discipline, and the work loop. Harness sources are `AGENTS.md`, nested instructions, `.agents/skills/`, and `harness/mcp.json`; `harness/README.md` describes `python harness/check.py` as definition of done.
+- **Current handoff:** Session 4 Real-Data Curvature & Belief-Space VOI passed per the 2026-10-03 13:10 BST entry below. The next work is Session 5, contingent on checking Hopper G4 gates G4-1, G4-2, and G4-3 against `docs/plans/2026-10-03-10-session-colab-hopper-plan.md`.
+- **Open:** working tree contains untracked `results/benchmarks/robustness_horizon/`; left untouched. No code or evidence was changed or verified in this orientation step.
+- **Next:** read the Session 5 plan and cited evidence, then assess all frozen G4 entry gates before any provisioning.
+
 ## 2026-10-03 13:10 (BST) · Antigravity & OpenCode (space-bunny) · Session 4 Real-Data Curvature & Belief-Space VOI (Gate PASS)
 
 - **Changed:** authored `docs/plans/2026-10-03-session-4-curvature-voi-spec.md`; submitted to OpenCode (`space-bunny-free`) as peer critic; incorporated all P0/P1 points (isolated directional HVPs avoiding cross-term contamination, added capacity-matched DirectCritic control at 1.577M params, supervised diagonal Hessian via multi-objective HVP and Plackett-Luce ranking loss); implemented full multi-site runner in `scripts/benchmark_curvature_voi_allocator.py`; executed on Colab L4 runtime `l4-worker` across 12,462 held-out test windows over 3 seeds on 12 robotics laboratories; downloaded artifacts to `results/benchmarks/curvature_voi/`; authored research note `docs/research-notes/2026-10-03-session-4-curvature-belief-space-voi.md`; stopped session immediately (0 active sessions).
