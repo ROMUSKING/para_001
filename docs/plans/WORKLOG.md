@@ -19,6 +19,15 @@ Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 
 - Next:
 ```
 
+## 2026-10-03 09:40 (BST) · Antigravity & OpenCode (Muse Spark 1.3) · 10-Session Colab Operational Campaign & Hopper G4 Strategy
+
+- **Changed:** authored `docs/plans/2026-10-03-10-session-colab-hopper-plan.md` defining the 10-session operational research campaign (Sessions S0 to S9); diagnosed root causes of <5% VRAM utilization on NVIDIA L4 (1D pooled ResNet vectors, single-threaded host `DataLoader`, compact 25M dynamics model); formulated 4 candidate workloads for Hopper G4 (96 GB); established the strict Hopper G4 switchover flag at Session 5 conditional on S0 profiler saturation, S2 spatial patch held-out gain ($p < 0.05$), and physical L4 OOM; updated `docs/plans/roadmap.md`, `CHANGELOG.md` (av), and `docs/plans/WORKLOG.md`.
+- **Verified:** `python harness/check.py` passing 6/6 checks; OpenCode models verified (`opencode/muse-spark-1.3-contributor-free` and `opencode/space-bunny-free`); Colab runtime `l4-worker` attached and validated.
+- **Open:** Session 0 benchmark execution on Colab L4; concurrent online research on architecture and agentic harness optimizations.
+- **Next:** push docs to GitHub, delegate Session 0 execution to OpenCode, and launch concurrent online research instance.
+
+---
+
 ## 2026-10-03 03:30 (BST) · Antigravity & OpenCode (Muse Spark 1.3) · Milestone B3.3 Direction 3 Curvature & Belief-Space VOI Benchmark
 
 - **Changed:** connected to active Colab L4 runtime `l4-worker` (`gpu-l4-s-kkb-ass1a0-1ybrafdw35bvf`, NVIDIA L4 22.03 GiB VRAM); delegated Direction 3 mathematical formulation to OpenCode (`opencode/muse-spark-1.3-contributor-free`); implemented `second_order_curvature_scores`, `belief_space_voi_scores`, and `CurvatureCostateEstimator` in `src/adjointrwm/allocators.py`; added 3 new unit tests in `tests/test_allocators.py`; created `scripts/benchmark_curvature_voi_allocator.py`; uploaded and executed benchmark on NVIDIA L4 GPU runtime `l4-worker` across 7 allocation policies; downloaded and published summary and report to `results/benchmarks/curvature_voi/`; authored research note `docs/research-notes/2026-10-03-direction3-curvature-voi-allocator.md`; updated `docs/plans/roadmap.md`, `CHANGELOG.md` (au), and `docs/plans/WORKLOG.md`.

@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-10-03 (av): 10-Session Colab Operational Campaign & Hopper G4 Hardware Scaling Strategy
+
+- **Operational Campaign Formalization (`docs/plans/2026-10-03-10-session-colab-hopper-plan.md`):**
+  - Audited root causes of <5% VRAM utilization on NVIDIA L4: 1D pooled ResNet vectors ($D=512$), single-threaded host `DataLoader(num_workers=0)`, and compact 25M dynamics model.
+  - Defined the 4 candidate workloads justifying NVIDIA Hopper G4 (96 GB GDDR7/HBM3): Workload A (End-to-End Multi-Camera Spatial Patch Tokens, 12,288 tokens/seq), Workload B (Deep Horizon $H \ge 32$ Full Curvature BPTT), Workload C (14B Parameter LLM DAG Attribution), and Workload D (GPU-Vectorized ManiSkill3 Simulation).
+  - Codified the 10-session sequence (Sessions S0 through S9), establishing explicit entry/exit gates and hardware governance.
+- **Hopper G4 Switchover Flag & Gating Protocol:**
+  - Formally established the switchover flag at **Session 5**.
+  - Mandatory entry gates: S0 profiler saturation (>75% SM utilization once DataLoader bottleneck is removed), S2 held-out prediction/regret gain ($p < 0.05$) from spatial tokens over 1D pooled vectors, and S1/S2 physical OOM on L4 (24 GB) at nominal batch sizes.
+- **Roadmap Integration:** Updated `docs/plans/roadmap.md` with operational campaign status and precedence linkage.
+
 ## 2026-10-03 (au): Milestone B3.3: Direction 3 Curvature and Belief-Space VOI Allocation Benchmark on NVIDIA L4 (Delegated to OpenCode)
 
 - **Autonomous Implementation via OpenCode (`opencode run`):** Delegated mathematical formulation, neural heads, and unit test suite for Direction 3 (Second-Order Curvature and Belief-Space Value-of-Information Allocation) to `opencode/muse-spark-1.3-contributor-free`.

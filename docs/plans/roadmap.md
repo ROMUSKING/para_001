@@ -9,6 +9,7 @@ This roadmap sequences the work described in the planning documents. It doesn't 
 | [`research-plan/adjoint_guided_comprehensive_research_plan.md`](../research-plan/adjoint_guided_comprehensive_research_plan.md) | **Governing research protocol.** Covers the cross-domain scope, the N0–N9 phases and the evidence-integrity gate. | 1 |
 | [`research-plan/adjoint_guided_recursive_world_model_research_plan.md`](../research-plan/adjoint_guided_recursive_world_model_research_plan.md) | Earlier single-domain protocol (v5, 24 Sep). Still the reference for Stage 0/A/B/C definitions and opportunity gates. | 2 |
 | [`production/colab_l4_operator_brief.md`](../production/colab_l4_operator_brief.md) | Non-negotiable rules for running anything on Colab: data, checkpoints, hardware. | Binding on every run |
+| [`plans/2026-10-03-10-session-colab-hopper-plan.md`](2026-10-03-10-session-colab-hopper-plan.md) | Operational execution roadmap: Sessions S0–S9, L4 profiler baseline, and Hopper G4 switchover criteria. | Binding on Colab sessions |
 | [`production/production_training_plan.md`](../production/production_training_plan.md) | Product path: P0–P11, RWM-S/M/L, specialists, distillation. | **Gated.** See §3. |
 
 ---
@@ -52,6 +53,7 @@ B2.3 RANKING LOSS OPTIMIZATION 3-SEED BENCHMARK COMPLETE (2026-10-02); NEGATIVE 
 B3 ANALYTICAL RESCUE (B3)      5-SEED BENCHMARK COMPLETE (2026-10-02); PARETO FRONTIER MAPPED; REAL-TIME THROUGHPUT >7,600 HZ AT TAU=0.20
 RIVAL-MODEL BENCHMARK (B1)     5-SEED BENCHMARK COMPLETE (2026-10-01); ADJOINTRWM STATISTICALLY SIGNIFICANTLY OUTPERFORMS ALL 4 DEEP RIVALS (DREAMERV3 −56.8%, DINO-WM −40.9%, TD-MPC2 −36.3%, V-JEPA 2-AC −33.9%; FAIRNESS PASS)
 CROSS-DOMAIN (TRACK D)         D4 FIRST (DECIDED); D4-0, D4-0b DONE; D4-2 DONE; D4-3 DONE (varying goal: R3v and R4v both hold in `m4` and `m64`, exact co-state unaffordable per instance); D4-1 DONE (no learned critic pays at the real price; the co-state critic does not beat the direct critic; `m4`: teacher-only value at a hypothetical price, `m64`: inconclusive); D1-0 DONE (proxy loss), D1-0b DONE (native forecast loss: no deployable policy keeps the headroom; D1-1 not designed); D2-0, D2-1, D2-2 DONE (LLM DAG & In-Place Adapter Hot-Swapping on L4: 100% build pass rate, 91% preservation, 11.8 ms hot-swap, 35.5x speedup); D3-0 NOT STARTED
+COLAB OPERATIONAL CAMPAIGN     10-SESSION PLAN ADOPTED (2026-10-03); S0-S4 ON L4; G4 HOPPER GATED AT S5 CONDITIONAL ON PROFILER + SPATIAL PATCH GAIN
 ```
 
 ---
