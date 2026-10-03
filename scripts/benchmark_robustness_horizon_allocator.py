@@ -561,6 +561,8 @@ def main():
         model_path = run_dir / f"seed_{seed}" / "best.pt"
         if not model_path.exists():
             model_path = run_dir / "best.pt"
+        if not model_path.exists():
+            model_path = run_dir / "seed_0" / "best.pt"
         if model_path.exists():
             print(f"  Loading trained teacher weights from {model_path}...")
             sd = torch.load(model_path, map_location=device, weights_only=True)
@@ -599,7 +601,61 @@ def main():
     with open(summary_file, "w") as f:
         json.dump(seed_results, f, indent=2)
 
-    print(f"\n[Session 5] Results saved to {summary_file}.")
+    # Markdown Report Generation
+    report_file = out_dir / "robustness_horizon_report.md"
+    rep = [
+        "# Session 5: Robustness, Cost-Model Sensitivity & Multi-Horizon Report",
+        "",
+        f"**Date:** 2026-10-03  ",
+        f"**Device:** {device}  ",
+        f"**Num Seeds:** {args.num_seeds}  ",
+        f"**Test Windows Evaluated:** {len(test_dataset) * args.num_seeds}  ",
+        "",
+        "## 1. Cost-Model Sensitivity Sweep (H=4)",
+        "",
+        "| Cost Regime | Baseline Critic Regret | Belief-Space VOI Regret | VOI Advantage (%) |",
+        "|---|---|---|---|",
+    ]
+
+    for regime in cost_regimes.keys():
+        c_regs = [s["cost_regimes"][regime]["per_policy"]["direct_critic"]["mean_regret"] for s in seed_results]
+        v_regs = [s["cost_regimes"][regime]["per_policy"]["belief_space_voi"]["mean_regret"] for s in seed_results]
+        c_mean, v_mean = float(np.mean(c_regs)), float(np.mean(v_regs))
+        adv = (c_mean - v_mean) / max(1e-8, c_mean) * 100.0
+        rep.append(f"| `{regime}` | {c_mean:.5f} | **{v_mean:.5f}** | **{adv:+.2f}%** |")
+
+    rep.extend([
+        "",
+        "## 2. Multi-Horizon Generalization (Default Cost)",
+        "",
+        "| Horizon H | Baseline Critic Regret | Belief-Space VOI Regret | VOI Advantage (%) |",
+        "|---|---|---|---|",
+    ])
+
+    for h_val in horizons:
+        c_regs = [s["horizons"][h_val]["per_policy"]["direct_critic"]["mean_regret"] for s in seed_results]
+        v_regs = [s["horizons"][h_val]["per_policy"]["belief_space_voi"]["mean_regret"] for s in seed_results]
+        c_mean, v_mean = float(np.mean(c_regs)), float(np.mean(v_regs))
+        adv = (c_mean - v_mean) / max(1e-8, c_mean) * 100.0
+        rep.append(f"| H={h_val} | {c_mean:.5f} | **{v_mean:.5f}** | **{adv:+.2f}%** |")
+
+    rep.extend([
+        "",
+        "## 3. Leave-One-Site-Out (LOSO) Regret Deltas (Default Cost, H=4)",
+        "",
+        "| Dropped Site | Remaining Critic Regret | Remaining VOI Regret | VOI Advantage (%) |",
+        "|---|---|---|---|",
+    ])
+
+    # Aggregate LOSO from seed 0
+    loso = seed_results[0]["cost_regimes"]["default"].get("loso_summary", {})
+    for s_name, data in sorted(loso.items()):
+        rep.append(f"| `{s_name}` | {data['direct_critic_regret']:.5f} | {data['belief_space_voi_regret']:.5f} | {data['voi_advantage_pct']:+.2f}% |")
+
+    with open(report_file, "w") as f:
+        f.write("\n".join(rep) + "\n")
+
+    print(f"\n[Session 5] Results saved to {summary_file} and {report_file}.")
 
 
 if __name__ == "__main__":
