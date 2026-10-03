@@ -63,7 +63,8 @@ def parse_args():
     parser.add_argument("--min-lr", type=float, default=1e-5)
     parser.add_argument("--num-seeds", type=int, default=2)
     parser.add_argument("--synthetic-test", action="store_true", help="Run fast synthetic smoke test on CPU")
-    return parser.parse_args()
+    args, _ = parser.parse_known_args()
+    return args
 
 
 def load_e3_dataset(cache_dir: Path):
@@ -274,7 +275,15 @@ def main():
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, drop_last=True)
     test_loader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False)
 
-    dims = ArmDims(state_dim=10, action_dim=7, visual_tokens=4, visual_token_dim=8, target_visual_dim=32, context_len=8, horizon=4)
+    dims = ArmDims(
+        state_dim=14,
+        action_dim=7,
+        visual_tokens=2,
+        visual_token_dim=512,
+        target_visual_dim=1024,
+        context_len=8,
+        horizon=4,
+    )
 
     all_seed_results = []
     baseline_summary = {"oracle": [], "mode0": [], "amortized": [], "critic": []}

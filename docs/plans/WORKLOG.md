@@ -11,6 +11,15 @@ Each entry records:
 
 Reference roadmap IDs (`docs/plans/roadmap.md`). Keep each entry under about 15 lines.
 
+## 2026-10-03 12:25 (BST) · Antigravity & OpenCode · Session 3 HARP Selective Rescue on Full E3.1 Multi-Site Shard
+
+- **Changed:** authored `docs/plans/2026-10-03-session-3-harp-selective-rescue-spec.md`; authored `scripts/benchmark_harp_selective_rescue.py` with multi-site evaluation and throughput benchmarking; executed on Colab L4 runtime `l4-worker` across 12,462 held-out test windows over 3 seeds on 12 robotics laboratories; downloaded artifacts to `results/benchmarks/harp_selective_rescue/`; authored research note `docs/research-notes/2026-10-03-b3c-harp-selective-rescue-multisite.md`; stopped Colab session immediately (`colab stop -s l4-worker`, 0 active sessions).
+- **Verified:** amortized forward inference ($\tau=0.00$) test regret = 0.39904 ± 0.27897 (−15.28% advantage vs matched critic 0.47105 ± 0.33675; −44.68% vs refusal 0.72139 ± 0.55545); rescuing 20% ambiguous decisions ($\tau=0.20$) drops regret to 0.26876 ± 0.18864 (−32.6% vs amortized, −42.9% vs matched critic, −62.7% vs refusal); throughput measured at 6,200.5 decisions/sec (6.2 kHz, 0.725 ms latency), exceeding the 5 kHz gate; Session 3 Exit Gate PASS; all unit tests pass; `python harness/check.py` passes 6/6 checks.
+- **Open:** Session 4 (Real-Data Second-Order Curvature & Belief-Space VOI Allocation on L4).
+- **Next:** draft Session 4 specification, consult OpenCode as peer critic, and execute Session 4 on Colab `l4-worker`.
+
+---
+
 ## 2026-10-03 12:15 (BST) · Antigravity & OpenCode (space-bunny) · Session 2 Spatial Token Headroom (Gate G4-2 PASS)
 
 - **Changed:** authored `docs/plans/2026-10-03-session-2-spatial-headroom-spec.md`; submitted to OpenCode (`space-bunny-free`) as adversarial peer critic; accepted all P0/P1 points (matched DINOv2 ViT-S/14 encoder for pooled and spatial arms, added persistence and ridge controls, exact B3b test split); implemented `SpatialPatchAdapter` (`src/adjointrwm/models/spatial_adapter.py`) and `SpatialAdjointRecursiveWorldModel` (`src/adjointrwm/models/spatial_adjoint.py`); added tests in `tests/test_spatial_adapter.py`; authored `scripts/benchmark_spatial_token_headroom.py`; executed benchmark on Colab L4 runtime `l4-worker`; downloaded artifacts to `results/benchmarks/spatial_headroom/`; authored research note `docs/research-notes/2026-10-03-session-2-spatial-headroom-proof.md`.

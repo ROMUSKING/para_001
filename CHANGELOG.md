@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-10-03 (az): Milestone B3c / Session 3: HARP Selective Analytical Rescue on Full E3.1 Multi-Site Shard
+
+- **Session 3 Benchmark Execution (`scripts/benchmark_harp_selective_rescue.py`):**
+  - Scaled the Selective Invocation and Analytical Rescue Interface to the full 500-episode stratified E3.1 shard across 12 robotics laboratories on NVIDIA L4 GPU (`l4-worker`).
+  - Evaluated 12,462 held-out test windows across 3 seeds using `HARP` (`HybridAdjointRecursiveWorldModel`, 24.7M parameters).
+- **Primary Endpoint Findings:**
+  - Amortized co-state forward inference ($\tau = 0.00$) achieves test regret `0.39904 ± 0.27897`, beating the matched direct critic (`0.47105 ± 0.33675`, **−15.28%** advantage) and sensory refusal baseline (`0.72139 ± 0.55545`, **−44.68%** advantage).
+  - Decision-margin confidence gating ($\tau = 0.20$, rescuing 20% ambiguous decisions) drops regret to **`0.26876 ± 0.18864`** (**−32.6%** vs amortized, **−42.9%** vs matched critic) while sustaining an effective latency of `0.725 ms` (**6,200.5 decisions/sec** / 6.2 kHz).
+  - Full autograd oracle floor reached at $\tau = 1.00$ (`0.00505 ± 0.00384`, 1,243.8 Hz).
+- **Session 3 Exit Gate Met:**
+  - Amortization gap closed below $\tau = 0.20$ threshold (`0.26876` vs `0.39904` amortized and `0.72139` refusal).
+  - Throughput exceeded 5 kHz (measured `6,200.5 Hz`).
+- **Compute Discipline:** Session `l4-worker` stopped immediately (`colab stop -s l4-worker`); 0 active billable assignments remain. Artifacts committed in `results/benchmarks/harp_selective_rescue/` and documented in research note `docs/research-notes/2026-10-03-b3c-harp-selective-rescue-multisite.md`.
+
 ## 2026-10-03 (ay): Milestone Session 2: Multi-Token Spatial Representation Headroom Benchmark on NVIDIA L4 (Gate G4-2 PASS)
 
 - **Peer Critic Consultation & Architectural Hardening:**

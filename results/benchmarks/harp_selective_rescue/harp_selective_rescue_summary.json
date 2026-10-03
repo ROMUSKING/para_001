@@ -1,0 +1,91 @@
+{
+  "benchmark": "Milestone B3c: HARP Selective Analytical Rescue Benchmark",
+  "date": "2026-10-03T11:27:32Z",
+  "run_id": "harp_hybrid_dynamics_20261002",
+  "num_seeds": 3,
+  "total_test_windows": 12462,
+  "baselines": {
+    "exact_oracle": {
+      "mean": 0.0,
+      "std": 0.0
+    },
+    "refusal_mode0": {
+      "mean": 0.7213941785351684,
+      "std": 0.5554504051008523
+    },
+    "amortized_harp": {
+      "mean": 0.39903801353648305,
+      "std": 0.2789686751477634
+    },
+    "matched_critic": {
+      "mean": 0.4710544516177227,
+      "std": 0.33675448885885223
+    }
+  },
+  "pareto_curve": [
+    {
+      "tau": 0.0,
+      "mean_regret": 0.39903801353648305,
+      "std_regret": 0.2789686751477634,
+      "mean_invocation_rate": 0.0,
+      "mean_latency_ms": 0.000382624586747528,
+      "mean_throughput_hz": 2613918.735557493
+    },
+    {
+      "tau": 0.05,
+      "mean_regret": 0.395055597803245,
+      "std_regret": 0.27653544980699307,
+      "mean_invocation_rate": 0.05007221954742417,
+      "mean_latency_ms": 0.18177410424908116,
+      "mean_throughput_hz": 24522.61347997274
+    },
+    {
+      "tau": 0.1,
+      "mean_regret": 0.3296602042391896,
+      "std_regret": 0.24560086102695997,
+      "mean_invocation_rate": 0.10014443909484834,
+      "mean_latency_ms": 0.3631655839114149,
+      "mean_throughput_hz": 12344.25001569904
+    },
+    {
+      "tau": 0.2,
+      "mean_regret": 0.26876393643518287,
+      "std_regret": 0.18863862602154186,
+      "mean_invocation_rate": 0.20004814636494941,
+      "mean_latency_ms": 0.7250764688146286,
+      "mean_throughput_hz": 6200.504559768223
+    },
+    {
+      "tau": 0.3,
+      "mean_regret": 0.2555259109164278,
+      "std_regret": 0.1790637277445462,
+      "mean_invocation_rate": 0.29995185363505056,
+      "mean_latency_ms": 1.0869873537178425,
+      "mean_throughput_hz": 4140.015530781625
+    },
+    {
+      "tau": 0.5,
+      "mean_regret": 0.15725236347255608,
+      "std_regret": 0.14139768717432127,
+      "mean_invocation_rate": 0.5,
+      "mean_latency_ms": 1.8116811979457232,
+      "mean_throughput_hz": 2485.86805843846
+    },
+    {
+      "tau": 0.8,
+      "mean_regret": 0.057386697037145495,
+      "std_regret": 0.048362770371344684,
+      "mean_invocation_rate": 0.7999518536350504,
+      "mean_latency_ms": 2.8982859270768184,
+      "mean_throughput_hz": 1554.5554664554068
+    },
+    {
+      "tau": 1.0,
+      "mean_regret": 0.005045666965694788,
+      "std_regret": 0.00383623040908219,
+      "mean_invocation_rate": 1.0,
+      "mean_latency_ms": 3.622979771304699,
+      "mean_throughput_hz": 1243.7815926977835
+    }
+  ]
+}
