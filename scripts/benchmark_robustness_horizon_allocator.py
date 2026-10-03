@@ -565,7 +565,7 @@ def main():
             model_path = run_dir / "seed_0" / "best.pt"
         if model_path.exists():
             print(f"  Loading trained teacher weights from {model_path}...")
-            sd = torch.load(model_path, map_location=device, weights_only=True)
+            sd = torch.load(model_path, map_location=device, weights_only=False)
             teacher.load_state_dict(sd.get("model_state_dict", sd), strict=False)
         else:
             print(f"  [warning] Checkpoint not found at {model_path}; using initialized teacher.")
