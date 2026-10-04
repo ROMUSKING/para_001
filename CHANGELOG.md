@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-10-04 (bl): Session 6A fixed-budget spatial patch selection
+
+- **New `src/adjointrwm/spatial_selection.py`**: the Session 6A selection maths. Implements the rank-one attention perturbation identity for `SpatialPatchAdapter`'s single-query pooling — `d(pooled)_p = out_proj(sum_h alpha_{h,p}/(1+alpha_{h,p}) * (v_{h,p} - ctx_h))` — verified against explicit numerical differences (an actual duplicated-patch pooling) to 5e-8. Symmetric per-camera budgets (`k in {4,8,16}` -> `k_cam in {2,4,8}` of 16 patches), grounding-mask selection that zeroes patch *content* while keeping `spatial_pos` aligned, all 8 comparators across the three tiers, the two Tier 2 references, and the metrics (10% trimmed mean, median, site-clustered bootstrap, additivity R2, submodularity violation rate).
+- **New `scripts/benchmark_spatial_patch_selection.py`**: CLI over that module — DROID multi-site shard loading, head training against exact marginal gains, per-budget evaluation, `beta in {0, +/-0.5, +/-1}` sensitivity sweep, greedy-oracle calibration against exhaustive search, summary JSON and Markdown report.
+- **New `tests/test_spatial_selection.py`**: 39 tests covering the perturbation identity, all 8 comparators plus both references, and the information boundary (corrupting every future target must leave all 8 deployable selections bit-identical, while the Tier 2 autograd reference does change).
+
+### Peer critic (Codex, read-only) — findings accepted and fixed
+
+- **CRITICAL: wrong-basis contraction.** The deployable scorers were contracting a *pooled-basis* perturbation with a *latent-space* co-state. Measured mean cosine against the true `z(S u p) - z(S)` was 0.20, so the curvature/VOI ranking was not the specified quantity. Replaced with `latent_patch_perturbations` (a genuine latent-space `dz_p`, one encode per patch); `curvature_scores` now raises on a dimension mismatch.
+- **CRITICAL: hand-rolled Wilcoxon understated the null variance ~20x** (`n(n+1)/12` instead of `n(n+1)(2n+1)/24`), making every p-value spuriously small. Fixed and pinned against exact sign-flip enumeration.
+- **CRITICAL: a missing backbone silently ran anyway.** Real mode now refuses before reading any data, and never writes an artefact.
+- **Greedy is a reference, not an optimum.** Relabelled throughout; negative regret is counted, not clipped; the calibration gap is reported where exhaustive search is tractable.
+- **`stratified_random` was deterministic within a quadrant** (equal scores -> index tie-break). Now samples a distinct random subset per stratum with largest-remainder allocation.
+- **Submodularity chain sign was inverted** (`best - previous` instead of `previous - best`), so diminishing returns counted as violations.
+- **Exit gate averaged advantages across budgets**, letting one budget mask a failure; now evaluated per budget. **Synthetic runs no longer evaluate the gate at all.**
+- **`early_cls_attention` silently duplicated `early_feature_norm`** when no CLS map was cached; it now refuses and is reported as unavailable.
+- **Scope claim corrected:** a single `state_logvar_head` cannot separate epistemic from aleatoric uncertainty, so the term is documented as *predictive*-variance reduction, not pure epistemic VOI.
+
 ## 2026-10-03 (bk): Kilo Code CLI skill, and a rotation that only picks critics that run
 
 - **New `kilo-cli` skill** (`.agents/skills/kilo-cli/SKILL.md`): launching separate Kilo Code instances from another agent or script — `kilo run` headless, `--format json` capture, `--agent plan` for review-only work, session continuation/fork/export/import, git-worktree isolation, `.kilo/agent/*.md` subagents, and safe subprocess invocation (argv, timeout, exit status, stderr kept separate because Kilo logs `INFO …` there by default). Every flag was measured against the installed CLI 7.8.3 (`kilo --help`, `kilo run --help`, `kilo agent list`), not assumed.

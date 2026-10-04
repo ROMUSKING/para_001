@@ -7,3 +7,5 @@ date,milestone,artefact,lead,critic,outcome,source
 2026-10-03,cline-cli-skill,.agents/skills/cline-cli/SKILL.md,cline,opencode,accepted,reconstructed
 2026-10-03,peer-critic-rotation,scripts/pick_peer_critic.py,cline,codex,partially adopted (see docs/plans/WORKLOG.md),recorded
 2026-10-03,harness-governance,.agents/skills/kilo-cli/SKILL.md,kilo,agy,"partially adopted: alias fix, probe hardening, plan-agent facts and --sanitize accepted; OpenCode edit-permission claim rejected with schema evidence",recorded
+2026-10-04,Session6A,src/adjointrwm/spatial_selection.py,opencode,codex,accepted,recorded
+2026-10-04,Session 6A-prereq-B6,docs/plans/2026-10-03-session-6a-spatial-selection-spec.md,opencode,copilot,"partially adopted: 5 fixed-budget validity invariants raised and each verified in code (hard top-k cap, identical [B,32] candidate pool, true autograd costate reference, capacity-matched critics, cost asymmetry already disclosed and deferred to 6C); no P0 changed the trainer design; critic did not engage the 7 mechanism-specific questions asked",recorded

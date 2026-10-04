@@ -647,10 +647,15 @@ def main():
         "|---|---|---|---|",
     ])
 
-    # Aggregate LOSO from seed 0
-    loso = seed_results[0]["cost_regimes"]["default"].get("loso_summary", {})
-    for s_name, data in sorted(loso.items()):
-        rep.append(f"| `{s_name}` | {data['direct_critic_regret']:.5f} | {data['belief_space_voi_regret']:.5f} | {data['voi_advantage_pct']:+.2f}% |")
+    # Aggregate LOSO across all seeds
+    first_loso = seed_results[0]["cost_regimes"]["default"].get("loso_summary", {})
+    all_sites = sorted(first_loso.keys())
+    for s_name in all_sites:
+        c_regs = [s["cost_regimes"]["default"]["loso_summary"][s_name]["direct_critic_regret"] for s in seed_results]
+        v_regs = [s["cost_regimes"]["default"]["loso_summary"][s_name]["belief_space_voi_regret"] for s in seed_results]
+        c_mean, v_mean = float(np.mean(c_regs)), float(np.mean(v_regs))
+        adv = (c_mean - v_mean) / max(1e-8, c_mean) * 100.0
+        rep.append(f"| `{s_name}` | {c_mean:.5f} | {v_mean:.5f} | {adv:+.2f}% |")
 
     with open(report_file, "w") as f:
         f.write("\n".join(rep) + "\n")

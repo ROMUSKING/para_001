@@ -168,8 +168,17 @@ def slice_window(
     spec: WindowSpec,
     input_visual: np.ndarray | None = None,
     target_visual: np.ndarray | None = None,
+    auxiliary: Mapping[str, np.ndarray] | None = None,
 ) -> dict:
-    """One window with the pilot's alignment (see module docstring)."""
+    """One window with the pilot's alignment (see module docstring).
+
+    ``auxiliary`` maps a name to a per-frame ``[L, ...]`` array that is *not* a model input,
+    such as a cached encoder attention map. Each entry is emitted under its own name, sliced to
+    the **context** frames only, because such arrays describe what the encoder saw while the
+    decision was being made. They are windowed with exactly the same ``start`` as
+    ``context_visual``, so a scorer reading them is reading decision-time information about the
+    same frames the model conditions on -- never about the future targets.
+    """
     T, H = spec.context_len, spec.horizon
     end = start + T
     if start < 0 or end + H > len(states_norm):
@@ -191,6 +200,14 @@ def slice_window(
         # The shared visual target over the context frames: observable at decision time, but
         # only used as a training target (reconstruction-style arms), never as a model input.
         out["context_target_visual"] = np.ascontiguousarray(target_visual[start:end], dtype=np.float32)
+    for name, array in (auxiliary or {}).items():
+        array = np.asarray(array)
+        if array.shape[0] != len(states_norm):
+            raise ValueError(
+                f"auxiliary {name!r} has {array.shape[0]} frames but the episode has "
+                f"{len(states_norm)}; auxiliary arrays must be per-frame and untrimmed"
+            )
+        out[name] = np.ascontiguousarray(array[start:end], dtype=np.float32)
     for key in ("future_actions", "target_state"):
         assert len(out[key]) == H, key
     return out
@@ -216,6 +233,7 @@ class WindowDataset:
         input_visual_keys: Sequence[str] = ("exterior_embeddings", "wrist_embeddings"),
         target_visual_keys: Sequence[str] | None = None,
         visual_layout: str = "flat",
+        auxiliary_keys: Sequence[str] = (),
     ):
         if visual_layout not in ("flat", "tokens"):
             raise ValueError("visual_layout must be 'flat' or 'tokens'")
@@ -225,6 +243,9 @@ class WindowDataset:
         self.input_visual_keys = tuple(input_visual_keys)
         self.target_visual_keys = tuple(target_visual_keys or input_visual_keys)
         self.visual_layout = visual_layout
+        #: Per-frame arrays carried through to the window but never used as a model input,
+        #: e.g. a cached encoder attention map that a Tier 0 saliency comparator reads.
+        self.auxiliary_keys = tuple(auxiliary_keys)
         self.index = [
             (record_index, start)
             for record_index, record in enumerate(self.records)
@@ -258,12 +279,28 @@ class WindowDataset:
         )
         return {"states": states, "actions": actions, "input_visual": tokens, "target_visual": target}
 
+    def _auxiliary(self, arrays: Mapping[str, np.ndarray]) -> dict:
+        missing = [k for k in self.auxiliary_keys if k not in arrays]
+        if missing:
+            raise KeyError(
+                f"auxiliary_keys {missing} are not in the cached episode; available: "
+                f"{sorted(arrays)}"
+            )
+        return {k: np.asarray(arrays[k]) for k in self.auxiliary_keys}
+
     def __getitem__(self, item: int) -> dict:
         record_index, start = self.index[item]
         episode = self._load(record_index)
+        record = self.records[record_index]
+        if "arrays" in record:
+            arrays = record["arrays"]
+        else:
+            with np.load(record["cached_path"]) as handle:
+                arrays = {key: handle[key] for key in handle.files}
         window = slice_window(
             episode["states"], episode["actions"], start, self.spec,
             input_visual=episode["input_visual"], target_visual=episode["target_visual"],
+            auxiliary=self._auxiliary(arrays),
         )
         window["episode_id"] = self.records[record_index]["episode_id"]
         window["window_start"] = start
