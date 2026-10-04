@@ -367,6 +367,52 @@ VRAM usage is not a performance metric. A useful model can be compute-bound with
 
 Dataset row count alone is never a hardware-switch trigger. Datasets reside primarily in CPU/local storage; GPU memory is driven by model state, optimizer state, activations, sequence shape, camera count, precision and microbatch.
 
+### A CUDA OOM is a code diagnosis before it is a hardware question (added 2026-10-04)
+
+An out-of-memory error on a Colab GPU is, in this project's experience, almost always a defect in
+how the work is batched rather than a limit of the card. Session 6A requested a single
+**42.19 GiB** allocation on the 22.03 GiB L4, which looks like exactly the evidence rule 7
+demands — until it is traced. The frame was `objective_at_masks` inside an exhaustive subset
+search that built all 14,400 masks for every window in one call, outside `torch.no_grad()`. A
+single forward pass of that model peaks at **0.09 GiB**, measured with
+`torch.cuda.reset_peak_memory_stats()`.
+
+After chunking over the *(sample, candidate)* product and wrapping the measurement in `no_grad`,
+the same science runs in **1.7 GiB**. Provisioning an A100 80 GB at that point would have burned
+credits to conceal a three-line fix and produced a run whose memory footprint said nothing about
+the hardware.
+
+Before recommending any accelerator, work this order:
+
+1. Read the **requested** allocation size. Tens of GiB in one request means one enormous tensor,
+   not a model that needs the memory.
+2. Read the **traceback frame** that built it, not just the final allocator line.
+3. Check for a whole split materialised on the GPU (`[move_to_device(b) for b in DataLoader(...)]`).
+   Keep batches on the host, upload per use, set `num_workers>0` for `.npz`/`.parquet` shards.
+4. Check whether a combinatorial enumeration is batched in one call, and chunk over the product
+   of axes rather than one axis.
+5. Check for missing `torch.no_grad()` around measurement code; retained graph nodes accumulate
+   across chunks.
+6. Measure the true single-pass peak. Small peak plus a huge OOM request means the excess is the
+   algorithm's batching.
+
+Only after all six is this a hardware question, and then it needs a committed profiler trace
+showing saturation, per the conjunctive G4 gates in
+`docs/plans/2026-10-03-10-session-colab-hopper-plan.md`.
+
+### Remote-runtime caveats that cost real time (added 2026-10-04)
+
+- **`colab drivemount` cannot be automated.** Authorisation is interactive and human-only, so a
+  headless agent on a fresh runtime has no Drive. Either stage everything to `/content` and pass an
+  explicit output root, or ask the user to mount Drive first. Do not discover this after the
+  pipeline is written.
+- **A browser-spawned runtime is unreachable.** A `[?] <assignment_id>` entry from the Colab web
+  UI cannot be adopted by `colab new` (it provisions a *second* VM) nor addressed by
+  `-s <assignment_id>`. Ask the user to release it, or provision your own and say which to stop.
+- **Long jobs must be detached.** `colab exec` runs in the shared kernel, so a foreground job
+  blocks every later command; use `setsid nohup … &` and poll a log file. See the `colab-cli`
+  skill for the exact incantation.
+
 ## Required metrics
 
 ### Model quality

@@ -1,5 +1,151 @@
 # Changelog
 
+## 2026-10-04 (6C): WS2 factorial rejects pooled-input framing; WS3 amendment applied; guard live
+
+- **WS2 executed:** `PatchConditionedCostateEstimator` (shared per-patch MLP, parameter-count matched within 10%, broadcast identity + future-target independence tested) trained under composite (cell C) and ranking (cell D) in the same loop. Result: C ρ 0.041/regret 0.00423 vs A ρ 0.115/0.00388; D ρ 0.063/−0.034 vs B ρ 0.097/0.137. Conditioning hurts or ties under both objectives — the frozen falsifier rejects input sufficiency. Remaining: optimisation, parameterisation, singleton labels.
+- **WS3 applied (spec §6 + DEV-20261004-03):** VOI retired from the gate, tie/Criteria voided symmetrically, option A rejected on rank-preservation (affine standardisation is order-preserving, so it cannot move selections — stronger than the correlation argument), retired policy fenced via the degeneracy guard. Peer review: cline/deepseek-v4.1-flash, 4 fixes, all applied.
+- **Guard live in a committed artefact:** 3-seed rerun (`results/benchmarks/spatial_selection_v2/`, 108,000 rows) reproduces stratified numbers exactly and reports `beta_sweep_degeneracy.degenerate: true`, branch `not_evaluated`, `tie_with_curvature: null`, 3 distinct seeds.
+- **WS4 closed:** fitted normaliser persisted (`results/benchmarks/spatial_backbone/spatial_normaliser.json`, sha verified); eval indices already committed.
+- **Model routing:** kilo `-m kilo/kilo-auto/free`, cline `-P cline -m cline-free/deepseek-v4.1-flash`; both skills updated + synced (cline daily free limit noted).
+- **Verified:** `pytest -q` → 530 passed; `harness/check.py` → 6/6.
+
+## 2026-10-04 (6B): WS1a/WS1b — training objective ruled out, input sufficiency leads by elimination
+
+- `train_heads` trains two extra co-state estimators sharing class, inputs, optimiser settings, steps and data with production (own AdamW each): `curvature_cosine_only` (cosine term alone) and `curvature_ranking` (`pairwise_margin_ranking_loss` on its own `curvature_scores`, `ranking_margin_scale` recorded). Diagnose script evaluates both + `--ranking-margin-scales` sweep. Five tests.
+- Measured on L4 (192 stratified windows, bit-identical backbone): cosine-only ρ 0.088 vs composite 0.115 with regret tied — the cosine target is not the culprit. Ranking supervision ρ 0.097/0.137 at margin 1.0/1000.0, regret 0.00417/0.00398 — never beats composite, ~170× from exact-λ. Per codex review this is exploratory, not input-sufficiency evidence.
+- WS0: norm overlap above chance confirmed (z 6.6/13/21) with ρ 0.08 — weak retrieval, no decision value. Position-bias untestable from committed parquet (no patch indices); minimal extra logging specified.
+- Peer review chain: kilo (auth failure) → agy (429) → codex (accepted, 4 blocking points addressed); subagents supplied path map, norm analysis, amendment options. Colab session stopped, 0 assignments.
+
+## 2026-10-04 (bp): Stratified re-run, and a privilege ablation that isolates λ̂ as the sole bottleneck
+
+Follows (bo). Artefacts in `results/benchmarks/spatial_selection_stratified/` and
+`results/benchmarks/spatial_bottleneck/`.
+
+- **Stratified re-run of the full suite** (1,200 windows, **50 episodes / 12 sites**, 3 seeds, 108,000-row parquet) revises the (bo)/(bn) effect sizes down by 5–20×. VOI vs `uniform_grid` is **+3.96 % / −2.21 % / +1.04 %** (was +24.7 / +5.6 / +20.5) and vs `early_feature_norm` **−5.2 % / −2.9 % / −3.2 %** (was −8.9 / −0.8 / −4.2). Every deployable policy's site-clustered CI overlaps every other's; VOI vs `direct_ranking_critic` gives **p = 0.94**; Criterion 2 flips from met to not met. Honest reading: **no deployable selector separates from any other, including random stratification** — only the autograd-access policies separate.
+- **Privilege ablation (critic P0) settles where the loss is.** Changing exactly one factor per row at k_cam=2: `curvature_distilled` and `first_order_distilled` are **identical** (ρ 0.1151, regret 3.875e-03, overlap 0.253), so **the curvature term contributes nothing**; `curvature_exact_costate` (ρ 0.9771, regret 2.3e-05) matches `first_order_exact_costate` (2.2e-05), so **Ĥ is harmless when λ is exact**. Therefore **λ̂ is the entire bottleneck** — not the curvature head, not the functional form, not capacity — and the ceiling for a deployable selector here is ~2e-05, which λ̂ misses by ~170×.
+- **Top-k overlap discriminates far better than mean Spearman.** `patch_norm` has ρ = 0.0795 (apparently useless) yet selects 23.6 % of the true top-2 against a 12.5 % chance level. ρ over 32 patches is a global ordering statistic that understates a scorer whose selected set is decent; tuning against ρ alone would optimise the wrong thing. `topk_overlap` added with an explicit chance baseline and four tests.
+- **Degeneracy guard redesigned to preserve evidence.** `assert_beta_sweep_is_informative` would have *destroyed* the artefact documenting Session 6A's degenerate β sweep. Replaced with `beta_sweep_is_degenerate`, which **records** the finding, sets `tie_with_curvature: null`, downgrades the gate branch to `not_evaluated: degenerate beta sweep …`, warns on stdout, and exposes `--strict-beta` for pipelines that should hard-fail. Three tests.
+- **Gate downgraded in the stratified run.** VOI and `second_order_curvature` selected **identical patches on 1,200 of 1,200 windows** (Wilcoxon statistic 0.0, p = 1.0, 1,200 ties) and all five β values again returned one identical regret to eight decimals (0.00465522), so the tie branch is unsupported and is now reported as untested rather than as an equivalence.
+- **Verified:** `pytest -q` → 527 passed; `python harness/check.py` → 6/6; diagnostic reproduced identically across two runs (ρ 0.1151 / 0.9632 / −0.1834 / 0.0795), and the backbone reproduced bit-for-bit across sessions.
+
+## 2026-10-04 (bo): Session 6A bottleneck diagnostic — corrects the previous headline
+
+Artefacts in `results/benchmarks/spatial_bottleneck/`; note
+[`docs/research-notes/2026-10-04-session-6a-bottleneck-diagnostic.md`](docs/research-notes/2026-10-04-session-6a-bottleneck-diagnostic.md).
+
+- **New `scripts/diagnose_spatial_selection_bottleneck.py`**: separates the two explanations for Session 6A's loss — a bad λ̂ distillation versus an additive surrogate that cannot express a good policy — by measuring Spearman ρ against the **exact** marginal gains *and* realised regret for the same scorers, plus top-k overlap against the true gains with a chance baseline.
+- **Correction to the previous entry (bn).** The claim that belief-space VOI *loses* to `early_feature_norm` by −8.9 % **does not survive episode-stratified sampling**. On 50 episodes / 12 sites the two are within ±3 % — a tie. The −8.9 % came from a 3-episode evaluation set. The `bn` branch label ("geometric coverage dominates") is not supported by the numbers it came from; the note now carries a superseding banner.
+- **"Non-additivity is the ceiling" is refuted.** Ranking by the *true* marginal gains achieves trimmed regret 3.4e-05 — ~110× better than the distilled scorer. The additive surrogate family expresses an excellent policy here; the deployed scorers simply misrank. A sharper reason to drop the additivity argument, from the rotating critic: `additivity_r2` regresses `J` (nats) on **uncalibrated** policy gains (cotangent units) pooled across policies, with slope ≈ −4.7e-05 and intercept ≈ −1.59, so `R² ≈ 0` is near-guaranteed by the unit mismatch regardless of interaction structure.
+- **The λ̂ distillation is the bottleneck and is *not* capacity-limited.** ρ(distilled) = 0.115 vs ρ(autograd cotangent) = 0.963; regret 3.9e-03 vs 8.2e-05. Widening `CurvatureCostateEstimator` from 512 to 1024 hidden (1.05M → 1.57M params) moves ρ by 0.013 and regret by 3 %.
+- **The epistemic term is mildly anti-correlated, not merely inert.** Measured alone, `ΔΣ` scores ρ = **−0.183** and has the **worst regret of every scorer at every budget**. So raising β to give it leverage would make allocation worse. This settles the previous audit's open question.
+- **Privilege ablation added** per the critic's P0: `first_order_distilled`, `curvature_exact_costate` and `first_order_exact_costate` each change exactly one factor, so λ̂, Ĥ and the functional form can be told apart — which the single "~110×" number conflated.
+- **New `stratified_window_indices`** in `adjointrwm.data.windows`: round-robin over episodes with seeded, site-interleaved ordering. `WindowDataset` prefixes were the defect behind the 3-episode evaluation; both runners now report episode and site counts in their headers. Covered by 7 tests.
+- **New `CurvatureCostateEstimator(d, hidden=None)`** capacity knob for the distillation study. The default is unchanged, so capacity matching against `matched_patch_critic_hidden` is unaffected (tested).
+- **New `assert_beta_sweep_is_informative`**: the runner now **refuses** to write a β sweep whose rows are identical. Session 6A's degenerate sweep reached a committed artefact and was reported as a tie (`p = 1`); a control that cannot move is not an equivalence result.
+- **Fixed a tie-ranking bug in the diagnostic**: `_rank` used `argsort`, which assigns distinct ranks to tied values and made a constant row report ρ = 1. Group sizes and offsets are now indexed by group id, so ties share their average rank and a constant row correctly yields NaN. Three tests pin it.
+- **Peer critique (rotating critic `cline`, plan mode) — accepted in full.** Recorded via `pick_peer_critic.py record`. Its P0s: that re-running the planned capacity/ranking experiments was redundant once the diagnostic existed; and that VOI-term commensurability must be settled by spec amendment **before** further VOI runs rather than deferred after a re-run. Its P1s: the `additivity_r2` unit-mismatch point above, and that `early_feature_norm` tying a learned scorer is a statement about DINOv2 norms plus a dropout-trained backbone rather than about learned allocation, which needs position/overlap/noise controls. Its P2 commit list is folded into the open items.
+- **`cline-cli` skill corrected.** I dispatched cline with **copilot's** `--deny-tool` flag; cline 3.0.68 rejects it with *unknown option* and exits before reading the prompt, so the review silently never ran. The skill now warns against copying permission flags between critic CLIs and requires confirming review text is present before recording.
+- **Verified:** `pytest -q` → 527 passed; `python harness/check.py` → 6/6.
+
+## 2026-10-04 (bn): Session 6A real run — negative result, and a VOI control that cannot fire
+
+Session 6A ran on real data for the first time. Note
+[`docs/research-notes/2026-10-04-session-6a-spatial-selection.md`](docs/research-notes/2026-10-04-session-6a-spatial-selection.md)
+and audit
+[`docs/audits/2026-10-04_session_6a_voi_scale_and_sampling_audit.md`](docs/audits/2026-10-04_session_6a_voi_scale_and_sampling_audit.md).
+Artefacts in `results/benchmarks/spatial_selection/`, now including a 34,560-row per-window parquet.
+
+- **Pre-registered negative branch reached:** `negative_result: geometric coverage dominates downstream sensitivity`. Belief-space VOI beats `uniform_grid` by +24.7 % / +5.6 % / +20.5 % at k=4/8/16 but **loses to `early_feature_norm` by −8.9 % / −0.8 % / −4.2 %** — a raw DINOv2 patch-token L2 norm beats a learned co-state+curvature+variance allocator. Criterion 2 (non-inferiority vs the capacity-matched privileged critic) is met at every budget.
+- **The supported mechanism is non-additivity, not VOI.** Additivity `R² ≈ 4e-05` over 3,456 selections, with submodularity violations climbing 11.5 % → 22.5 % → 39.8 % as budget grows. The additive surrogate explains none of the variance in `J(z_S)`, so per-patch scoring is the wrong functional shape here. `exact_costate_reference` reaches 0.00007 against VOI's 0.00598: the signal exists and autograd finds it, and essentially all the loss is in distilling `λ` to `λ̂`.
+- **The β sweep is a degenerate control.** Rows are byte-identical for β ∈ {0, ±0.5, ±1} at every budget. Measured on the trained backbone, the epistemic term is **9.1e-06** of the curvature term, so no β in the grid can reorder a single selection. This is a *scale* defect, distinct from Session 5's *identity* defect — `ΔΣ` here is a genuine predictive-variance reduction from the model's own head. Session 6A therefore cannot adjudicate VOI against curvature, and `p = 1` is not evidence of equivalence.
+- **Evaluation is not episode-diverse.** `--eval-windows` took a prefix of an ordered loader: 3 test episodes from 3 sites out of 50 / 14. Paired comparisons within those windows stand; no site or shard generalisation claim does.
+- **Seed integrity is verified in-run, closing the Session 5 failure mode.** `duplicate_seed_check` reports 3 distinct head parameter sets against one shared, SHA-256-recorded backbone, and per-window regrets are committed so the paired and clustered inference is re-runnable.
+- **Fixed a bug that had shipped:** `beta_sensitivity` accepted a one-shot iterator and re-used it across all five betas, so only β=0 was ever measured — visible in the earlier synthetic report as identical rows for β=0, −0.5 and −1.0. It now takes a batch factory, with two regression tests, and an exhausted stream raises instead of emitting NaN.
+
+## 2026-10-04 (bm): Session 6A prerequisites, and four defects that were not hardware limits
+
+Session 6A could not run at all on arrival: the runner refuses real mode without a trained
+spatial backbone (spec B6), **no script in the repo wrote one**, and the DROID cache holds only
+pooled 512-d ResNet18 embeddings rather than the `P = 32` patch tokens the benchmark selects
+over. This entry records the prerequisites added, the Session 5 audit remediations applied, and
+the memory defects found — all of which looked like hardware limits and were not.
+
+### Prerequisites
+
+- **New `scripts/build_spatial_patch_cache.py`**: builds the DINOv2 ViT-S/14 patch-token cache in
+  the layout the window dataset already reads (`exterior_patches`, `wrist_patches`,
+  `exterior_embeddings`, `wrist_embeddings`, `cls_attention`), streaming `droid:1.0.1` from
+  `gs://gresearch/robotics` exactly as the E3.1 cache was built and carrying the E3.1 splits over
+  verbatim. The CLS-to-patch map is recomputed from a hook-captured last block because
+  `forward_features` returns no attention weights.
+- **New `scripts/train_spatial_patch_dropout_backbone.py`**: the spec B6 prerequisite. Trains the
+  spatial backbone on **the objective the benchmark minimises** (`prediction_objective` through the
+  same `apply_patch_mask` a deployed selector uses), with per-camera patch dropout over
+  `k_cam in {2,4,8,16}` so the evaluated budgets are in-distribution. Checkpoint selection is the
+  lowest mean validation objective over the evaluated budgets, measured against a fixed set of
+  mask draws so selection is paired; the no-dropout endpoint is tracked but not selected on. Writes
+  `patch_dropout_trained: True`, which the benchmark requires before it will emit a gate.
+- **`load_spatial_splits`** now returns train/val/test from one definition (the evaluator's
+  `(train, test)` view is a thin wrapper), so a trainer cannot drift from the evaluator's data
+  path and the val split is available for checkpoint selection.
+- **`sample_budget_masks`** in `src/adjointrwm/spatial_selection.py`: per-window, per-camera
+  symmetric budget draws, composed with `apply_patch_mask` so training and evaluation use one
+  operation.
+
+### Session 5 audit remediations 1, 3 and 5 applied before the run
+
+- **Per-window regrets are now committed** (`spatial_selection_per_window.parquet`, with
+  `episode_id` and `site` per row). Session 5's headline percentages were unfalsifiable because
+  only aggregates were committed, so the paired and clustered inference could never be re-run.
+- **Seed provenance and a duplicate-seed check.** Each seed records the resolved backbone path,
+  the backbone SHA-256 and per-head parameter hashes, and the summary reports
+  `seeds_are_distinct_replicates`. Session 5 reported three seeds when two were the same
+  evaluation, which invalidated its primary endpoint; this makes that failure mode checkable from
+  the artefact alone rather than after the fact.
+- **`auxiliary_keys` on `WindowDataset`**: per-frame arrays that are not model inputs (the CLS
+  attention map) now reach the window, sliced on the same `start` as `context_visual`. Without it
+  `early_cls_attention` either fails or silently duplicates `early_feature_norm`.
+
+### Four defects that presented as hardware limits
+
+- **A 42 GiB allocation on a 22 GiB card.** `exhaustive_oracle_masks` built all 14,400 subsets for
+  every window in one batch, outside `no_grad`. Chunked over the (window x candidate) product and
+  wrapped in `no_grad`; a single forward pass on this model peaks at **0.09 GiB**, measured. The
+  OOM was a code defect, and treating it as a hardware requirement would have been exactly the
+  error `docs/production/colab_l4_operator_brief.md` warns against.
+- **Whole splits materialised on the GPU.** Both runners did
+  `[move_to_device(b) for b in DataLoader(...)]`, holding every patch token of every window at
+  once. Batches now stay on the host and are uploaded per use, with `num_workers=4` because the
+  shard is `.npz`-IO-bound (the condition Session 0 measured).
+- **Manifest `length: null` indexed windows past the end of episodes.** The E3.1 repo manifest
+  records `num_steps` but leaves `length` null, so `WindowDataset` fell back to its 100-step
+  default while episodes run to 1,214 steps, raising `IndexError` in `slice_window`. The cache
+  builder now records the length read back from each `.npz`, with `--lengths-only` to rebuild a
+  manifest without re-streaming TFDS.
+- **A one-shot generator cannot be re-traversed.** Streaming fixed the memory, but head training
+  needs many passes, so the batch accessors are now factories that re-read per pass. Releasing
+  host windows between seeds without rebuilding them produced
+  `TypeError: 'NoneType' object is not iterable` on seed 1.
+
+### Peer critic (Copilot, plan mode, read-only)
+
+Raised five fixed-budget validity invariants. Each was **verified in code rather than assumed**:
+`select_topk_per_camera` enforces a hard `topk` per camera (Q1), all eight comparators score the
+same `[B, 32]` pool through the same selector (Q2), `exact_costate_reference` is a true autograd
+`dJ/dz` (Q3), and `matched_patch_critic_hidden` matches critic capacity to the co-state estimator
+(Q5). Q4 — that belief-space VOI costs one rollout per patch while the cotangent scorers are
+O(1) — is real and is already disclosed in the report and deferred to Session 6C per spec Q4. No
+P0 changed the trainer design; the critic did not engage the seven mechanism-specific questions
+the brief asked.
+
+### Harness
+
+- **`colab-cli` skill**: long jobs must be launched detached (`setsid nohup … &`) because
+  `colab exec` runs in the shared kernel and a foreground job blocks every later command;
+  `colab exec --timeout` defaults to **30 s**; `colab restart-kernel` recovers a wedged
+  websocket; `colab new` cannot adopt an untracked `[?]` assignment, so a browser-spawned runtime
+  is unreachable headlessly and must be released by hand.
+
 ## 2026-10-04 (bl): Session 6A fixed-budget spatial patch selection
 
 - **New `src/adjointrwm/spatial_selection.py`**: the Session 6A selection maths. Implements the rank-one attention perturbation identity for `SpatialPatchAdapter`'s single-query pooling — `d(pooled)_p = out_proj(sum_h alpha_{h,p}/(1+alpha_{h,p}) * (v_{h,p} - ctx_h))` — verified against explicit numerical differences (an actual duplicated-patch pooling) to 5e-8. Symmetric per-camera budgets (`k in {4,8,16}` -> `k_cam in {2,4,8}` of 16 patches), grounding-mask selection that zeroes patch *content* while keeping `spatial_pos` aligned, all 8 comparators across the three tiers, the two Tier 2 references, and the metrics (10% trimmed mean, median, site-clustered bootstrap, additivity R2, submodularity violation rate).

@@ -53,6 +53,21 @@ kilo run --dir /path/to/repository --agent plan --format json \
   "Act as an adversarial peer critic for docs/plans/<spec>.md: attack the assumptions, failure modes and protocol compliance. Do not edit files."
 ```
 
+## Model routing (project default, set 2026-10-04)
+
+Route every `kilo run` through the auto free model router:
+
+```bash
+kilo run --dir /path/to/repo --agent plan --format json -m kilo/kilo-auto/free "…"
+```
+
+Measured on this host: the ID must be the **three-part** `kilo/kilo-auto/free`. The two-part
+`kilo-auto/free` fails with `Model not found: kilo-auto/free`, and omitting `-m` fails with
+`You need to sign in to use this model`. With the three-part ID a plan-agent probe returned
+`KILO_OK` at cost 0 (resolved model `stealth/space-bunny-alpha`). Pass `-m` on every invocation —
+it is per-run, not persistent. If the router itself fails, re-pick the critic per the rotation
+protocol rather than falling back to a signed-in model unasked.
+
 `kilo agent list` prints the built-in agents together with their effective permission rules (measured 7.8.3: `ask`, `code`, `compaction`, `debug`, `explore`, `general`, `orchestrator`, `plan`, `summary`, `title`). Measured rules for `plan`: `write` is denied for every path, `edit` is denied except `.kilo/plans/*.md`, `plans/*.md`, `.plans/*.md` and `.opencode/plans/*.md`, and shell is limited to read-only commands with `git *` denied except `log`/`show`/`diff`/`status`/`blame` and similar. That means `plan` cannot touch this repository's `docs/plans/`, but it is not a general read-only guarantee — read the listing for the agent you use rather than assuming, and keep the explicit "do not edit" instruction plus a `git status` check afterwards.
 
 ## Output, logs and exit status

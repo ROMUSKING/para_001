@@ -879,6 +879,80 @@ def matched_patch_critic_hidden(fan_in: int, d_model: int) -> int:
     return max(1, round((target - 1) / (fan_in + 1)))
 
 
+def matched_conditioned_hidden(fan_in: int, d_model: int) -> int:
+    """Hidden width giving a per-patch co-state head ~ the trainable params of
+    :class:`CurvatureCostateEstimator`.
+
+    Same idea as :func:`matched_patch_critic_hidden`, but the output is ``2 * d_model``
+    (costate + hessian diag) rather than a scalar, and the trunk output feeds two ``d -> d``
+    heads. Solving ``H * (fan_in + 1 + d) + d + 2 * d * (d + 1) = T`` for the reference count
+    ``T``. This controls trainable parameter count only.
+    """
+    d = d_model
+    target = sum(p.numel() for p in CurvatureCostateEstimator(d).parameters())
+    fixed = d + 2 * d * (d + 1)
+    return max(1, round((target - fixed) / (fan_in + 1 + d)))
+
+
+def patch_conditioned_curvature_scores(
+    costate: torch.Tensor, hessian: torch.Tensor, delta_z: torch.Tensor
+) -> torch.Tensor:
+    """``-lambda_p^T dz_p - 0.5 * dz_p^T H_p dz_p`` per patch, all ``[B, P, d]``.
+
+    The per-patch twin of :func:`curvature_scores`: where that contracts one pooled
+    ``[B, d]`` co-state against every patch perturbation, this contracts each patch's own
+    estimate. Broadcasting a pooled co-state to ``[B, P, d]`` must reproduce
+    :func:`curvature_scores` exactly (pinned by test).
+    """
+    if not (costate.shape == hessian.shape == delta_z.shape and costate.dim() == 3):
+        raise ValueError(
+            "costate, hessian and delta_z must share a [B, P, d] shape; got "
+            f"{tuple(costate.shape)}, {tuple(hessian.shape)}, {tuple(delta_z.shape)}"
+        )
+    return -(costate * delta_z).sum(-1) - 0.5 * (hessian * delta_z.pow(2)).sum(-1)
+
+
+class PatchConditionedCostateEstimator(nn.Module):
+    """Per-patch co-state estimator over pooled latent + candidate's own embedding (WS2).
+
+    Same head class family as :class:`CurvatureCostateEstimator`, but conditioned per patch on
+    ``[latent; patch_emb_p; budget; horizon]``, where ``patch_emb_p`` is the frame-mean raw
+    patch token -- the same early features :class:`PatchRankingCritic` sees, hence
+    decision-time information with no future targets (Tier 1 status preserved *as an
+    information-boundary claim*: the selector still consumes every candidate's token, so any
+    patch-extraction saving would have to account that acquisition cost separately).
+    Weights are shared across patches. Parameter-count matched to the pooled head via
+    :func:`matched_conditioned_hidden` -- that is a trainable-parameter control only, not a
+    match of output degrees of freedom (``2d`` per patch vs ``2d`` pooled) or function class,
+    and must be reported that way.
+    """
+
+    def __init__(self, d_model: int, token_dim: int, hidden: int | None = None):
+        super().__init__()
+        fan_in = d_model + token_dim + 2
+        if hidden is None:
+            hidden = matched_conditioned_hidden(fan_in, d_model)
+        self.d_model = d_model
+        self.token_dim = token_dim
+        self.trunk = MLP(fan_in, hidden, d_model)
+        self.costate_head = nn.Linear(d_model, d_model)
+        self.hessian_head = nn.Linear(d_model, d_model)
+
+    def forward(
+        self,
+        latent: torch.Tensor,
+        patch_tokens: torch.Tensor,
+        budget: torch.Tensor,
+        horizon: torch.Tensor,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        pooled = patch_tokens.mean(dim=1)                                 # [B, P, D]
+        patches = pooled.shape[1]
+        context = latent.unsqueeze(1).expand(-1, patches, -1)
+        extra = torch.stack([budget, horizon], dim=-1).unsqueeze(1).expand(-1, patches, -1)
+        h = self.trunk(torch.cat([context, pooled, extra], dim=-1))       # [B, P, d]
+        return self.costate_head(h), F.softplus(self.hessian_head(h))
+
+
 class PatchRankingCritic(nn.Module):
     """Capacity-matched direct critic over early patch features -> one score per patch.
 

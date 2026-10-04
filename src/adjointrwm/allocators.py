@@ -212,11 +212,17 @@ def belief_space_voi_scores(
 
 
 class CurvatureCostateEstimator(nn.Module):
-    """Joint co-state + diagonal-Hessian estimator (Direction 3)."""
+    """Joint co-state + diagonal-Hessian estimator (Direction 3).
 
-    def __init__(self, d: int):
+    ``hidden`` widens the conditioning MLP from its default ``2 * d``. It exists so the cost of
+    distilling ``lambda_hat`` can be measured as a function of estimator capacity (the Session 6A
+    diagnostic). The default is unchanged, so capacity stays matched against
+    ``matched_patch_critic_hidden`` wherever that matters.
+    """
+
+    def __init__(self, d: int, hidden: int | None = None):
         super().__init__()
-        self.objective_condition = MLP(d + 2, 2 * d, d)
+        self.objective_condition = MLP(d + 2, 2 * d if hidden is None else int(hidden), d)
         self.costate_head = nn.Linear(d, d)
         self.hessian_head = nn.Linear(d, d)
 

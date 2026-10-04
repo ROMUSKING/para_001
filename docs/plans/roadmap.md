@@ -33,6 +33,13 @@ This roadmap sequences the work described in the planning documents. It doesn't 
 | T4 "P0" diagnostics (`Untitled0.ipynb`) | Non-evidential. The loss gap is built in with fixed `×1.15 / ×0.95` multipliers, and timing covers only the shared path. | comprehensive plan, "Evidence-audit findings" |
 | `optimized_adjoint_teacher.pt` | Valid as a **frozen D=32 regression teacher** only: 8,416 params, FP64, input 32 + budget. | production plan §1.1 |
 | Paper draft | Central claim contradicted by the pilot | [REVIEW](../../papers/drafts/REVIEW.md) |
+| 10-session campaign S0–S1 (profiler + horizon stress, L4) | **G4-1 FAIL** (DataLoader wait 21% vs 15% limit); H=64/B=64 exact HVPs in 222.8 ms at 904.3 MiB (4.0%) | [profiler](../../results/benchmarks/profiler/profiler_baseline_report.md), [stress](../../results/benchmarks/horizon_stress/horizon_stress_report.md) |
+| S2 spatial headroom (DINOv2 4×4, L4) | **G4-2 PASS**: spatial adjoint −48.73% test RMSE vs pooled | [note](../research-notes/2026-10-03-session-2-spatial-headroom-proof.md) |
+| S3 HARP rescue (12,462 windows, 3 seeds, L4) | **Gate PASS**: τ=0.20 → regret 0.26876 at 6.2 kHz | [note](../research-notes/2026-10-03-b3c-harp-selective-rescue-multisite.md) |
+| S4 curvature + belief-space VOI (12,462 windows, 3 seeds, L4) | **Gate PASS**: VOI 0.06354 (−22.84% vs critic) at 27.2 kHz | [note](../research-notes/2026-10-03-session-4-curvature-belief-space-voi.md) |
+| S5 robustness + integrity audit (L4) | Gate arithmetic sound; **primary endpoint unsupported** (2/3 seeds duplicated; VOI≡curvature up to sign) | [audit](../audits/2026-10-03_session5_seed_duplication_and_voi_identity_audit.md) |
+| S6A spatial selection + VOI sampling audit (1,200 windows, 50ep/12 sites, 3 seeds, L4) | Negative branch as revised: no deployable selector separates; VOI comparison **void** (degenerate β sweep), retired by spec §6 + DEV-20261004-03 | [note](../research-notes/2026-10-04-session-6a-spatial-selection.md), [audit](../audits/2026-10-04_session_6a_voi_scale_and_sampling_audit.md) |
+| S6A bottleneck + WS1/WS2 factorial (192 windows, L4) | **λ̂ is the isolated bottleneck** (~170× regret vs exact-λ); objective and input explanations falsified | [note](../research-notes/2026-10-04-session-6a-bottleneck-diagnostic.md) |
 
 ### 1.2 Programme status
 
@@ -53,7 +60,7 @@ B2.3 RANKING LOSS OPTIMIZATION 3-SEED BENCHMARK COMPLETE (2026-10-02); NEGATIVE 
 B3 ANALYTICAL RESCUE (B3)      5-SEED BENCHMARK COMPLETE (2026-10-02); PARETO FRONTIER MAPPED; REAL-TIME THROUGHPUT >7,600 HZ AT TAU=0.20
 RIVAL-MODEL BENCHMARK (B1)     5-SEED BENCHMARK COMPLETE (2026-10-01); ADJOINTRWM STATISTICALLY SIGNIFICANTLY OUTPERFORMS ALL 4 DEEP RIVALS (DREAMERV3 −56.8%, DINO-WM −40.9%, TD-MPC2 −36.3%, V-JEPA 2-AC −33.9%; FAIRNESS PASS)
 CROSS-DOMAIN (TRACK D)         D4 FIRST (DECIDED); D4-0, D4-0b DONE; D4-2 DONE; D4-3 DONE (varying goal: R3v and R4v both hold in `m4` and `m64`, exact co-state unaffordable per instance); D4-1 DONE (no learned critic pays at the real price; the co-state critic does not beat the direct critic; `m4`: teacher-only value at a hypothetical price, `m64`: inconclusive); D1-0 DONE (proxy loss), D1-0b DONE (native forecast loss: no deployable policy keeps the headroom; D1-1 not designed); D2-0, D2-1, D2-2 DONE (LLM DAG & In-Place Adapter Hot-Swapping on L4: 100% build pass rate, 91% preservation, 11.8 ms hot-swap, 35.5x speedup); D3-0 NOT STARTED
-COLAB OPERATIONAL CAMPAIGN     10-SESSION PLAN ADOPTED (2026-10-03); S0-S4 ON L4; G4 HOPPER GATED AT S5 CONDITIONAL ON PROFILER + SPATIAL PATCH GAIN
+COLAB OPERATIONAL CAMPAIGN     10-SESSION PLAN ADOPTED (2026-10-03); S0-S6B EXECUTED ON L4 (2026-10-04); G4 GATES G4-1/G4-3 STILL FAIL, HOPPER STAYS CLOSED (DEV-20261003-01); S5 PRIMARY ENDPOINT UNSUPPORTED (AUDIT); S6A VOI COMPARISON VOID, RETIRED BY SPEC §6 (DEV-20261004-03); LAMBDA-HAT DISTILLATION IS THE ISOLATED BOTTLENECK
 ```
 
 ---

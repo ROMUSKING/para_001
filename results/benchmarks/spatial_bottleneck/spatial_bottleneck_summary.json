@@ -1,0 +1,659 @@
+{
+  "backbone": {
+    "missing_keys": [],
+    "patch_dropout_trained": true,
+    "path": "/content/local_runs/runs/spatial_patches_20261003/best_spatial.pt",
+    "unexpected_keys": []
+  },
+  "backbone_path": "/content/local_runs/runs/spatial_patches_20261003/best_spatial.pt",
+  "benchmark": "session_6a_selection_bottleneck",
+  "caveats": [
+    "Diagnostic only: nothing here evaluates a pre-registered exit gate.",
+    "Spearman is computed per window across the 32 patches, then averaged; windows where either signal is constant yield NaN and are dropped from the mean.",
+    "The greedy reference is not a proven optimum, so every regret here is a lower bound."
+  ],
+  "created_utc": "2026-10-04T17:04:24Z",
+  "device": "cuda",
+  "episodes": [
+    "0157ed6b7c5a7f1564726931",
+    "0d44548eb18346cc66c0e0d9",
+    "150f9d8158d3de360dc66132",
+    "1e4a3aac77b84b3d562f7eaf",
+    "27fc4c0f924ba4d568da1bdc",
+    "2af6c9d46df56c1dd41a7bb1",
+    "2b4520d36cbafda5c27173a0",
+    "35829df94844776169016a70",
+    "3f2537abd7804481341214b9",
+    "3fbec6aba0591ce435379f07",
+    "43272e6e373148f21e409441",
+    "4401d56a55fb7357d11c4080",
+    "44d46cd372b1138f104e3326",
+    "47aca8d78ef12e7fe1880496",
+    "497b221936c458485aeb7609",
+    "50425329b8ec3aa2d71e68bd",
+    "554ccbd2561f8b2e837fd430",
+    "589894777c5352ee3184c4b8",
+    "58e4a369603bf658048f43f1",
+    "5e8934166ed3c54be0d7de88",
+    "5f2c12c6e887616409b491a6",
+    "62c9f62b235d5a15f0e3b980",
+    "66e6ea4f642b8e6330530178",
+    "70dae4c5f442b7c2b7e0bdb4",
+    "78cd7a426a524608bdefffc5",
+    "7a3ce23a4733e4cf1db37ea2",
+    "81958f5b4347a58a1a3955e4",
+    "82a64b7a3b32d93874c82628",
+    "8698494de2c340affd93e371",
+    "8f131be3528531ad1d4fd3dd",
+    "95a42a59f6346133899ae777",
+    "a687c195ad6ec580b2feb0b3",
+    "a96b5984d05740d9c5ecb60b",
+    "b0fbe80377148505ea8e34c5",
+    "b7e7cef854278241157beb5a",
+    "ba1bab800003a5991bac4f70",
+    "ba865ac9bc689dd8820174fb",
+    "bc2b709f40a1537442fdb778",
+    "c490f544c5350743dd38c807",
+    "c51275c64448aa2bca5e9bce",
+    "c79a9736bf15a62e950f89fe",
+    "cb30f2cc158608084e19446a",
+    "cf2c6a854eadf11387e827eb",
+    "d721825b41d601b94c303f09",
+    "ea6239c1401b0a266c91b200",
+    "ee39ee27bc38dd4c03df8869",
+    "f2443fe84a996ab93a13343e",
+    "f317ca65ce0af5e5d5087cd9",
+    "f5a973331cec570ea493906c",
+    "f91ec0c69db22db247116a68"
+  ],
+  "mode": "real",
+  "num_episodes": 50,
+  "num_sites": 12,
+  "production_point": {
+    "elapsed_s": 45.8,
+    "hidden": 1024,
+    "parameters": 1577472,
+    "rank_correlation_n": {
+      "curvature_distilled": 192,
+      "curvature_exact_costate": 192,
+      "delta_sigma_only": 192,
+      "exact_gains": 192,
+      "first_order_distilled": 192,
+      "first_order_exact": 192,
+      "first_order_exact_costate": 192,
+      "patch_norm": 192
+    },
+    "rank_correlation_vs_exact_gains": {
+      "curvature_distilled": 0.11507254055737426,
+      "curvature_exact_costate": 0.9770660159542088,
+      "delta_sigma_only": -0.18335712429315265,
+      "exact_gains": 0.9999999999999999,
+      "first_order_distilled": 0.11507254055737426,
+      "first_order_exact": 0.9632318317675157,
+      "first_order_exact_costate": 0.9771404771899338,
+      "patch_norm": 0.07951489348676419
+    },
+    "regret": {
+      "k_cam=2": {
+        "curvature_distilled": {
+          "mean": 0.004262025157610576,
+          "n": 192,
+          "trimmed_mean": 0.0038746750199949585
+        },
+        "curvature_exact_costate": {
+          "mean": 5.2788605292638145e-05,
+          "n": 192,
+          "trimmed_mean": 2.273491450718471e-05
+        },
+        "delta_sigma_only": {
+          "mean": 0.005515445023775101,
+          "n": 192,
+          "trimmed_mean": 0.005177911999937776
+        },
+        "exact_gains": {
+          "mean": 6.239054103692372e-05,
+          "n": 192,
+          "trimmed_mean": 3.4494059426443915e-05
+        },
+        "first_order_distilled": {
+          "mean": 0.004262025157610576,
+          "n": 192,
+          "trimmed_mean": 0.0038746750199949585
+        },
+        "first_order_exact": {
+          "mean": 0.00011731187502543132,
+          "n": 192,
+          "trimmed_mean": 8.235736326737837e-05
+        },
+        "first_order_exact_costate": {
+          "mean": 5.248561501502991e-05,
+          "n": 192,
+          "trimmed_mean": 2.2485658719942168e-05
+        },
+        "patch_norm": {
+          "mean": 0.0043530383457740145,
+          "n": 192,
+          "trimmed_mean": 0.003915664437529329
+        }
+      },
+      "k_cam=4": {
+        "curvature_distilled": {
+          "mean": 0.004096543416380882,
+          "n": 192,
+          "trimmed_mean": 0.0037655273041167815
+        },
+        "curvature_exact_costate": {
+          "mean": 4.042871296405792e-05,
+          "n": 192,
+          "trimmed_mean": 2.7943741191517223e-05
+        },
+        "delta_sigma_only": {
+          "mean": 0.0051187605907519656,
+          "n": 192,
+          "trimmed_mean": 0.004781314304896763
+        },
+        "exact_gains": {
+          "mean": 7.210920254389445e-05,
+          "n": 192,
+          "trimmed_mean": 5.469848583270977e-05
+        },
+        "first_order_distilled": {
+          "mean": 0.004096543416380882,
+          "n": 192,
+          "trimmed_mean": 0.0037655273041167815
+        },
+        "first_order_exact": {
+          "mean": 7.742146650950114e-05,
+          "n": 192,
+          "trimmed_mean": 5.9173478708638773e-05
+        },
+        "first_order_exact_costate": {
+          "mean": 3.9701039592425026e-05,
+          "n": 192,
+          "trimmed_mean": 2.768751862761262e-05
+        },
+        "patch_norm": {
+          "mean": 0.003926269710063934,
+          "n": 192,
+          "trimmed_mean": 0.003641449011765517
+        }
+      },
+      "k_cam=8": {
+        "curvature_distilled": {
+          "mean": 0.0028446043531099954,
+          "n": 192,
+          "trimmed_mean": 0.002591589828590294
+        },
+        "curvature_exact_costate": {
+          "mean": 2.2991249958674114e-05,
+          "n": 192,
+          "trimmed_mean": 1.8364423281186586e-05
+        },
+        "delta_sigma_only": {
+          "mean": 0.003574186936020851,
+          "n": 192,
+          "trimmed_mean": 0.0033569095970748305
+        },
+        "exact_gains": {
+          "mean": 5.141645669937134e-05,
+          "n": 192,
+          "trimmed_mean": 3.806956402667157e-05
+        },
+        "first_order_distilled": {
+          "mean": 0.0028446043531099954,
+          "n": 192,
+          "trimmed_mean": 0.002591589828590294
+        },
+        "first_order_exact": {
+          "mean": 2.368663748105367e-05,
+          "n": 192,
+          "trimmed_mean": 2.0996316686853187e-05
+        },
+        "first_order_exact_costate": {
+          "mean": 2.2909293572107952e-05,
+          "n": 192,
+          "trimmed_mean": 1.826224389014306e-05
+        },
+        "patch_norm": {
+          "mean": 0.002743428573012352,
+          "n": 192,
+          "trimmed_mean": 0.0025643690839990394
+        }
+      }
+    },
+    "steps": 300,
+    "topk_overlap_vs_exact_gains": {
+      "k_cam=2": {
+        "curvature_distilled": {
+          "chance": 0.125,
+          "mean": 0.2526041666666667,
+          "n": 192
+        },
+        "curvature_exact_costate": {
+          "chance": 0.125,
+          "mean": 0.8684895833333334,
+          "n": 192
+        },
+        "delta_sigma_only": {
+          "chance": 0.125,
+          "mean": 0.1796875,
+          "n": 192
+        },
+        "exact_gains": {
+          "chance": 0.125,
+          "mean": 1.0,
+          "n": 192
+        },
+        "first_order_distilled": {
+          "chance": 0.125,
+          "mean": 0.2526041666666667,
+          "n": 192
+        },
+        "first_order_exact": {
+          "chance": 0.125,
+          "mean": 0.84375,
+          "n": 192
+        },
+        "first_order_exact_costate": {
+          "chance": 0.125,
+          "mean": 0.8697916666666666,
+          "n": 192
+        },
+        "patch_norm": {
+          "chance": 0.125,
+          "mean": 0.23567708333333334,
+          "n": 192
+        }
+      },
+      "k_cam=4": {
+        "curvature_distilled": {
+          "chance": 0.25,
+          "mean": 0.447265625,
+          "n": 192
+        },
+        "curvature_exact_costate": {
+          "chance": 0.25,
+          "mean": 0.9342447916666666,
+          "n": 192
+        },
+        "delta_sigma_only": {
+          "chance": 0.25,
+          "mean": 0.3483072916666667,
+          "n": 192
+        },
+        "exact_gains": {
+          "chance": 0.25,
+          "mean": 1.0,
+          "n": 192
+        },
+        "first_order_distilled": {
+          "chance": 0.25,
+          "mean": 0.447265625,
+          "n": 192
+        },
+        "first_order_exact": {
+          "chance": 0.25,
+          "mean": 0.9192708333333334,
+          "n": 192
+        },
+        "first_order_exact_costate": {
+          "chance": 0.25,
+          "mean": 0.9348958333333334,
+          "n": 192
+        },
+        "patch_norm": {
+          "chance": 0.25,
+          "mean": 0.4524739583333333,
+          "n": 192
+        }
+      },
+      "k_cam=8": {
+        "curvature_distilled": {
+          "chance": 0.5,
+          "mean": 0.7591145833333334,
+          "n": 192
+        },
+        "curvature_exact_costate": {
+          "chance": 0.5,
+          "mean": 0.9794921875,
+          "n": 192
+        },
+        "delta_sigma_only": {
+          "chance": 0.5,
+          "mean": 0.6565755208333334,
+          "n": 192
+        },
+        "exact_gains": {
+          "chance": 0.5,
+          "mean": 1.0,
+          "n": 192
+        },
+        "first_order_distilled": {
+          "chance": 0.5,
+          "mean": 0.7591145833333334,
+          "n": 192
+        },
+        "first_order_exact": {
+          "chance": 0.5,
+          "mean": 0.9677734375,
+          "n": 192
+        },
+        "first_order_exact_costate": {
+          "chance": 0.5,
+          "mean": 0.9794921875,
+          "n": 192
+        },
+        "patch_norm": {
+          "chance": 0.5,
+          "mean": 0.7646484375,
+          "n": 192
+        }
+      }
+    }
+  },
+  "reading_guide": {
+    "delta_sigma_only": "The epistemic term alone. Session 6A could not test it because it was 9.1e-06 of the curvature term; this measures whether it carries any ranking signal at all.",
+    "rank_correlation_vs_exact_gains": "Spearman rho between a scorer's per-patch gains and the exact marginal gains J(z_S) - J(z_{S u p}). High rho means the scorer orders patches correctly.",
+    "regret": "Regret of top-k selection by that scorer, against the greedy rollout reference. Compare 'exact_gains' (the additive surrogate's ceiling) with 'patch_norm': if exact_gains also loses badly, the additive form is the ceiling and no scorer can be rescued by better training."
+  },
+  "seed": 0,
+  "sites": [
+    "AUTOLab",
+    "BVL",
+    "ILIAD",
+    "IPRL",
+    "IRIS",
+    "PennPAL",
+    "RAD",
+    "RAIL",
+    "REAL",
+    "RPL",
+    "TRI",
+    "WEIRD"
+  ],
+  "sweep": [
+    {
+      "elapsed_s": 45.8,
+      "hidden": 1024,
+      "parameters": 1577472,
+      "rank_correlation_n": {
+        "curvature_distilled": 192,
+        "curvature_exact_costate": 192,
+        "delta_sigma_only": 192,
+        "exact_gains": 192,
+        "first_order_distilled": 192,
+        "first_order_exact": 192,
+        "first_order_exact_costate": 192,
+        "patch_norm": 192
+      },
+      "rank_correlation_vs_exact_gains": {
+        "curvature_distilled": 0.11507254055737426,
+        "curvature_exact_costate": 0.9770660159542088,
+        "delta_sigma_only": -0.18335712429315265,
+        "exact_gains": 0.9999999999999999,
+        "first_order_distilled": 0.11507254055737426,
+        "first_order_exact": 0.9632318317675157,
+        "first_order_exact_costate": 0.9771404771899338,
+        "patch_norm": 0.07951489348676419
+      },
+      "regret": {
+        "k_cam=2": {
+          "curvature_distilled": {
+            "mean": 0.004262025157610576,
+            "n": 192,
+            "trimmed_mean": 0.0038746750199949585
+          },
+          "curvature_exact_costate": {
+            "mean": 5.2788605292638145e-05,
+            "n": 192,
+            "trimmed_mean": 2.273491450718471e-05
+          },
+          "delta_sigma_only": {
+            "mean": 0.005515445023775101,
+            "n": 192,
+            "trimmed_mean": 0.005177911999937776
+          },
+          "exact_gains": {
+            "mean": 6.239054103692372e-05,
+            "n": 192,
+            "trimmed_mean": 3.4494059426443915e-05
+          },
+          "first_order_distilled": {
+            "mean": 0.004262025157610576,
+            "n": 192,
+            "trimmed_mean": 0.0038746750199949585
+          },
+          "first_order_exact": {
+            "mean": 0.00011731187502543132,
+            "n": 192,
+            "trimmed_mean": 8.235736326737837e-05
+          },
+          "first_order_exact_costate": {
+            "mean": 5.248561501502991e-05,
+            "n": 192,
+            "trimmed_mean": 2.2485658719942168e-05
+          },
+          "patch_norm": {
+            "mean": 0.0043530383457740145,
+            "n": 192,
+            "trimmed_mean": 0.003915664437529329
+          }
+        },
+        "k_cam=4": {
+          "curvature_distilled": {
+            "mean": 0.004096543416380882,
+            "n": 192,
+            "trimmed_mean": 0.0037655273041167815
+          },
+          "curvature_exact_costate": {
+            "mean": 4.042871296405792e-05,
+            "n": 192,
+            "trimmed_mean": 2.7943741191517223e-05
+          },
+          "delta_sigma_only": {
+            "mean": 0.0051187605907519656,
+            "n": 192,
+            "trimmed_mean": 0.004781314304896763
+          },
+          "exact_gains": {
+            "mean": 7.210920254389445e-05,
+            "n": 192,
+            "trimmed_mean": 5.469848583270977e-05
+          },
+          "first_order_distilled": {
+            "mean": 0.004096543416380882,
+            "n": 192,
+            "trimmed_mean": 0.0037655273041167815
+          },
+          "first_order_exact": {
+            "mean": 7.742146650950114e-05,
+            "n": 192,
+            "trimmed_mean": 5.9173478708638773e-05
+          },
+          "first_order_exact_costate": {
+            "mean": 3.9701039592425026e-05,
+            "n": 192,
+            "trimmed_mean": 2.768751862761262e-05
+          },
+          "patch_norm": {
+            "mean": 0.003926269710063934,
+            "n": 192,
+            "trimmed_mean": 0.003641449011765517
+          }
+        },
+        "k_cam=8": {
+          "curvature_distilled": {
+            "mean": 0.0028446043531099954,
+            "n": 192,
+            "trimmed_mean": 0.002591589828590294
+          },
+          "curvature_exact_costate": {
+            "mean": 2.2991249958674114e-05,
+            "n": 192,
+            "trimmed_mean": 1.8364423281186586e-05
+          },
+          "delta_sigma_only": {
+            "mean": 0.003574186936020851,
+            "n": 192,
+            "trimmed_mean": 0.0033569095970748305
+          },
+          "exact_gains": {
+            "mean": 5.141645669937134e-05,
+            "n": 192,
+            "trimmed_mean": 3.806956402667157e-05
+          },
+          "first_order_distilled": {
+            "mean": 0.0028446043531099954,
+            "n": 192,
+            "trimmed_mean": 0.002591589828590294
+          },
+          "first_order_exact": {
+            "mean": 2.368663748105367e-05,
+            "n": 192,
+            "trimmed_mean": 2.0996316686853187e-05
+          },
+          "first_order_exact_costate": {
+            "mean": 2.2909293572107952e-05,
+            "n": 192,
+            "trimmed_mean": 1.826224389014306e-05
+          },
+          "patch_norm": {
+            "mean": 0.002743428573012352,
+            "n": 192,
+            "trimmed_mean": 0.0025643690839990394
+          }
+        }
+      },
+      "steps": 300,
+      "topk_overlap_vs_exact_gains": {
+        "k_cam=2": {
+          "curvature_distilled": {
+            "chance": 0.125,
+            "mean": 0.2526041666666667,
+            "n": 192
+          },
+          "curvature_exact_costate": {
+            "chance": 0.125,
+            "mean": 0.8684895833333334,
+            "n": 192
+          },
+          "delta_sigma_only": {
+            "chance": 0.125,
+            "mean": 0.1796875,
+            "n": 192
+          },
+          "exact_gains": {
+            "chance": 0.125,
+            "mean": 1.0,
+            "n": 192
+          },
+          "first_order_distilled": {
+            "chance": 0.125,
+            "mean": 0.2526041666666667,
+            "n": 192
+          },
+          "first_order_exact": {
+            "chance": 0.125,
+            "mean": 0.84375,
+            "n": 192
+          },
+          "first_order_exact_costate": {
+            "chance": 0.125,
+            "mean": 0.8697916666666666,
+            "n": 192
+          },
+          "patch_norm": {
+            "chance": 0.125,
+            "mean": 0.23567708333333334,
+            "n": 192
+          }
+        },
+        "k_cam=4": {
+          "curvature_distilled": {
+            "chance": 0.25,
+            "mean": 0.447265625,
+            "n": 192
+          },
+          "curvature_exact_costate": {
+            "chance": 0.25,
+            "mean": 0.9342447916666666,
+            "n": 192
+          },
+          "delta_sigma_only": {
+            "chance": 0.25,
+            "mean": 0.3483072916666667,
+            "n": 192
+          },
+          "exact_gains": {
+            "chance": 0.25,
+            "mean": 1.0,
+            "n": 192
+          },
+          "first_order_distilled": {
+            "chance": 0.25,
+            "mean": 0.447265625,
+            "n": 192
+          },
+          "first_order_exact": {
+            "chance": 0.25,
+            "mean": 0.9192708333333334,
+            "n": 192
+          },
+          "first_order_exact_costate": {
+            "chance": 0.25,
+            "mean": 0.9348958333333334,
+            "n": 192
+          },
+          "patch_norm": {
+            "chance": 0.25,
+            "mean": 0.4524739583333333,
+            "n": 192
+          }
+        },
+        "k_cam=8": {
+          "curvature_distilled": {
+            "chance": 0.5,
+            "mean": 0.7591145833333334,
+            "n": 192
+          },
+          "curvature_exact_costate": {
+            "chance": 0.5,
+            "mean": 0.9794921875,
+            "n": 192
+          },
+          "delta_sigma_only": {
+            "chance": 0.5,
+            "mean": 0.6565755208333334,
+            "n": 192
+          },
+          "exact_gains": {
+            "chance": 0.5,
+            "mean": 1.0,
+            "n": 192
+          },
+          "first_order_distilled": {
+            "chance": 0.5,
+            "mean": 0.7591145833333334,
+            "n": 192
+          },
+          "first_order_exact": {
+            "chance": 0.5,
+            "mean": 0.9677734375,
+            "n": 192
+          },
+          "first_order_exact_costate": {
+            "chance": 0.5,
+            "mean": 0.9794921875,
+            "n": 192
+          },
+          "patch_norm": {
+            "chance": 0.5,
+            "mean": 0.7646484375,
+            "n": 192
+          }
+        }
+      }
+    }
+  ],
+  "windows": 192
+}

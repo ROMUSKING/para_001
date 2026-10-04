@@ -144,6 +144,77 @@ def denormalise_state(states_norm: np.ndarray, normaliser: Mapping) -> np.ndarra
     return np.asarray(states_norm, dtype=np.float32) * normaliser["state_std"] + normaliser["state_mean"]
 
 
+def stratified_window_indices(
+    episode_ids: Sequence[str],
+    site_by_episode: Mapping[str, str],
+    total: int,
+    seed: int = 0,
+) -> np.ndarray:
+    """Window indices spread evenly over episodes, and hence over sites.
+
+    Taking a prefix of an ordered loader is not a sample of episodes. Session 6A's first real
+    run did exactly that and evaluated 384 windows drawn from **3 episodes across 3 sites** out
+    of a 50-episode, 14-site test split, which left its site-clustered bootstrap with three
+    clusters and no site-to-site coverage at all. Windows are allocated here by round-robin over
+    episodes, with episodes visited in a seeded order so the choice is reproducible but not
+    positional.
+
+    Episodes are visited in an order that interleaves sites where possible, so a budget smaller
+    than the number of episodes still touches as many sites as it can rather than exhausting the
+    first site alphabetically.
+
+    Returns sorted indices into the dataset, so ``Subset`` keeps a deterministic order and the
+    paired per-window comparisons are unaffected by the sampling.
+    """
+    if total <= 0:
+        return np.empty(0, dtype=np.int64)
+    by_episode: dict[str, list[int]] = {}
+    for index, episode in enumerate(episode_ids):
+        by_episode.setdefault(str(episode), []).append(index)
+    if not by_episode:
+        raise ValueError("episode_ids is empty; nothing to stratify")
+
+    episodes = sorted(by_episode)
+    rng = np.random.default_rng(seed)
+    rng.shuffle(episodes)
+    # Interleave sites: order episodes so consecutive picks come from different sites when the
+    # episode set allows it.
+    by_site: dict[str, list[str]] = {}
+    for episode in episodes:
+        by_site.setdefault(site_by_episode.get(episode, "unknown"), []).append(episode)
+    order: list[str] = []
+    cursors = {site: 0 for site in by_site}
+    sites = sorted(by_site)
+    while len(order) < len(episodes):
+        progressed = False
+        for site in sites:
+            cursor = cursors[site]
+            if cursor < len(by_site[site]):
+                order.append(by_site[site][cursor])
+                cursors[site] = cursor + 1
+                progressed = True
+        if not progressed:
+            break
+
+    chosen: list[int] = []
+    position = {episode: 0 for episode in order}
+    exhausted: set[str] = set()
+    while len(chosen) < total and len(exhausted) < len(order):
+        for episode in order:
+            if len(chosen) >= total:
+                break
+            if episode in exhausted:
+                continue
+            windows = by_episode[episode]
+            offset = position[episode]
+            if offset >= len(windows):
+                exhausted.add(episode)
+                continue
+            chosen.append(windows[offset])
+            position[episode] = offset + 1
+    return np.array(sorted(chosen), dtype=np.int64)
+
+
 def as_tokens(features: Sequence[np.ndarray]) -> np.ndarray:
     """Stack per-camera features into ``[L, P, D]`` tokens.
 

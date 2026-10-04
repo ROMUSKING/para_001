@@ -263,3 +263,207 @@ def test_auxiliary_frame_count_mismatch_is_rejected(tmp_path):
     with pytest.raises(ValueError, match="frames"):
         slice_window(states, actions, 0, WindowSpec(context_len=4, horizon=2),
                      auxiliary={"cls_attention": np.zeros((19, 5), np.float32)})
+
+
+# ---------------------------------------------------------------------------
+# Stratified evaluation sampling (audit finding B)
+# ---------------------------------------------------------------------------
+
+
+def test_stratified_sampling_spreads_over_episodes_not_a_prefix():
+    """A prefix of an ordered loader is not a sample of episodes.
+
+    Session 6A's first real run drew 384 windows from 3 episodes out of 50, which left the
+    site-clustered bootstrap with 3 clusters. This pins the opposite property.
+    """
+    from adjointrwm.data.windows import stratified_window_indices
+
+    episodes = [f"ep{i:03d}" for i in range(50)]
+    sites = {f"ep{i:03d}": f"site{i % 14:02d}" for i in range(50)}
+    ids = np.array([e for e in episodes for _ in range(40)])
+    chosen = stratified_window_indices(ids, sites, total=384, seed=0)
+    covered = {str(e) for e in ids[chosen]}
+    assert len(chosen) == 384
+    assert len(covered) == 50, f"only {len(covered)} episodes reached"
+
+
+def test_stratified_sampling_covers_many_sites():
+    from adjointrwm.data.windows import stratified_window_indices
+
+    episodes = [f"ep{i:03d}" for i in range(50)]
+    sites = {f"ep{i:03d}": f"site{i % 14:02d}" for i in range(50)}
+    ids = np.array([e for e in episodes for _ in range(40)])
+    chosen = stratified_window_indices(ids, sites, total=200, seed=0)
+    covered = {sites[str(e)] for e in ids[chosen]}
+    assert len(covered) == 14, f"only {len(covered)} sites reached"
+
+
+def test_stratified_sampling_returns_sorted_unique_indices():
+    from adjointrwm.data.windows import stratified_window_indices
+
+    ids = np.array(["a"] * 10 + ["b"] * 10)
+    sites = {"a": "x", "b": "y"}
+    chosen = stratified_window_indices(ids, sites, total=7, seed=1)
+    assert list(chosen) == sorted(set(chosen.tolist()))
+    assert chosen.min() >= 0 and chosen.max() < len(ids)
+
+
+def test_stratified_sampling_is_deterministic_for_a_seed():
+    from adjointrwm.data.windows import stratified_window_indices
+
+    rng = np.random.default_rng(0)
+    ids = np.array([f"ep{i}" for i in range(20) for _ in range(5)])
+    sites = {f"ep{i}": f"s{i % 4}" for i in range(20)}
+    a = stratified_window_indices(ids, sites, 30, seed=7)
+    b = stratified_window_indices(ids, sites, 30, seed=7)
+    assert np.array_equal(a, b)
+
+
+def test_stratified_sampling_never_returns_more_than_available():
+    from adjointrwm.data.windows import stratified_window_indices
+
+    ids = np.array(["a"] * 3 + ["b"] * 2)
+    sites = {"a": "x", "b": "y"}
+    chosen = stratified_window_indices(ids, sites, total=99, seed=0)
+    assert len(chosen) == 5
+
+
+def test_stratified_sampling_handles_zero_and_empty():
+    from adjointrwm.data.windows import stratified_window_indices
+
+    assert len(stratified_window_indices(np.array(["a"]), {"a": "x"}, 0)) == 0
+    with pytest.raises(ValueError, match="empty"):
+        stratified_window_indices(np.array([], dtype=object), {}, 5)
+
+
+def test_stratified_sampling_distributes_roughly_evenly_across_episodes():
+    from adjointrwm.data.windows import stratified_window_indices
+
+    episodes = [f"ep{i}" for i in range(10)]
+    sites = {e: "s" for e in episodes}
+    ids = np.array([e for e in episodes for _ in range(50)])
+    chosen = stratified_window_indices(ids, sites, total=100, seed=0)
+    counts = {}
+    for e in ids[chosen]:
+        counts[str(e)] = counts.get(str(e), 0) + 1
+    assert min(counts.values()) == max(counts.values()) == 10, counts
+
+
+# ---------------------------------------------------------------------------
+# Bottleneck diagnostic: rank correlation and capacity knob
+# ---------------------------------------------------------------------------
+
+
+def _spearman():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "diag", REPO_DIR / "scripts/diagnose_spatial_selection_bottleneck.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_spearman_is_one_for_a_monotone_relation():
+    module = _spearman()
+    x = torch.tensor([[1.0, 2.0, 3.0, 4.0]])
+    assert torch.allclose(module.spearman(x, x), torch.tensor([1.0], dtype=torch.float64))
+
+
+def test_spearman_is_minus_one_for_a_reversed_relation():
+    module = _spearman()
+    x = torch.tensor([[1.0, 2.0, 3.0, 4.0]])
+    assert torch.allclose(module.spearman(x, -x), torch.tensor([-1.0], dtype=torch.float64))
+
+
+def test_spearman_is_invariant_to_affine_rescaling():
+    """Ranking only: a positive scale or shift must not change rho."""
+    module = _spearman()
+    x = torch.tensor([[1.0, 5.0, 2.0, 9.0]])
+    y = torch.tensor([[3.0, 1.0, 7.0, 2.0]])
+    a = module.spearman(x, y)
+    b = module.spearman(x * 17.0 + 4.0, y * 0.3 - 2.0)
+    assert torch.allclose(a, b, atol=1e-9)
+
+
+def test_spearman_handles_ties_by_averaging_ranks():
+    module = _spearman()
+    x = torch.tensor([[1.0, 1.0, 1.0, 1.0]])
+    y = torch.tensor([[1.0, 2.0, 3.0, 4.0]])
+    # A constant signal has no rank information; it must be NaN, not a spurious number.
+    assert torch.isnan(module.spearman(x, y)).all()
+
+
+def test_spearman_computes_per_row():
+    module = _spearman()
+    # Row 0: ranks (0,1,2) against (1,0,2) -> rho = 0.5. Row 1: (2,0,1) against (0,2,1)
+    # -> rho = -1. Hand-checked, so this pins the sign convention too.
+    x = torch.tensor([[1.0, 2.0, 3.0], [3.0, 1.0, 2.0]])
+    y = torch.tensor([[2.0, 1.0, 3.0], [1.0, 3.0, 2.0]])
+    out = module.spearman(x, y)
+    assert out.shape == (2,)
+    assert out[0].item() == pytest.approx(0.5)
+    assert out[1].item() == pytest.approx(-1.0)
+
+
+def test_spearman_rejects_shape_mismatch():
+    module = _spearman()
+    with pytest.raises(ValueError, match="shape mismatch"):
+        module.spearman(torch.zeros(2, 4), torch.zeros(2, 5))
+
+
+def test_curvature_estimator_hidden_knob_changes_capacity_only():
+    from adjointrwm.allocators import CurvatureCostateEstimator
+
+    default = CurvatureCostateEstimator(64)
+    wide = CurvatureCostateEstimator(64, hidden=512)
+    assert sum(p.numel() for p in default.parameters()) < sum(p.numel() for p in wide.parameters())
+    # The heads themselves are unchanged, so capacity comparisons stay interpretable.
+    assert default.costate_head.weight.shape == wide.costate_head.weight.shape
+    assert default.hessian_head.weight.shape == wide.hessian_head.weight.shape
+
+
+def test_curvature_estimator_default_is_unchanged():
+    """The default must stay exactly 2*d so capacity matching elsewhere is unaffected."""
+    from adjointrwm.allocators import MLP, CurvatureCostateEstimator
+
+    d = 32
+    expected = MLP(d + 2, 2 * d, d)
+    actual = CurvatureCostateEstimator(d).objective_condition
+    assert sum(p.numel() for p in expected.parameters()) == sum(p.numel() for p in actual.parameters())
+
+
+def test_topk_overlap_is_one_for_the_truth():
+    module = _spearman()
+    truth = torch.tensor([[5.0, 4.0, 3.0, 2.0, 1.0, 0.5, 0.4, 0.3]])
+    assert module.topk_overlap(truth.clone(), truth, 2).item() == pytest.approx(1.0)
+
+
+def test_topk_overlap_is_zero_for_the_worst_possible_ranking():
+    module = _spearman()
+    truth = torch.tensor([[8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0]])
+    worst = torch.tensor([[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0]])
+    assert module.topk_overlap(worst, truth, 2).item() == pytest.approx(0.0)
+
+
+def test_topk_overlap_respects_the_per_camera_partition():
+    """With P_cam=16 and k_cam=2 the chance level is 2/16 = 0.125, not 4/32 = 0.125 by accident.
+
+    The two coincide numerically here, so this test pins the *value* under the symmetric
+    per-camera budget rather than the arithmetic difference.
+    """
+    module = _spearman()
+    torch.manual_seed(0)
+    truth = torch.randn(8, 32)
+    noise = torch.randn(8, 32)
+    observed = module.topk_overlap(noise, truth, 2).mean().item()
+    assert 0.03 < observed < 0.35, observed
+
+
+def test_topk_overlap_is_bounded():
+    module = _spearman()
+    torch.manual_seed(1)
+    truth = torch.randn(16, 32)
+    out = module.topk_overlap(torch.randn(16, 32), truth, 4)
+    assert out.shape == (16,)
+    assert bool(((out >= 0) & (out <= 1)).all())

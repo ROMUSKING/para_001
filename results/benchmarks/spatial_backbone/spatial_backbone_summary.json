@@ -1,0 +1,187 @@
+{
+  "caveats": [
+    "Test split is never read by this script; selection uses the manifest's val split.",
+    "The benchmark trains its own heads on top of this frozen backbone per seed.",
+    "Regret in Session 6A is measured against a greedy reference, not a proven optimum."
+  ],
+  "checkpoint_path": "/content/local_runs/runs/spatial_patches_20261003/best_spatial.pt",
+  "device": "cuda",
+  "final_validation": {
+    "k_cam=16": -2.142475207646688,
+    "k_cam=2": -2.142435997724533,
+    "k_cam=4": -2.142439052462578,
+    "k_cam=8": -2.1425244212150574
+  },
+  "history": [
+    {
+      "elapsed_s": 12.7,
+      "grad_norm": 42.074928283691406,
+      "lr": 0.00029265847744427314,
+      "selection_score": -0.6857228140450187,
+      "step": 150,
+      "train_loss": -0.23261012136936188,
+      "val": {
+        "k_cam=16": -0.6878889948129654,
+        "k_cam=2": -0.6831377514948448,
+        "k_cam=4": -0.6865577213466167,
+        "k_cam=8": -0.6874729692935944
+      }
+    },
+    {
+      "elapsed_s": 24.6,
+      "grad_norm": 58.62562942504883,
+      "lr": 0.00027135254915624244,
+      "selection_score": -0.4405741942011648,
+      "step": 300,
+      "train_loss": 0.49129411578178406,
+      "val": {
+        "k_cam=16": -0.44215843578179675,
+        "k_cam=2": -0.439373254776001,
+        "k_cam=4": -0.44057261322935426,
+        "k_cam=8": -0.4417767145981391
+      }
+    },
+    {
+      "elapsed_s": 37.3,
+      "grad_norm": 50.82843780517578,
+      "lr": 0.00023816778784387126,
+      "selection_score": -1.3976876868142023,
+      "step": 450,
+      "train_loss": -1.0063680410385132,
+      "val": {
+        "k_cam=16": -1.3954089482625325,
+        "k_cam=2": -1.3994057675202687,
+        "k_cam=4": -1.3974562883377075,
+        "k_cam=8": -1.3962010045846305
+      }
+    },
+    {
+      "elapsed_s": 50.5,
+      "grad_norm": 20.071331024169922,
+      "lr": 0.0001963525491562423,
+      "selection_score": -1.3857741455237071,
+      "step": 600,
+      "train_loss": -1.3554517030715942,
+      "val": {
+        "k_cam=16": -1.3858925104141235,
+        "k_cam=2": -1.3858153621355693,
+        "k_cam=4": -1.3857522557179134,
+        "k_cam=8": -1.3857548187176387
+      }
+    },
+    {
+      "elapsed_s": 64.7,
+      "grad_norm": 21.97732162475586,
+      "lr": 0.00015000000000000023,
+      "selection_score": -1.1041229516267776,
+      "step": 750,
+      "train_loss": -1.1694257259368896,
+      "val": {
+        "k_cam=16": -1.105032354593277,
+        "k_cam=2": -1.1034937029083571,
+        "k_cam=4": -1.104070360461871,
+        "k_cam=8": -1.1048047915101051
+      }
+    },
+    {
+      "elapsed_s": 77.5,
+      "grad_norm": 27.589269638061523,
+      "lr": 0.00010364745084375806,
+      "selection_score": -1.6029261532757018,
+      "step": 900,
+      "train_loss": -1.4418367147445679,
+      "val": {
+        "k_cam=16": -1.6033297181129456,
+        "k_cam=2": -1.6026452034711838,
+        "k_cam=4": -1.6028845012187958,
+        "k_cam=8": -1.6032487551371257
+      }
+    },
+    {
+      "elapsed_s": 90.7,
+      "grad_norm": 38.553470611572266,
+      "lr": 6.183221215612921e-05,
+      "selection_score": -1.6511050677961772,
+      "step": 1050,
+      "train_loss": -1.653300166130066,
+      "val": {
+        "k_cam=16": -1.6515031258265178,
+        "k_cam=2": -1.6507976154486337,
+        "k_cam=4": -1.6511933704217276,
+        "k_cam=8": -1.6513242175181706
+      }
+    },
+    {
+      "elapsed_s": 107.4,
+      "grad_norm": 22.675148010253906,
+      "lr": 2.8647450843757962e-05,
+      "selection_score": -2.0078230284982257,
+      "step": 1200,
+      "train_loss": -1.9125944375991821,
+      "val": {
+        "k_cam=16": -2.008296847343445,
+        "k_cam=2": -2.0073975423971815,
+        "k_cam=4": -2.0078159073988595,
+        "k_cam=8": -2.008255635698636
+      }
+    },
+    {
+      "elapsed_s": 122.4,
+      "grad_norm": 21.654157638549805,
+      "lr": 7.341522555726961e-06,
+      "selection_score": -2.133538731270366,
+      "step": 1350,
+      "train_loss": -2.1086843013763428,
+      "val": {
+        "k_cam=16": -2.1337385177612305,
+        "k_cam=2": -2.1333441585302353,
+        "k_cam=4": -2.133556842803955,
+        "k_cam=8": -2.1337151924769087
+      }
+    },
+    {
+      "elapsed_s": 136.2,
+      "grad_norm": 28.300630569458008,
+      "lr": 0.0,
+      "selection_score": -2.1424664904673896,
+      "step": 1500,
+      "train_loss": -1.9944663047790527,
+      "val": {
+        "k_cam=16": -2.142475207646688,
+        "k_cam=2": -2.142435997724533,
+        "k_cam=4": -2.142439052462578,
+        "k_cam=8": -2.1425244212150574
+      }
+    }
+  ],
+  "mode": "real",
+  "parameter_count": 15605278,
+  "patch_dropout_trained": true,
+  "run_id": "spatial_patches_20261003",
+  "selected_step": 1500,
+  "selection_rule": "lowest mean validation objective over the evaluated budgets (k_cam in {2,4,8}), paired over fixed mask draws; the k_cam=16 no-dropout endpoint is tracked but not selected on",
+  "selection_score": -2.1424664904673896,
+  "sites": 14,
+  "spec": "docs/plans/2026-10-03-session-6a-spatial-selection-spec.md#B6",
+  "train_budgets_per_camera": [
+    2,
+    4,
+    8,
+    16
+  ],
+  "train_windows": 55729,
+  "val_batches_scored": 6,
+  "val_windows": 7185,
+  "validation_budgets_per_camera": [
+    2,
+    4,
+    8,
+    16
+  ],
+  "validation_objective_at_best": {
+    "k_cam=16": -2.142475207646688,
+    "k_cam=2": -2.142435997724533,
+    "k_cam=4": -2.142439052462578,
+    "k_cam=8": -2.1425244212150574
+  }
+}

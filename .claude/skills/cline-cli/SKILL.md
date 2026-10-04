@@ -144,7 +144,29 @@ The peer (decision) critic rotates across the available agents (see `AGENTS.md`)
 cline --plan -c /path/to/repo "Act as an adversarial peer critic for docs/plans/<spec>.md: attack the assumptions, failure modes and protocol compliance. Do not modify files."
 ```
 
+## Model routing (project default, set 2026-10-04)
+
+Route Cline through deepseek v4.1 free:
+
+```bash
+cline -p --plan -P cline -m cline-free/deepseek-v4.1-flash "…"
+```
+
+Measured on this host: a prior session used `cline-free/deepseek-v4.1-flash` on provider `cline`,
+and the ID is accepted (a probe reached the model). The free tier has a **daily limit** — on
+`Daily free model limit reached`, wait for the stated window and retry rather than switching
+models unasked; if the limit persists, re-pick the critic per the rotation protocol. Pass `-P`
+and `-m` on every invocation — they are per-run, not persistent. Never confuse these flags with
+copilot's `--deny-tool`/`--available-tools`, which cline 3.0.68 rejects outright.
+
 Record the review with `python scripts/pick_peer_critic.py record --milestone <id> --artefact <path> --lead <agent> --critic cline --outcome <verdict>`.
+
+**Do not copy permission flags between critic CLIs.** `--deny-tool`, `--available-tools` and
+`--allow-all-tools` belong to **copilot**; cline 3.0.68 rejects `--deny-tool` with *unknown
+option* and exits before reading the prompt, so the review silently never happens. Verified on
+this host with `cline --version` (3.0.68) and `cline --help`: the only permission-adjacent
+flags are `-p/--plan` and `--auto-approve <boolean>`. Always confirm the review text is actually
+in the output before recording it — a wrong-flag invocation can exit quietly having done nothing.
 
 ## References
 

@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import importlib.util
 import itertools
+import math
 from pathlib import Path
 
 import numpy as np
@@ -739,6 +740,39 @@ def test_exit_gate_requires_the_criterion_at_every_budget():
     assert mixed["per_budget"]["k=16"]["criterion_1_primary_advantage_met"] is False
 
 
+def test_beta_sweep_rejects_a_one_shot_iterable():
+    """Regression: the sweep takes a *factory*, so it cannot consume the stream once.
+
+    The evaluation stream is a one-shot generator (batches stay on the host to bound GPU
+    memory). Taking it as a plain iterable made every beta after the first score zero
+    windows, which surfaced as byte-identical rows for beta=0, -0.5 and -1.0 in the
+    committed synthetic report. The signature is the guard, so the test pins the signature.
+    """
+    import inspect
+
+    module = _load_script()
+    parameter = list(inspect.signature(module.beta_sensitivity).parameters)[3]
+    assert parameter == "batch_factory", (
+        f"beta_sensitivity's 4th parameter is {parameter!r}; it must be a callable returning a "
+        "fresh iterable, or the first beta consumes the one-shot evaluation stream"
+    )
+
+
+def test_beta_zero_and_curvature_are_the_same_control(tmp_path):
+    """``beta = 0`` must reproduce the curvature scorer, the control the sweep exists for."""
+    module = _load_script()
+    args = module.parse_args([
+        "--synthetic", "--batch-size", "2", "--max-steps", "2", "--num-seeds", "1",
+        "--exhaustive-k", "0", "--output-dir", str(tmp_path),
+    ])
+    summary = module.run(args, torch.device("cpu"))
+    sensitivity = summary["beta_sensitivity"]
+    for key, rows in sensitivity.items():
+        assert rows, f"{key} produced no rows"
+        for label, row in rows.items():
+            assert row["n_windows"] > 0, f"{key}/{label} measured zero windows"
+
+
 def test_synthetic_cli_run_produces_a_summary_and_report(tmp_path):
     """The script's ``--synthetic`` path runs end to end and labels itself as not evidence."""
     module = _load_script()
@@ -758,3 +792,203 @@ def test_synthetic_cli_run_produces_a_summary_and_report(tmp_path):
     assert "not evidence" in text and "Exit Gate" in text
     # The synthetic branch must never be reported as a pass.
     assert summary["exit_gate"]["criterion_1_primary_advantage_met"] is False
+
+def test_beta_sweep_degeneracy_is_reported_not_raised():
+    """A control that cannot move is not a tie, but it is still evidence.
+
+    Session 6A returned byte-identical rows for beta in {0, +/-0.5, +/-1} and a paired Wilcoxon of
+    ``statistic 0.0, p = 1`` against curvature. Measured on that run's own backbone the epistemic
+    term was 9.1e-06 of the curvature term, so no beta could reorder a top-k selection. The runner
+    must *record* that, because the degenerate sweep is the evidence for the audit; suppressing it
+    would destroy the artefact documenting the defect.
+    """
+    module = _load_script()
+    degenerate = {
+        "k_total=4": {f"beta={b:+.1f}": {"trimmed_mean_regret_10pct": 0.005, "n_windows": 32}
+                      for b in (0.0, 0.5, 1.0, -0.5, -1.0)},
+    }
+    report = module.beta_sweep_is_degenerate(degenerate)
+    assert report["degenerate"] is True
+    assert report["degenerate_budgets"] == ["k_total=4"]
+    assert report["per_budget"]["k_total=4"]["n_distinct_values"] == 1
+    assert "UNTESTED" in report["interpretation"]
+
+
+def test_beta_sweep_degeneracy_is_false_for_an_informative_sweep():
+    module = _load_script()
+    informative = {
+        "k_total=4": {"beta=+0.0": {"trimmed_mean_regret_10pct": 0.005, "n_windows": 32},
+                      "beta=+0.5": {"trimmed_mean_regret_10pct": 0.004, "n_windows": 32},
+                      "beta=+1.0": {"trimmed_mean_regret_10pct": 0.003, "n_windows": 32},
+                      "beta=-0.5": {"trimmed_mean_regret_10pct": 0.006, "n_windows": 32},
+                      "beta=-1.0": {"trimmed_mean_regret_10pct": 0.007, "n_windows": 32}},
+    }
+    report = module.beta_sweep_is_degenerate(informative)
+    assert report["degenerate"] is False
+    assert report["degenerate_budgets"] == []
+
+
+def test_beta_sweep_degeneracy_ignores_betas_that_measured_nothing():
+    module = _load_script()
+    rows = {
+        "k_total=4": {"beta=+0.0": {"trimmed_mean_regret_10pct": 0.005, "n_windows": 32},
+                      "beta=+0.5": {"trimmed_mean_regret_10pct": 0.005, "n_windows": 32},
+                      "beta=+1.0": {"trimmed_mean_regret_10pct": float("nan"), "n_windows": 0}},
+    }
+    report = module.beta_sweep_is_degenerate(rows)
+    assert report["per_budget"]["k_total=4"]["n_betas_measured"] == 2
+    assert report["degenerate"] is True
+
+
+def test_train_heads_trains_cosine_only_and_ranking_ablations_with_identical_inputs():
+    """WS1a/WS1b: the ablation heads share class, inputs, steps and data with production.
+
+    Per codex review, the ranking comparison must not confound loss with input sufficiency, and a
+    WS1 failure must not be read as evidence about the pooled-`z` input. This pins the structural
+    part: same head class, same parameter count, same training loop, returned for evaluation.
+    """
+    from types import SimpleNamespace
+
+    module = _load_script()
+    torch.manual_seed(0)
+    model = build_small_model()
+    batches = [synthetic_batch(seed=11), synthetic_batch(seed=12)]
+    args = SimpleNamespace(lr=1e-3, max_steps=2)
+    out = module.train_heads(
+        model, lambda: iter(batches), args, TOKEN_DIM, PER_CAMERA, torch.device("cpu"))
+    assert "curvature_head_cosine_only" in out
+    assert "curvature_head_ranking" in out
+    assert out["ranking_margin_scale"] == 1.0
+    counts = out["parameter_counts"]
+    assert counts["curvature_head"] == counts["curvature_head_cosine_only"] == counts["curvature_head_ranking"]
+    for key in ("curvature", "curvature_cosine_only", "curvature_ranking"):
+        assert key in out["final_loss"] and math.isfinite(out["final_loss"][key])
+
+
+def test_train_heads_rejects_an_unknown_ablation_objective():
+    from types import SimpleNamespace
+
+    module = _load_script()
+    torch.manual_seed(0)
+    model = build_small_model()
+    args = SimpleNamespace(lr=1e-3, max_steps=1)
+    with pytest.raises(ValueError, match="unknown co-state training objective"):
+        module.train_heads(
+            model, lambda: iter([synthetic_batch()]), args, TOKEN_DIM, PER_CAMERA,
+            torch.device("cpu"), extra_costate_objectives=("not_a_loss",))
+
+
+def test_train_heads_records_the_ranking_margin_scale_it_used():
+    """The margin scale sets the demanded score separation, so it must be on the record.
+
+    Exact-gain differences are O(1e-4); a single scale could under- or over-demand, and a
+    later reader could not tell which scale a "ranking supervision fails" claim used.
+    """
+    from types import SimpleNamespace
+
+    module = _load_script()
+    torch.manual_seed(0)
+    model = build_small_model()
+    args = SimpleNamespace(lr=1e-3, max_steps=1)
+    out = module.train_heads(
+        model, lambda: iter([synthetic_batch()]), args, TOKEN_DIM, PER_CAMERA,
+        torch.device("cpu"), ranking_margin_scale=100.0)
+    assert out["ranking_margin_scale"] == 100.0
+    assert math.isfinite(out["final_loss"]["curvature_ranking"])
+
+
+def test_patch_conditioned_head_is_capacity_matched_to_the_pooled_head():
+    """A WS2 comparison must not be a capacity comparison in disguise (B3)."""
+    from adjointrwm.spatial_selection import (
+        PatchConditionedCostateEstimator, matched_conditioned_hidden,
+    )
+
+    torch.manual_seed(3)
+    conditioned = PatchConditionedCostateEstimator(WIDTH, TOKEN_DIM)
+    reference = CurvatureCostateEstimator(WIDTH)
+    n_cond = sum(p.numel() for p in conditioned.parameters())
+    n_ref = sum(p.numel() for p in reference.parameters())
+    assert abs(n_cond - n_ref) / n_ref < 0.10, (n_cond, n_ref)
+    assert matched_conditioned_hidden(WIDTH + TOKEN_DIM + 2, WIDTH) == conditioned.trunk.net[0].out_features
+
+
+def test_patch_conditioned_scorer_matches_curvature_scores_on_broadcast_input():
+    """Broadcasting a pooled co-state through the per-patch scorer is the same contraction."""
+    from adjointrwm.spatial_selection import (
+        curvature_scores, patch_conditioned_curvature_scores,
+    )
+
+    torch.manual_seed(4)
+    costate = torch.randn(3, WIDTH)
+    hessian = torch.randn(3, WIDTH).abs()
+    delta_z = torch.randn(3, PATCHES, WIDTH)
+    expected = curvature_scores(costate, hessian, delta_z)
+    got = patch_conditioned_curvature_scores(
+        costate.unsqueeze(1).expand(-1, PATCHES, -1),
+        hessian.unsqueeze(1).expand(-1, PATCHES, -1),
+        delta_z,
+    )
+    assert torch.allclose(got, expected, atol=1e-6)
+
+
+def test_patch_conditioned_scorer_rejects_shape_mismatch():
+    from adjointrwm.spatial_selection import patch_conditioned_curvature_scores
+
+    with pytest.raises(ValueError, match=r"\[B, P, d\]"):
+        patch_conditioned_curvature_scores(torch.zeros(2, WIDTH), torch.zeros(2, 8, WIDTH), torch.zeros(2, 8, WIDTH))
+
+
+def test_patch_conditioned_head_ignores_future_targets(batch):
+    """Decision-time inputs only: corrupting every future target must leave outputs identical."""
+    from adjointrwm.spatial_selection import PatchConditionedCostateEstimator
+
+    torch.manual_seed(5)
+    head = PatchConditionedCostateEstimator(WIDTH, TOKEN_DIM).eval()
+    latent = torch.randn(batch["context_state"].shape[0], WIDTH)
+    budget = torch.full((latent.shape[0],), 0.25)
+    horizon = torch.ones_like(budget)
+    clean = head(latent, batch["context_visual"], budget, horizon)
+    corrupted = dict(batch)
+    corrupted["target_state"] = torch.randn_like(batch["target_state"])
+    corrupted["target_visual"] = torch.randn_like(batch["target_visual"])
+    corrupted["future_actions"] = torch.randn_like(batch["future_actions"])
+    other = head(latent, corrupted["context_visual"], budget, horizon)
+    assert torch.equal(clean[0], other[0]) and torch.equal(clean[1], other[1])
+
+
+def test_train_heads_leaves_conditioned_cells_out_by_default():
+    """The benchmark run must be byte-identical unless the diagnostic opts in (WS2)."""
+    from types import SimpleNamespace
+
+    module = _load_script()
+    torch.manual_seed(0)
+    model = build_small_model()
+    args = SimpleNamespace(lr=1e-3, max_steps=1)
+    out = module.train_heads(
+        model, lambda: iter([synthetic_batch()]), args, TOKEN_DIM, PER_CAMERA,
+        torch.device("cpu"))
+    assert "conditioned_head_composite" not in out
+    assert "conditioned_head_ranking" not in out
+
+
+def test_train_heads_trains_conditioned_cells_when_opted_in():
+    """WS2 cells C/D: same optimiser settings/steps/data; per-patch conditioning is the
+    only input difference, composite vs ranking the only objective difference."""
+    from types import SimpleNamespace
+
+    module = _load_script()
+    torch.manual_seed(0)
+    model = build_small_model()
+    args = SimpleNamespace(lr=1e-3, max_steps=2)
+    out = module.train_heads(
+        model, lambda: iter([synthetic_batch(seed=21), synthetic_batch(seed=22)]), args,
+        TOKEN_DIM, PER_CAMERA, torch.device("cpu"), train_conditioned=True)
+    for key in ("conditioned_head_composite", "conditioned_head_ranking"):
+        assert key in out
+    counts = out["parameter_counts"]
+    # Capacity-matched: the conditioned heads must sit within 10% of the pooled head.
+    for key in ("conditioned_head_composite", "conditioned_head_ranking"):
+        assert abs(counts[key] - counts["curvature_head"]) / counts["curvature_head"] < 0.10, (
+            key, counts[key], counts["curvature_head"])
+    for key in ("conditioned_composite", "conditioned_ranking"):
+        assert key in out["final_loss"] and math.isfinite(out["final_loss"][key])

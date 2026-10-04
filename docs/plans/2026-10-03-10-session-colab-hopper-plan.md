@@ -42,6 +42,43 @@ Hopper G4 provides 96 GB high-bandwidth VRAM and advanced FP8 Tensor Cores. The 
 
 The campaign is structured as 10 discrete, verifiable Colab sessions ($S0$ to $S9$).
 
+### 3.0 Campaign status (updated 2026-10-04)
+
+| Session | State | Evidence |
+|---|---|---|
+| $S0$ profiler | done | Gate **G4-1 FAIL** — DataLoader wait 21% (limit 15%) |
+| $S1$ horizon stress | done | $H{=}64$, $B{=}64$ with exact HVPs in 904 MiB (4% capacity) |
+| $S2$ spatial headroom | done | Gate **G4-2 PASS** — −48.7% test RMSE vs pooled |
+| $S3$ HARP rescue | done | regret −32.6% vs matched critic; 6.2 kHz |
+| $S4$ curvature/VOI | done | belief-space VOI −22.8% vs critic; 27.2 kHz |
+| $S5$ regret robustness | done, **claims withdrawn** | gate arithmetic sound, but the integrity audit found 2 of 3 seeds duplicated and no committed per-window data, so its primary endpoint is unsupported |
+| $S6A$ spatial selection | prerequisites complete, run pending | see below |
+| $S5$–$S9$ (G4 workloads) | **blocked** | G4-1 and G4-3 both fail |
+
+**On the G4/A100 question (2026-10-04).** The switchover gate is conjunctive and two of three
+entries fail, so the campaign stays on L4 (`prereg/deviation_log.yaml` DEV-20261003-01). A CUDA
+OOM encountered during $S6A$ looked like a hardware case — a 42.19 GiB allocation on a 22.03 GiB
+card — and was **not**: `exhaustive_oracle_masks` batched all 14,400 subsets for every window in
+one call, outside `no_grad`. After chunking the (window × candidate) product, the same science
+runs in **1.7 GiB**, and a single forward pass peaks at 0.09 GiB (measured). Unused VRAM is never
+a justification for upgrading, and neither is a defect in one's own batching.
+
+**$S6A$ prerequisites that did not exist and had to be built** (see `CHANGELOG.md` 2026-10-04 (bm)):
+
+1. The E3.1 cache stores only pooled 512-d ResNet18 embeddings, so it cannot supply the $P{=}32$
+   patch tokens $S6A$ selects over. $S2$ had them, but in an ephemeral `/content/spatial_cache`
+   that no longer exists and that lacked both the `exterior_patches`/`wrist_patches` keys and the
+   CLS-to-patch map the `early_cls_attention` comparator reads. `scripts/build_spatial_patch_cache.py`
+   rebuilds it with the E3.1 splits carried over verbatim.
+2. Spec B6's patch-dropout backbone was specified but never implemented, and nothing in the repo
+   wrote the `best_spatial.pt` the runner requires. `scripts/train_spatial_patch_dropout_backbone.py`
+   trains it on the benchmark's own objective, through the same `apply_patch_mask` a deployed
+   selector uses.
+
+Logged as `DEV-20261004-02`: without Drive authorisation (interactive, human-only) the normaliser
+had to be refitted on the train split, so $S6A$ absolute objective values are **not** comparable
+with $S3$–$S5$.
+
 ```mermaid
 flowchart TD
     S0["Session 0 (L4)<br/>DataLoader & Profiler Baseline"] --> S1["Session 1 (L4)<br/>Horizon Stress H=4..32"]

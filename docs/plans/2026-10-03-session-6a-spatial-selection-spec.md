@@ -89,3 +89,48 @@ Evaluated budgets: $k \in \{4, 8, 16\}$ total patches ($k_{\text{cam}} \in \{2, 
 - **Criterion 2 (Non-Inferiority vs Privileged Critic):** Belief-space VOI must be non-inferior to `direct_critic_privileged` (within $3.0\%$ margin on trimmed mean regret).
 - **Tie / Inconclusive Branch:** If VOI and curvature tie within statistical error ($p > 0.05$ on paired Wilcoxon), conclude that second-order curvature captures the dominant spatial allocation signal without requiring epistemic covariance reduction.
 - **Negative Result Branch:** If `early_feature_norm` or `uniform_grid` matches or outperforms learned allocators, report plainly that spatial patch allocation is dominated by geometric coverage rather than downstream sensitivity.
+
+---
+
+## 6. Amendment 2026-10-04 (WS3): VOI comparison voided — read this before §5
+
+**Status:** applied after peer review (cline, recorded for milestone `Session-6B-WS3-amendment`;
+prior design review copilot, milestone `Session-6B-WS2-design`). Deviation `DEV-20261004-03`.
+
+The `belief_space_voi` policy (§3 item 8) and its β grid (B2) are **retired**. The evidence,
+all committed:
+
+- The β sweep returns byte-identical regret for β ∈ {0, ±0.5, ±1} at every budget, and VOI
+  selects identical patches to `second_order_curvature` on 1200/1200 windows
+  (`results/benchmarks/spatial_selection_stratified/`, audit
+  `2026-10-04_session_6a_voi_scale_and_sampling_audit.md` Finding 1).
+- Measured on the trained backbone, the epistemic term is 9.1e-06 of the curvature term, so
+  no β in the grid can reorder a selection. Standalone, the term is mildly anti-correlated
+  (ρ = −0.183) with the worst regret of every scorer
+  (`results/benchmarks/spatial_bottleneck/`, note `2026-10-04-session-6a-bottleneck-diagnostic.md` §3).
+
+Consequences for §5, applied symmetrically to **every** `belief_space_voi`-attributed
+statement (a degeneracy finding must void all of them, not just the tie):
+
+1. **Tie branch: void, not concluded.** `p = 1.0` and the 1200/1200 selection identity are
+   evidence of no perturbation, not of equivalence. The sentence "second-order curvature
+   captures the dominant spatial allocation signal without requiring epistemic covariance
+   reduction" must never be cited — the run cannot distinguish that claim from "the
+   epistemic term was absent".
+2. **Criteria 1 and 2 no longer have a subject.** Both name `belief_space_voi`; both are
+   equally λ̂-confounded (Criterion 2 flipped met→not-met between the 3-episode and
+   50-episode evaluations). They stand as *fired against the deployable suite as a whole*
+   — no deployable selector separates, including random stratification — and are re-attributed
+   to `second_order_curvature` (the surviving deployable co-state policy) for any future
+   comparison, with unchanged thresholds. No new pass/fail is declared by this amendment.
+3. **Option A (standardised β grid) is rejected on rank-preservation, not on correlation.**
+   Per-window affine standardisation preserves within-window rank order, so it cannot move a
+   single selection, change the β grid outcome, or flip ρ. Re-weighting is therefore closed;
+   a future VOI claim needs a differently *ordered* term and a fresh pre-registration.
+4. **`belief_space_voi` remains implemented** for audit-trail purposes (degeneracy guard
+   `beta_sweep_is_degenerate`, regression-tested), but it is fenced out of the gate: a
+   degenerate sweep downgrades the exit branch to `not_evaluated` (`downgraded_because` in
+   the summary) instead of reporting a tie. Artefacts committed before the guard existed do
+   not carry those fields and must be read with this amendment attached.
+
+Any future VOI claim requires a fresh pre-registration with a commensurate term definition.

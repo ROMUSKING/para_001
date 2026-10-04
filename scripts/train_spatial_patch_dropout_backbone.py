@@ -284,7 +284,7 @@ def train(args, device: torch.device) -> dict:
             }
             history.append(row)
             print(
-                f"step {step:5d} | train {float(loss):.4f} | "
+                f"step {step:5d} | train {float(loss.detach()):.4f} | "
                 + " ".join(f"{k.split('=')[1]}:{v:.4f}" for k, v in val.items())
                 + f" | score {score:.4f}",
                 flush=True,

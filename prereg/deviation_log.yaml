@@ -16,3 +16,60 @@ deviations:
       reviewer: OpenCode (space-bunny-free)
       date: 2026-10-03
       recommendation: Reject Candidates A, B, C; execute hardened Candidate D addressing metric robustness, site dependence (IRIS), and cost sensitivity.
+
+  - id: DEV-20261004-02
+    date: 2026-10-04
+    milestone: Session 6A (Fixed-Budget Spatial Patch Selection)
+    planned: Reuse the E3.1 feature cache (data/cache_e3_1) and its train-split normaliser, as Sessions 3-5 did.
+    actual: |
+      Built a new DINOv2 ViT-S/14 patch-token cache (500 episodes, 4x4 grid, two cameras) and, on the
+      re-run Colab runtime, could not reach Google Drive, so no committed or cached normaliser was
+      available. The state/action normaliser is therefore refitted by
+      WindowDataset's own fit_normaliser on the manifest's **train** split only.
+    rationale: |
+      Two independent blockers, both recorded rather than worked around:
+      (1) The E3.1 cache stores only pooled 512-d ResNet18 embeddings, so it cannot supply the
+          P=32 patch tokens Session 6A selects over. Session 2 had the patch features but wrote
+          them to an ephemeral /content/spatial_cache that no longer exists, and it stored neither
+          the exterior_patches/wrist_patches keys nor the CLS-to-patch map the early_cls_attention
+          comparator reads.
+      (2) Drive authorisation is interactive and can only be granted by a human, so a headless
+          agent cannot obtain the cached normaliser on a fresh runtime.
+      The refit obeys the split rule (fitted on train episodes only, before windowing), and because
+      Session 6A compares selection policies at a fixed budget on one shared backbone, the absolute
+      objective scale is not the claim. Absolute J values are therefore NOT comparable with
+      Sessions 3-5, and any cross-session comparison must re-fit both sides.
+    impact: |
+      Session 6A regret ratios and paired tests are valid within the run. Absolute objective values,
+      and any comparison of Session 6A absolute loss against Sessions 3-5, are not.
+    peer_review:
+      reviewer: (none - operational deviation, not a design decision)
+      date: 2026-10-04
+      recommendation: "n/a"
+
+  - id: DEV-20261004-03
+    date: 2026-10-04
+    milestone: Session 6A (Fixed-Budget Spatial Patch Selection)
+    planned: |
+      Gate §5 tie branch and Criteria 1/2 evaluated on belief_space_voi: a statistical VOI-vs-curvature
+      tie concludes curvature captures the signal without epistemic covariance reduction; Criterion 1
+      (≥8% over uniform_grid/early_feature_norm) and Criterion 2 (non-inferiority vs privileged critic)
+      decide on VOI.
+    actual: |
+      Tie branch voided and Criteria 1/2 re-attributed, per spec §6 amendment: the beta sweep is
+      degenerate (identical regret to 8 decimals, 1200/1200 identical selections), so the VOI comparison
+      is untested rather than tied; belief_space_voi retired from the gate (implementation kept for
+      audit trail with the beta_sweep_is_degenerate guard); thresholds unchanged; no new pass/fail declared.
+    rationale: |
+      Measured, not decided: epistemic term 9.1e-06 of the curvature term (no beta can move a selection);
+      standalone rho -0.183 with worst regret (re-weighting fixes scale, but per-window affine
+      standardisation preserves rank order, so it cannot move selections either). A tie-by-degeneracy
+      must not be citable as equivalence. Applied symmetrically to every VOI-attributed statement.
+    impact: |
+      The fired negative branch stands for the deployable suite as a whole (no deployable selector
+      separates). No VOI claim may rest on Session 6A; a future VOI claim needs fresh pre-registration.
+    peer_review:
+      reviewer: cline (deepseek-v4.1-flash, plan mode)
+      date: 2026-10-04
+      recommendation: Accept intent with four fixes, all applied (symmetric voiding; rank-preservation
+        rejection of option A; in-spec dated amendment plus this entry; retired-policy gate fencing).

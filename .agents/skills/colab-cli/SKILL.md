@@ -91,6 +91,14 @@ colab new -s cpu-worker
 ```
 *Notice:* GPU/TPU availability depends on account tier and quota. If an accelerator request fails (400), fall back to `--gpu T4` or CPU.
 
+**`colab new` cannot adopt an untracked assignment.** A `[?] <assignment_id>` entry is a
+runtime started outside the CLI (typically from the Colab web UI). Re-running `colab new -s
+<name> --gpu <type>` **provisions a second VM instead of adopting it** — verified twice on
+2026-10-04 — and `-s <assignment_id>` fails with *not found*. A browser-spawned runtime is
+therefore unreachable headlessly: either ask the user to release it, or provision your own and
+tell them explicitly which session to stop so credits are not burned twice. Check
+`colab sessions` before and after provisioning.
+
 ### 2. Execute Code
 
 - **Run a local script remotely:**
@@ -167,5 +175,46 @@ colab run --gpu T4 -s temp-job scripts/run_eval.py --arg1 val
 ## Agent Guardrails
 
 - **Do NOT run interactive commands in automated loops:** `colab repl`, `colab console`, `colab auth`, and `colab drivemount` expect an interactive TTY and can hang headless agents. Use non-interactive `colab exec` or batch pipes instead.
+- **`colab drivemount` cannot be used headlessly.** Drive authorisation needs a human. On a fresh runtime a headless agent must either avoid Drive entirely (stage to `/content`, pass an explicit output root) or ask the user to mount it first. Budget for this before promising a pipeline that writes checkpoints to Drive.
+- **Long jobs must be launched detached.** `colab exec` runs in the *shared* kernel, so a foreground job blocks every later command until it finishes — a 10-minute extraction makes every subsequent `colab exec` appear to hang. Launch detached and poll the log:
+  ```bash
+  colab exec -s my-session --timeout 60 <<'PY' 2>&1 | tail -5
+  import subprocess
+  open('/content/launch.sh','w').write(
+      'cd /content/para_001 && exec python scripts/train.py > /content/logs/run.log 2>&1\n')
+  print(subprocess.run(
+      ['bash','-c','setsid nohup bash /content/launch.sh >/dev/null 2>&1 </dev/null & disown; echo launched'],
+      capture_output=True, text=True, timeout=20).stdout.strip())
+  PY
+  ```
+  `setsid` plus `nohup` plus `</dev/null` matters: without them the job dies with the exec's shell. Poll with a short `colab exec` that only reads the log and `pgrep`s the pattern.
+- **`colab exec --timeout` defaults to 30 seconds** (`colab exec -h`). Pass `--timeout` explicitly for anything slower, and remember your *shell* timeout is separate and usually shorter — a 120 s shell timeout can cut off a healthy remote job.
+- **Recover a wedged kernel with `colab restart-kernel`.** Symptoms: `RuntimeError: Connection was lost.` from `colab exec`, `colab status` stuck at `Status: BUSY (exec(stdin))`, and `colab log` showing no new entries. `/content` survives a kernel restart, so cached data and detached jobs' outputs are usually still there — restart, then check before relaunching.
+- **`--lengths-only`-style repair beats re-extraction.** When a long extraction was interrupted, prefer rebuilding derived metadata from what is already on disk over re-running the GPU work.
 - **Isolate concurrent runs:** use `--config <path>` to specify a dedicated session state file for isolated agent runs (e.g. `--config /tmp/colab_run_1.json`).
 - **Research integrity in this repository:** GPU training runs for AdjointRWM occur in Colab. When a Colab run completes, use the `import-run` skill to pull small verification artefacts into `results/runs/<run_id>/` without modifying committed history.
+
+## Diagnosing CUDA OOM on Colab
+
+An out-of-memory error on a Colab GPU is **overwhelmingly a code defect, not a hardware limit**, and
+provisioning a bigger GPU to accommodate it hides the defect and burns credits. Work through this
+order before considering any hardware change (`AGENTS.md` rule 7,
+`docs/production/colab_l4_operator_brief.md`):
+
+1. **Read the requested size.** `Tried to allocate 42.19 GiB` on a 22 GiB card is a single
+   enormous tensor, not a model that genuinely needs the memory.
+2. **Check the traceback for the frame**, not just the last line. The frame tells you which stage
+   built the tensor (here `objective_at_masks` inside an exhaustive search).
+3. **Is anything materialising a whole split onto the GPU?** `[move_to_device(b) for b in
+   DataLoader(...)]` holds every sample at once. Keep batches on the host, upload per use, and set
+   `num_workers>0` because `.npz`/`.parquet` shards are IO-bound.
+4. **Is a large combinatorial enumeration batched in one call?** Chunk over the product of the
+   axes, not one axis alone — masking builds one context per *(sample, candidate)* pair.
+5. **Is it running outside `torch.no_grad()`?** Retained graph nodes across many chunks accumulate.
+   Measurement code that never differentiates should be under `no_grad`.
+6. **Measure the true peak** with `torch.cuda.reset_peak_memory_stats()` around a single forward
+   pass. If that is small (here 0.09 GiB) while the run OOMs at 42 GiB, the excess is the
+   algorithm's batching, and it is fixable in code.
+
+Only after all six is it a hardware question — and then it needs a profiler trace showing
+saturation, committed as evidence, per the plan's conjunctive G4 gates.

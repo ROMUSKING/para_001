@@ -45,6 +45,7 @@ for candidate in (REPO_DIR / "src", Path("/content/para_001/src"), Path("/conten
 
 from adjointrwm.allocators import CurvatureCostateEstimator, pairwise_margin_ranking_loss  # noqa: E402
 from adjointrwm.data import WindowDataset, WindowSpec, fit_normaliser  # noqa: E402
+from adjointrwm.data.windows import stratified_window_indices  # noqa: E402
 from adjointrwm.io import atomic_write_json  # noqa: E402
 from adjointrwm.models.common import ArmDims  # noqa: E402
 from adjointrwm.models.registry import build_arm  # noqa: E402
@@ -56,6 +57,7 @@ from adjointrwm.spatial_selection import (  # noqa: E402
     DIAGNOSTIC_POLICIES,
     PATCHES_PER_CAMERA,
     HEURISTIC_POLICIES,
+    PatchConditionedCostateEstimator,
     PatchRankingCritic,
     PrivilegedPatchCritic,
     additivity_r2,
@@ -68,6 +70,7 @@ from adjointrwm.spatial_selection import (  # noqa: E402
     latent_patch_perturbations,
     matched_patch_critic_hidden,
     objective_at_masks,
+    patch_conditioned_curvature_scores,
     score_policy,
     select_topk_per_camera,
     selection_context,
@@ -124,6 +127,9 @@ def parse_args(argv=None):
     parser.add_argument("--oracle-windows", type=int, default=64, help="windows given the rollout-search oracle")
     parser.add_argument("--exhaustive-k", type=int, default=2, help="k_cam for the exhaustive calibration (0 disables)")
     parser.add_argument("--bootstrap-resamples", type=int, default=2000)
+    parser.add_argument("--strict-beta", action="store_true",
+                        help="exit non-zero when the beta sweep is degenerate; by default it is "
+                             "recorded and the gate is downgraded instead")
     parser.add_argument("--seed", type=int, default=0)
     return parser.parse_args(argv)
 
@@ -289,7 +295,11 @@ def exact_marginal_gains(model: nn.Module, batch: Mapping[str, torch.Tensor],
 
 
 def train_heads(model: nn.Module, batch_factory, args,
-                token_dim: int, patches_per_camera: int, device: torch.device) -> dict:
+                token_dim: int, patches_per_camera: int, device: torch.device,
+                curvature_head: nn.Module | None = None,
+                extra_costate_objectives: Sequence[str] = ("cosine_only", "ranking"),
+                ranking_margin_scale: float = 1.0,
+                train_conditioned: bool = False) -> dict:
     """Train the distilled curvature head and both ranking critics on exact marginal gains.
 
     Each head is an independent module with its own optimiser, so a critic cannot benefit
@@ -298,24 +308,67 @@ def train_heads(model: nn.Module, batch_factory, args,
     ``batch_factory`` is a callable returning a fresh iterable of device-resident batches,
     re-invoked on every pass: the caller keeps its windows on the host to bound GPU memory, so
     a one-shot iterable could not survive the many passes ``max_steps`` requires.
+
+    ``curvature_head`` injects a pre-built co-state estimator instead of a default-width one,
+    which is what the Session 6A distillation sweep uses to vary estimator capacity while every
+    other head and loss stays fixed.
+
+    ``extra_costate_objectives`` trains additional co-state estimators that share the head class,
+    inputs, optimiser settings, steps and data with the production curvature head and differ ONLY
+    in their training objective (Session 6B WS1, per codex review):
+    - ``"cosine_only"``: the cosine-direction term alone (drops the ``0.5 *`` curvature-alignment
+      term). Isolates whether the composite objective's second half helps or hurts ranking.
+    - ``"ranking"``: ``pairwise_margin_ranking_loss`` on ``curvature_scores`` of its own outputs
+      against the exact marginal gains (``margin_scale=ranking_margin_scale``, same default 1.0
+      the critics use; recorded, not tuned). Tests whether direct ranking supervision recovers
+      what cosine supervision does not.
+    A failure here is NOT evidence about input sufficiency (pooled ``z``): capacity,
+    optimisation, parameterisation and the singleton-from-empty labels could all explain it.
+
+    ``train_conditioned`` adds the WS2 factorial cells C/D (candidate-conditioned estimators,
+    composite + ranking objectives). Default ``False``: the benchmark run neither trains nor
+    returns them, so its behavior is unchanged unless the diagnostic opts in.
     """
     from adjointrwm.spatial_selection import cotangent_bundle
 
     d_model = model.d_model
-    curvature = CurvatureCostateEstimator(d_model).to(device)
+    curvature = (curvature_head if curvature_head is not None
+                 else CurvatureCostateEstimator(d_model)).to(device)
     ranking = PatchRankingCritic(token_dim, d_model, matched_patch_critic_hidden(token_dim + d_model + 2, d_model)).to(device)
     privileged = PrivilegedPatchCritic(d_model, matched_patch_critic_hidden(3 * d_model + 2, d_model)).to(device)
+
+    extra_heads: Dict[str, nn.Module] = {}
+    for objective in extra_costate_objectives:
+        if objective not in ("cosine_only", "ranking"):
+            raise ValueError(f"unknown co-state training objective {objective!r}")
+        extra_heads[objective] = CurvatureCostateEstimator(d_model).to(device)
+
+    # WS2 factorial, cells C/D: candidate-conditioned estimators. Gated off by default so the
+    # benchmark run is byte-identical unless the diagnostic opts in. Same optimiser settings,
+    # steps and data as every other head; only input (per-patch conditioning) and objective
+    # differ, which is exactly the factorial contrast.
+    conditioned_heads: Dict[str, nn.Module] = {}
+    if train_conditioned:
+        for objective in ("composite", "ranking"):
+            conditioned_heads[objective] = PatchConditionedCostateEstimator(
+                d_model, token_dim).to(device)
 
     optimisers = {
         "curvature": torch.optim.AdamW(curvature.parameters(), lr=args.lr),
         "direct_ranking_critic": torch.optim.AdamW(ranking.parameters(), lr=args.lr),
         "direct_critic_privileged": torch.optim.AdamW(privileged.parameters(), lr=args.lr),
+        **{f"curvature_{objective}": torch.optim.AdamW(head.parameters(), lr=args.lr)
+           for objective, head in extra_heads.items()},
+        **{f"conditioned_{objective}": torch.optim.AdamW(head.parameters(), lr=args.lr)
+           for objective, head in conditioned_heads.items()},
     }
     # `batches` is a callable returning a fresh iterable of device-resident batches, cycled for
     # `max_steps`. The batch size is read from the batch in hand, so nothing has to be resident
     # all at once.
     history = {name: [] for name in optimisers}
-    modules = {"curvature": curvature, "direct_ranking_critic": ranking, "direct_critic_privileged": privileged}
+    modules = {"curvature": curvature, "direct_ranking_critic": ranking, "direct_critic_privileged": privileged,
+               **{f"curvature_{objective}": head for objective, head in extra_heads.items()},
+               **{f"conditioned_{objective}": head for objective, head in conditioned_heads.items()}}
 
     # `batches` is a *factory* returning a fresh iterable, because the caller keeps its batches
     # on the host to bound GPU memory: a one-shot generator could only be traversed once, and
@@ -361,10 +414,50 @@ def train_heads(model: nn.Module, batch_factory, args,
             privileged(costate_hat.detach(), hessian_hat.detach(), delta_z, budget_fraction, horizon_fraction), gains
         )
 
+        # WS1 ablations: same head class, same inputs, same steps and data as the production
+        # curvature head; only the training objective differs.
+        extra_losses: Dict[str, torch.Tensor] = {}
+        for objective, head in extra_heads.items():
+            costate_x, hessian_x = head(latent, budget_fraction, horizon_fraction)
+            if objective == "cosine_only":
+                extra_losses[f"curvature_{objective}"] = (
+                    1.0 - F.cosine_similarity(costate_x, bundle.exact_costate, dim=-1)).mean()
+            else:  # "ranking": rank by its own curvature scores, detached dz trains head only
+                extra_losses[f"curvature_{objective}"] = pairwise_margin_ranking_loss(
+                    curvature_scores(costate_x, hessian_x, delta_z.detach()), gains,
+                    margin_scale=ranking_margin_scale,
+                )
+
+        # WS2 cells C/D: per-patch co-states through the per-patch scorer. Cell C mirrors
+        # the production composite loss term-for-term -- cosine direction plus the
+        # *Hessian-only* alignment piece regressed against gains, exactly as A does -- so the
+        # C-vs-A contrast differs in input alone (per copilot review: aligning the full score
+        # in C while A aligns the Hessian-only piece would confound loss form with input).
+        # The one deliberate difference from A is detaching delta_z: A's path backprops into
+        # the frozen backbone (gradients computed, never stepped), which is pure waste. The
+        # head-parameter gradients are identical either way, so the training signal matches
+        # while the memory does not blow up across the extra heads.
+        # The cosine term constrains only the pooled mean direction, so per-patch costates
+        # remain underidentified: C tests candidate-conditioned *scoring outputs*, and a C win
+        # would need follow-up to attribute it to lambda_p vs H_p. Cell D is pure ranking
+        # supervision on the same per-patch scores.
+        for objective, head in conditioned_heads.items():
+            costate_p, hessian_p = head(latent, batch["context_visual"], budget_fraction, horizon_fraction)
+            scores_p = patch_conditioned_curvature_scores(costate_p, hessian_p, delta_z.detach())
+            if objective == "composite":
+                direction_p = (1.0 - F.cosine_similarity(
+                    costate_p.mean(dim=1), bundle.exact_costate, dim=-1)).mean()
+                align_p = F.smooth_l1_loss((hessian_p * delta_z.detach().pow(2)).sum(-1), gains)
+                extra_losses[f"conditioned_{objective}"] = direction_p + 0.5 * align_p
+            else:
+                extra_losses[f"conditioned_{objective}"] = pairwise_margin_ranking_loss(
+                    scores_p, gains, margin_scale=ranking_margin_scale)
+
         for name, loss in (
             ("curvature", curvature_loss),
             ("direct_ranking_critic", ranking_loss),
             ("direct_critic_privileged", privileged_loss),
+            *sorted(extra_losses.items()),
         ):
             optimisers[name].zero_grad()
             loss.backward()
@@ -375,12 +468,19 @@ def train_heads(model: nn.Module, batch_factory, args,
     return {
         "heads": {"direct_ranking_critic": ranking.eval(), "direct_critic_privileged": privileged.eval()},
         "curvature_head": curvature.eval(),
+        **{f"curvature_head_{objective}": head.eval() for objective, head in extra_heads.items()},
+        **{f"conditioned_head_{objective}": head.eval() for objective, head in conditioned_heads.items()},
         "final_loss": {name: values[-1] for name, values in history.items() if values},
         "parameter_counts": {
             "curvature_head": sum(p.numel() for p in curvature.parameters()),
             "direct_ranking_critic": sum(p.numel() for p in ranking.parameters()),
             "direct_critic_privileged": sum(p.numel() for p in privileged.parameters()),
+            **{f"curvature_head_{objective}": sum(p.numel() for p in head.parameters())
+               for objective, head in extra_heads.items()},
+            **{f"conditioned_head_{objective}": sum(p.numel() for p in head.parameters())
+               for objective, head in conditioned_heads.items()},
         },
+        "ranking_margin_scale": ranking_margin_scale,
         "steps": args.max_steps,
     }
 
@@ -421,19 +521,27 @@ def calibrate_greedy_optimality(model: nn.Module, batch: Mapping, k_cam: int,
     }
 
 
-def beta_sensitivity(model, curvature_head, heads: dict, batches: Sequence[Mapping], args,
+def beta_sensitivity(model, curvature_head, heads: dict, batch_factory, args,
                      k_cam: int, patches_per_camera: int, token_dim: int) -> dict:
     """Sweep the belief-space weight over ``{0, 0.5, 1}`` and its sign flip (spec B2).
 
     ``beta = 0`` reproduces ``second_order_curvature`` exactly and is the control that shows
     the epistemic term is doing the work; negative ``beta`` shows whether the sign of the
     variance reduction is even the right one.
+
+    ``batch_factory`` is a **callable** returning a fresh iterable, re-invoked once per beta.
+    Taking a plain iterable here is a silent trap: the evaluation stream is a one-shot
+    generator (batches live on the host to bound GPU memory), so the first beta would consume
+    it and every later beta would score nothing. That bug shipped once — the committed
+    synthetic report showed byte-identical rows for ``beta=0``, ``beta=-0.5`` and ``beta=-1.0``,
+    which is the signature of exactly one beta having been measured.
     """
     index = camera_of_patch(patches_per_camera, CAMERAS)
     rows = {}
     for beta in (0.0, 0.5, 1.0, -0.5, -1.0):
+        print(f"    beta sweep k_cam={k_cam} beta={beta:+.1f}", flush=True)
         regrets = []
-        for batch in batches:
+        for batch in batch_factory():
             context = selection_context(
                 model, batch, curvature_head, patches_per_camera=patches_per_camera,
                 cameras=CAMERAS, beta=beta, seed=args.seed, token_dim=token_dim,
@@ -458,6 +566,44 @@ def beta_sensitivity(model, curvature_head, heads: dict, batches: Sequence[Mappi
             "n_windows": int(values.size),
         }
     return rows
+
+
+def beta_sweep_is_degenerate(beta_rows: Mapping[str, Mapping]) -> dict:
+    """Report whether the beta sweep can distinguish anything.
+
+    Session 6A returned byte-identical rows for ``beta in {0, +/-0.5, +/-1}`` at every budget, and
+    the paired Wilcoxon against curvature came back ``statistic 0.0, p = 1``. The cause was
+    measured: the epistemic term was 9.1e-06 of the curvature term, so no beta in the grid could
+    reorder a top-k selection. A control that cannot move is not a tie, and reporting it as one
+    would claim an equivalence the run never tested.
+
+    This **reports** rather than raises. The degenerate sweep is itself the evidence for the audit,
+    and suppressing it would destroy the artefact that documents the defect. The gate is
+    downgraded to "not evaluated" instead, and ``--strict-beta`` turns the finding into a hard
+    failure for pipelines that should refuse to continue.
+    """
+    degenerate_budgets, detail = [], {}
+    for budget, rows in beta_rows.items():
+        measured = {k: v for k, v in rows.items() if v.get("n_windows", 0) > 0}
+        values = {round(float(v["trimmed_mean_regret_10pct"]), 12) for v in measured.values()}
+        entry = {"n_betas_measured": len(measured), "n_distinct_values": len(values),
+                 "degenerate": len(measured) > 1 and len(values) == 1}
+        if entry["degenerate"]:
+            degenerate_budgets.append(budget)
+            entry["shared_value"] = sorted(values)[0]
+        detail[budget] = entry
+    return {
+        "degenerate": bool(degenerate_budgets),
+        "degenerate_budgets": degenerate_budgets,
+        "per_budget": detail,
+        "interpretation": (
+            "Every beta gives the same regret, so the epistemic term cannot change a selection at "
+            "this scale. VOI and curvature are UNTESTED here, not equal; do not cite the paired "
+            "p-value as an equivalence result. See "
+            "docs/audits/2026-10-04_session_6a_voi_scale_and_sampling_audit.md. Resolving this is a "
+            "spec amendment (make the term commensurate, or drop it), not a larger beta."
+        ) if degenerate_budgets else "The beta sweep produced distinct values and carries information.",
+    }
 
 
 def assert_beta_zero_matches_curvature(beta_rows: Mapping[str, Mapping], results: Sequence[Mapping]) -> None:
@@ -525,7 +671,12 @@ def evaluate(model: nn.Module, curvature_head, heads: dict, batches: Sequence[Ma
     row_episodes: List[str] = []
     row_sites: List[str] = []
 
-    for batch in batches:
+    for index, batch in enumerate(batches):
+        if index and index % 16 == 0:
+            # Progress line: this suite is slow enough (a cotangent bundle plus one encode and
+            # one rollout per patch, per policy) that a silent run cannot be told from a stall.
+            print(f"    k_cam={k_cam} batch {index} | windows scored: {len(row_episodes)}",
+                  flush=True)
         context = selection_context(
             model, batch, curvature_head,
             patches_per_camera=patches_per_camera, cameras=CAMERAS,
@@ -843,7 +994,30 @@ def run(args, device: torch.device) -> dict:
             )
 
         train, test, site_by_episode = load_spatial_dataset(Path(args.cache_dir), patches_per_camera)
-        from torch.utils.data import DataLoader
+        from torch.utils.data import DataLoader, Subset
+
+        # Evaluation windows are drawn stratified over episodes and sites rather than as a
+        # prefix of an ordered loader. The earlier run took the first N batches and so evaluated
+        # 3 episodes from 3 sites out of 50/14, leaving the site-clustered bootstrap three
+        # clusters; see docs/audits/2026-10-04_session_6a_voi_scale_and_sampling_audit.md.
+        # Episode ids are read from the parent dataset before subsetting: torch's Subset does not
+        # forward dataset methods, so calling episode_ids() on it afterwards would fail.
+        all_test_ids = np.asarray(test.episode_ids())
+        if args.eval_windows and args.eval_windows > 0:
+            indices = stratified_window_indices(
+                all_test_ids, site_by_episode, args.eval_windows, seed=args.seed
+            )
+            selected_ids = all_test_ids[indices]
+            test = Subset(test, indices.tolist())
+            covered = {site_by_episode.get(str(e), "unknown") for e in selected_ids}
+            print(f"  stratified evaluation: {len(indices)} windows over "
+                  f"{len(set(selected_ids.tolist()))} episodes, "
+                  f"{len(covered)} sites", flush=True)
+        else:
+            covered = {site_by_episode.get(str(e), "unknown") for e in all_test_ids}
+            print(f"  evaluating the whole test split: {len(test)} windows over "
+                  f"{len(set(all_test_ids.tolist()))} episodes, {len(covered)} sites",
+                  flush=True)
 
         # Batches stay on the host and are moved per use. Materialising every window of the
         # shard on the GPU is tens of GiB of patch tokens and leaves the model no headroom;
@@ -957,6 +1131,7 @@ def run(args, device: torch.device) -> dict:
         })
 
         for k_cam in (k for total, k in BUDGETS if k <= patches_per_camera):
+            print(f"  seed {seed}: scoring budget k_cam={k_cam}", flush=True)
             budget_result = evaluate(model, curvature_head, heads, eval_batches(), args, k_cam,
                                       patches_per_camera, token_dim, sites, device=device)
             budget_result["seed"] = seed
@@ -973,7 +1148,7 @@ def run(args, device: torch.device) -> dict:
         calibration = run_oracle_calibration(model, next(iter(eval_batches())), args, patches_per_camera)
         beta_rows = {
             f"k_total={k_cam * CAMERAS}": beta_sensitivity(
-                model, curvature_head, heads, eval_batches(), args, k_cam, patches_per_camera, token_dim)
+                model, curvature_head, heads, eval_batches, args, k_cam, patches_per_camera, token_dim)
             for k_cam in (k for total, k in BUDGETS if k <= patches_per_camera)
         }
         # Free the cached allocator between seeds so the next seed's expansion does not
@@ -983,8 +1158,26 @@ def run(args, device: torch.device) -> dict:
             torch.cuda.empty_cache()
 
     assert_beta_zero_matches_curvature(beta_rows, results)
+    degeneracy = beta_sweep_is_degenerate(beta_rows)
+    if degeneracy["degenerate"]:
+        print(f"[warning] degenerate beta sweep at {degeneracy['degenerate_budgets']}: the "
+              "epistemic term cannot change a selection at this scale, so VOI-vs-curvature is "
+              "UNTESTED rather than equal. See "
+              "docs/audits/2026-10-04_session_6a_voi_scale_and_sampling_audit.md", flush=True)
+        if args.strict_beta:
+            raise SystemExit("--strict-beta: refusing to continue with a degenerate beta sweep")
 
     duplicate_seeds = detect_duplicate_seed_metrics(seed_provenance)
+    gate = evaluate_exit_gate(results, synthetic=args.synthetic)
+    if degeneracy["degenerate"] and gate.get("evaluated"):
+        # The gate's tie branch reads "curvature captures the signal without epistemic covariance
+        # reduction", which is exactly the claim a degenerate sweep cannot support. Downgrade it
+        # rather than let an untested mechanism be reported as a settled one.
+        gate = dict(gate)
+        gate["tie_with_curvature"] = None
+        gate["branch"] = ("not_evaluated: degenerate beta sweep, so belief-space VOI and second-order "
+                          "curvature are untested rather than equal")
+        gate["downgraded_because"] = "beta_sweep_degeneracy"
     summary = {
         "mode": "synthetic" if args.synthetic else "real",
         "device": str(device),
@@ -1004,8 +1197,9 @@ def run(args, device: torch.device) -> dict:
                          "diagnostic": list(DIAGNOSTIC_POLICIES)},
         "by_budget": results,
         "beta_sensitivity": beta_rows,
+        "beta_sweep_degeneracy": degeneracy,
         "greedy_oracle_calibration": calibration,
-        "exit_gate": evaluate_exit_gate(results, synthetic=args.synthetic),
+        "exit_gate": gate,
         # Popped by main() and written as parquet; kept out of the JSON so the summary stays
         # readable and small.
         "per_window_rows": all_rows,
