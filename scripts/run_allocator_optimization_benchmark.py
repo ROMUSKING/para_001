@@ -484,12 +484,13 @@ def run_benchmark():
             # Checkpoint evaluation
             if cur_step in args.eval_checkpoints:
                 print(f"  Evaluating held-out test regret at Step {cur_step}...")
-                step_regrets = evaluate_policies_at_step(teacher, costate_head, critic_head, test_loader, costs, device)
+                eval_costate = None if args.critic_only else costate_head
+                step_regrets = evaluate_policies_at_step(teacher, eval_costate, critic_head, test_loader, costs, device)
                 checkpoint_results[cur_step].append(step_regrets)
                 print(f"    Step {cur_step} | Oracle: {step_regrets['exact_costate']:.5f} | Mode0: {step_regrets['always_mode0']:.5f} | Critic: {step_regrets['allocator_critic']:.5f}" + (
                     f" | Costate Norm: {step_regrets['allocator_costate_norm']:.5f}" if "allocator_costate_norm" in step_regrets else ""))
                 print(f"  Evaluating validation regret at Step {cur_step}...")
-                val_out = evaluate_policies_at_step(teacher, costate_head, critic_head, val_loader, costs, device,
+                val_out = evaluate_policies_at_step(teacher, eval_costate, critic_head, val_loader, costs, device,
                                                     return_panels=args.probe_panels)
                 if args.probe_panels:
                     val_regrets, val_panels = val_out
@@ -502,6 +503,12 @@ def run_benchmark():
 
         seed_finite.append(bool(np.isfinite([e["train_critic_loss"] for e in surrogate_ledger
                                              if e["seed"] == seed]).all()))
+        # Partial flush: a destroyed session keeps every completed seed. Final assembly
+        # below only re-aggregates these files; nothing is decided from partials alone.
+        partial_path = write_seed_partial(
+            output_dir, seed, args, checkpoint_results, val_checkpoint_results,
+            val_panels_results, surrogate_ledger, seed_finite[-1])
+        print(f"  [Seed {seed}] partial results flushed to {partial_path}")
 
     # Pool results across all 5 seeds for each checkpoint
     summary = {
@@ -597,6 +604,33 @@ def run_benchmark():
         f.write(f"- **Step {last_cp} Advantage (Norm vs Critic):** {cp_last_diff:.5f}\n")
 
     print(f"Saved Markdown report to: {report_path}")
+
+
+def write_seed_partial(output_dir: Path, seed: int, args, checkpoint_results: dict,
+                       val_checkpoint_results: dict, val_panels_results: dict,
+                       surrogate_ledger: list, finite: bool) -> Path:
+    """Flush one seed's results so a destroyed session keeps completed seeds.
+
+    Pure assembly over the caller's dicts (no torch); unit-tested. Partial files are
+    evidence of completed seeds only — readiness is never decided from partials alone.
+    """
+    partial = {
+        "seed": seed,
+        "critic_width_scale": args.critic_width_scale,
+        "critic_only": args.critic_only,
+        "checkpoints": {str(cp): checkpoint_results[cp][-1] for cp in args.eval_checkpoints
+                        if len(checkpoint_results[cp]) > 0},
+        "val_checkpoints": {str(cp): val_checkpoint_results[cp][-1] for cp in args.eval_checkpoints
+                            if len(val_checkpoint_results[cp]) > 0},
+        "val_panels": {str(cp): val_panels_results[cp][-1] for cp in args.eval_checkpoints
+                       if len(val_panels_results[cp]) > 0},
+        "surrogate_ledger": [e for e in surrogate_ledger if e["seed"] == seed],
+        "finite": finite,
+    }
+    partial_path = output_dir / f"partial_seed_{seed}.json"
+    with open(partial_path, "w") as pf:
+        json.dump(partial, pf, indent=1)
+    return partial_path
 
 
 if __name__ == "__main__":

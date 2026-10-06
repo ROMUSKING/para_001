@@ -82,3 +82,28 @@ def test_critic_width_scale_changes_params_not_inputs():
                   torch.ones(2), torch.ones(2))
         assert head(*sample).shape == (2, 4)
     assert counts[0.5] < counts[1.0] < counts[2.0]
+
+
+def test_write_seed_partial_schema_and_last_wins(tmp_path):
+    """Partial flush keeps the latest entry per checkpoint plus the seed's ledger slice."""
+    import argparse
+
+    module = _load_script()
+    args = argparse.Namespace(critic_width_scale=0.5, critic_only=True,
+                              eval_checkpoints=[300, 1000], probe_panels=True)
+    cr = {300: [{"a": 1}], 1000: [{"a": 2}, {"a": 3}]}
+    vr = {300: [{"b": 4}], 1000: []}
+    vp = {300: [{"p": 5}], 1000: [{"p": 6}]}
+    ledger = [{"seed": 2, "step": 200, "train_critic_loss": 0.5},
+              {"seed": 3, "step": 200, "train_critic_loss": 0.6}]
+    path = module.write_seed_partial(tmp_path, 2, args, cr, vr, vp, ledger, True)
+    import json as _json
+
+    doc = _json.loads(path.read_text())
+    assert doc["seed"] == 2 and doc["finite"] is True
+    assert doc["critic_width_scale"] == 0.5 and doc["critic_only"] is True
+    assert doc["checkpoints"] == {"300": {"a": 1}, "1000": {"a": 3}}
+    assert doc["val_checkpoints"] == {"300": {"b": 4}}
+    assert doc["val_panels"] == {"300": {"p": 5}, "1000": {"p": 6}}
+    assert doc["surrogate_ledger"] == [ledger[0]]
+    assert path.name == "partial_seed_2.json"
