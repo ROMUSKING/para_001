@@ -246,7 +246,8 @@ def extract_sensing_targets(teacher, batch: dict, costs: torch.Tensor, device: t
 
 def evaluate_policies_at_step(teacher, costate_head, critic_head, test_loader, costs: torch.Tensor, device: torch.device,
                             return_panels: bool = False):
-    costate_head.eval()
+    if costate_head is not None:
+        costate_head.eval()
     critic_head.eval()
     costate_head.eval()
     critic_head.eval()
