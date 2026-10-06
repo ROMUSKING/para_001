@@ -339,8 +339,13 @@ def evaluate_policies_at_step(teacher, costate_head, critic_head, test_loader, c
 
     if not return_panels:
         return regret_dict
-    concat = {name: (None if name == "random_expected" else np.concatenate(lst, axis=0))
-              for name, lst in all_choices.items()}
+    concat = {}
+    for name, lst in all_choices.items():
+        if name == "random_expected":
+            concat[name] = None
+        elif len(lst) > 0:
+            concat[name] = np.concatenate(lst, axis=0)
+        # --critic-only: costate lists stay empty and are omitted, never concatenated.
     # Panels need per-window choices for the scored policies plus mode0 for adaptive gain.
     panel_choices = {k: v for k, v in concat.items()
                      if k in ("allocator_critic", "uncertainty", "always_mode0")}

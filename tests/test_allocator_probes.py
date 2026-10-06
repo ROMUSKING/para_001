@@ -107,3 +107,19 @@ def test_write_seed_partial_schema_and_last_wins(tmp_path):
     assert doc["val_panels"] == {"300": {"p": 5}, "1000": {"p": 6}}
     assert doc["surrogate_ledger"] == [ledger[0]]
     assert path.name == "partial_seed_2.json"
+
+
+def test_adjacent_rung_panels_critic_only_subset():
+    """Critic-only runs omit costate policies: panels need only critic/uncertainty/mode0."""
+    module = _load_script()
+    rng = np.random.default_rng(1)
+    net = rng.uniform(-0.02, 0.02, size=(24, 4))
+    oracle = net.argmax(axis=-1)
+    choices = {
+        "allocator_critic": oracle,
+        "uncertainty": np.zeros(24, dtype=int),
+        "always_mode0": np.zeros(24, dtype=int),
+        "random_expected": None,
+    }
+    panels = module.adjacent_rung_panels(net, choices)
+    assert panels["low_rung"]["n"] + panels["high_rung"]["n"] == 24
