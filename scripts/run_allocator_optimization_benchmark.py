@@ -249,8 +249,6 @@ def evaluate_policies_at_step(teacher, costate_head, critic_head, test_loader, c
     if costate_head is not None:
         costate_head.eval()
     critic_head.eval()
-    costate_head.eval()
-    critic_head.eval()
 
     all_net_gains = []
     all_choices = {
@@ -404,7 +402,8 @@ def run_benchmark():
         train_iter = iter(train_loader)
 
         for step in range(args.max_steps):
-            costate_head.train()
+            if not args.critic_only:
+                costate_head.train()
             critic_head.train()
 
             try:
