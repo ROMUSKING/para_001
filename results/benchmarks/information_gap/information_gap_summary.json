@@ -1,0 +1,758 @@
+{
+  "amendment": "prospective Exp-2 amendment (plan \u00a77): directional evidence only; no gates pass here; no superiority claims",
+  "benchmark": "session_6c_information_gap",
+  "caveats": [
+    "Condition C sees train targets in aggregate: a fit advantage over A/B is expected mechanically; only the held-out contrast is informative, and only directionally on this diagnostic split.",
+    "Single future trajectory per state: no irreducible-uncertainty claim.",
+    "Linear probes only: a nonlinear information advantage would not appear here."
+  ],
+  "conditions": [
+    {
+      "columns": [
+        "latent[d]",
+        "target_state[H*14]",
+        "target_visual[H*Dv]",
+        "intercept"
+      ],
+      "condition": "D_extrapolation",
+      "fit": {
+        "directional_error": 7.450580596923828e-09,
+        "n": 16,
+        "per_budget": {
+          "k_cam=2": {
+            "allocation_agreement": 0.6875,
+            "topk_overlap": 0.859375
+          },
+          "k_cam=4": {
+            "allocation_agreement": 0.25,
+            "topk_overlap": 0.921875
+          },
+          "k_cam=8": {
+            "allocation_agreement": 0.25,
+            "topk_overlap": 0.98046875
+          }
+        },
+        "rel_magnitude_error": 3.05232745745343e-08,
+        "rel_vector_error": 1.1247928455304645e-07,
+        "spearman_vs_exact_gains": 0.9740423387096773,
+        "spearman_vs_exact_gains_n": 16,
+        "spearman_vs_exact_scores": 0.9999999999999998,
+        "spearman_vs_exact_scores_n": 16
+      },
+      "fit_gate": {
+        "E_rec": 1.0872874156575563e-07,
+        "energy": 0.5660533905029297,
+        "gate": "relative",
+        "passed": true,
+        "threshold": 0.01
+      },
+      "held_out": {
+        "directional_error": 0.9055660963058472,
+        "n": 16,
+        "per_budget": {
+          "k_cam=2": {
+            "allocation_agreement": 0.125,
+            "topk_overlap": 0.3125
+          },
+          "k_cam=4": {
+            "allocation_agreement": 0.0,
+            "topk_overlap": 0.40625
+          },
+          "k_cam=8": {
+            "allocation_agreement": 0.0,
+            "topk_overlap": 0.7890625
+          }
+        },
+        "rel_magnitude_error": 0.9450105428695679,
+        "rel_vector_error": 0.9956926107406616,
+        "spearman_vs_exact_gains": -0.08360511057477255,
+        "spearman_vs_exact_gains_n": 16,
+        "spearman_vs_exact_scores": -0.03003574046920822,
+        "spearman_vs_exact_scores_n": 16
+      },
+      "held_out_full_columns_reference": {
+        "directional_error": 0.8133546710014343,
+        "n": 16,
+        "per_budget": {
+          "k_cam=2": {
+            "allocation_agreement": 0.0,
+            "topk_overlap": 0.328125
+          },
+          "k_cam=4": {
+            "allocation_agreement": 0.0,
+            "topk_overlap": 0.4375
+          },
+          "k_cam=8": {
+            "allocation_agreement": 0.0,
+            "topk_overlap": 0.76953125
+          }
+        },
+        "rel_magnitude_error": 0.21166253089904785,
+        "rel_vector_error": 1.1543338298797607,
+        "spearman_vs_exact_gains": 0.1333057940827483,
+        "spearman_vs_exact_gains_n": 16,
+        "spearman_vs_exact_scores": 0.16910282258064513,
+        "spearman_vs_exact_scores_n": 16
+      },
+      "lstsq": {
+        "driver": "gelsd",
+        "full_row_rank": true,
+        "n_cols": 3641,
+        "n_rows": 16,
+        "rank": 16,
+        "rcond": 1e-12,
+        "residual_sum_of_squares": 2.2588033460158557e-30,
+        "singular_values": [
+          375.02983894698684,
+          206.10987761204746,
+          191.84158953885915,
+          153.90070974907627,
+          57.05671230636204,
+          52.564786088959146,
+          49.15509914794417,
+          47.492468419333065,
+          35.98872817777931,
+          34.44268715423271,
+          33.267070772619746,
+          31.622191355548125,
+          29.362316229105517,
+          27.979240813739413,
+          25.906298395221295,
+          25.470737797227418
+        ]
+      },
+      "n_columns": 3641,
+      "scalar_calibration": {
+        "a_star": null,
+        "undefined": "not applicable to the extrapolation arm"
+      }
+    },
+    {
+      "calibrated": {
+        "fit": {
+          "directional_error": 0.0027934139782260434,
+          "n": 16,
+          "per_budget": {
+            "k_cam=2": {
+              "allocation_agreement": 0.6875,
+              "topk_overlap": 0.78125
+            },
+            "k_cam=4": {
+              "allocation_agreement": 0.1875,
+              "topk_overlap": 0.9296875
+            },
+            "k_cam=8": {
+              "allocation_agreement": 0.3125,
+              "topk_overlap": 0.98046875
+            }
+          },
+          "rel_magnitude_error": 0.022332592651059965,
+          "rel_vector_error": 0.0690082562467631,
+          "spearman_vs_exact_gains": 0.9719116568914953,
+          "spearman_vs_exact_gains_n": 16,
+          "spearman_vs_exact_scores": 0.9905837609970672,
+          "spearman_vs_exact_scores_n": 16
+        },
+        "held_out": {
+          "directional_error": 1.2733824619876528,
+          "n": 16,
+          "per_budget": {
+            "k_cam=2": {
+              "allocation_agreement": 0.0,
+              "topk_overlap": 0.140625
+            },
+            "k_cam=4": {
+              "allocation_agreement": 0.0,
+              "topk_overlap": 0.234375
+            },
+            "k_cam=8": {
+              "allocation_agreement": 0.0,
+              "topk_overlap": 0.6875
+            }
+          },
+          "rel_magnitude_error": 2.724714190186538,
+          "rel_vector_error": 4.120185241173838,
+          "spearman_vs_exact_gains": -0.28363965689379483,
+          "spearman_vs_exact_gains_n": 16,
+          "spearman_vs_exact_scores": -0.25559017595307915,
+          "spearman_vs_exact_scores_n": 16
+        }
+      },
+      "columns": [
+        "latent[d]",
+        "intercept"
+      ],
+      "condition": "A_deployment",
+      "fit": {
+        "directional_error": 0.0027934139782260226,
+        "n": 16,
+        "per_budget": {
+          "k_cam=2": {
+            "allocation_agreement": 0.6875,
+            "topk_overlap": 0.78125
+          },
+          "k_cam=4": {
+            "allocation_agreement": 0.1875,
+            "topk_overlap": 0.9296875
+          },
+          "k_cam=8": {
+            "allocation_agreement": 0.3125,
+            "topk_overlap": 0.98046875
+          }
+        },
+        "rel_magnitude_error": 0.022332592651059555,
+        "rel_vector_error": 0.0690082562467632,
+        "spearman_vs_exact_gains": 0.9719116568914953,
+        "spearman_vs_exact_gains_n": 16,
+        "spearman_vs_exact_scores": 0.9905837609970672,
+        "spearman_vs_exact_scores_n": 16
+      },
+      "fit_gate": {
+        "E_rec": 0.0720576965324402,
+        "energy": 0.5660533905029297,
+        "gate": "relative",
+        "passed": false,
+        "threshold": 0.01
+      },
+      "held_out": {
+        "directional_error": 1.2733824619876528,
+        "n": 16,
+        "per_budget": {
+          "k_cam=2": {
+            "allocation_agreement": 0.0,
+            "topk_overlap": 0.140625
+          },
+          "k_cam=4": {
+            "allocation_agreement": 0.0,
+            "topk_overlap": 0.234375
+          },
+          "k_cam=8": {
+            "allocation_agreement": 0.0,
+            "topk_overlap": 0.6875
+          }
+        },
+        "rel_magnitude_error": 2.7247141901865533,
+        "rel_vector_error": 4.120185241173853,
+        "spearman_vs_exact_gains": -0.28363965689379483,
+        "spearman_vs_exact_gains_n": 16,
+        "spearman_vs_exact_scores": -0.25559017595307915,
+        "spearman_vs_exact_scores_n": 16
+      },
+      "lstsq": {
+        "driver": "gelsd",
+        "full_row_rank": true,
+        "n_cols": 12,
+        "n_rows": 16,
+        "rank": 12,
+        "rcond": 1e-12,
+        "residual_sum_of_squares": 0.002939125602460934,
+        "singular_values": [
+          11.78773145226785,
+          0.5824935853790236,
+          0.3771425187864533,
+          0.20776564421141022,
+          0.05994809856409353,
+          0.05614046188707061,
+          0.04281681401127466,
+          0.03779276368820201,
+          0.01779089536376684,
+          0.009740118383141011,
+          0.0032415581788463417,
+          0.0016684489431083728
+        ]
+      },
+      "n_columns": 12,
+      "scalar_calibration": {
+        "a_star": 0.999999999999996,
+        "undefined": null
+      }
+    },
+    {
+      "calibrated": {
+        "fit": {
+          "directional_error": 0.00195806796559176,
+          "n": 16,
+          "per_budget": {
+            "k_cam=2": {
+              "allocation_agreement": 0.5,
+              "topk_overlap": 0.828125
+            },
+            "k_cam=4": {
+              "allocation_agreement": 0.25,
+              "topk_overlap": 0.9140625
+            },
+            "k_cam=8": {
+              "allocation_agreement": 0.3125,
+              "topk_overlap": 0.9765625
+            }
+          },
+          "rel_magnitude_error": 0.022367910697937584,
+          "rel_vector_error": 0.06392591016925107,
+          "spearman_vs_exact_gains": 0.9704682917888561,
+          "spearman_vs_exact_gains_n": 16,
+          "spearman_vs_exact_scores": 0.9952116935483869,
+          "spearman_vs_exact_scores_n": 16
+        },
+        "held_out": {
+          "directional_error": 0.791177319995694,
+          "n": 16,
+          "per_budget": {
+            "k_cam=2": {
+              "allocation_agreement": 0.0625,
+              "topk_overlap": 0.296875
+            },
+            "k_cam=4": {
+              "allocation_agreement": 0.0,
+              "topk_overlap": 0.2265625
+            },
+            "k_cam=8": {
+              "allocation_agreement": 0.0,
+              "topk_overlap": 0.6875
+            }
+          },
+          "rel_magnitude_error": 1.8743889482974692,
+          "rel_vector_error": 2.8398250849497635,
+          "spearman_vs_exact_gains": 0.15521043491140388,
+          "spearman_vs_exact_gains_n": 16,
+          "spearman_vs_exact_scores": 0.1752199413489736,
+          "spearman_vs_exact_scores_n": 16
+        }
+      },
+      "columns": [
+        "latent[d]",
+        "budget",
+        "horizon",
+        "intercept"
+      ],
+      "condition": "B_ctx_legitimate",
+      "fit": {
+        "directional_error": 0.0019580679655917463,
+        "n": 16,
+        "per_budget": {
+          "k_cam=2": {
+            "allocation_agreement": 0.5,
+            "topk_overlap": 0.828125
+          },
+          "k_cam=4": {
+            "allocation_agreement": 0.25,
+            "topk_overlap": 0.9140625
+          },
+          "k_cam=8": {
+            "allocation_agreement": 0.3125,
+            "topk_overlap": 0.9765625
+          }
+        },
+        "rel_magnitude_error": 0.02236791069793758,
+        "rel_vector_error": 0.06392591016925107,
+        "spearman_vs_exact_gains": 0.9704682917888561,
+        "spearman_vs_exact_gains_n": 16,
+        "spearman_vs_exact_scores": 0.9952116935483869,
+        "spearman_vs_exact_scores_n": 16
+      },
+      "fit_gate": {
+        "E_rec": 0.06674376995891701,
+        "energy": 0.5660533905029297,
+        "gate": "relative",
+        "passed": false,
+        "threshold": 0.01
+      },
+      "held_out": {
+        "directional_error": 0.791177319995694,
+        "n": 16,
+        "per_budget": {
+          "k_cam=2": {
+            "allocation_agreement": 0.0625,
+            "topk_overlap": 0.296875
+          },
+          "k_cam=4": {
+            "allocation_agreement": 0.0,
+            "topk_overlap": 0.2265625
+          },
+          "k_cam=8": {
+            "allocation_agreement": 0.0,
+            "topk_overlap": 0.6875
+          }
+        },
+        "rel_magnitude_error": 1.8743889482974703,
+        "rel_vector_error": 2.8398250849497653,
+        "spearman_vs_exact_gains": 0.15521043491140388,
+        "spearman_vs_exact_gains_n": 16,
+        "spearman_vs_exact_scores": 0.1752199413489736,
+        "spearman_vs_exact_scores_n": 16
+      },
+      "lstsq": {
+        "driver": "gelsd",
+        "full_row_rank": true,
+        "n_cols": 12,
+        "n_rows": 16,
+        "rank": 12,
+        "rcond": 1e-12,
+        "residual_sum_of_squares": 0.0025216154891534604,
+        "singular_values": [
+          12.305425056875448,
+          0.5878942407905094,
+          0.33131598871018925,
+          0.24200815369278084,
+          0.1150941968772718,
+          0.0717608760521439,
+          0.05900007553039528,
+          0.03405150933776795,
+          0.016080304419564925,
+          0.007255904044333376,
+          0.0040038737697103265,
+          0.0026696117880472673
+        ]
+      },
+      "n_columns": 12,
+      "scalar_calibration": {
+        "a_star": 0.9999999999999994,
+        "undefined": null
+      }
+    },
+    {
+      "calibrated": {
+        "fit": {
+          "directional_error": 0.0021934852778025607,
+          "n": 16,
+          "per_budget": {
+            "k_cam=2": {
+              "allocation_agreement": 0.5,
+              "topk_overlap": 0.75
+            },
+            "k_cam=4": {
+              "allocation_agreement": 0.3125,
+              "topk_overlap": 0.90625
+            },
+            "k_cam=8": {
+              "allocation_agreement": 0.25,
+              "topk_overlap": 0.98046875
+            }
+          },
+          "rel_magnitude_error": 0.02048912518101074,
+          "rel_vector_error": 0.06663052075243558,
+          "spearman_vs_exact_gains": 0.9685208944281523,
+          "spearman_vs_exact_gains_n": 16,
+          "spearman_vs_exact_scores": 0.9910419721407623,
+          "spearman_vs_exact_scores_n": 16
+        },
+        "held_out": {
+          "directional_error": 1.0645927935146013,
+          "n": 16,
+          "per_budget": {
+            "k_cam=2": {
+              "allocation_agreement": 0.125,
+              "topk_overlap": 0.1875
+            },
+            "k_cam=4": {
+              "allocation_agreement": 0.0,
+              "topk_overlap": 0.296875
+            },
+            "k_cam=8": {
+              "allocation_agreement": 0.0,
+              "topk_overlap": 0.75390625
+            }
+          },
+          "rel_magnitude_error": 1.9001185648051493,
+          "rel_vector_error": 3.1317544829116772,
+          "spearman_vs_exact_gains": 0.17309413751296052,
+          "spearman_vs_exact_gains_n": 16,
+          "spearman_vs_exact_scores": 0.17457844574780054,
+          "spearman_vs_exact_scores_n": 16
+        }
+      },
+      "columns": [
+        "latent[d]",
+        "future_actions[H*7]",
+        "intercept"
+      ],
+      "condition": "B_log_privileged",
+      "fit": {
+        "directional_error": 0.0021934852778025954,
+        "n": 16,
+        "per_budget": {
+          "k_cam=2": {
+            "allocation_agreement": 0.5,
+            "topk_overlap": 0.75
+          },
+          "k_cam=4": {
+            "allocation_agreement": 0.3125,
+            "topk_overlap": 0.90625
+          },
+          "k_cam=8": {
+            "allocation_agreement": 0.25,
+            "topk_overlap": 0.98046875
+          }
+        },
+        "rel_magnitude_error": 0.020489125181010547,
+        "rel_vector_error": 0.0666305207524356,
+        "spearman_vs_exact_gains": 0.9685208944281523,
+        "spearman_vs_exact_gains_n": 16,
+        "spearman_vs_exact_scores": 0.9910419721407623,
+        "spearman_vs_exact_scores_n": 16
+      },
+      "fit_gate": {
+        "E_rec": 0.07021609777574707,
+        "energy": 0.5660533905029297,
+        "gate": "relative",
+        "passed": false,
+        "threshold": 0.01
+      },
+      "held_out": {
+        "directional_error": 1.0645927935146013,
+        "n": 16,
+        "per_budget": {
+          "k_cam=2": {
+            "allocation_agreement": 0.125,
+            "topk_overlap": 0.1875
+          },
+          "k_cam=4": {
+            "allocation_agreement": 0.0,
+            "topk_overlap": 0.296875
+          },
+          "k_cam=8": {
+            "allocation_agreement": 0.0,
+            "topk_overlap": 0.75390625
+          }
+        },
+        "rel_magnitude_error": 1.9001185648051517,
+        "rel_vector_error": 3.131754482911679,
+        "spearman_vs_exact_gains": 0.17309413751296052,
+        "spearman_vs_exact_gains_n": 16,
+        "spearman_vs_exact_scores": 0.17457844574780054,
+        "spearman_vs_exact_scores_n": 16
+      },
+      "lstsq": {
+        "driver": "gelsd",
+        "full_row_rank": true,
+        "n_cols": 12,
+        "n_rows": 16,
+        "rank": 12,
+        "rcond": 1e-12,
+        "residual_sum_of_squares": 0.0027908132501762006,
+        "singular_values": [
+          10.259631942043706,
+          1.9735390153235586,
+          1.1421330842973254,
+          0.3843089242136077,
+          0.22346980524475832,
+          0.19761001608878706,
+          0.11537896191384227,
+          0.06444311162830388,
+          0.03687196950490317,
+          0.028324018421498693,
+          0.018708270233136787,
+          0.007588464426646211
+        ]
+      },
+      "n_columns": 12,
+      "scalar_calibration": {
+        "a_star": 0.9999999999999992,
+        "undefined": null
+      }
+    },
+    {
+      "calibrated": {
+        "fit": {
+          "directional_error": 0.016279171872552824,
+          "n": 16,
+          "per_budget": {
+            "k_cam=2": {
+              "allocation_agreement": 0.5,
+              "topk_overlap": 0.84375
+            },
+            "k_cam=4": {
+              "allocation_agreement": 0.1875,
+              "topk_overlap": 0.859375
+            },
+            "k_cam=8": {
+              "allocation_agreement": 0.3125,
+              "topk_overlap": 0.953125
+            }
+          },
+          "rel_magnitude_error": 0.05335864750294164,
+          "rel_vector_error": 0.16751692359507472,
+          "spearman_vs_exact_gains": 0.9369730571847505,
+          "spearman_vs_exact_gains_n": 16,
+          "spearman_vs_exact_scores": 0.9651988636363633,
+          "spearman_vs_exact_scores_n": 16
+        },
+        "held_out": {
+          "directional_error": 0.9672988459723855,
+          "n": 16,
+          "per_budget": {
+            "k_cam=2": {
+              "allocation_agreement": 0.0625,
+              "topk_overlap": 0.421875
+            },
+            "k_cam=4": {
+              "allocation_agreement": 0.0,
+              "topk_overlap": 0.4453125
+            },
+            "k_cam=8": {
+              "allocation_agreement": 0.0,
+              "topk_overlap": 0.78125
+            }
+          },
+          "rel_magnitude_error": 1.7696021433556828,
+          "rel_vector_error": 2.922070768589222,
+          "spearman_vs_exact_gains": 0.22911830909257147,
+          "spearman_vs_exact_gains_n": 16,
+          "spearman_vs_exact_scores": 0.24241660557184747,
+          "spearman_vs_exact_scores_n": 16
+        }
+      },
+      "columns": [
+        "latent[d]",
+        "target_state[H*14]",
+        "target_visual[H*Dv]",
+        "intercept"
+      ],
+      "condition": "C_privileged",
+      "fit": {
+        "directional_error": 0.01627917187255285,
+        "n": 16,
+        "per_budget": {
+          "k_cam=2": {
+            "allocation_agreement": 0.5,
+            "topk_overlap": 0.84375
+          },
+          "k_cam=4": {
+            "allocation_agreement": 0.1875,
+            "topk_overlap": 0.859375
+          },
+          "k_cam=8": {
+            "allocation_agreement": 0.3125,
+            "topk_overlap": 0.953125
+          }
+        },
+        "rel_magnitude_error": 0.053358647502941565,
+        "rel_vector_error": 0.1675169235950747,
+        "spearman_vs_exact_gains": 0.9369730571847505,
+        "spearman_vs_exact_gains_n": 16,
+        "spearman_vs_exact_scores": 0.9651988636363633,
+        "spearman_vs_exact_scores_n": 16
+      },
+      "fit_gate": {
+        "E_rec": 0.18555699348017474,
+        "energy": 0.5660533905029297,
+        "gate": "relative",
+        "passed": false,
+        "threshold": 0.01
+      },
+      "held_out": {
+        "directional_error": 0.9672988459723855,
+        "n": 16,
+        "per_budget": {
+          "k_cam=2": {
+            "allocation_agreement": 0.0625,
+            "topk_overlap": 0.421875
+          },
+          "k_cam=4": {
+            "allocation_agreement": 0.0,
+            "topk_overlap": 0.4453125
+          },
+          "k_cam=8": {
+            "allocation_agreement": 0.0,
+            "topk_overlap": 0.78125
+          }
+        },
+        "rel_magnitude_error": 1.7696021433556839,
+        "rel_vector_error": 2.9220707685892235,
+        "spearman_vs_exact_gains": 0.22911830909257147,
+        "spearman_vs_exact_gains_n": 16,
+        "spearman_vs_exact_scores": 0.24241660557184747,
+        "spearman_vs_exact_scores_n": 16
+      },
+      "lstsq": {
+        "driver": "gelsd",
+        "full_row_rank": true,
+        "n_cols": 12,
+        "n_rows": 16,
+        "rank": 12,
+        "rcond": 1e-12,
+        "residual_sum_of_squares": 0.019490009481088,
+        "singular_values": [
+          16.81207586273482,
+          13.983073929129343,
+          10.014498396685896,
+          8.96185361416915,
+          3.497405096238559,
+          2.7645387717452112,
+          2.0295480435518285,
+          1.9428268097923338,
+          1.5930442451917732,
+          1.5722064641431452,
+          0.8325464418651208,
+          0.6479814129785064
+        ]
+      },
+      "n_columns": 12,
+      "scalar_calibration": {
+        "a_star": 0.9999999999999996,
+        "undefined": null
+      }
+    }
+  ],
+  "created_utc": "2026-10-04T22:11:00Z",
+  "device": "cuda",
+  "fit_episodes": [
+    "36d38afab4581769b43fef4a",
+    "5413a32231a0f718f4f4a92a",
+    "8195434653a21c561a8597b8",
+    "bfa4d828bbb47a4c0a94fe84"
+  ],
+  "fit_window_indices": [
+    11376,
+    11377,
+    11378,
+    11379,
+    17326,
+    17327,
+    17328,
+    17329,
+    27565,
+    27566,
+    27567,
+    27568,
+    40268,
+    40269,
+    40270,
+    40271
+  ],
+  "heldout_episodes": [
+    "12e0c7ed9e3a81a5be6402ca",
+    "7fd192a03531a9b5c1dfbff7",
+    "9ecbd0dfdea393be8410d19d",
+    "faeeafbdcead0fa8d481c146"
+  ],
+  "heldout_window_indices": [
+    4757,
+    4758,
+    4759,
+    4760,
+    27391,
+    27392,
+    27393,
+    27394,
+    32154,
+    32155,
+    32156,
+    32157,
+    54105,
+    54106,
+    54107,
+    54108
+  ],
+  "mode": "real",
+  "n_fit_windows": 16,
+  "n_heldout_windows": 16,
+  "rcond": 1e-12,
+  "seed": 0,
+  "teacher": {
+    "missing_keys": [],
+    "patch_dropout_trained": true,
+    "path": "/content/local_runs/runs/spatial_patches_20261003/best_spatial.pt",
+    "sha256": "cfbca4406f13df55871731d2d02feb58498d26e66f240ea28d449c42ca5f337b",
+    "unexpected_keys": []
+  }
+}

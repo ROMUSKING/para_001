@@ -265,6 +265,21 @@ def run(args, device: torch.device) -> dict:
                           patches_per_camera, device)
     curvature_head = trained["curvature_head"]
 
+    # Train-mean co-state over the head-training batches (train split only): the ρ-attribution
+    # reference for "what if the student predicted the mean target". Diagnostic only, declared
+    # as such — it sees train targets in aggregate, never eval windows.
+    with torch.enable_grad():
+        train_exact_sum, train_exact_count = None, 0
+        for train_batch in stream_head_batches():
+            train_bundle = cotangent_bundle(model, train_batch)
+            batch_sum = train_bundle.exact_costate.detach().sum(dim=0)
+            train_exact_sum = batch_sum if train_exact_sum is None else train_exact_sum + batch_sum
+            train_exact_count += train_bundle.exact_costate.shape[0]
+            del train_batch
+    train_mean_costate = (train_exact_sum / max(1, train_exact_count)).to(device)
+    print(f"train-mean costate norm: {float(train_mean_costate.norm()):.4f} "
+          f"over {train_exact_count} train windows", flush=True)
+
     hidden_choices = [int(h) for h in args.sweep_hidden.split(",") if h.strip()]
     step_choices = [int(s) for s in args.sweep_steps.split(",") if s.strip()]
     margin_choices = [float(m) for m in args.ranking_margin_scales.split(",") if m.strip()]
@@ -362,6 +377,17 @@ def run(args, device: torch.device) -> dict:
                         "curvature_exact_costate": curvature_scores(bundle.exact_costate, hessian_hat, delta_z),
                         # exact lambda, no H -> the pure autograd reference in scorer form
                         "first_order_exact_costate": curvature_scores(bundle.exact_costate, zero_hessian, delta_z),
+                        # --- rho attribution (6C review): same scorer, only lambda varies ---
+                        # Zero and train-mean co-states pin the floor and the mean-prediction
+                        # ceiling: agreement here cannot come from the frozen curvature term
+                        # (identically zero) or from ranking skill (constant scores). The
+                        # train mean sees train targets in aggregate only — diagnostic,
+                        # declared as such, never a deployable policy.
+                        "first_order_zero": curvature_scores(
+                            torch.zeros_like(costate_hat), zero_hessian, delta_z),
+                        "first_order_trainmean": curvature_scores(
+                            train_mean_costate.unsqueeze(0).expand(windows, -1),
+                            zero_hessian, delta_z),
                         # --- WS1a/WS1b (codex review): same class, same inputs, same data --------
                         # as the production head; only the training objective differs. Reported
                         # alongside, never gated: a failure here does NOT license an input-

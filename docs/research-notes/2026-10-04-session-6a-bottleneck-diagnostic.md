@@ -296,7 +296,75 @@ are not separated — but both C and D trained the full 300 steps under which A/
 ρ≈0.1, so equal-budget comparison stands. The margin-1000 D degradation reads as optimisation
 instability at high demanded separation, not as signal.
 
-## 10. Reproduce
+## 10. Norm controls and pair panel: first read with systems precision (v1 records; v2 LANDED — see below)
+
+**Norm (same windows, realised J, all budgets).** Postencoder beats preview everywhere:
+k=2: 0.003731 vs 0.004593; k=4: 0.003461 vs 0.004436; k=8: 0.002518 vs 0.003112
+(trimmed regret; ~19–22% gaps). Timing on L4: preview 0.561 ms/frame, DINOv2 re-encode
+9.299 ms/frame (17×), top-k 0.515 ms, masked rollout 1.560 ms. Systems reading, per the
+review: postencoder selection cannot recover encoding work already performed, but it CAN
+save downstream work whenever T_downstream(M) − T_downstream(k) exceeds selection +
+packing — a downstream-compute reduction claim, never an encoder/camera-acquisition one.
+The 0.56/9.30 figures are named-arm timings (cached-token scoring vs streamed-frame
+processing), not comparable full-pipeline measurements. And mask-on-cached-tokens does not
+establish early-pruning quality — that needs the actual pre-encoder execution path.
+
+**Pairs (v1 batch-mean records; per-window rerun in flight).** 200-pair exact manifest,
+800 batch-cell entries: signed mean ε 1.23e-04, mean|ε| 4.36e-04; signed mean pair gain
+3.74e-05, mean|gain| 8.36e-04. The "12×" headline is mean|ε| over the *signed* mean gain —
+a denominator that cancels toward zero; against mean|gain| the ratio is 0.52. Both
+denominators go on the record: interactions are large next to net gains, about half of
+typical absolute gains. Same-budget (old, budget-mismatched 4-vs-2 form — superseded):
+−0.0092 trimmed. The rerun replaces it with measured 2-patch joints on both sides plus
+episode-level paired uncertainty.
+
+**v2 landed** (`pair_interactions_v2/`, 32 windows, per-window rows committed): ranking
+fidelity 0.9887 — summed singletons order measured pairs near-perfectly within windows;
+residual interaction fraction 0.52 (half the spread is pair-specific, rarely flips order).
+Same-budget measured-only subset (n=6) ties at +0.00001 (Wilcoxon/full stats in the Exp-2
+note §3; headline −0.00224 is fallback-driven). Net revision of this section: additive
+*ordering* is excellent; absolute magnitudes are not; the best-pair-vs-top-set decision
+is unmeasured, not negative.
+
+**Residual headroom H_k (existing artefacts only; recomputation command:**
+`python -c` over `pair_interactions_v2` rows for k=2 plus the committed bottleneck/6A
+summaries for k=4/8/16 — full command in WORKLOG 6H):**
+
+| total k | oracle-singleton regret | learned-singleton regret | singleton gap | residual joint headroom |
+|---|---|---|---|---|
+| 4 | 0.000034 (exact gains, bottleneck 192win) | 0.004753 (direct_ranking, 6A 3-seed mean) | 0.00472 | — (pairs measured at k=2 only) |
+| 8 | 0.000055 | 0.004319 | 0.00426 | — |
+| 16 | 0.000038 | 0.002996 | 0.00296 | — |
+| 2 | additive ordering takes measured-best pair on **32/32** windows | n/a (6A budgets start at k=4) | — | **0.000000** |
+
+Different window sets per artefact (192 vs 1200 vs 32; same backbone, checkpoint, split —
+stated, not pooled). No pair-to-larger-budget extrapolation. Reading: the learnable gap
+is ~100× (singleton estimation); the joint residual at k=2 is zero on measured windows.
+Conditional modelling must therefore justify itself as *learnability*, not as fixing a
+demonstrated joint-decision deficit at k=2.
+
+## 11. Frozen-DINOv2 control executed: pixel-masked early pruning (2026-10-05)
+
+Artefact: `results/benchmarks/early_pruning/early_pruning_summary.json` (32 windows,
+32 episodes, L4; backbone −2.1425 again). Runner: `scripts/diagnose_early_pruning.py`.
+
+Same windows, same backbone, same budgets — only the token source differs:
+
+| k_cam | full-image tokens | preview-pruned pixels → tokens |
+|---|---|---|
+| 2 | 0.004259 | 0.005113 |
+| 4 | 0.003957 | 0.004877 |
+| 8 | 0.002808 | 0.003464 |
+
+Pruning pixels pre-encoder costs ~20–23% regret at every budget: dropping image regions
+removes information the encoder would otherwise contextualize, and the surviving tokens
+do not recover it. Timing (L4, preregistered): preview 0.62 ms/frame, DINOv2 re-encode
+9.32 ms/frame (15×), top-k 0.54 ms. This is a quality effect with full token counts, not
+a FLOP saving — true token-dropping needs DINOv2 surgery, explicitly out of scope. The
+norm story is now complete on all three legs: postencoder norm wins on quality, preview
+norm is cheaper but worse, and pre-encoder pixel pruning degrades quality ~20%.
+
+## 12. Reproduce
 
 ```bash
 python scripts/train_spatial_patch_dropout_backbone.py --cache-dir /content/spatial_cache_e3_1 \

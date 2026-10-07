@@ -1,0 +1,112 @@
+# Peer-review register: execution-gating reviews that arrive outside the rotating pool.
+#
+# The rotating critic (`scripts/pick_peer_critic.py`, `peer-critic-log.csv`) only records
+# reviews by the six pool agents. An external review delivered with a build/run decision uses
+# this register instead, so the rotation semantics are never corrupted by a false critic name.
+# Full text lives alongside: docs/plans/<date>-<topic>-peer-review.md.
+
+reviews:
+  - date: '2026-10-04'
+    milestone: session_6c
+    artefact: docs/plans/2026-10-04-session-6c-learnability-audit-plan.md
+    reviewer: ChatGPT
+    decision: CHANGES_REQUESTED
+    execution_approved: false
+    experiments_run_by_reviewer: false
+    repository_code_verified_by_reviewer: false
+    required_revisions: [R1, R2, R3, R4, R5, R6, R7, R8, R9, R10]
+    retired_comparisons_reopened: []
+    record: docs/plans/2026-10-04-session-6c-peer-review.md
+  - date: '2026-10-04'
+    milestone: session_6c_exp2_narrowing
+    artefact: docs/research-notes/2026-10-04-session-6c-information-gap.md
+    reviewer: ChatGPT
+    decision: CORRECT_ROUTING
+    execution_approved: false
+    experiments_run_by_reviewer: false
+    repository_code_verified_by_reviewer: false
+    required_revisions: [d-row-reconciliation, zero-fill-semantics, narrowed-numerical-conclusion,
+      pair-ranking-reanalysis, conditional-gain-next, norm-systems-precision, work-package-order,
+      replacement-conclusion]
+    retired_comparisons_reopened: []
+    record: docs/plans/2026-10-04-session-6c-peer-review-3.md
+  - date: '2026-10-05'
+    milestone: session_6c_hessian_closure
+    artefact: docs/research-notes/2026-10-05-session-6c-mechanism-check.md
+    reviewer: ChatGPT
+    decision: CLOSE_BRANCH
+    execution_approved: false
+    experiments_run_by_reviewer: false
+    repository_code_verified_by_reviewer: false
+    required_revisions: [narrow-taylor-statement, ab-identity-reporting, two-gap-framing,
+      benefit-targets, headroom-table-first, frozen-dinov2-before-expansion,
+      protected-evaluation, replacement-conclusion]
+    retired_comparisons_reopened: []
+    record: docs/plans/2026-10-04-session-6c-peer-review-4.md
+  - date: '2026-10-05'
+    milestone: session_6c_conditional_reaim
+    artefact: docs/research-notes/2026-10-05-session-6c-mechanism-check.md
+    reviewer: ChatGPT
+    decision: AMEND_SUCCESS_CRITERION
+    execution_approved: false
+    experiments_run_by_reviewer: false
+    repository_code_verified_by_reviewer: false
+    required_revisions: [close-hessian-and-norm, taylor-narrowing, ab-identity,
+      two-gap-headroom-table, benefit-targets-frozen, conditional-vs-learned-singleton,
+      protected-eval-before-selection, replacement-open-item]
+    retired_comparisons_reopened: []
+    record: docs/plans/2026-10-05-session-6c-peer-review-5.md
+    note: decision summaries (full verbatim in conversation history)
+  - date: '2026-10-05'
+    milestone: Session-6C-conditional-analysis-fix
+    artefact: scripts/train_conditional_allocator.py
+    reviewer: codex
+    decision: CHANGES_REQUESTED
+    execution_approved: false
+    experiments_run_by_reviewer: false
+    repository_code_verified_by_reviewer: false
+    required_revisions: [theta-fallback-implemented, per-window-rows-plus-seed,
+      pipeline-not-causal-without-context-blind-control, quota-legal-training-cover,
+      report-only-cost-gate-plus-tail-guardrail, reread-acknowledgment]
+    retired_comparisons_reopened: []
+    record: docs/plans/2026-10-05-session-6c-peer-review-6.md
+    note: full review text in /tmp/opencode/codex_cond2_review.txt (session workspace, not committed)
+  - date: '2026-10-05'
+    milestone: G-H2-decision
+    artefact: docs/research-notes/2026-10-05-g-h2-decision.md
+    reviewer: kilo
+    decision: CHANGES_REQUESTED
+    execution_approved: false
+    experiments_run_by_reviewer: false
+    repository_code_verified_by_reviewer: false
+    required_revisions: [critic-realisation-collapse-not-saturation, class-inconclusive-not-teacher-only,
+      s4-fully-excluded, b2-cell-relabelled, d4-m64-cell-restored, deviations-logged]
+    retired_comparisons_reopened: []
+    record: docs/plans/2026-10-05-g-h2-peer-review.md
+    note: raw kilo event stream uncommitted (session workspace only)
+  - date: '2026-10-04'
+    milestone: session_6c_exp1_routing
+    artefact: docs/research-notes/2026-10-04-session-6c-experiment-1-fitting.md
+    reviewer: ChatGPT
+    decision: CORRECT_ROUTING
+    execution_approved: false
+    experiments_run_by_reviewer: false
+    repository_code_verified_by_reviewer: false
+    required_revisions: [interpretation-table, smoothl1-hypothesis-wording, rho-attribution,
+      preflight-ABC, random-gains-test-check, gated-exp2-routing, work-package-order,
+      base-commit-plus-content-hash, replacement-conclusion]
+    retired_comparisons_reopened: []
+    record: docs/plans/2026-10-04-session-6c-peer-review-2.md
+  - date: '2026-10-05'
+    milestone: session_6c_hessian_closure
+    artefact: docs/research-notes/2026-10-05-session-6c-mechanism-check.md
+    reviewer: ChatGPT
+    decision: CLOSE_BRANCH
+    execution_approved: false
+    experiments_run_by_reviewer: false
+    repository_code_verified_by_reviewer: false
+    required_revisions: [narrow-taylor-statement, ab-identity-reporting, two-gap-framing,
+      benefit-targets, headroom-table-first, frozen-dinov2-before-expansion,
+      protected-evaluation, replacement-conclusion]
+    retired_comparisons_reopened: []
+    record: docs/plans/2026-10-04-session-6c-peer-review-4.md
