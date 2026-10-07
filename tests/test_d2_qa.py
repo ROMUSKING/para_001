@@ -1,12 +1,15 @@
 """D2-QA Rung-0 tests: loader discipline, ranker sanity, gate maths, tripwires."""
 
 import json
+from pathlib import Path
 
 import numpy as np
 import pytest
 
 from adjointrwm.analysis.allocation import assert_predictions_ignore_futures
 from adjointrwm.domains import qa_context as qa
+
+ROOT = Path(__file__).resolve().parent.parent
 
 
 def _rec(n_docs=6, supports=(0, 2), question="who developed the series"):
@@ -98,3 +101,44 @@ def test_fixed_policies_exclude_dynamic_rankers():
     """best-fixed is chosen from question-blind policies only (plan §2 row 6)."""
     assert set(qa.FIXED_POLICIES) == {"first_k", "longest_first", "doc_round_robin"}
     assert "bm25" not in qa.FIXED_POLICIES and "tfidf" not in qa.FIXED_POLICIES
+
+
+
+def _load_bridge_script():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "run_d2_qa_reader_bridge", ROOT / "scripts/run_d2_qa_reader_bridge.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_exact_match_accepts_aliases_and_ignores_case_and_articles():
+    module = _load_bridge_script()
+    assert module.exact_match("Walt Disney", ["Walt Disney", "Disney"])
+    assert module.exact_match("  the walt  DISNEY! ", ["Walt Disney"])
+    assert module.exact_match("Disney", ["Walt Disney", "Disney"])
+    assert not module.exact_match("Mickey Mouse", ["Walt Disney", "Disney"])
+
+
+def test_token_f1_partial_credit():
+    module = _load_bridge_script()
+    assert module.token_f1("Walt Disney", ["Walt Disney"]) == pytest.approx(1.0)
+    assert module.token_f1("nothing relevant", ["Walt Disney"]) == pytest.approx(0.0)
+    partial = module.token_f1("Disney company", ["Walt Disney"])
+    assert 0.0 < partial < 1.0
+
+
+def test_prompt_contains_ranked_titled_paragraphs():
+    module = _load_bridge_script()
+    prompt = module.build_prompt("Q?", ["aaa", "bbb", "ccc"], [2, 0], ["T2", "T0", "T1"])
+    assert prompt.index("[T1]") < prompt.index("[T2]")
+    assert "ccc" in prompt and "aaa" in prompt and "Q?" in prompt
+
+
+def test_smoke_malformed_definition():
+    module = _load_bridge_script()
+    assert module.is_malformed("", "Q?")
+    assert module.is_malformed("Q?", "Q?")
+    assert not module.is_malformed("Walt Disney", "Who developed it?")

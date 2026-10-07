@@ -56,6 +56,10 @@ def load_questions(path: str, split: str) -> list:
                 "titles": [p.get("title", "") for p in rec["paragraphs"]],
                 "supports": supports,
                 "split": split,
+                # Scoring-only fields (EM): never passed to selection functions.
+                # The input-boundary tests pin that rankers read question+texts only.
+                "answer": rec.get("answer", ""),
+                "answer_aliases": rec.get("answer_aliases", []) or [],
             })
     return records
 
