@@ -73,3 +73,29 @@ deviations:
       date: 2026-10-04
       recommendation: Accept intent with four fixes, all applied (symmetric voiding; rank-preservation
         rejection of option A; in-spec dated amendment plus this entry; retired-policy gate fencing).
+  - id: DEV-20261005-04
+    date: 2026-10-05
+    milestone: G-H2 programme decision
+    planned: |
+      G-H2 recorded through the comprehensive plan's formal confirmatory H2 (preregistered
+      delta_H2_min, w_H2, alpha-spending, 8-32 paired seeds) with a single exit class carrying
+      confirmatory force.
+    actual: |
+      G-H2 recorded at diagnostic strength in docs/research-notes/2026-10-05-g-h2-decision.md:
+      no confirmatory test ever ran, so the per-domain mapping is load-bearing and the single
+      programme class (INCONCLUSIVE, teacher-only hypothesis) is a resource-allocation judgement.
+      S4/S5 excluded per the audit's blocking remediation; B2 direct arm judged under-realised on
+      the regret-collapse trigger without its loss curve (overturnable by the §1893 probes).
+    rationale: |
+      Forcing a confirmatory-strength class from 3-5-seed benchmarks would overstate; INCONCLUSIVE
+      is what unlocks only the bounded rescue the roadmap prescribes. Judgement calls flagged
+      in-note so probes can overturn them with data.
+    impact: |
+      N4 stays closed; production P5+ stays gated; paper track B waits on a verdict. Immediate
+      bounded next step: §1893 critic convergence/capacity probes on the B2 setup (<=20% extra
+      compute), then the preregistered confirmatory test if the critic realises.
+    peer_review:
+      reviewer: kilo (plan agent, kilo-auto/free)
+      date: 2026-10-05
+      recommendation: CHANGES_REQUESTED with six findings, all applied (collapse-not-saturation,
+        inconclusive-not-teacher-only, S4 excluded, B2 relabelled, m64 restored, deviations logged).

@@ -1,0 +1,122 @@
+{
+  "arms": {
+    "dinov2_token_norm_postencoder": "L2 norm of cached DINOv2 x_norm_patchtokens (quality reference only)",
+    "raw_gradient_energy_preview": "grayscale Sobel energy 4x4/camera from raw frames; no encoder"
+  },
+  "backbone": {
+    "path": "/content/local_runs/runs/spatial_patches_20261003/best_spatial.pt",
+    "sha256": "cfbca4406f13df55871731d2d02feb58498d26e66f240ea28d449c42ca5f337b"
+  },
+  "benchmark": "session_6c_norm_controls",
+  "caveats": [
+    "Postencoder norms reuse the same backbone J as every other selector: shared fate.",
+    "Cache-assisted deployment needs its refresh cost declared (see dinov2 re-encode)."
+  ],
+  "created_utc": "2026-10-04T21:38:31Z",
+  "device": "cuda",
+  "episodes": [
+    "0157ed6b7c5a7f1564726931",
+    "0d44548eb18346cc66c0e0d9",
+    "150f9d8158d3de360dc66132",
+    "1e4a3aac77b84b3d562f7eaf",
+    "27fc4c0f924ba4d568da1bdc",
+    "2af6c9d46df56c1dd41a7bb1",
+    "2b4520d36cbafda5c27173a0",
+    "35829df94844776169016a70",
+    "3f2537abd7804481341214b9",
+    "3fbec6aba0591ce435379f07",
+    "43272e6e373148f21e409441",
+    "4401d56a55fb7357d11c4080",
+    "44d46cd372b1138f104e3326",
+    "47aca8d78ef12e7fe1880496",
+    "497b221936c458485aeb7609",
+    "50425329b8ec3aa2d71e68bd",
+    "554ccbd2561f8b2e837fd430",
+    "589894777c5352ee3184c4b8",
+    "58e4a369603bf658048f43f1",
+    "5e8934166ed3c54be0d7de88",
+    "5f2c12c6e887616409b491a6",
+    "62c9f62b235d5a15f0e3b980",
+    "66e6ea4f642b8e6330530178",
+    "70dae4c5f442b7c2b7e0bdb4",
+    "78cd7a426a524608bdefffc5",
+    "7a3ce23a4733e4cf1db37ea2",
+    "81958f5b4347a58a1a3955e4",
+    "82a64b7a3b32d93874c82628",
+    "8698494de2c340affd93e371",
+    "8f131be3528531ad1d4fd3dd",
+    "95a42a59f6346133899ae777",
+    "a687c195ad6ec580b2feb0b3",
+    "a96b5984d05740d9c5ecb60b",
+    "b0fbe80377148505ea8e34c5",
+    "b7e7cef854278241157beb5a",
+    "ba1bab800003a5991bac4f70",
+    "ba865ac9bc689dd8820174fb",
+    "bc2b709f40a1537442fdb778",
+    "c490f544c5350743dd38c807",
+    "c51275c64448aa2bca5e9bce",
+    "c79a9736bf15a62e950f89fe",
+    "cb30f2cc158608084e19446a",
+    "cf2c6a854eadf11387e827eb",
+    "d721825b41d601b94c303f09",
+    "ea6239c1401b0a266c91b200",
+    "ee39ee27bc38dd4c03df8869",
+    "f2443fe84a996ab93a13343e",
+    "f317ca65ce0af5e5d5087cd9",
+    "f5a973331cec570ea493906c",
+    "f91ec0c69db22db247116a68"
+  ],
+  "mode": "real",
+  "n_windows": 96,
+  "regret": {
+    "k_cam=2": {
+      "postencoder": {
+        "mean": 0.004204797248045604,
+        "n": 96,
+        "trimmed_mean": 0.0037314632000067295
+      },
+      "preview": {
+        "mean": 0.004882216453552246,
+        "n": 96,
+        "trimmed_mean": 0.004592603597885523
+      }
+    },
+    "k_cam=4": {
+      "postencoder": {
+        "mean": 0.0037748093406359353,
+        "n": 96,
+        "trimmed_mean": 0.0034612554770249585
+      },
+      "preview": {
+        "mean": 0.004694808274507523,
+        "n": 96,
+        "trimmed_mean": 0.00443579294742682
+      }
+    },
+    "k_cam=8": {
+      "postencoder": {
+        "mean": 0.0027118312815825143,
+        "n": 96,
+        "trimmed_mean": 0.002517669628828
+      },
+      "preview": {
+        "mean": 0.00333613653977712,
+        "n": 96,
+        "trimmed_mean": 0.0031124292275844477
+      }
+    }
+  },
+  "seed": 0,
+  "timing": {
+    "dinov2_encode_per_frame_ms": 9.298634800006766,
+    "masked_rollout_ms": 1.5595543600011297,
+    "preview_per_frame_ms": 0.5609999600073934,
+    "selection_topk_ms": 0.5150010800025484
+  },
+  "timing_protocol": {
+    "note": "batch-one latency (batch=1 probes above); throughput measured separately at the eval batch size during scoring",
+    "reps": 50,
+    "torch_version": "2.11.0+cu130",
+    "warmup": 10
+  }
+}

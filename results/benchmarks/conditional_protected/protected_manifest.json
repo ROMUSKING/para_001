@@ -1,0 +1,616 @@
+{
+ "created_utc": "2026-10-05T19:24:08Z",
+ "disjoint_from_diagnostic_episodes": true,
+ "n_windows": 150,
+ "protected_manifest_version": 1,
+ "read_log": [
+  {
+   "purpose": "protected evaluation",
+   "utc": "2026-10-05T19:24:45Z"
+  }
+ ],
+ "seed": 0,
+ "split": "val",
+ "windows": [
+  {
+   "episode_id": "5d5e8df089a7da2deaa2994b",
+   "window_start": 0
+  },
+  {
+   "episode_id": "5d5e8df089a7da2deaa2994b",
+   "window_start": 2
+  },
+  {
+   "episode_id": "5d5e8df089a7da2deaa2994b",
+   "window_start": 4
+  },
+  {
+   "episode_id": "78e01e87eeacffd713f4aa8f",
+   "window_start": 0
+  },
+  {
+   "episode_id": "78e01e87eeacffd713f4aa8f",
+   "window_start": 2
+  },
+  {
+   "episode_id": "78e01e87eeacffd713f4aa8f",
+   "window_start": 4
+  },
+  {
+   "episode_id": "ad5297a183e425716d4d597d",
+   "window_start": 0
+  },
+  {
+   "episode_id": "ad5297a183e425716d4d597d",
+   "window_start": 2
+  },
+  {
+   "episode_id": "ad5297a183e425716d4d597d",
+   "window_start": 4
+  },
+  {
+   "episode_id": "21080e4acb1a46995a103f5a",
+   "window_start": 0
+  },
+  {
+   "episode_id": "21080e4acb1a46995a103f5a",
+   "window_start": 2
+  },
+  {
+   "episode_id": "21080e4acb1a46995a103f5a",
+   "window_start": 4
+  },
+  {
+   "episode_id": "13cc39b5c8743211f543c5c7",
+   "window_start": 0
+  },
+  {
+   "episode_id": "13cc39b5c8743211f543c5c7",
+   "window_start": 2
+  },
+  {
+   "episode_id": "13cc39b5c8743211f543c5c7",
+   "window_start": 4
+  },
+  {
+   "episode_id": "1d68feb58fb7a9c90abee6a3",
+   "window_start": 0
+  },
+  {
+   "episode_id": "1d68feb58fb7a9c90abee6a3",
+   "window_start": 2
+  },
+  {
+   "episode_id": "1d68feb58fb7a9c90abee6a3",
+   "window_start": 4
+  },
+  {
+   "episode_id": "a3bf0dd293f9d6e0ea6f5ac6",
+   "window_start": 0
+  },
+  {
+   "episode_id": "a3bf0dd293f9d6e0ea6f5ac6",
+   "window_start": 2
+  },
+  {
+   "episode_id": "a3bf0dd293f9d6e0ea6f5ac6",
+   "window_start": 4
+  },
+  {
+   "episode_id": "7eacfd2eb0cc41ddbaaa293b",
+   "window_start": 0
+  },
+  {
+   "episode_id": "7eacfd2eb0cc41ddbaaa293b",
+   "window_start": 2
+  },
+  {
+   "episode_id": "7eacfd2eb0cc41ddbaaa293b",
+   "window_start": 4
+  },
+  {
+   "episode_id": "5f6751526f3d89fdfb43aedc",
+   "window_start": 0
+  },
+  {
+   "episode_id": "5f6751526f3d89fdfb43aedc",
+   "window_start": 2
+  },
+  {
+   "episode_id": "5f6751526f3d89fdfb43aedc",
+   "window_start": 4
+  },
+  {
+   "episode_id": "836b6f04ebd74d76e7b597f5",
+   "window_start": 0
+  },
+  {
+   "episode_id": "836b6f04ebd74d76e7b597f5",
+   "window_start": 2
+  },
+  {
+   "episode_id": "836b6f04ebd74d76e7b597f5",
+   "window_start": 4
+  },
+  {
+   "episode_id": "12e4f8eb116d3d3ad539789c",
+   "window_start": 0
+  },
+  {
+   "episode_id": "12e4f8eb116d3d3ad539789c",
+   "window_start": 2
+  },
+  {
+   "episode_id": "12e4f8eb116d3d3ad539789c",
+   "window_start": 4
+  },
+  {
+   "episode_id": "47fad57ef9fbbd6910aaade1",
+   "window_start": 0
+  },
+  {
+   "episode_id": "47fad57ef9fbbd6910aaade1",
+   "window_start": 2
+  },
+  {
+   "episode_id": "47fad57ef9fbbd6910aaade1",
+   "window_start": 4
+  },
+  {
+   "episode_id": "edc439939da97e39305e6747",
+   "window_start": 0
+  },
+  {
+   "episode_id": "edc439939da97e39305e6747",
+   "window_start": 2
+  },
+  {
+   "episode_id": "edc439939da97e39305e6747",
+   "window_start": 4
+  },
+  {
+   "episode_id": "6b8ced6ba90c33e241cd3e0a",
+   "window_start": 0
+  },
+  {
+   "episode_id": "6b8ced6ba90c33e241cd3e0a",
+   "window_start": 2
+  },
+  {
+   "episode_id": "6b8ced6ba90c33e241cd3e0a",
+   "window_start": 4
+  },
+  {
+   "episode_id": "452100f4ce657b324762322d",
+   "window_start": 0
+  },
+  {
+   "episode_id": "452100f4ce657b324762322d",
+   "window_start": 2
+  },
+  {
+   "episode_id": "452100f4ce657b324762322d",
+   "window_start": 4
+  },
+  {
+   "episode_id": "e1c72a018283484fbed95fbd",
+   "window_start": 0
+  },
+  {
+   "episode_id": "e1c72a018283484fbed95fbd",
+   "window_start": 2
+  },
+  {
+   "episode_id": "e1c72a018283484fbed95fbd",
+   "window_start": 4
+  },
+  {
+   "episode_id": "97b4f00f2a742267d7e04fda",
+   "window_start": 0
+  },
+  {
+   "episode_id": "97b4f00f2a742267d7e04fda",
+   "window_start": 2
+  },
+  {
+   "episode_id": "97b4f00f2a742267d7e04fda",
+   "window_start": 4
+  },
+  {
+   "episode_id": "85c39b910af6a8a85dcfbfc0",
+   "window_start": 0
+  },
+  {
+   "episode_id": "85c39b910af6a8a85dcfbfc0",
+   "window_start": 2
+  },
+  {
+   "episode_id": "85c39b910af6a8a85dcfbfc0",
+   "window_start": 4
+  },
+  {
+   "episode_id": "2a4b41422750809c340d46e5",
+   "window_start": 0
+  },
+  {
+   "episode_id": "2a4b41422750809c340d46e5",
+   "window_start": 2
+  },
+  {
+   "episode_id": "2a4b41422750809c340d46e5",
+   "window_start": 4
+  },
+  {
+   "episode_id": "6148f3a34edd63cd8b116677",
+   "window_start": 0
+  },
+  {
+   "episode_id": "6148f3a34edd63cd8b116677",
+   "window_start": 2
+  },
+  {
+   "episode_id": "6148f3a34edd63cd8b116677",
+   "window_start": 4
+  },
+  {
+   "episode_id": "afaeecdf6bcc90da08e7beeb",
+   "window_start": 0
+  },
+  {
+   "episode_id": "afaeecdf6bcc90da08e7beeb",
+   "window_start": 2
+  },
+  {
+   "episode_id": "afaeecdf6bcc90da08e7beeb",
+   "window_start": 4
+  },
+  {
+   "episode_id": "5ecde39e9b132a67bcbadc58",
+   "window_start": 0
+  },
+  {
+   "episode_id": "5ecde39e9b132a67bcbadc58",
+   "window_start": 2
+  },
+  {
+   "episode_id": "5ecde39e9b132a67bcbadc58",
+   "window_start": 4
+  },
+  {
+   "episode_id": "d6b523e31a8b9a904bfb6ccd",
+   "window_start": 0
+  },
+  {
+   "episode_id": "d6b523e31a8b9a904bfb6ccd",
+   "window_start": 2
+  },
+  {
+   "episode_id": "d6b523e31a8b9a904bfb6ccd",
+   "window_start": 4
+  },
+  {
+   "episode_id": "54ca435a1113bdae68acfdf2",
+   "window_start": 0
+  },
+  {
+   "episode_id": "54ca435a1113bdae68acfdf2",
+   "window_start": 2
+  },
+  {
+   "episode_id": "54ca435a1113bdae68acfdf2",
+   "window_start": 4
+  },
+  {
+   "episode_id": "af8e31adc873a93a59e9b84d",
+   "window_start": 0
+  },
+  {
+   "episode_id": "af8e31adc873a93a59e9b84d",
+   "window_start": 2
+  },
+  {
+   "episode_id": "af8e31adc873a93a59e9b84d",
+   "window_start": 4
+  },
+  {
+   "episode_id": "aba869ef660090f039544656",
+   "window_start": 0
+  },
+  {
+   "episode_id": "aba869ef660090f039544656",
+   "window_start": 2
+  },
+  {
+   "episode_id": "aba869ef660090f039544656",
+   "window_start": 4
+  },
+  {
+   "episode_id": "864b7e0aa747a3b10e058b48",
+   "window_start": 0
+  },
+  {
+   "episode_id": "864b7e0aa747a3b10e058b48",
+   "window_start": 2
+  },
+  {
+   "episode_id": "864b7e0aa747a3b10e058b48",
+   "window_start": 4
+  },
+  {
+   "episode_id": "0f1542b87e327c6239d306ad",
+   "window_start": 0
+  },
+  {
+   "episode_id": "0f1542b87e327c6239d306ad",
+   "window_start": 2
+  },
+  {
+   "episode_id": "0f1542b87e327c6239d306ad",
+   "window_start": 4
+  },
+  {
+   "episode_id": "4076a14cfa3cf9616d715395",
+   "window_start": 0
+  },
+  {
+   "episode_id": "4076a14cfa3cf9616d715395",
+   "window_start": 2
+  },
+  {
+   "episode_id": "4076a14cfa3cf9616d715395",
+   "window_start": 4
+  },
+  {
+   "episode_id": "e71ab4aaa8c587bd1b1652bd",
+   "window_start": 0
+  },
+  {
+   "episode_id": "e71ab4aaa8c587bd1b1652bd",
+   "window_start": 2
+  },
+  {
+   "episode_id": "e71ab4aaa8c587bd1b1652bd",
+   "window_start": 4
+  },
+  {
+   "episode_id": "f8a009d6099d17b85b07e0b8",
+   "window_start": 0
+  },
+  {
+   "episode_id": "f8a009d6099d17b85b07e0b8",
+   "window_start": 2
+  },
+  {
+   "episode_id": "f8a009d6099d17b85b07e0b8",
+   "window_start": 4
+  },
+  {
+   "episode_id": "566e79801aa82eebe181cd19",
+   "window_start": 0
+  },
+  {
+   "episode_id": "566e79801aa82eebe181cd19",
+   "window_start": 2
+  },
+  {
+   "episode_id": "566e79801aa82eebe181cd19",
+   "window_start": 4
+  },
+  {
+   "episode_id": "a25c7888904f20e27d1915c8",
+   "window_start": 0
+  },
+  {
+   "episode_id": "a25c7888904f20e27d1915c8",
+   "window_start": 2
+  },
+  {
+   "episode_id": "a25c7888904f20e27d1915c8",
+   "window_start": 4
+  },
+  {
+   "episode_id": "7fa4ac5928a6da99e8567663",
+   "window_start": 0
+  },
+  {
+   "episode_id": "7fa4ac5928a6da99e8567663",
+   "window_start": 2
+  },
+  {
+   "episode_id": "7fa4ac5928a6da99e8567663",
+   "window_start": 4
+  },
+  {
+   "episode_id": "dcafb6508d21f562996130b4",
+   "window_start": 0
+  },
+  {
+   "episode_id": "dcafb6508d21f562996130b4",
+   "window_start": 2
+  },
+  {
+   "episode_id": "dcafb6508d21f562996130b4",
+   "window_start": 4
+  },
+  {
+   "episode_id": "441b41017e49248b1d3a73ce",
+   "window_start": 0
+  },
+  {
+   "episode_id": "441b41017e49248b1d3a73ce",
+   "window_start": 2
+  },
+  {
+   "episode_id": "441b41017e49248b1d3a73ce",
+   "window_start": 4
+  },
+  {
+   "episode_id": "ba2ba22283112909d070fd45",
+   "window_start": 0
+  },
+  {
+   "episode_id": "ba2ba22283112909d070fd45",
+   "window_start": 2
+  },
+  {
+   "episode_id": "ba2ba22283112909d070fd45",
+   "window_start": 4
+  },
+  {
+   "episode_id": "c3e25bdee93d7505c4abfffb",
+   "window_start": 0
+  },
+  {
+   "episode_id": "c3e25bdee93d7505c4abfffb",
+   "window_start": 2
+  },
+  {
+   "episode_id": "c3e25bdee93d7505c4abfffb",
+   "window_start": 4
+  },
+  {
+   "episode_id": "50471dd5977fb835c848d620",
+   "window_start": 0
+  },
+  {
+   "episode_id": "50471dd5977fb835c848d620",
+   "window_start": 2
+  },
+  {
+   "episode_id": "50471dd5977fb835c848d620",
+   "window_start": 4
+  },
+  {
+   "episode_id": "49a7a5f80684b4cfbe7d9ffa",
+   "window_start": 0
+  },
+  {
+   "episode_id": "49a7a5f80684b4cfbe7d9ffa",
+   "window_start": 2
+  },
+  {
+   "episode_id": "49a7a5f80684b4cfbe7d9ffa",
+   "window_start": 4
+  },
+  {
+   "episode_id": "317a2fae7d3d6174fd6294ec",
+   "window_start": 0
+  },
+  {
+   "episode_id": "317a2fae7d3d6174fd6294ec",
+   "window_start": 2
+  },
+  {
+   "episode_id": "317a2fae7d3d6174fd6294ec",
+   "window_start": 4
+  },
+  {
+   "episode_id": "b009ee335fc0fa96db8e40c0",
+   "window_start": 0
+  },
+  {
+   "episode_id": "b009ee335fc0fa96db8e40c0",
+   "window_start": 2
+  },
+  {
+   "episode_id": "b009ee335fc0fa96db8e40c0",
+   "window_start": 4
+  },
+  {
+   "episode_id": "fc02ec24a2451bcd0c8ed5c0",
+   "window_start": 0
+  },
+  {
+   "episode_id": "fc02ec24a2451bcd0c8ed5c0",
+   "window_start": 2
+  },
+  {
+   "episode_id": "fc02ec24a2451bcd0c8ed5c0",
+   "window_start": 4
+  },
+  {
+   "episode_id": "218b387fe29634e8a2eb6889",
+   "window_start": 0
+  },
+  {
+   "episode_id": "218b387fe29634e8a2eb6889",
+   "window_start": 2
+  },
+  {
+   "episode_id": "218b387fe29634e8a2eb6889",
+   "window_start": 4
+  },
+  {
+   "episode_id": "5080d1078fde7317a3819861",
+   "window_start": 0
+  },
+  {
+   "episode_id": "5080d1078fde7317a3819861",
+   "window_start": 2
+  },
+  {
+   "episode_id": "5080d1078fde7317a3819861",
+   "window_start": 4
+  },
+  {
+   "episode_id": "8c04943cebdc25fae882036f",
+   "window_start": 0
+  },
+  {
+   "episode_id": "8c04943cebdc25fae882036f",
+   "window_start": 2
+  },
+  {
+   "episode_id": "8c04943cebdc25fae882036f",
+   "window_start": 4
+  },
+  {
+   "episode_id": "bbd3dfc428dffc47e3b35d94",
+   "window_start": 0
+  },
+  {
+   "episode_id": "bbd3dfc428dffc47e3b35d94",
+   "window_start": 2
+  },
+  {
+   "episode_id": "bbd3dfc428dffc47e3b35d94",
+   "window_start": 4
+  },
+  {
+   "episode_id": "a2dc8ae6aee1581ba7644516",
+   "window_start": 0
+  },
+  {
+   "episode_id": "a2dc8ae6aee1581ba7644516",
+   "window_start": 2
+  },
+  {
+   "episode_id": "a2dc8ae6aee1581ba7644516",
+   "window_start": 4
+  },
+  {
+   "episode_id": "54ab83a84cf7ee7e205393ee",
+   "window_start": 0
+  },
+  {
+   "episode_id": "54ab83a84cf7ee7e205393ee",
+   "window_start": 2
+  },
+  {
+   "episode_id": "54ab83a84cf7ee7e205393ee",
+   "window_start": 4
+  },
+  {
+   "episode_id": "9d260e5ebd8fad95debf2bb5",
+   "window_start": 0
+  },
+  {
+   "episode_id": "9d260e5ebd8fad95debf2bb5",
+   "window_start": 2
+  },
+  {
+   "episode_id": "9d260e5ebd8fad95debf2bb5",
+   "window_start": 4
+  }
+ ]
+}

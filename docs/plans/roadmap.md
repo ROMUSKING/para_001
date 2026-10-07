@@ -40,6 +40,10 @@ This roadmap sequences the work described in the planning documents. It doesn't 
 | S5 robustness + integrity audit (L4) | Gate arithmetic sound; **primary endpoint unsupported** (2/3 seeds duplicated; VOI≡curvature up to sign) | [audit](../audits/2026-10-03_session5_seed_duplication_and_voi_identity_audit.md) |
 | S6A spatial selection + VOI sampling audit (1,200 windows, 50ep/12 sites, 3 seeds, L4) | Negative branch as revised: no deployable selector separates; VOI comparison **void** (degenerate β sweep), retired by spec §6 + DEV-20261004-03 | [note](../research-notes/2026-10-04-session-6a-spatial-selection.md), [audit](../audits/2026-10-04_session_6a_voi_scale_and_sampling_audit.md) |
 | S6A bottleneck + WS1/WS2 factorial (192 windows, L4) | **λ̂ is the isolated bottleneck** (~170× regret vs exact-λ); objective and input explanations falsified | [note](../research-notes/2026-10-04-session-6a-bottleneck-diagnostic.md) |
+| S6C mechanism check + Hessian closure (32 windows, L4) | Pair-additivity residual median 1.235 — Taylor premise fails; A≡B bit-identical; oracle-singleton ρ 0.9887 ordering-only. Tested cross-Hessian correction closed as negative | [note](../research-notes/2026-10-05-session-6c-mechanism-check.md) |
+| S6C conditional vs learned singleton (150 protected VAL windows, L4) | θ-superiority fails at all budgets (one-sided lower −0.158/−0.014/−0.274 vs 8%); cost 532 vs 19 calls (report-only). Formulation closed, norm/fixed retained | [note](../research-notes/2026-10-05-session-6c-conditional-gain.md) |
+| G-H2 programme decision (synthesis, no new runs) | **INCONCLUSIVE** (direct arm under-realised; no confirmatory test ever ran); teacher-only value as hypothesis. N4 closed, P5+ gated | [note](../research-notes/2026-10-05-g-h2-decision.md), [DEV](../../prereg/deviation_log.yaml) |
+| B2 critic readiness probes §1893 (4 runs × 5 seeds, L4) | P0 floor fails low rung (adaptive gain negative all seeds); P1 not demonstrated; P2 no ≥2% at 2× width → `UNDER_REALIZED_DUE_TO_COMPUTE_CONSTRAINTS`, H2 inconclusive, rescue stops at cap | [note](../research-notes/2026-10-07-b2-critic-readiness.md) |
 
 ### 1.2 Programme status
 
@@ -60,9 +64,8 @@ B2.3 RANKING LOSS OPTIMIZATION 3-SEED BENCHMARK COMPLETE (2026-10-02); NEGATIVE 
 B3 ANALYTICAL RESCUE (B3)      5-SEED BENCHMARK COMPLETE (2026-10-02); PARETO FRONTIER MAPPED; REAL-TIME THROUGHPUT >7,600 HZ AT TAU=0.20
 RIVAL-MODEL BENCHMARK (B1)     5-SEED BENCHMARK COMPLETE (2026-10-01); ADJOINTRWM STATISTICALLY SIGNIFICANTLY OUTPERFORMS ALL 4 DEEP RIVALS (DREAMERV3 −56.8%, DINO-WM −40.9%, TD-MPC2 −36.3%, V-JEPA 2-AC −33.9%; FAIRNESS PASS)
 CROSS-DOMAIN (TRACK D)         D4 FIRST (DECIDED); D4-0, D4-0b DONE; D4-2 DONE; D4-3 DONE (varying goal: R3v and R4v both hold in `m4` and `m64`, exact co-state unaffordable per instance); D4-1 DONE (no learned critic pays at the real price; the co-state critic does not beat the direct critic; `m4`: teacher-only value at a hypothetical price, `m64`: inconclusive); D1-0 DONE (proxy loss), D1-0b DONE (native forecast loss: no deployable policy keeps the headroom; D1-1 not designed); D2-0, D2-1, D2-2 DONE (LLM DAG & In-Place Adapter Hot-Swapping on L4: 100% build pass rate, 91% preservation, 11.8 ms hot-swap, 35.5x speedup); D3-0 NOT STARTED
-COLAB OPERATIONAL CAMPAIGN     10-SESSION PLAN ADOPTED (2026-10-03); S0-S6B EXECUTED ON L4 (2026-10-04); G4 GATES G4-1/G4-3 STILL FAIL, HOPPER STAYS CLOSED (DEV-20261003-01); S5 PRIMARY ENDPOINT UNSUPPORTED (AUDIT); S6A VOI COMPARISON VOID, RETIRED BY SPEC §6 (DEV-20261004-03); LAMBDA-HAT DISTILLATION IS THE ISOLATED BOTTLENECK
+COLAB OPERATIONAL CAMPAIGN     10-SESSION PLAN ADOPTED (2026-10-03); S0-S6B EXECUTED ON L4 (2026-10-04); G4 GATES G4-1/G4-3 STILL FAIL, HOPPER STAYS CLOSED (DEV-20261003-01); S5 PRIMARY ENDPOINT UNSUPPORTED (AUDIT); S6A VOI COMPARISON VOID, RETIRED BY SPEC §6 (DEV-20261004-03); LAMBDA-HAT DISTILLATION IS THE ISOLATED BOTTLENECK; 6C CONDITIONAL FORMULATION CLOSED, NORM/FIXED RETAINED; G-H2 INCONCLUSIVE (DEV-20261005-04); B2 CRITIC UNDER_REALIZED_DUE_TO_COMPUTE_CONSTRAINTS, RESCUE STOPS AT CAP
 ```
-
 ---
 
 ## 2. Two parallel tracks and how they meet
@@ -175,7 +178,7 @@ Dates assume a start of Mon 29 Sep 2026 and one person working part-time on Cola
 
 **Progress on existing rows (2026-09-29, not yet run on Colab):**
 
-- **N0.1, partly done.** Data windows, split, normalisation, objective, the pilot model, exact co-state targets and evaluation now live in `src/adjointrwm/`. Tests cover split and window parity with the pilot, causality (predictions unchanged when future targets are replaced), exact co-state against float64 finite differences, and checkpoint round-trip. The pilot's parameter count is reproduced exactly (27,360,798, as in its `model_manifest.json`). Still open: v1 itself still inlines its code (it is kept for provenance).
+- **N0.1, done (2026-10-07).** Data windows, split, normalisation, objective, the pilot model, exact co-state targets and evaluation now live in `src/adjointrwm/`. Tests cover split and window parity with the pilot, causality (predictions unchanged when future targets are replaced), exact co-state against float64 finite differences, and checkpoint round-trip. The pilot's parameter count is reproduced exactly (27,360,798, as in its `model_manifest.json`). The v2 notebook imports the package (done-condition met); v1 keeps its inlined code frozen for provenance and will not be migrated.
 - **N0.3, CPU part done.** `tests/test_training.py` checks that pause-and-resume gives bit-identical weights to uninterrupted training. It found that creating a `DataLoader` iterator draws from the global RNG; the runner now uses a dedicated generator. v1 has no resume path, so no v1 result is affected. Still open: the same check on Colab with CUDA.
 - **E2.1, implemented, not run.** It is the pilot v2 notebook (B2). The one deviation from the E2.1 wording: the dynamics gate is evaluated on validation, not test, so the test split is read once.
 

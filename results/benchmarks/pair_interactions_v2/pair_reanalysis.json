@@ -1,0 +1,30 @@
+{
+  "benchmark": "session_6c_pair_reanalysis",
+  "contracts": {
+    "best_scope": "minimum over the evaluated pair manifest (restricted hindsight)",
+    "budgets": "unconstrained 2-patch sets on both sides",
+    "quantity": "per-window gain difference: best measured pair gain minus joint gain of the global top-2 singleton set",
+    "singleton_side": "measured joint where the top-2 set is in the manifest, additive fallback flagged per window otherwise"
+  },
+  "n_windows": 32,
+  "ranking_fidelity_additive_vs_measured": 0.9886673487137032,
+  "residual_interaction_fraction": 0.5235792159147337,
+  "same_budget": {
+    "mean": -0.0022380799055099487,
+    "site_clustered_ci_95": {
+      "ci_high": -0.0022380799055099487,
+      "ci_low": -0.0022380799055099487,
+      "confidence": 0.95,
+      "estimate": -0.0022380799055099487,
+      "num_sites": 1,
+      "num_windows": 32
+    },
+    "wilcoxon": {
+      "n": 32,
+      "n_ties": 0,
+      "p_value": 2.0040658768440688e-05,
+      "statistic": 11.0
+    }
+  },
+  "source": "/home/r/git/para_001/results/benchmarks/pair_interactions_v2/pair_interactions_summary.json"
+}

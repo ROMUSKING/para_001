@@ -1,0 +1,107 @@
+{
+  "arms": {
+    "full_image": "raw frames -> DINOv2 (refresh-cost reference)",
+    "preview_pruned": "top-k preview cells kept at pixel level pre-encoder"
+  },
+  "backbone": {
+    "path": "/content/local_runs/runs/spatial_patches_20261003/best_spatial.pt",
+    "sha256": "cfbca4406f13df55871731d2d02feb58498d26e66f240ea28d449c42ca5f337b"
+  },
+  "benchmark": "session_6c_early_pruning",
+  "budgets": [
+    2,
+    4,
+    8
+  ],
+  "caveats": [
+    "Pixel masking keeps full token counts: quality effect only, no FLOP saving measured; true token-dropping needs DINOv2 surgery (out of scope).",
+    "Oracle is greedy rollout search (k_cam=2), not a proven optimum."
+  ],
+  "created_utc": "2026-10-05T07:30:23Z",
+  "device": "cuda",
+  "episodes": [
+    "0157ed6b7c5a7f1564726931",
+    "0d44548eb18346cc66c0e0d9",
+    "150f9d8158d3de360dc66132",
+    "1e4a3aac77b84b3d562f7eaf",
+    "27fc4c0f924ba4d568da1bdc",
+    "2b4520d36cbafda5c27173a0",
+    "43272e6e373148f21e409441",
+    "4401d56a55fb7357d11c4080",
+    "44d46cd372b1138f104e3326",
+    "47aca8d78ef12e7fe1880496",
+    "50425329b8ec3aa2d71e68bd",
+    "554ccbd2561f8b2e837fd430",
+    "589894777c5352ee3184c4b8",
+    "58e4a369603bf658048f43f1",
+    "5e8934166ed3c54be0d7de88",
+    "5f2c12c6e887616409b491a6",
+    "62c9f62b235d5a15f0e3b980",
+    "66e6ea4f642b8e6330530178",
+    "70dae4c5f442b7c2b7e0bdb4",
+    "78cd7a426a524608bdefffc5",
+    "81958f5b4347a58a1a3955e4",
+    "8f131be3528531ad1d4fd3dd",
+    "a687c195ad6ec580b2feb0b3",
+    "b7e7cef854278241157beb5a",
+    "ba865ac9bc689dd8820174fb",
+    "bc2b709f40a1537442fdb778",
+    "c490f544c5350743dd38c807",
+    "cb30f2cc158608084e19446a",
+    "d721825b41d601b94c303f09",
+    "ee39ee27bc38dd4c03df8869",
+    "f2443fe84a996ab93a13343e",
+    "f317ca65ce0af5e5d5087cd9"
+  ],
+  "mode": "real",
+  "n_windows": 32,
+  "regret": {
+    "k_cam=2": {
+      "full_image": {
+        "mean": 0.0044457316398620605,
+        "n": 32,
+        "trimmed_mean": 0.004258568470294659
+      },
+      "preview_pruned": {
+        "mean": 0.00581282377243042,
+        "n": 32,
+        "trimmed_mean": 0.005112592990581806
+      }
+    },
+    "k_cam=4": {
+      "full_image": {
+        "mean": 0.004110123962163925,
+        "n": 32,
+        "trimmed_mean": 0.003957244066091685
+      },
+      "preview_pruned": {
+        "mean": 0.005379203706979752,
+        "n": 32,
+        "trimmed_mean": 0.00487658610710731
+      }
+    },
+    "k_cam=8": {
+      "full_image": {
+        "mean": 0.0029274486005306244,
+        "n": 32,
+        "trimmed_mean": 0.002808286593510554
+      },
+      "preview_pruned": {
+        "mean": 0.0037080049514770508,
+        "n": 32,
+        "trimmed_mean": 0.003463635077843299
+      }
+    }
+  },
+  "seed": 0,
+  "timing": {
+    "dinov2_encode_per_frame_ms": 9.322967100001733,
+    "preview_per_frame_ms": 0.6234832500012999,
+    "selection_topk_ms": 0.5371888000013314
+  },
+  "timing_protocol": {
+    "reps": 20,
+    "torch_version": "2.11.0+cu130",
+    "warmup": 5
+  }
+}

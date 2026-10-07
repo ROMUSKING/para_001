@@ -50,6 +50,43 @@ colab whoami
 - `[?] <assignment_id> | Hardware: L4 ...`: Remote assignment active under the user's account (e.g. provisioned from Colab web UI or previous CLI session) but untracked in local `sessions.json`.
 - When an untracked assignment is already running, run `colab new -s <name> --gpu <TYPE>` to attach to and name that active assignment rather than creating duplicate VMs.
 
+### Interactive SSH (measured 2026-10-05)
+
+`colab ssh` opens an interactive shell on a CLI-tracked session (`colab ssh -s NAME`,
+ProxyCommand mode for IDE/scp integration — see `colab ssh --help`). Measured boundary:
+`exec` and `ssh` against a browser-provisioned session fail with `not found` even though
+`sessions` lists it as `[?]` — browser-owned runtimes are CLI-unreachable by design, so
+browser sessions execute via notebooks/pasted commands, never via CLI dispatch.
+
+### CLI → browser handoff (help-verified 2026-10-05, live attachment untested)
+
+The reverse direction has a built-in command — no adoption script needed:
+
+```bash
+colab sessions            # confirm the CLI session still exists (stop destroys it)
+colab url -s NAME         # print the attach URL (or --open on a desktop)
+colab log -s NAME -o session_history.ipynb   # export recorded CLI history separately
+```
+
+The URL opens an empty scratch notebook attached to the existing VM (dual `?dbu=` +
+`#datalabBackendUrl=` signals; do not hand-edit it). It does not reconstruct CLI-run
+cells — use `colab log` for history. Verify attachment with the marker test before
+doing anything stateful: set a UUID marker via `colab exec`, then read it back from a
+browser cell along with hostname/pid; matching values prove shared kernel. Then
+`colab sessions` to confirm no second endpoint appeared. Never use `colab new`,
+`restart-kernel`, or `stop` as connection-repair steps (they allocate/reset/terminate).
+Do not click the ordinary Connect button if the scratch notebook looks disconnected —
+that allocates a separate CPU runtime (upstream issue #24).
+
+Measured 2026-10-06: attach FAILED against a live CLI L4 session. Correct unencoded
+dual-signal URL used verbatim; browser landed disconnected (a pasted variant with the
+`#datalabBackendUrl` value percent-encoded was also tried and rejected — the fragment
+must stay unencoded). Installed CLI is 0.7.4 and already emits the current format, so
+format staleness is unlikely; cause is unverified (account/session policy suspected).
+Session stopped after the failure to end idle burn. Retry only with a live session and
+the marker test; until one succeeds, browser-owned execution (notebook/nbconvert) stays
+the working path for Drive-mounted work.
+
 ## Session Lifecycle & Compute Discipline
 
 Running GPU runtimes burn billable compute credits every second. All agents must enforce strict compute discipline:

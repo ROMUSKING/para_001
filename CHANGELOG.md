@@ -1,5 +1,66 @@
 # Changelog
 
+## 2026-10-07: D2-QA Rung-0 — G1 passes, G2 fails, redesign not rescue
+
+- **Paragraph selection (MuSiQue, CPU-only, no reader):** G1 headroom 0.93 (PASS); G2 deployable share 0.26 (FAIL — BM25 keeps ~26%). Retrieval opportunity exists; question-text rankers insufficient. Frozen route: redesign candidates, no learned rescue. Note `2026-10-07-d2-qa-rung0.md`; artefact `results/benchmarks/d2_qa_rung0/`.
+- **Verified:** `pytest -q` → 597 passed; `harness/check.py` → 6/6. No GPU; uncommitted.
+
+## 2026-10-07: N0.2 tripwires; roadmap current through B2 probes
+
+- **New:** hardware-stratum refusal, hex-enforced seed-distinctness, and dict-scoped future-closure tripwires (`analysis/allocation.py`, 9 tests, kilo-reviewed). Roadmap evidence register + status extended (6C, G-H2, B2 probes).
+- **Verified:** 587 passed; 6/6 harness. No GPU; uncommitted.
+
+## 2026-10-07: B2 critic readiness — UNDER-REALIZED, H2 stays inconclusive
+
+- **Probes complete (L4, 4 runs, 5 seeds, all finite):** P0 floor fails on low rung (adaptive gain negative all seeds; critic worse than uncertainty); P1 not demonstrated (final-20% ±1–4.5%; continuation schedule-confounded); P2 no ≥2% at 2× width. Codex-reviewed verdict adopted verbatim: protocol class `UNDER_REALIZED_DUE_TO_COMPUTE_CONSTRAINTS`, not a causal claim; rescue stops at cap. Note `2026-10-07-b2-critic-readiness.md`; artefacts `results/benchmarks/critic_probes_*/`.
+- **Verified:** `pytest -q` → 577 passed; `harness/check.py` → 6/6. Session stopped, 0 assignments.
+
+- **Programme verdict (diagnostic strength, kilo-reviewed):** no confirmatory H2 ever ran; direct arm under-realised (B2 critic regret ≡ worst static policy, loss curve unreported); S4/S5 excluded per blocking remediation; D4 m4 teacher-only / m64 inconclusive. Class INCONCLUSIVE, teacher-only hypothesis. N4 closed, P5+ gated. Note `2026-10-05-g-h2-decision.md`; DEV-20261005-04.
+- **Verified:** `pytest -q` → 573 passed; `harness/check.py` → 6/6. No GPU; uncommitted.
+
+## 2026-10-05 (6I): Conditional-gain experiment run; gates not passed; formulation closed
+
+- **Conditional vs learned singleton (L4, 150 protected VAL windows, 12 sites, codex-reviewed analysis):** mean-Δ favours conditional at k=2/k=4 (p=0.0016/8.3e-05) but the frozen θ rule fails everywhere (one-sided 95% lower −0.158/−0.014/−0.274 vs 8% bar; heavy-tailed per-window ratios; 39–53% windows harmed); k=8 ties (p=0.69). Strict cost gate fails by construction (532 vs 19 scoring calls, report-only as declared). **No learned arm usefully improves on the norm/fixed control at acceptable cost — formulation closed, no escalation.** Note: `2026-10-05-session-6c-conditional-gain.md`; artefacts `results/benchmarks/conditional_{heads,eval,protected}/` (seal verifies). First 74-worker run superseded (degenerate CIs, no per-window rows, seal/weights lost) and must not be cited.
+- **Verified:** `pytest -q` → 573 passed; `harness/check.py` → 6/6. Spend this turn ~0.44 units; session stopped, 0 assignments.
+
+## 2026-10-05 (6H): Mechanism check redesigned per review; early-pruning control run
+
+- **Peer review (codex):** 4 pre-run fixes to the mechanism design (TRAIN-split head, measured additivity premise, no oracle-singleton smuggling, unpooled stats + overlap + uncertainty). New `scripts/diagnose_mechanism_check.py` (+6 tests).
+- **Mechanism result (L4, 32 windows):** pair-additivity residual median 1.235 (0% below 10%) — Taylor premise fails; predicted |ε| 9.8e-08 vs measured 1.6e-03; A≡B bit-identical (B−A = 0.0, Wilcoxon 32 ties, p = 1.0 per implementation); C ranks 0.9887 on ordering alone. Do not distill H. Artefact: `results/benchmarks/mechanism_check/`.
+- **Frozen-DINOv2 control:** preview-pruned pixels lose ~20–23% regret vs full-image tokens at every budget; preview 0.62 vs DINOv2 9.32 ms/frame. Quality effect only (full token counts — no FLOP saving measured). Artefact: `results/benchmarks/early_pruning/`.
+- **Verified:** `pytest -q` → 564 passed; `harness/check.py` → 6/6.
+
+## 2026-10-05: Mechanism check — Taylor premise fails, Hessian correction inert
+
+- **New `scripts/diagnose_mechanism_check.py`** (+3 tests): exact second-order ε ≈ −δ_pᵀHδ_q vs measured joints with pair-latent additivity measured, not assumed; arms A/B/C/D; per-window correlations, top-k overlap, episode-clustered uncertainty. Peer-reviewed (codex, 4 pre-run fixes: TRAIN-split head, additivity gate, no oracle-singleton smuggling, unpooled stats).
+- **Result (L4, 32 windows):** additivity residual median 1.235 (0% below 10%) — joint latents are not singleton sums, premise fails. Predicted |ε| 9.8e-08 vs measured 1.6e-03 (4 orders), correlation 0.23. A and B bit-identical (B−A = 0.0, Wilcoxon 32 ties, p = 1.0); C ranks 0.989 on ordering alone.
+- **Reading:** do not distill H for joint decisions. Note: `2026-10-05-session-6c-mechanism-check.md`; artefact `results/benchmarks/mechanism_check/`.
+- **Verified:** `pytest -q` → 561 passed; `harness/check.py` → 6/6.
+
+## 2026-10-04 (6G): D reconciled by hash; pair ranking fidelity 0.99 reframes singletons
+
+- **D is a separate fitted object, proven:** weight hashes differ (`9ba6dd18…` vs `84c45b46…`); held-out prediction norm 5% of target norm confirms near-zero output (not inferred from rel error 1.0). Training row belongs to the full-space fit.
+- **Pair v2 (per-window rows committed):** summed singletons order measured pairs at ρ 0.9887 (n=32); residual fraction 0.52. Same-budget measured-only subset ties (+0.00001, n=6); headline −0.00224 is fallback-driven (26/32 estimated) and cannot support a decision claim. "Singletons nearly irrelevant" replaced: ordering excellent, magnitudes not, best-vs-top-set unmeasured.
+- **Session-name anomaly logged:** CLI tracked `71-worker` for a `70-worker` provision; single assignment throughout, pipeline verified byte-identical remotely. Review the anomaly note in WORKLOG before trusting `-s` names.
+- **Verified:** `pytest -q` → 556 passed; `harness/check.py` → 6/6.
+
+## 2026-10-04 (6E): Bounded package — preflight passes, lstsq interpolates, zero beats learned, pairs dominate
+
+- **Preflight (`results/benchmarks/label_preflight/`):** batch invariance to 9e-8, alone/batched ratio 1.0000001 (no 1/B leak); finite differences agree at eps=0.01 (max 3.2%), float32 floor below. Labels verified, not assumed.
+- **Exp-1 rerun:** lstsq rank 16/16 residual 0 gate TRUE (representability, not a production pass); composite a* = 0.0435 (fit 21.66→0.285, held-out 44.7→2.15); constant 0.86/1.31; held-out worse than zero reference.
+- **ρ attribution:** distilled ≈ train-mean; constant-zero scores (0.003349) beat learned (0.003875); exact stays 2.2e-05.
+- **Norm:** postencoder beats preview ~20% all budgets; 0.56 vs 9.30 ms/frame; neither saves work without pre-encoder pruning.
+- **Pairs (200 exact manifest):** |ε| ~42× pair gains; best-pair vs top-singletons −0.0092 (redundancy); empty mask verified legal.
+- Two first-execution bugs caught (CUDA generator mismatch; CPU-mask device placement). Note: `2026-10-04-session-6c-bounded-diagnostics.md`.
+- **Verified:** `pytest -q` → 549 passed; `harness/check.py` → 6/6.
+
+## 2026-10-04 (6D): README contradictions fixed; 6C plan revised per review; Exp 1 routes to information gap
+
+- **README:** B2.2 renamed (improvement over refusal, not learned-to-exact closure); status leads with current science; stale quick-start reconciled; "falsified" narrowed to tested variants; L4 retained.
+- **Peer review:** external ChatGPT CHANGES_REQUESTED saved verbatim (`docs/plans/2026-10-04-session-6c-peer-review.md`) + register (`docs/plans/peer-review-register.yaml`); 6C plan rewritten for R1–R10 (I_t manifest, H-target, preflight, E_rec gate, three-layer metrics, exact Exp-2 manifests, d = Dᵀλ, early interaction panel, two named norm arms, θ/κ rules, four statuses).
+- **Exp 1 executed (L4):** E_rec gate failed everywhere (best 0.22); direction fits on train (dir ≤ 0.09, ρ up to 0.97) with composite magnitude exploded (tiny-regime instability, not a production claim); held-out collapses (ρ ≈ 0, agreement 0). Routes to Exp 2; H-target unconfirmed. Artefact: `results/benchmarks/costate_fitting/`.
+- **Verified:** `pytest -q` → 542 passed; `harness/check.py` → 6/6.
+
 ## 2026-10-04 (6C): WS2 factorial rejects pooled-input framing; WS3 amendment applied; guard live
 
 - **WS2 executed:** `PatchConditionedCostateEstimator` (shared per-patch MLP, parameter-count matched within 10%, broadcast identity + future-target independence tested) trained under composite (cell C) and ranking (cell D) in the same loop. Result: C ρ 0.041/regret 0.00423 vs A ρ 0.115/0.00388; D ρ 0.063/−0.034 vs B ρ 0.097/0.137. Conditioning hurts or ties under both objectives — the frozen falsifier rejects input sufficiency. Remaining: optimisation, parameterisation, singleton labels.
