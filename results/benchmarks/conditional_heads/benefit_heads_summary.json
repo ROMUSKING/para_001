@@ -1,0 +1,17 @@
+{
+  "checkpoint": "results/benchmarks/conditional_heads/benefit_heads.pt",
+  "checkpoint_sha256": "d8b573b6c305fcdd7cb9f121b7000c037e5b1cf75cdc7db205d86c7e7c6d939e",
+  "label_rollouts": 79200,
+  "parameter_counts": {
+    "conditional": 1579266,
+    "singleton": 1579501
+  },
+  "scoring_calls": 2400,
+  "steps": 300,
+  "student_fraction_max": 0.5,
+  "student_fraction_mean": 0.5,
+  "teacher": {
+    "path": "/content/local_runs/runs/spatial_patches_20261003/best_spatial.pt",
+    "sha256": "cfbca4406f13df55871731d2d02feb58498d26e66f240ea28d449c42ca5f337b"
+  }
+}

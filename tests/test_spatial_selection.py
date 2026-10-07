@@ -992,3 +992,644 @@ def test_train_heads_trains_conditioned_cells_when_opted_in():
             key, counts[key], counts["curvature_head"])
     for key in ("conditioned_composite", "conditioned_ranking"):
         assert key in out["final_loss"] and math.isfinite(out["final_loss"][key])
+
+
+def _load_fitting_script():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "diagnose_costate_fitting", ROOT / "scripts/diagnose_costate_fitting.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_pick_windows_spreads_over_episodes_deterministically():
+    module = _load_fitting_script()
+    ids = np.array([f"ep{i}" for i in range(10) for _ in range(8)])
+    first, used_first = module.pick_windows(None, ids, 4, 16, set(), seed=0)
+    second, used_second = module.pick_windows(None, ids, 4, 16, set(), seed=0)
+    assert first == second and used_first == used_second
+    assert len(used_first) == 4 and len(first) == 16
+
+
+def test_pick_windows_respects_the_skip_set():
+    module = _load_fitting_script()
+    ids = np.array([f"ep{i}" for i in range(10) for _ in range(8)])
+    _, fit_used = module.pick_windows(None, ids, 4, 16, set(), seed=0)
+    hold, hold_used = module.pick_windows(None, ids, 4, 16, set(fit_used), seed=1)
+    assert not (set(fit_used) & set(hold_used)), "held-out episodes must differ from fit episodes"
+    assert len(hold) == 16
+
+
+def test_four_metrics_is_zero_for_a_perfect_prediction():
+    module = _load_fitting_script()
+    torch.manual_seed(9)
+    exact = torch.randn(6, WIDTH)
+    delta_z = torch.randn(6, PATCHES, WIDTH)
+    from adjointrwm.spatial_selection import curvature_scores
+
+    ref = {
+        "exact": exact,
+        "delta_z": delta_z,
+        # Gains consistent with the exact costate, so a perfect prediction must agree fully.
+        "gains": curvature_scores(exact, torch.zeros_like(exact), delta_z),
+    }
+    out = module.four_metrics(exact.clone(), ref)
+    assert out["rel_vector_error"] == pytest.approx(0.0, abs=1e-6)
+    assert out["rel_magnitude_error"] == pytest.approx(0.0, abs=1e-6)
+    # 1-cos can print marginally negative from float rounding; the point is ~zero error.
+    assert abs(out["directional_error"]) < 1e-6
+    for entry in out["per_budget"].values():
+        assert entry["allocation_agreement"] == pytest.approx(1.0)
+    assert out["n"] == 6
+
+
+def test_reconstruction_errors_separates_vector_from_magnitude():
+    """Plan R5: relative vector error is not magnitude error (different quantities)."""
+    module = _load_fitting_script()
+    exact = torch.tensor([[3.0, 4.0]])
+    same_direction = torch.tensor([[6.0, 8.0]])  # 2x scale, zero directional error
+    out = module.reconstruction_errors(same_direction, exact)
+    assert out["rel_vector_error"] == pytest.approx(1.0)
+    assert out["rel_magnitude_error"] == pytest.approx(1.0)
+    assert abs(out["directional_error"]) < 1e-6
+    double = module.reconstruction_errors(2.0 * exact, exact)
+    assert double["rel_vector_error"] == pytest.approx(1.0)
+
+
+def test_engineering_fit_gate_pass_fail_and_absolute_branches():
+    """Plan §1: E_rec <= 0.01 relative gate, absolute tolerance below the energy floor."""
+    module = _load_fitting_script()
+    exact = torch.ones(4, 8)
+    good = module.engineering_fit_gate(exact.clone(), exact)
+    assert good["gate"] == "relative" and good["passed"] is True
+    bad = module.engineering_fit_gate(torch.zeros(4, 8), exact)
+    assert bad["gate"] == "relative" and bad["passed"] is False
+    tiny = torch.zeros(2, 4)
+    absolute = module.engineering_fit_gate(tiny.clone(), tiny)
+    assert absolute["gate"] == "absolute"
+
+
+def test_score_and_outcome_reports_all_deployed_budgets():
+    """Plan R5: overlap/agreement at every deployed budget, not top-2 only."""
+    module = _load_fitting_script()
+    torch.manual_seed(11)
+    exact = torch.randn(6, WIDTH)
+    delta_z = torch.randn(6, PATCHES, WIDTH)
+    from adjointrwm.spatial_selection import curvature_scores
+
+    ref = {"exact": exact, "delta_z": delta_z,
+           "gains": curvature_scores(exact, torch.zeros_like(exact), delta_z)}
+    out = module.score_and_outcome(exact.clone(), ref, budgets=(2, 4))
+    assert set(out["per_budget"]) == {"k_cam=2", "k_cam=4"}
+    for entry in out["per_budget"].values():
+        assert entry["allocation_agreement"] == pytest.approx(1.0)
+    assert out["spearman_vs_exact_scores"] == pytest.approx(1.0)
+
+
+def test_unregularised_lstsq_interpolates_a_full_row_rank_system():
+    """Review R3-B: full-row-rank X must drive the residual to ~zero (finite-sample
+    fitability); this is representation capacity on fixed data, never generalisation."""
+    module = _load_fitting_script()
+    torch.manual_seed(21)
+    design = torch.randn(6, 20, dtype=torch.float64)
+    truth = torch.randn(20, 5, dtype=torch.float64)
+    targets = design @ truth
+    out = module.unregularised_lstsq(design, targets)
+    assert out["full_row_rank"] is True
+    assert out["rank"] == 6
+    assert out["residual_sum_of_squares"] == pytest.approx(0.0, abs=1e-12)
+    assert out["driver"] == "gelsd"
+    assert len(out["singular_values"]) == 6
+
+
+def test_unregularised_lstsq_reports_rank_deficiency_honestly():
+    """A rank-deficient design must say so instead of silently returning a fit."""
+    module = _load_fitting_script()
+    base = torch.randn(10, 4, dtype=torch.float64)
+    design = torch.cat([base, base], dim=1)  # duplicated columns -> rank <= 4
+    targets = torch.randn(10, 3, dtype=torch.float64)
+    out = module.unregularised_lstsq(design, targets)
+    assert out["full_row_rank"] is False
+    assert out["rank"] <= 4
+    assert out["residual_sum_of_squares"] >= 0.0
+
+
+def test_scalar_calibration_recovers_a_global_scale_and_marks_degenerate():
+    """Review R3-C: a* is train-fitted and reported; zero energy is undefined, not zero."""
+    module = _load_fitting_script()
+    exact = torch.randn(8, 6)
+    pred = 2.0 * exact
+    got = module.scalar_calibration(pred, exact, pred)
+    assert got["a_star"] == pytest.approx(0.5)
+    assert got["undefined"] is None
+    dead = module.scalar_calibration(torch.zeros(8, 6), exact, torch.zeros(8, 6))
+    assert dead["a_star"] is None and dead["undefined"] is not None
+
+
+def test_fitting_preflight_refuses_a_missing_checkpoint(tmp_path):
+    """Session 5 lesson as executable behavior: no checkpoint, no numbers, no artefact."""
+    module = _load_fitting_script()
+    args = module.parse_args(["--cache-dir", str(tmp_path / "nope"),
+                              "--drive-root", str(tmp_path),
+                              "--output-dir", str(tmp_path / "out")])
+    with pytest.raises(SystemExit, match="missing teacher checkpoint"):
+        module.run(args, torch.device("cpu"))
+    assert not (tmp_path / "out" / "costate_fitting_summary.json").exists()
+
+
+def _load_pair_script():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "diagnose_pair_interactions", ROOT / "scripts/diagnose_pair_interactions.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _load_norm_script():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "diagnose_norm_controls", ROOT / "scripts/diagnose_norm_controls.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_pair_strata_partition_all_496_pairs_exactly_once():
+    """32 patches -> C(32,2) = 496 pairs; 2*C(16,2) = 240 within-camera, 16*16 = 256 cross."""
+    module = _load_pair_script()
+    strata = module.pair_strata()
+    assert sum(len(v) for v in strata.values()) == 496
+    assert len(strata["cross_camera"]) == 256
+    assert (len(strata["within_adjacent"]) + len(strata["within_distant"])) == 240
+    flat = [tuple(sorted(p)) for members in strata.values() for p in members]
+    assert len(set(flat)) == 496, "every pair covered exactly once"
+
+
+def test_sample_pairs_returns_an_exact_manifest():
+    """'Approximately 200' is not a manifest: exact count, strata labels, no duplicates."""
+    module = _load_pair_script()
+    manifest = module.sample_pairs(200, seed=7)
+    assert len(manifest) == 200
+    assert len({m["pair_id"] for m in manifest}) == 200
+    assert {m["stratum"] for m in manifest} == {"within_adjacent", "within_distant", "cross_camera"}
+    repeat = module.sample_pairs(200, seed=7)
+    assert [m["pair_id"] for m in repeat] == [m["pair_id"] for m in manifest]
+    other = module.sample_pairs(200, seed=8)
+    assert [m["pair_id"] for m in other] != [m["pair_id"] for m in manifest]
+
+
+def test_gradient_energy_preview_geometry_and_nonnegativity():
+    """[T,H,W,3] uint8 -> [T,16] nonneg energies on a 4x4 grid; uniform frames give ~zero."""
+    module = _load_norm_script()
+    flat = np.zeros((3, 180, 320, 3), dtype=np.uint8)
+    out = module.gradient_energy_preview(flat)
+    assert out.shape == (3, 16)
+    assert bool((out >= 0).all())
+    assert float(out.max()) == pytest.approx(0.0, abs=1e-6)
+    rng = np.random.default_rng(0)
+    textured = rng.integers(0, 256, size=(2, 64, 64, 3), dtype=np.uint8)
+    textured_out = module.gradient_energy_preview(textured)
+    assert float(textured_out.sum()) > 0.0
+    # A bright quadrant puts energy on its boundary, not in uniform interiors: the
+    # corner cell (uniform 255 throughout) must read exactly zero while some cell fires.
+    quad = np.zeros((1, 64, 64, 3), dtype=np.uint8)
+    quad[:, :32, :32, :] = 255
+    quad_out = module.gradient_energy_preview(quad)
+    assert quad_out[0, 0] == pytest.approx(0.0, abs=1e-6)
+    assert float(quad_out.max()) > 0.0
+
+
+def _load_gap_script():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "diagnose_information_gap", ROOT / "scripts/diagnose_information_gap.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_gap_design_matrices_have_declared_widths():
+    """Plan §7 manifests: every probe condition projected to one common width.
+
+    Raw counts (513 vs ~3600 on 16 rows) would confound information with nullspace size, so
+    all conditions share a seeded data-independent projection (review attack 2). Logged
+    future actions appear only under an explicit §0-violation label, never as legitimate
+    context (review attack 1).
+    """
+    module = _load_gap_script()
+    torch.manual_seed(31)
+    fake = lambda *shape: torch.randn(*shape)
+    fit = {"latent": fake(5, 32), "future_actions": fake(5, 4, 7),
+           "target_state": fake(5, 4, 14), "target_visual": fake(5, 4, 64)}
+    hold = {"latent": fake(3, 32), "future_actions": fake(3, 4, 7),
+            "target_state": fake(3, 4, 14), "target_visual": fake(3, 4, 64)}
+    designs = module.design_matrices(fit, hold, proj_dim=12, proj_seed=0)
+    assert set(designs) == {"A_deployment", "B_ctx_legitimate", "B_log_privileged",
+                            "C_privileged"}
+    for name, design in designs.items():
+        assert design["fit"].shape == (5, 12), name
+        assert design["hold"].shape == (3, 12), name
+        assert design["projection"]["out_dim"] == 12
+    assert designs["B_log_privileged"].get("section_zero_violation") is True
+    # Same seed reproduces the same projection; different seeds differ.
+    again = module.design_matrices(fit, hold, proj_dim=12, proj_seed=0)
+    assert torch.equal(again["A_deployment"]["fit"], designs["A_deployment"]["fit"])
+    other = module.design_matrices(fit, hold, proj_dim=12, proj_seed=1)
+    assert not torch.equal(other["A_deployment"]["fit"], designs["A_deployment"]["fit"])
+
+
+def test_gap_projection_is_data_independent():
+    """The capacity equaliser must not itself learn from the data (JL, not PCA)."""
+    module = _load_gap_script()
+    first = module.random_projector(100, 12, seed=3)
+    second = module.random_projector(100, 12, seed=3)
+    assert torch.equal(first, second)
+    assert first.shape == (100, 12)
+    assert abs(float((first.norm(dim=0).mean()) - 1.0)) < 0.35
+
+
+def test_gap_zero_fill_keeps_deployment_columns_and_intercept():
+    """Condition D mechanics: privileged blocks zeroed at test, latent + intercept intact."""
+    gap = _load_gap_script()
+    full = torch.arange(24, dtype=torch.float32).reshape(2, 12)
+    out = gap.zero_fill_privileged(full, n_keep=3)
+    assert torch.equal(out[:, :3], full[:, :3])
+    assert torch.equal(out[:, -1:], full[:, -1:])
+    assert bool((out[:, 3:-1] == 0).all())
+    with pytest.raises(ValueError, match="exceeds design width"):
+        gap.zero_fill_privileged(full, n_keep=12)
+
+
+def test_gap_projected_conditions_run_end_to_end_on_synthetic_data():
+    """The comparison machinery (projected designs + lstsq + metrics) executes on every
+    condition. With 10 rows and 12 projected columns all conditions can interpolate, so
+    this asserts structure and finiteness — not a scientific ordering, which the capacity
+    equalisation deliberately removes."""
+    fitting = _load_fitting_script()
+    gap = _load_gap_script()
+    torch.manual_seed(32)
+    latent = torch.randn(10, 8)
+    fit = {"latent": latent, "future_actions": torch.randn(10, 2, 3),
+           "target_state": torch.randn(10, 2, 3),
+           "target_visual": torch.randn(10, 2, 5)}
+    hold = {"latent": torch.randn(4, 8), "future_actions": torch.randn(4, 2, 3),
+            "target_state": torch.randn(4, 2, 3), "target_visual": torch.randn(4, 2, 5)}
+    designs = gap.design_matrices(fit, hold, proj_dim=12, proj_seed=0)
+    exact_fit = torch.randn(10, 4)
+    for name, design in designs.items():
+        out = fitting.unregularised_lstsq(design["fit"], exact_fit)
+        assert out["rank"] <= 12, name
+        assert math.isfinite(out["residual_sum_of_squares"]), name
+
+
+def _load_pair_analysis():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "diagnose_pair_interactions", ROOT / "scripts/diagnose_pair_interactions.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _toy_manifest():
+    return [
+        {"pair_id": "within_adjacent:00-01", "stratum": "within_adjacent", "patch_a": 0, "patch_b": 1},
+        {"pair_id": "within_adjacent:02-03", "stratum": "within_adjacent", "patch_a": 2, "patch_b": 3},
+    ]
+
+
+def _toy_rows(n_windows=3, shift=5.0, noise=0.0, seed=0):
+    """Synthetic per-window rows: pair_J = additive singleton sum + common shift + noise."""
+    rng = np.random.default_rng(seed)
+    rows = []
+    for w in range(n_windows):
+        singles = rng.normal(0, 1, size=4)
+        pairs = [singles[0] + singles[1] + shift, singles[2] + singles[3] + shift]
+        if noise:
+            pairs = [v + rng.normal(0, noise) for v in pairs]
+        rows.append({"window": w, "episode_id": f"ep{w % 2}",
+                     "base_J": 0.0,
+                     "singleton_J": [float(-v) for v in singles],
+                     "pair_J": [float(-v) for v in pairs]})
+    return rows
+
+
+def test_common_shift_preserves_ranking_but_dominates_epsilon():
+    """The review's counterexample: constant within-window shift -> large epsilon, perfect rank.
+
+    Magnitude ratios alone must not declare singleton rankings uninformative.
+    """
+    module = _load_pair_analysis()
+    rows = _toy_rows(shift=5.0)
+    out = module.analyse_pair_rows(rows, _toy_manifest(), {"ep0": "s", "ep1": "s"}, seed=0)
+    assert out["raw_rhos"][0] == pytest.approx(1.0)
+    assert abs(np.mean([e["epsilon"] for e in out["interactions"]])) > 1.0
+    assert np.mean(out["resid_frac"]) == pytest.approx(0.0, abs=1e-9)
+
+
+def test_pair_specific_noise_degrades_ranking():
+    module = _load_pair_analysis()
+    rows = _toy_rows(shift=0.0, noise=2.0, seed=1)
+    out = module.analyse_pair_rows(rows, _toy_manifest(), {"ep0": "s", "ep1": "s"}, seed=0)
+    assert np.nanmean(out["raw_rhos"]) < 1.0
+    assert np.nanmean(out["resid_frac"]) > 0.0
+
+
+def test_same_budget_contracts_are_explicit():
+    """Best-of-manifest scope, measured-vs-estimated flag, per-camera-free 2-patch sets."""
+    module = _load_pair_analysis()
+    # Fixed singleton gains: top-2 are patches (2,3), which IS in the manifest, so the
+    # joint is measured and the estimated-fallback path is not taken here.
+    rows = [{"window": w, "episode_id": "ep0", "base_J": 0.0,
+             "singleton_J": [0.0, -1.0, -3.0, -2.0],
+             "pair_J": [-1.5, -4.5]} for w in range(4)]
+    out = module.analyse_pair_rows(rows, _toy_manifest(), {"ep0": "s"}, seed=0)
+    assert len(out["diffs"]) == 4
+    assert out["wilcoxon"]["n"] == 4
+    assert set(out["cluster_ci"]) >= {"ci_low", "ci_high", "estimate"}
+    assert set(out["wilcoxon"]) >= {"statistic", "p_value"}
+    # Deterministic fixture: top-2 singletons are patches (2,3), which IS measured, so the
+    # joint is never the additive fallback here.
+    assert all(d["top_singleton_pair_measured"] for d in out["diffs"])
+
+
+def _load_mechanism_script():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "diagnose_mechanism_check", ROOT / "scripts/diagnose_mechanism_check.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_second_order_pair_correction_matches_hand_computation():
+    """epsilon_{p,q} = -dp^T H dq with diagonal H, hand-checked on a tiny case."""
+    module = _load_mechanism_script()
+    delta = torch.tensor([[[1.0, 0.0], [0.0, 2.0], [1.0, 1.0]]])
+    hessian = torch.tensor([[2.0, 3.0]])
+    out = module.second_order_pair_correction(delta, hessian, [(0, 1), (0, 2), (1, 2)])
+    # (0,1): -(2*1*0 + 3*0*2) = 0; (0,2): -(2*1*1 + 3*0*1) = -2; (1,2): -(2*0*1 + 3*2*1) = -6
+    assert out.shape == (1, 3)
+    assert torch.allclose(out, torch.tensor([[0.0, -2.0, -6.0]]))
+
+
+def test_second_order_pair_correction_rejects_shape_mismatch():
+    module = _load_mechanism_script()
+    with pytest.raises(ValueError, match=r"\[B, d\]"):
+        module.second_order_pair_correction(torch.zeros(2, 4), torch.zeros(2, 3), [(0, 1)])
+    with pytest.raises(ValueError, match=r"\[B, P, d\]"):
+        module.second_order_pair_correction(torch.zeros(2, 3, 4), torch.zeros(2, 4, 4), [(0, 1)])
+
+
+def test_mechanism_manifest_reuses_the_frozen_pair_set():
+    """The mechanism check must score the same pairs as the interaction panel (comparability)."""
+    module = _load_mechanism_script()
+    args = module.parse_args([])
+    assert args.n_pairs == 200 and args.pair_seed == 7 and args.windows == 32
+
+
+def _load_mechanism_script():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "diagnose_mechanism_check", ROOT / "scripts/diagnose_mechanism_check.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_pair_topk_overlap_is_plain_set_overlap():
+    """Pairs are unstructured: top-k overlap has no camera geometry in it."""
+    module = _load_mechanism_script()
+    scores = torch.tensor([[5.0, 1.0, 4.0, 2.0]])
+    truth = torch.tensor([[1.0, 5.0, 2.0, 4.0]])
+    # Top-2 of scores: {0, 2}; top-2 of truth: {1, 3} -> disjoint.
+    assert module.pair_topk_overlap(scores, truth, 2).item() == pytest.approx(0.0)
+    # Identical rankings agree fully.
+    assert module.pair_topk_overlap(truth, truth, 2).item() == pytest.approx(1.0)
+    with pytest.raises(ValueError, match="outside"):
+        module.pair_topk_overlap(scores, truth, 0)
+    with pytest.raises(ValueError, match="outside"):
+        module.pair_topk_overlap(scores, truth, 5)
+
+
+def test_analyse_mechanism_rows_separates_arms_and_reports_additivity():
+    """A/B/C/D arms from committed-style rows; additivity premise reported, not assumed."""
+    module = _load_mechanism_script()
+    manifest = [
+        {"pair_id": "m:00-01", "stratum": "s", "patch_a": 0, "patch_b": 1},
+        {"pair_id": "m:02-03", "stratum": "s", "patch_a": 2, "patch_b": 3},
+    ]
+    rows = []
+    for w in range(3):
+        # Additive world: pair gain == singleton sum -> epsilon ~ 0, additive ranks perfectly.
+        singles = [1.0, 2.0, 0.5, 1.5]
+        pairs = [3.0, 2.0]
+        rows.append({
+            "episode_id": "ep0", "site": "s",
+            "singleton_gains": singles, "measured_pair_gains": pairs,
+            "predicted_epsilon_2nd": [0.0, 0.0],
+            "first_order_singleton": singles,
+            "distilled_first_order_singleton": [s * 0.9 for s in singles],
+            "pair_additivity_relative": [0.0, 0.0],
+        })
+    out = module.analyse_mechanism_rows(rows, manifest, {"ep0": "s"})
+    assert out["pair_additivity"]["median_relative_residual"] == pytest.approx(0.0)
+    assert out["arm_rank_fidelity"]["C"] == pytest.approx(1.0)
+    assert out["arm_rank_fidelity"]["A"] == pytest.approx(1.0)
+    assert out["corrected_vs_additive_regret"]["n"] == 3
+
+
+def test_pair_reanalysis_resolves_sites_through_the_manifest():
+    """v2 rows carry no site field; the frozen shard manifest supplies the mapping."""
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "analyze_pair_rows", ROOT / "scripts/analyze_pair_rows.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    summary = {"window_rows": [{"episode_id": "x", "site": "unknown"}]}
+    mapping = module._sites(summary)
+    # Unknown episodes stay unknown; the manifest backfills real ones (superset harmless).
+    assert mapping["x"] == "unknown"
+    assert mapping["d43105d6fa4e8a76c01fff26"] == "ILIAD"
+
+
+def _load_pruning_script():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "diagnose_early_pruning", ROOT / "scripts/diagnose_early_pruning.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_pixel_mask_tiles_cells_and_keeps_only_kept():
+    module = _load_pruning_script()
+    mask = module.pixel_mask_for_cells([0, 5], 64, 64, grid=4)
+    assert mask.shape == (64, 64)
+    assert mask.dtype == bool
+    # Cell 0 -> rows 0-15, cols 0-15; cell 5 -> rows 16-31, cols 16-31.
+    assert mask[:16, :16].all() and mask[16:32, 16:32].all()
+    assert not mask[32:, :].any() and not mask[:, 32:].any()
+    assert mask.sum() == 2 * 16 * 16
+
+
+def test_pixel_mask_empty_and_full_are_exact():
+    module = _load_pruning_script()
+    assert not module.pixel_mask_for_cells([], 32, 32, grid=4).any()
+    assert module.pixel_mask_for_cells([0, 1, 2, 3], 32, 32, grid=2).all()
+
+
+def _load_conditional_script():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "train_conditional_allocator", ROOT / "scripts/train_conditional_allocator.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_training_schedule_is_half_fixed_half_student_and_deterministic():
+    """Frozen 50/50 mixture with a cap: the set-generation policy, not a tuning knob.
+
+    Every mask respects per-camera quotas (codex review 2026-10-05): fixed items name
+    per-camera counts in 0..8, student items name prefix lengths in 0..16.
+    """
+    module = _load_conditional_script()
+    first = module.build_training_schedule(10, 8, seed=0)
+    second = module.build_training_schedule(10, 8, seed=0)
+    assert first == second
+    for entry in first:
+        kinds = entry["kinds"]
+        assert len(kinds) == 8
+        assert sum(1 for k in kinds if k == "student") == 4
+        assert len(entry["fixed_counts"]) == 8
+        for counts in entry["fixed_counts"]:
+            assert len(counts) == 2
+            assert all(0 <= c <= 8 for c in counts)
+        assert all(0 <= p <= 16 for p in entry["prefix_lens"])
+
+
+def test_random_quota_mask_respects_per_camera_counts():
+    """Quota masks keep exactly the named count per camera on every window."""
+    module = _load_conditional_script()
+    from adjointrwm.spatial_selection import CAMERAS, camera_of_patch
+    generator = torch.Generator().manual_seed(0)
+    counts = [[3, 5], [0, 8], [8, 0]]
+    mask = module.random_quota_mask(3, counts, generator, torch.device("cpu"))
+    cameras = camera_of_patch(16, CAMERAS)
+    assert mask.shape == (3, 32)
+    for row, (a, b) in enumerate(counts):
+        assert int(mask[row][cameras == 0].sum()) == a
+        assert int(mask[row][cameras == 1].sum()) == b
+
+
+def test_protected_read_refuses_a_silent_reread(tmp_path):
+    """Read-once enforcement: a repeat read without an acknowledged reason refuses."""
+    import hashlib
+    import json as _json
+
+    module = _load_conditional_script()
+    manifest = tmp_path / "protected_manifest.json"
+    manifest.write_text(_json.dumps({"windows": [], "read_log": [{"purpose": "x"}]}))
+    (tmp_path / "protected_manifest.seal").write_text(
+        hashlib.sha256(manifest.read_bytes()).hexdigest() + "\n")
+    with pytest.raises(SystemExit, match="silent re-read"):
+        module._read_protected(manifest, "test")
+    doc = module._read_protected(manifest, "test", acknowledge_reread="unit test rerun")
+    assert doc["read_log"][-1]["acknowledged_reread_reason"] == "unit test rerun"
+
+
+def test_random_subset_mask_has_exact_cardinality():
+    module = _load_conditional_script()
+    generator = torch.Generator().manual_seed(0)
+    mask = module.random_subset_mask(6, 4, generator, torch.device("cpu"))
+    assert mask.shape == (6, 32)
+    assert bool(((mask.sum(dim=1) == 4)).all())
+    assert set(mask.unique().tolist()) <= {0.0, 1.0}
+
+
+def test_protected_read_refuses_a_broken_seal(tmp_path):
+    """Read-once enforcement: missing seal and tampered manifest both refuse."""
+    module = _load_conditional_script()
+    manifest = tmp_path / "protected_manifest.json"
+    manifest.write_text('{"windows": []}')
+    with pytest.raises(SystemExit, match="no seal file"):
+        module._read_protected(manifest, "test")
+    (tmp_path / "protected_manifest.seal").write_text("forged\n")
+    with pytest.raises(SystemExit, match="seal MISMATCH"):
+        module._read_protected(manifest, "test")
+
+
+def test_protected_read_logs_and_reseals(tmp_path):
+    """Every protected read is appended to the run log and the seal follows the bytes."""
+    import hashlib
+    import json as _json
+
+    module = _load_conditional_script()
+    manifest = tmp_path / "protected_manifest.json"
+    manifest.write_text(_json.dumps({"windows": [], "read_log": []}))
+    (tmp_path / "protected_manifest.seal").write_text(
+        hashlib.sha256(manifest.read_bytes()).hexdigest() + "\n")
+    doc = module._read_protected(manifest, "unit test")
+    assert doc["read_log"][-1]["purpose"] == "unit test"
+    assert (tmp_path / "protected_manifest.seal").read_text().strip() == \
+        hashlib.sha256(manifest.read_bytes()).hexdigest()
+
+
+def test_random_subset_mask_stream_is_device_independent():
+    """CUDA generators need explicit construction, so all RNG draws happen on CPU and
+    tensors move afterwards: same seed must give the same mask (regression test for the
+    generator/device mismatch caught on the first GPU run)."""
+    module = _load_conditional_script()
+    first = module.random_subset_mask(
+        4, 4, torch.Generator().manual_seed(0), torch.device("cpu"))
+    second = module.random_subset_mask(
+        4, 4, torch.Generator().manual_seed(0), torch.device("cpu"))
+    assert torch.equal(first, second)
+    assert bool(((first.sum(dim=1) == 4)).all())
+
+
+def test_theta_gate_uses_keyword_ci_and_reports_one_sided_bound():
+    """Regression: positional (2000, seed) bound confidence=seed=0, giving degenerate
+    zero-width intervals. theta_gate must report confidence 0.95, a strict interior
+    one-sided bound, and correct gate booleans on a constructed fixture."""
+    module = _load_conditional_script()
+    rng = np.random.default_rng(0)
+    sites = np.array(["s%d" % (i % 4) for i in range(40)])
+    single = rng.uniform(0.002, 0.006, size=40)
+    improvement = rng.uniform(0.05, 0.25, size=40)  # heterogeneous theta
+    cond = single * (1.0 - improvement)
+    gate = module.theta_gate(single, cond, sites, seed=0)
+    assert gate["n"] == 40
+    assert gate["n_excluded_nonpositive_denom"] == 0
+    assert gate["two_sided_ci_95"]["confidence"] == 0.95
+    mean_theta = improvement.mean()
+    assert gate["two_sided_ci_95"]["ci_low"] < mean_theta < gate["two_sided_ci_95"]["ci_high"]
+    assert gate["one_sided_95_lower"] <= mean_theta
+    assert gate["one_sided_95_lower"] >= gate["two_sided_ci_95"]["ci_low"]
+    assert gate["superiority_08"] is True
+    assert gate["non_inferiority_03"] is True
+
+
+def test_theta_gate_excludes_near_zero_denominators_without_epsilon():
+    """Windows with |R_single| <= 1e-12 must not enter theta as a ratio."""
+    module = _load_conditional_script()
+    single = np.array([0.004, 1e-13, 0.0, 0.005])
+    cond = np.array([0.003, 1e-14, 0.001, 0.006])
+    sites = np.array(["a", "a", "b", "b"])
+    gate = module.theta_gate(single, cond, sites, seed=0)
+    assert gate["n"] == 2
+    assert gate["n_excluded_nonpositive_denom"] == 2
+    assert gate["superiority_08"] is False  # mixed windows, tiny sample

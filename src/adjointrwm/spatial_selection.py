@@ -981,6 +981,48 @@ class PatchRankingCritic(nn.Module):
         return self.net(torch.cat([pooled, context, extra], dim=-1)).squeeze(-1)
 
 
+class ConditionalBenefitHead(nn.Module):
+    """Per-patch conditional benefit b_p(I,S): same input family as the singleton head plus
+    the already-selected set (Session 6C conditional spec, peer-reviewed).
+
+    Inputs per patch: ``[latent z; patch_emb_p; set_emb; set_size; budget; horizon]`` where
+    ``set_emb`` is the mean raw embedding of the selected set (zeros when S is empty) and
+    ``set_size`` is |S|/P. Capacity-matched via :func:`matched_patch_critic_hidden` on its
+    own fan-in, so the conditional-vs-singleton contrast is not a capacity contrast.
+    """
+
+    def __init__(self, token_dim: int, d_model: int, hidden: int | None = None):
+        super().__init__()
+        fan_in = token_dim + d_model + token_dim + 3
+        if hidden is None:
+            hidden = matched_patch_critic_hidden(fan_in, d_model)
+        self.token_dim = token_dim
+        self.d_model = d_model
+        self.net = MLP(fan_in, hidden, 1)
+
+    def forward(
+        self,
+        patch_tokens: torch.Tensor,
+        latent: torch.Tensor,
+        selected_mask: torch.Tensor,
+        budget: torch.Tensor,
+        horizon: torch.Tensor,
+    ) -> torch.Tensor:
+        pooled = patch_tokens.mean(dim=1)                                       # [B, P, D]
+        patches = pooled.shape[1]
+        context = latent.unsqueeze(1).expand(-1, patches, -1)
+        selected = selected_mask.to(pooled.dtype).unsqueeze(-1)                 # [B, P, 1]
+        count = selected.sum(dim=1, keepdim=True).clamp_min(1.0)
+        set_emb = ((pooled * selected).sum(dim=1, keepdim=True) / count
+                   ).expand(-1, patches, -1)
+        set_emb = torch.where((selected.sum(dim=1, keepdim=True) > 0).expand_as(set_emb),
+                              set_emb, torch.zeros_like(set_emb))
+        size = (selected.sum(dim=1) / patches).unsqueeze(-1).expand(-1, patches, -1)
+        extra = torch.stack([budget, horizon], dim=-1).unsqueeze(1).expand(-1, patches, -1)
+        return self.net(torch.cat([pooled, context, set_emb, size, extra],
+                                  dim=-1)).squeeze(-1)
+
+
 class PrivilegedPatchCritic(nn.Module):
     """Direct critic fed ``[lambda_hat, H_hat, dz_p]``; the decisive comparator (B3).
 
