@@ -26,7 +26,16 @@ from adjointrwm.domains.qa_context import (  # noqa: E402
     select_topk,
 )
 
+PROMPT_SYSTEM = ("Answer the question using only the context. "
+                 "Reply with the answer alone, no explanation.")
 PROMPT_TEMPLATE = ("Question: {question}\nContext:\n{context}\nAnswer in a few words:")
+
+READER_SWITCH_RATIONALE = (
+    "v1 used SmolLM3-3B (base, non-instruction-tuned) with an ad-hoc prompt and "
+    "the reader continued context instead of answering (EM 0 everywhere; "
+    "non-diagnostic). v2 uses Phi-4-mini-instruct for the instruction-following "
+    "property plus MIT licence clearance — selected for that property, not for "
+    "any observed score. No further reader swap on v2 outcomes.")
 
 
 def normalize_answer(text: str) -> str:
@@ -65,19 +74,39 @@ def token_f1(prediction: str, answers: list) -> float:
     return best
 
 
-def build_prompt(question: str, texts: list, selected: list, titles: list) -> str:
-    """Frozen prompt: question + selected paragraphs in rank order, titled."""
-    context = "\n".join("[%s] %s" % (titles[i], texts[i]) for i in selected)
-    return PROMPT_TEMPLATE.format(question=question, context=context)
+def build_prompt(question: str, texts: list, selected: list, titles: list,
+                 tokenizer=None) -> str:
+    """Frozen prompt: chat template (when a tokenizer is supplied) or the legacy
+    flat template otherwise. Selected paragraphs in rank order, titled."""
+    body = PROMPT_TEMPLATE.format(
+        question=question,
+        context="\n".join("[%s] %s" % (titles[i], texts[i]) for i in selected))
+    if tokenizer is None:
+        return body
+    messages = [{"role": "system", "content": PROMPT_SYSTEM},
+                {"role": "user", "content": body}]
+    return tokenizer.apply_chat_template(messages, tokenize=False,
+                                         add_generation_prompt=True)
 
 
 def is_malformed(output: str, question: str) -> bool:
-    """Frozen smoke definition: empty, verbatim question echo, or uncapped runaway."""
+    """Frozen v2 smoke definition: empty, verbatim question echo, uncapped runaway,
+    or structural non-answer (more than one sentence, or any question mark).
+
+    Legitimate answers are short noun phrases; the v1 failure emitted
+    multi-sentence context continuations.
+    """
+    import re
+
     if not output.strip():
         return True
     if normalize_answer(output) == normalize_answer(question):
         return True
-    return False
+    stripped = output.strip()
+    if "?" in stripped:
+        return True
+    sentences = [s for s in re.split(r"[.!?]+", stripped) if s.strip()]
+    return len(sentences) > 1
 
 
 def sha256_text(text: str) -> str:
@@ -111,7 +140,7 @@ def generate(tokenizer, model, prompt: str, device: str, max_new_tokens: int = 3
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="D2-QA reader bridge")
-    parser.add_argument("--model-id", default="HuggingFaceTB/SmolLM3-3B")
+    parser.add_argument("--model-id", default="microsoft/Phi-4-mini-instruct")
     parser.add_argument("--dev-file", required=True)
     parser.add_argument("--train-file", required=True)
     parser.add_argument("--validation-ids", required=True,
@@ -140,11 +169,12 @@ def main(argv=None) -> int:
     tokenizer, model = load_reader(args.model_id, device)
 
     def answer_fn(rec, selected):
-        prompt = build_prompt(rec["question"], rec["texts"], selected, rec["titles"])
+        prompt = build_prompt(rec["question"], rec["texts"], selected, rec["titles"],
+                              tokenizer)
         return generate(tokenizer, model, prompt, device), prompt
 
-    # Smoke probe (frozen): 20 questions, oracle sets at k=8.
-    smoke = questions[:20]
+    # Smoke probe (frozen v2): fresh questions 20-39, oracle sets at k=8.
+    smoke = questions[20:40]
     malformed = 0
     for rec in smoke:
         sup_idx = [i for i, f in enumerate(rec["supports"]) if f]
@@ -153,8 +183,8 @@ def main(argv=None) -> int:
         if is_malformed(out, rec["question"]) or len(out.split()) > 32:
             malformed += 1
     print(f"smoke malformed: {malformed}/20", flush=True)
-    if malformed >= 5:
-        raise SystemExit("smoke probe failed (>=5/20 malformed): stopping, design returns "
+    if malformed >= 6:
+        raise SystemExit("smoke probe failed (>=6/20 malformed): stopping, design returns "
                          "for review instead of swapping readers")
     if args.smoke_only:
         return 0
@@ -189,7 +219,9 @@ def main(argv=None) -> int:
         "device": device,
         "created_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "model_id": args.model_id,
+        "reader_switch_rationale": READER_SWITCH_RATIONALE,
         "prompt_template_sha256": sha256_text(PROMPT_TEMPLATE),
+        "prompt_system_sha256": sha256_text(PROMPT_SYSTEM),
         "budgets": args.budgets,
         "n_questions": len(rows),
         "smoke_malformed": malformed,

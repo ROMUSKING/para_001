@@ -142,3 +142,30 @@ def test_smoke_malformed_definition():
     assert module.is_malformed("", "Q?")
     assert module.is_malformed("Q?", "Q?")
     assert not module.is_malformed("Walt Disney", "Who developed it?")
+
+
+def test_smoke_malformed_structural_non_answer():
+    """v2 smoke: multi-sentence continuations and question marks are malformed;
+    short noun-phrase answers pass (extractive quotes allowed)."""
+    module = _load_bridge_script()
+    assert module.is_malformed("Paris. It is nice.", "Capital?")
+    assert module.is_malformed("Is it Paris?", "Capital?")
+    assert not module.is_malformed("The Treaty of Versailles was signed on 28 June 1919",
+                                   "When was it signed?")
+    assert not module.is_malformed("Walt Disney", "Who developed it?")
+
+
+def test_chat_template_applied_when_tokenizer_given():
+    """build_prompt routes through the chat template when supplied."""
+    module = _load_bridge_script()
+
+    class FakeTok:
+        def apply_chat_template(self, messages, tokenize, add_generation_prompt):
+            assert messages[0]["role"] == "system"
+            assert add_generation_prompt is True
+            return "TEMPLATED::" + messages[1]["content"][:10]
+
+    out = module.build_prompt("Q?", ["aaa"], [0], ["T"], FakeTok())
+    assert out.startswith("TEMPLATED::")
+    flat = module.build_prompt("Q?", ["aaa"], [0], ["T"])
+    assert flat.startswith("Question: Q?")
