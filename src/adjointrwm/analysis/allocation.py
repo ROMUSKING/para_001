@@ -347,3 +347,90 @@ def critic_realization_floor(validation_summary: Mapping) -> dict:
         "beats_uncertainty": "uncertainty" in policies and critic < policies["uncertainty"]["mean_regret"],
     }
     return {**checks, "passed": all(checks.values()), "critic_mean_regret": critic}
+
+
+# ---------------------------------------------------------------------------
+# N0.2 prohibited-shortcut tripwires (comprehensive plan, "Prohibited shortcuts")
+#
+# Each helper below fails loudly when a listed shortcut is present. They are
+# pure functions over plain data so any runner (notebooks, scripts, CI) can
+# call them; tests in tests/test_integrity_tripwires.py reintroduce each
+# shortcut and pin the failure.
+# ---------------------------------------------------------------------------
+
+def assert_single_hardware_stratum(records: Sequence[Mapping], key: str = "hardware") -> str:
+    """Refuse pooled systems claims across hardware strata (T4/L4/A100 never pooled).
+
+    Returns the single stratum when every record agrees; raises otherwise (including
+    when the key is missing — an untagged timing is not a licence to pool).
+    Scope limit: this checks consistency of tags, not validity — systematically
+    mistagged records (e.g. T4 runs labelled L4) pass, so tag provenance must be
+    established where the records are written, not here.
+    """
+    strata = set()
+    for i, record in enumerate(records):
+        if key not in record:
+            raise ValueError(
+                f"timing record {i} has no {key!r} tag: tag timing by hardware, "
+                "never pool untagged measurements")
+        strata.add(record[key])
+    if len(strata) != 1:
+        raise ValueError(
+            f"refusing pooled claim across hardware strata: {sorted(strata)}; "
+            "report T4/L4/A100 separately, never pooled")
+    return next(iter(strata))
+
+
+def assert_distinct_replicates(seed_hashes: Sequence[str]) -> int:
+    """Refuse silently replaced/duplicated seeds: every replicate hash must be unique.
+
+    Entries must be hex digests of at least 16 characters (full SHA-256 preferred):
+    bare seed integers, stringified floats, and short non-cryptographic tokens are
+    rejected, since string equality on those proves nothing about replicate
+    distinctness. Returns the replicate count.
+    """
+    import re as _re
+
+    hashes = list(seed_hashes)
+    for h in hashes:
+        if not isinstance(h, str) or not _re.fullmatch(r"[0-9a-fA-F]{16,}", h):
+            raise ValueError(
+                f"replicate id {h!r} is not a hex digest of at least 16 characters: "
+                "hash parameter sets or full checkpoints (SHA-256), never bare seed "
+                "integers or stringified floats")
+    hashes = list(seed_hashes)
+    if len(set(hashes)) != len(hashes):
+        seen, dupes = set(), set()
+        for h in hashes:
+            if h in seen:
+                dupes.add(h)
+            seen.add(h)
+        raise ValueError(
+            f"duplicate seed replicates detected ({len(dupes)} duplicated "
+            f"hash(es)): a failed or aborted seed must never be silently replaced")
+    return len(hashes)
+
+
+def assert_predictions_ignore_futures(predict, base_inputs: Mapping,
+                                      future_variants: Sequence[Mapping]) -> None:
+    """Refuse future leakage through selector inputs (dict-passed futures only).
+
+    Runs ``predict`` once on ``base_inputs`` and once per mapping in
+    ``future_variants`` (same deployment inputs, futures replaced with
+    independent values). Raises if any output differs. Scope limit: only futures
+    passed through the input dict are varied — a callback reading realised
+    futures through module globals, closures, files, or RNG state is NOT caught
+    here; that needs an input-boundary audit of the callback and its construction
+    path (see the conditional-gain protocol). Outputs are compared with
+    :func:`numpy.array_equal` after coercion, so both discrete choices and float
+    scores are covered. Returns None on success.
+    """
+    reference = np.asarray(predict(dict(base_inputs)))
+    for i, variant in enumerate(future_variants):
+        trial = dict(base_inputs)
+        trial.update(variant)
+        if not np.array_equal(np.asarray(predict(trial)), reference):
+            raise ValueError(
+                f"deployable prediction changed under future variant {i}: "
+                "realised futures (targets, logged future actions, oracle masks, "
+                "realised gains) must never enter selector inputs")
