@@ -1,0 +1,115 @@
+{
+ "family": "holm-6",
+ "exploratory": true,
+ "tests": [
+  {
+   "name": "recall learned-bm25 k=4",
+   "margin": 0.05,
+   "superiority": true,
+   "mean": 0.09000000000000001,
+   "n": 300,
+   "wilcoxon_two_sided_p": 1.3287210358594216e-07,
+   "one_sided_p": 6.643605179297108e-08,
+   "wald_se": 0.014942600445167391,
+   "wald_ci95": [
+    0.06071250312747192,
+    0.1192874968725281
+   ],
+   "holm_p": 1.9930815537891323e-07,
+   "holm_alpha": 0.016666666666666666,
+   "holm_lower": 0.05820147033633112,
+   "passes": true
+  },
+  {
+   "name": "recall learned-longest k=4",
+   "margin": -0.02,
+   "superiority": false,
+   "mean": 0.2280555555555555,
+   "n": 300,
+   "wilcoxon_two_sided_p": 3.5972071944593753e-22,
+   "one_sided_p": 1.7986035972296877e-22,
+   "wald_se": 0.019180933299449022,
+   "wald_ci95": [
+    0.19046092628863542,
+    0.2656501848224756
+   ],
+   "holm_p": 1.0791621583378127e-21,
+   "holm_alpha": 0.008333333333333333,
+   "holm_lower": 0.18213678869500835,
+   "passes": true
+  },
+  {
+   "name": "EM learned-bm25 k=4",
+   "margin": -0.02,
+   "superiority": false,
+   "mean": 0.013333333333333334,
+   "n": 300,
+   "wilcoxon_two_sided_p": 0.3544538072499379,
+   "one_sided_p": 0.17722690362496896,
+   "wald_se": 0.01700765997884924,
+   "wald_ci95": [
+    -0.02000168022521117,
+    0.04666834689187784
+   ],
+   "holm_p": 0.3544538072499379,
+   "holm_alpha": 0.025,
+   "holm_lower": -0.020001067686514426,
+   "passes": false
+  },
+  {
+   "name": "recall learned-bm25 k=8",
+   "margin": 0.05,
+   "superiority": true,
+   "mean": 0.08583333333333333,
+   "n": 300,
+   "wilcoxon_two_sided_p": 1.3550262406514436e-08,
+   "one_sided_p": 6.775131203257218e-09,
+   "wald_se": 0.014518602691204186,
+   "wald_ci95": [
+    0.05737687205857313,
+    0.11428979460809353
+   ],
+   "holm_p": 2.7100524813028872e-08,
+   "holm_alpha": 0.0125,
+   "holm_lower": 0.053291297660255754,
+   "passes": true
+  },
+  {
+   "name": "recall learned-longest k=8",
+   "margin": -0.02,
+   "superiority": false,
+   "mean": 0.18444444444444447,
+   "n": 300,
+   "wilcoxon_two_sided_p": 3.749159987222378e-15,
+   "one_sided_p": 1.874579993611189e-15,
+   "wald_se": 0.02114335779685045,
+   "wald_ci95": [
+    0.14300346316261758,
+    0.22588542572627135
+   ],
+   "holm_p": 9.372899968055944e-15,
+   "holm_alpha": 0.01,
+   "holm_lower": 0.1352576389836566,
+   "passes": true
+  },
+  {
+   "name": "EM learned-bm25 k=8",
+   "margin": -0.02,
+   "superiority": false,
+   "mean": 0.01,
+   "n": 300,
+   "wilcoxon_two_sided_p": 0.49760350968248623,
+   "one_sided_p": 0.24880175484124312,
+   "wald_se": 0.017339806697915353,
+   "wald_ci95": [
+    -0.023986021127914092,
+    0.043986021127914096
+   ],
+   "holm_p": 0.3544538072499379,
+   "holm_alpha": 0.05,
+   "holm_lower": -0.01852144393770349,
+   "passes": true
+  }
+ ],
+ "gate_passes": false
+}
