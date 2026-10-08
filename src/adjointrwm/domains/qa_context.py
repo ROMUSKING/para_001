@@ -110,8 +110,14 @@ def _doc_term_matrix(texts: Sequence[str]):
 
 
 def bm25_scores(question: str, texts: Sequence[str], k1: float = 1.2,
-                b: float = 0.75) -> np.ndarray:
-    """BM25 of each paragraph against the question (per-question IDF, frozen)."""
+                b: float = 0.75, extra_query_terms: Sequence[str] = (),
+                boost: Mapping[str, float] | None = None) -> np.ndarray:
+    """BM25 of each paragraph against the question (per-question IDF, frozen).
+
+    ``extra_query_terms`` appends deployment-visible terms (count 1 each);
+    ``boost`` multiplies individual query-term weights (each distinct boosted
+    term capped at its boost; unboosted terms weight 1).
+    """
     rows, vocab, df = _doc_term_matrix(texts)
     n = len(texts)
     idf = {t: math.log((n - df[i] + 0.5) / (df[i] + 0.5) + 1.0) for t, i in vocab.items()}
@@ -120,15 +126,19 @@ def bm25_scores(question: str, texts: Sequence[str], k1: float = 1.2,
     qtf: dict = {}
     for t in tokenize(question):
         qtf[t] = qtf.get(t, 0) + 1
+    for t in extra_query_terms:
+        qtf[t] = qtf.get(t, 0) + 1
+    boost = boost or {}
     scores = np.zeros(n)
     for t, q in qtf.items():
         if t not in vocab:
             continue
+        w = min(q * boost.get(t, 1.0), 2.0) if t in boost else q
         for d, counts in enumerate(rows):
             f = counts.get(t, 0)
             if f:
                 denom = f + k1 * (1.0 - b + b * lens[d] / avg)
-                scores[d] += idf[t] * f * (k1 + 1.0) / denom * q
+                scores[d] += idf[t] * f * (k1 + 1.0) / denom * w
     return scores
 
 
@@ -184,6 +194,127 @@ def miss_rate(selected: Sequence[int], supports: Sequence[bool]) -> float:
     hit = sum(1 for i, flag in enumerate(supports) if flag and i in s)
     total = sum(1 for flag in supports if flag)
     return 1.0 - hit / total
+
+
+def support_precision(selected: Sequence[int], supports: Sequence[bool]) -> float:
+    """Fraction of selected paragraphs that support (exposes bundle bloat)."""
+    if not selected:
+        return float("nan")
+    s = set(selected)
+    return sum(1 for i in s if supports[i]) / len(s)
+
+
+def complete_support_recovery(selected: Sequence[int], supports: Sequence[bool]) -> int:
+    """1 iff every supporting paragraph is selected, else 0."""
+    s = set(selected)
+    return int(all(i in s for i, flag in enumerate(supports) if flag))
+
+
+def hop_bucket(qid: str) -> str:
+    """2/3/4-hop bucket from the MuSiQue id prefix (unknown → 'other')."""
+    m = re.match(r"(\d+)hop", qid)
+    return (m.group(1) + "hop") if m else "other"
+
+
+def entity_spans(question: str) -> list:
+    """Visible entity spans: `[A-Z][a-z]+` runs (length ≥ 1) plus quoted spans.
+
+    Overlapping spans merged, each distinct span counted once. Question text
+    only — never labels, answers, or decompositions.
+    """
+    spans = set()
+    words = re.findall(r"[A-Za-z0-9']+", question)
+    run = []
+    for w in words + [""]:
+        if re.fullmatch(r"[A-Z][a-z]+", w or " "):
+            run.append(w)
+        else:
+            if run:
+                spans.add(" ".join(run))
+            run = []
+    for quoted in re.findall(r"'([^']+)'|\"([^\"]+)\"", question):
+        span = quoted[0] or quoted[1]
+        if span.strip():
+            spans.add(span.strip())
+    return sorted(spans)
+
+
+def top_tfidf_terms(text: str, corpus_texts: Sequence[str], question: str,
+                    n: int = 5) -> list:
+    """Top-n TF-IDF terms of one paragraph absent from the question.
+
+    Corpus = the question's own paragraphs, repo tokenization, no stopwords,
+    ties to first occurrence (frozen conventions).
+    """
+    rows, vocab, df = _doc_term_matrix(corpus_texts)
+    total_docs = len(corpus_texts)
+    excluded = set(tokenize(question))
+    doc_idx = list(corpus_texts).index(text)
+    counts = rows[doc_idx]
+    scored = []
+    seen_terms = set()
+    for position, t in enumerate(tokenize(text)):
+        if t in excluded or t in seen_terms:
+            continue
+        seen_terms.add(t)
+        tfidf = counts[t] * math.log(total_docs / (df[vocab[t]] + 1.0))
+        scored.append((t, tfidf, position))
+    scored.sort(key=lambda s: (-s[1], s[2]))
+    return [t for t, _, _ in scored[:n]]
+
+
+def incremental_bm25(question: str, texts: Sequence[str], k: int) -> list:
+    """Two frozen rounds: BM25 top-1, then BM25 with 5 new TF-IDF terms.
+
+    Duplicate suppression: the round-1 pick leads; remaining slots fill from the
+    round-2 ranking with the round-1 pick skipped.
+    """
+    first = select_topk(bm25_scores(question, texts), 1)[0]
+    new_terms = top_tfidf_terms(texts[first], texts, question, 5)
+    order = select_topk(bm25_scores(question, texts, extra_query_terms=new_terms),
+                        len(texts))
+    out = [first]
+    for i in order:
+        if i != first:
+            out.append(i)
+        if len(out) >= k:
+            break
+    return out[:k]
+
+
+def title_bundle(question: str, texts: Sequence[str], titles: Sequence[str],
+                 k: int) -> list:
+    """Whole title groups in BM25 group-rank order, skipping non-fitting groups.
+
+    Budget strictly enforced: a group is taken only if it fits the remaining
+    slots, otherwise skipped (undershoot recorded by the caller via length).
+    """
+    seen: dict = {}
+    for i, g in enumerate(titles):
+        seen.setdefault(g, []).append(i)
+    group_text = {g: " ".join(texts[i] for i in idx) for g, idx in seen.items()}
+    names = list(seen)
+    scores = bm25_scores(question, [group_text[g] for g in names])
+    order = sorted(range(len(names)), key=lambda i: (-scores[i], i))
+    out = []
+    for i in order:
+        members = seen[names[i]]
+        if len(out) + len(members) <= k:
+            out.extend(members)
+        if len(out) >= k:
+            break
+    return out[:k]
+
+
+R2_POLICIES: dict = {
+    "entity_expanded": lambda rec, k: select_topk(bm25_scores(
+        rec["question"], rec["texts"],
+        boost={t: 2.0 for span in entity_spans(rec["question"])
+               for t in tokenize(span)}), k),
+    "incremental_bm25": lambda rec, k: incremental_bm25(rec["question"], rec["texts"], k),
+    "title_bundle": lambda rec, k: title_bundle(rec["question"], rec["texts"],
+                                                rec["titles"], k),
+}
 
 
 def random_expected_miss(supports: Sequence[bool], k: int) -> float:

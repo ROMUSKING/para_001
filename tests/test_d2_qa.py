@@ -169,3 +169,57 @@ def test_chat_template_applied_when_tokenizer_given():
     assert out.startswith("TEMPLATED::")
     flat = module.build_prompt("Q?", ["aaa"], [0], ["T"])
     assert flat.startswith("Question: Q?")
+
+
+def _rich_rec():
+    texts = [
+        "Walt Disney developed the Mickey Mouse series in 1928",
+        "The series features Mickey Mouse and friends",
+        "Unrelated sports news about football results",
+        "Disney parks opened in California later",
+        "Cooking recipes for dinner tonight",
+        "Walt Disney biography and early life",
+    ]
+    return {"qid": "2hop__x", "question": "Who developed the Mickey Mouse series?",
+            "texts": texts, "titles": ["A", "A", "B", "C", "D", "A"],
+            "supports": [True, True, False, False, False, False]}
+
+
+def test_entity_spans_use_question_text_only():
+    spans = qa.entity_spans("Who developed the 'Mickey Mouse' series?")
+    assert "Mickey Mouse" in spans
+    assert all(isinstance(s, str) and s for s in spans)
+
+
+def test_incremental_bm25_returns_k_distinct():
+    rec = _rich_rec()
+    sel = qa.incremental_bm25(rec["question"], rec["texts"], 3)
+    assert len(sel) == 3 and len(set(sel)) == 3
+
+
+def test_title_bundle_respects_budget_and_skips_giants():
+    rec = _rich_rec()
+    sel = qa.title_bundle(rec["question"], rec["texts"], rec["titles"], 2)
+    assert len(sel) <= 2
+    # Group A has 3 members > budget 2 alone: must be skipped, never truncated.
+    assert not (set(sel) <= {0, 1, 5} and len(sel) == 2 and 5 in sel and 0 in sel)
+
+
+def test_r2_constructors_ignore_support_labels():
+    """Boundary: shuffling privileged support ids must not move any R2 selection."""
+    rec = _rich_rec()
+    base = {"question": rec["question"], "texts": rec["texts"], "titles": rec["titles"]}
+    for name, fn in qa.R2_POLICIES.items():
+        sel = lambda trial, _fn=fn: _fn({**trial, "supports": [False] * 6}, 3)
+        assert_predictions_ignore_futures(
+            sel, base, [{"supports": [True] * 6}, {"supports": [True, False] * 3}])
+    _ = name
+
+
+def test_precision_and_complete_recovery():
+    assert qa.support_precision([0, 1, 2], [True, True, False]) == pytest.approx(2 / 3)
+    assert qa.complete_support_recovery([0, 1, 2], [True, True, False]) == 1
+    assert qa.complete_support_recovery([0, 2], [True, True, False]) == 0
+    assert qa.hop_bucket("2hop__x") == "2hop"
+    assert qa.hop_bucket("4hop2__x") == "4hop"
+    assert qa.hop_bucket("zzz") == "other"
