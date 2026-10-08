@@ -216,6 +216,35 @@ def hop_bucket(qid: str) -> str:
     return (m.group(1) + "hop") if m else "other"
 
 
+def rung1_features(rec: Mapping) -> np.ndarray:
+    """Six deployment-valid per-paragraph features (Rung-1, frozen definitions).
+
+    BM25, TF-IDF cosine, token length, position index, title-match count
+    (shared tokens between question and title), entity-match count (shared
+    tokens between the paragraph and ``entity_spans(question)``). Only
+    question + visible texts/titles enter; supports, answers, aliases and
+    decompositions never do (boundary-tested).
+    """
+    question, texts, titles = rec["question"], rec["texts"], rec["titles"]
+    bm = bm25_scores(question, texts)
+    tf = tfidf_cosine_scores(question, texts)
+    qtok = set(tokenize(question))
+    espans = entity_spans(question)
+    espan_toks = set()
+    for span in espans:
+        espan_toks.update(tokenize(span))
+    feats = np.zeros((len(texts), 6))
+    for i, (text, title) in enumerate(zip(texts, titles)):
+        ptok = tokenize(text)
+        feats[i, 0] = bm[i]
+        feats[i, 1] = tf[i]
+        feats[i, 2] = len(ptok)
+        feats[i, 3] = i
+        feats[i, 4] = len(qtok & set(tokenize(title)))
+        feats[i, 5] = len(espan_toks & set(ptok))
+    return feats
+
+
 def entity_spans(question: str) -> list:
     """Visible entity spans: `[A-Z][a-z]+` runs (length ≥ 1) plus quoted spans.
 

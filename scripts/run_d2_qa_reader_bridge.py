@@ -148,6 +148,10 @@ def main(argv=None) -> int:
     parser.add_argument("--output-dir", required=True)
     parser.add_argument("--n-questions", type=int, default=300)
     parser.add_argument("--budgets", type=int, nargs="+", default=[4, 8])
+    parser.add_argument("--learned-sets", default=None,
+                        help="Rung-1 learned paragraph orders (qid -> ranked index list "
+                             "JSON, from train_d2_rung1_ranker); adds learned_k4/learned_k8 "
+                             "arms to the frozen reader eval. No other arm changes.")
     parser.add_argument("--device", default=None)
     parser.add_argument("--smoke-only", action="store_true")
     args = parser.parse_args(argv)
@@ -196,6 +200,13 @@ def main(argv=None) -> int:
         "bm25": lambda rec, k: POLICIES["bm25"](rec, k),
         "longest": lambda rec, k: POLICIES["longest_first"](rec, k),
     }
+    if args.learned_sets:
+        learned = {q: list(map(int, v)) for q, v in
+                   json.load(open(args.learned_sets)).items()}
+        missing_l = [q["qid"] for q in questions if q["qid"] not in learned]
+        if missing_l:
+            raise SystemExit(f"{len(missing_l)} questions lack learned sets")
+        sets["learned"] = lambda rec, k: learned[rec["qid"]][:k]
     rows = []
     for rec in questions:
         answers = [rec.get("answer", "")] + rec.get("answer_aliases", [])

@@ -223,3 +223,27 @@ def test_precision_and_complete_recovery():
     assert qa.hop_bucket("2hop__x") == "2hop"
     assert qa.hop_bucket("4hop2__x") == "4hop"
     assert qa.hop_bucket("zzz") == "other"
+
+
+def test_rung1_features_shape_and_boundary():
+    """Six features; shuffling all privileged fields leaves them bit-identical."""
+    rec = _rich_rec()
+    feats = qa.rung1_features({**rec, "answer": "x", "answer_aliases": ["y"],
+                               "decomposition": [{"q": 1}]})
+    assert feats.shape == (6, 6)
+    import copy
+    rec2 = copy.deepcopy(rec)
+    rec2["supports"] = [False] * 6
+    rec2["answer"], rec2["answer_aliases"] = "zzz", ["www"]
+    assert (qa.rung1_features(rec2) == feats).all()
+
+
+def test_rung1_features_entity_and_title_counts():
+    rec = {"qid": "q", "question": "Who developed Mickey Mouse?",
+           "texts": ["Mickey Mouse was developed by Walt Disney",
+                     "unrelated filler words here"],
+           "titles": ["Mickey Mouse bio", "Sports"],
+           "supports": [True, False]}
+    feats = qa.rung1_features(rec)
+    assert feats[0, 5] > feats[1, 5]  # entity matches concentrate on doc 0
+    assert feats[0, 4] > feats[1, 4]  # title matches concentrate on doc 0
