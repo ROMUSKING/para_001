@@ -1,0 +1,304 @@
+# Evidence register (R0; machine-readable source of truth for status claims)
+
+# Status values. integrity: verified | partial | unavailable | withdrawn.
+# verdict: positive | negative | inconclusive | non-diagnostic | void
+# lifecycle: active | completed | closed | withdrawn | superseded
+# strength: proof-check | microbenchmark | diagnostic | protected-validation | confirmatory
+# A README/paper claim may only use wording within `allowed_wording` below.
+
+claims:
+  - id: S4-curvature-voi
+    wording: "S4 gate passed as recorded (VOI 0.06354); mechanism interpretation void (VOI/curvature one family); regret number predates seed-integrity checks — not citable for any co-state claim"
+    scope: "12,462 windows, 3 seeds, L4; policy-level number only"
+    experiment: session-4-curvature-belief-space-voi
+    depends_on: []
+    superseded_by: null
+    strength: diagnostic
+    integrity: partial
+    verdict: non-diagnostic
+    lifecycle: completed
+    commit: 1c1eee2
+    artefact: results/benchmarks/curvature_voi
+    estimand: {name: mean-regret-difference, unit: nats, direction: lower-better}
+    uncertainty: site-clustered-bootstrap
+    cost_boundary: 27.2kHz-selection-path-only
+    licence: n/a-internal
+    note: docs/research-notes/2026-10-03-session-4-curvature-belief-space-voi.md
+    audit: docs/audits/2026-10-03_session5_seed_duplication_and_voi_identity_audit.md
+
+  - id: S5-robustness
+    wording: "primary endpoint unsupported; must not be cited for or against the co-state hypothesis"
+    scope: "12,462 evaluations, 2 distinct teachers (3rd seed duplicated)"
+    experiment: session-5-robustness
+    depends_on: []
+    superseded_by: null
+    strength: diagnostic
+    integrity: withdrawn
+    verdict: void
+    lifecycle: withdrawn
+    commit: 1c1eee2
+    artefact: results/benchmarks/robustness_horizon
+    estimand: {name: loso-mean-regret, unit: nats, direction: lower-better}
+    uncertainty: episode-clustered-bootstrap
+    cost_boundary: selection-path-only
+    licence: n/a-internal
+    note: docs/research-notes/2026-10-03-session-5-robustness-cost-sensitivity.md
+    audit: docs/audits/2026-10-03_session5_seed_duplication_and_voi_identity_audit.md
+
+  - id: S6A-spatial-negative
+    wording: "no deployable selector separates from any other, including stratified random; VOI-vs-curvature void (degenerate beta sweep), retired"
+    scope: "1,200 windows, 50 episodes, 12 sites, 3 seeds, L4"
+    experiment: session-6A-spatial-selection
+    depends_on: []
+    superseded_by: null
+    strength: protected-validation
+    integrity: verified
+    verdict: negative
+    lifecycle: closed
+    commit: 1c1eee2
+    artefact: results/benchmarks/spatial_selection_v2
+    estimand: {name: trimmed-mean-regret-ratio, unit: relative, direction: lower-better}
+    uncertainty: site-clustered-bootstrap
+    cost_boundary: selection-path-scoring-calls
+    licence: n/a-internal
+    note: docs/research-notes/2026-10-04-session-6a-spatial-selection.md
+    audit: docs/audits/2026-10-04_session_6a_voi_scale_and_sampling_audit.md
+    deviation: DEV-20261004-03
+
+  - id: S6C-lambda-bottleneck
+    wording: "lambda-hat distillation misses exact-lambda by ~170x; tested capacity/objective/input variants did not recover it"
+    scope: "192 stratified windows, L4; diagnostic, not a deployment comparison"
+    experiment: session-6C-bottleneck-WS0-WS2
+    depends_on: [S6A-spatial-negative]
+    superseded_by: null
+    strength: diagnostic
+    integrity: verified
+    verdict: inconclusive
+    lifecycle: completed
+    commit: 1c1eee2
+    artefact: results/benchmarks/spatial_bottleneck_v2
+    estimand: {name: spearman-vs-exact-gains, unit: correlation, direction: higher-better}
+    uncertainty: per-window-ranks
+    cost_boundary: n/a-diagnostic
+    licence: n/a-internal
+    note: docs/research-notes/2026-10-04-session-6a-bottleneck-diagnostic.md
+
+  - id: S6C-hessian-closed
+    wording: "tested cross-Hessian correction is negligible on a failed additivity premise (A identical to B); branch closed, no general Hessian claim"
+    scope: "32 windows, L4"
+    experiment: session-6C-mechanism-check
+    depends_on: [S6C-lambda-bottleneck]
+    superseded_by: null
+    strength: diagnostic
+    integrity: verified
+    verdict: negative
+    lifecycle: closed
+    commit: uncommitted-branch-opencode/b2-critic-probes
+    artefact: results/benchmarks/mechanism_check
+    estimand: {name: predicted-vs-measured-interaction, unit: nats, direction: lower-error-better}
+    uncertainty: per-window
+    cost_boundary: n/a-diagnostic
+    licence: n/a-internal
+    note: docs/research-notes/2026-10-05-session-6c-mechanism-check.md
+
+  - id: S6C-conditional-closed
+    wording: "conditional selection did not establish superiority over learned singleton (theta lower bounds below 8% at all budgets); formulation closed, norm/fixed retained"
+    scope: "150 protected VAL windows, 12 sites, L4"
+    experiment: session-6C-conditional-gain
+    depends_on: [S6C-lambda-bottleneck]
+    superseded_by: null
+    strength: protected-validation
+    integrity: partial
+    integrity_note: "overlap with the earlier invalid protected-set run cannot be established from preserved artefacts (manifest overwritten); thresholds and stopping decisions were not tuned on the earlier outcome"
+    verdict: negative
+    lifecycle: closed
+    commit: uncommitted-branch-opencode/b2-critic-probes
+    artefact: results/benchmarks/conditional_eval
+    estimand: {name: theta-per-window-ratio-mean, unit: relative, direction: higher-better}
+    uncertainty: site-clustered-bootstrap-one-sided
+    cost_boundary: scoring-calls-reported-not-latency
+    licence: n/a-internal
+    note: docs/research-notes/2026-10-05-session-6c-conditional-gain.md
+
+  - id: G-H2-programme
+    wording: "no confirmatory H2 test; programme class INCONCLUSIVE with teacher-only value as hypothesis (not verdict)"
+    scope: "synthesis of committed artefacts, no new runs"
+    experiment: G-H2-synthesis
+    depends_on: [S6A-spatial-negative, S6C-conditional-closed, B2.1-adaptive-sensing,
+      D4-1-critics]
+    considered_excluded: [S4-curvature-voi, S5-robustness]
+    superseded_by: null
+    strength: diagnostic
+    integrity: verified
+    verdict: inconclusive
+    lifecycle: active
+    commit: uncommitted-branch-opencode/b2-critic-probes
+    artefact: docs/research-notes/2026-10-05-g-h2-decision.md
+    estimand: {name: programme-exit-class, unit: categorical, direction: n/a}
+    uncertainty: n/a-synthesis
+    cost_boundary: n/a
+    licence: n/a-internal
+    note: docs/research-notes/2026-10-05-g-h2-decision.md
+    deviation: DEV-20261005-04
+
+  - id: B2-critic-readiness
+    wording: "direct critic UNDER_REALIZED_DUE_TO_COMPUTE_CONSTRAINTS (protocol bin, not causal): P0 floor fails low rung, P1/P2 unmet; H2 stays inconclusive; rescue stops at cap"
+    scope: "4 runs x 5 seeds, L4, same B2 lineage"
+    experiment: B2-critic-probes
+    depends_on: [G-H2-programme]
+    superseded_by: null
+    strength: diagnostic
+    integrity: verified
+    verdict: inconclusive
+    lifecycle: active
+    commit: uncommitted-branch-opencode/b2-critic-probes
+    artefact: results/benchmarks/critic_probes_w10
+    estimand: {name: rung-stratified-regret, unit: nats, direction: lower-better}
+    uncertainty: per-seed-panels
+    cost_boundary: declared-2x-probe-cap
+    licence: n/a-internal
+    note: docs/research-notes/2026-10-07-b2-critic-readiness.md
+
+  - id: D2QA-rung0
+    wording: "retrieval opportunity exists (G1 headroom 0.93) but question-text rankers keep ~26% (G2 fail); permission to pursue reader-aware Rung-1 design, not QA proof"
+    scope: "MuSiQue train/dev, answerable-only, CPU, no reader"
+    experiment: D2-QA-rung0
+    depends_on: []
+    superseded_by: null
+    strength: diagnostic
+    integrity: verified
+    verdict: inconclusive
+    lifecycle: active
+    commit: uncommitted-branch-opencode/b2-critic-probes
+    artefact: results/benchmarks/d2_qa_rung0
+    estimand: {name: support-miss-rate-area, unit: relative-area, direction: lower-better}
+    uncertainty: exploratory-point-estimates
+    cost_boundary: paragraph-slots-not-tokens
+    licence: CC-BY-4.0-StonyBrookNLP-MuSiQue
+    note: docs/research-notes/2026-10-07-d2-qa-rung0.md
+
+  - id: D2QA-bridge-v2
+    wording: "gate FAILs (BM25 loses to longest-first, p=0.0047 at k=4); oracle-BM25 contrast +30pp/+20pp descriptive only; no Rung-1 licence"
+    scope: "300 validation questions, Phi-4-mini-instruct frozen, L4"
+    experiment: D2-QA-reader-bridge-v2
+    depends_on: [D2QA-rung0]
+    superseded_by: null
+    strength: protected-validation
+    integrity: verified
+    verdict: negative
+    lifecycle: closed
+    commit: uncommitted-branch-opencode/b2-critic-probes
+    artefact: results/benchmarks/d2_qa_reader_bridge_v2
+    estimand: {name: paired-EM-difference, unit: percentage-points, direction: higher-better}
+    uncertainty: paired-wilcoxon-holm-2-budgets
+    cost_boundary: inference-calls-not-latency
+    licence: CC-BY-4.0-StonyBrookNLP-MuSiQue + MIT-Phi-4-mini
+    note: docs/research-notes/2026-10-07-d2-qa-reader-bridge-v2.md
+
+  - id: B2.1-adaptive-sensing
+    wording: "adjoint beats direct critic (-0.00808, CI excludes 0, 5/5 seeds) with the caveat that the critic collapsed to full observation (possibly under-realised)"
+    scope: "DROID-100, 5 seeds, L4"
+    experiment: B2.1-adaptive-sensing
+    depends_on: []
+    superseded_by: null
+    strength: microbenchmark
+    integrity: verified
+    verdict: positive
+    lifecycle: active
+    commit: 1c1eee2
+    artefact: results/runs/droid100_adjoint_v2_5seeds_20261001T080821Z/benchmarks/adaptive_sensing_allocator
+    estimand: {name: adjoint-minus-critic-regret, unit: nats, direction: lower-better}
+    uncertainty: episode-clustered-bootstrap-95CI
+    cost_boundary: selection-path-only
+    licence: n/a-internal
+    note: docs/research-notes/2026-10-01-b2-1-adaptive-sensing-allocator.md
+
+  - id: B1-rivals
+    wording: "repository AdjointRWM implementations beat 4 rival-family implementations on test proprioception RMSE under the enforced fairness contract; says nothing about H2 or the published systems on their own tasks"
+    scope: "DROID-100, 5 seeds; E3.1 shard confirmatory"
+    experiment: B1-rival-world-models
+    depends_on: []
+    superseded_by: null
+    strength: microbenchmark
+    integrity: verified
+    verdict: positive
+    lifecycle: active
+    commit: 1c1eee2
+    artefact: results/runs/droid100_rivals_20261001T094713Z
+    estimand: {name: test-proprio-RMSE, unit: native, direction: lower-better}
+    uncertainty: cluster-bootstrap
+    cost_boundary: matched-prediction-parameters
+    licence: n/a-internal
+    note: docs/research-notes/2026-10-01-rival-world-models-droid100.md
+
+  - id: D4-1-critics
+    wording: "co-state critic does not beat the direct critic at real prices; teacher-only value at hypothetical lookup price (m4), inconclusive (m64); not evidence for H2"
+    scope: "CPU simulation, cells m4/m64"
+    experiment: D4-1-learned-critics
+    depends_on: []
+    superseded_by: null
+    strength: diagnostic
+    integrity: verified
+    verdict: inconclusive
+    lifecycle: closed
+    commit: 1c1eee2
+    artefact: results/runs/d4_1_learned_critics_20260930T122312Z
+    estimand: {name: compute-ratio-vs-uniform, unit: relative, direction: lower-better}
+    uncertainty: per-cell-rules
+    cost_boundary: FLOP-priced-scoring
+    licence: n/a-internal
+    note: docs/research-notes/2026-09-30-d4-1-learned-critics.md
+
+  - id: D2-confirm-closed
+    wording: "confirmatory GATE FAILs on primary and sensitivity; only recall-k4 passes; EM negative both budgets; frozen formulation closed, H2 unchanged"
+    scope: "1,417 remaining ids, 439 union clusters; Phi-4-mini-instruct frozen; L4"
+    experiment: D2-confirmatory
+    depends_on: [D2QA-rung0]
+    superseded_by: null
+    strength: confirmatory
+    integrity: verified
+    verdict: negative
+    lifecycle: closed
+    commit: uncommitted-branch-opencode/b2-critic-probes
+    artefact: results/benchmarks/d2_confirm_gate.json
+    estimand: {name: paired-EM-difference, unit: percentage-points, direction: higher-better}
+    uncertainty: component-clustered-bootstrap-holm-6
+    cost_boundary: inference-calls-not-latency
+    licence: CC-BY-4.0-StonyBrookNLP-MuSiQue + MIT-Phi-4-mini
+    note: docs/research-notes/2026-10-09-d2-confirm.md
+
+  - id: D5-rung0-closed
+    wording: "G1 headroom 0.0058 with informative value granularity; oracle tracks fixed at all budgets; formulation closed, no budget rescue"
+    scope: "87,516 jobs, 44 tuning + 45 validation windows, Borg 2011 slice"
+    experiment: D5-cluster-rung0
+    depends_on: []
+    superseded_by: null
+    strength: diagnostic
+    integrity: verified
+    verdict: negative
+    lifecycle: closed
+    commit: uncommitted-branch-opencode/b2-critic-probes
+    artefact: results/benchmarks/d5_cluster_rung0
+    estimand: {name: headroom-area-ratio, unit: relative-area, direction: higher-better}
+    uncertainty: exploratory-point-estimates
+    cost_boundary: paragraph-slots-n/a
+    licence: CC-BY-4.0-Google-clusterdata
+    note: docs/research-notes/2026-10-08-d5-cluster-rung0.md
+
+  - id: B2.2-allocator-optimization
+    wording: "extended training improves over the fixed refusal policy (gap crossed); learned-to-exact gap NOT closed; co-state advantage widens with steps against a flatlined matched critic"
+    scope: "DROID-100, 5 seeds, 300/1000/2500 steps, L4"
+    experiment: B2.2-allocator-optimization
+    depends_on: []
+    superseded_by: null
+    strength: microbenchmark
+    integrity: verified
+    verdict: positive
+    lifecycle: active
+    commit: 1c1eee2
+    artefact: results/runs/droid100_adjoint_v2_5seeds_20261001T080821Z/benchmarks/allocator_optimization
+    estimand: {name: regret-vs-fixed-refusal, unit: nats, direction: lower-better}
+    uncertainty: pooled-seeds
+    cost_boundary: head-training-steps
+    licence: n/a-internal
+    note: docs/research-notes/2026-10-01-b2-2-allocator-optimization.md
