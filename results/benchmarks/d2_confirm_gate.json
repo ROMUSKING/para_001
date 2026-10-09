@@ -1,0 +1,171 @@
+{
+ "primary_1417_clustered": {
+  "family": "holm-6-clustered",
+  "tests": [
+   {
+    "name": "recall learned-bm25 k=4",
+    "mean": 0.05780992707598213,
+    "n": 1417,
+    "n_clusters": 439,
+    "one_sided_p": 5.878275199764737e-15,
+    "margin": 0.05,
+    "superiority": true,
+    "holm_p": 2.3513100799058948e-14,
+    "holm_alpha": 0.0125,
+    "holm_lower": 0.035053469241773966,
+    "passes": true
+   },
+   {
+    "name": "recall learned-bm25 k=8",
+    "mean": 0.03887320630439897,
+    "n": 1417,
+    "n_clusters": 439,
+    "one_sided_p": 8.808461445188e-07,
+    "margin": 0.05,
+    "superiority": true,
+    "holm_p": 2.6425384335564004e-06,
+    "holm_alpha": 0.016666666666666666,
+    "holm_lower": 0.01769226915651133,
+    "passes": false
+   },
+   {
+    "name": "recall learned-longest k=4",
+    "mean": 0.2694660079981181,
+    "n": 1417,
+    "n_clusters": 439,
+    "one_sided_p": 1.2273287681049998e-103,
+    "margin": -0.02,
+    "superiority": false,
+    "holm_p": 7.363972608629999e-103,
+    "holm_alpha": 0.008333333333333333,
+    "holm_lower": 0.22583255785370002,
+    "passes": true
+   },
+   {
+    "name": "recall learned-longest k=8",
+    "mean": 0.20859797694660082,
+    "n": 1417,
+    "n_clusters": 439,
+    "one_sided_p": 4.977006905772912e-71,
+    "margin": -0.02,
+    "superiority": false,
+    "holm_p": 2.4885034528864563e-70,
+    "holm_alpha": 0.01,
+    "holm_lower": 0.1671601135862932,
+    "passes": true
+   },
+   {
+    "name": "EM learned-bm25 k=4",
+    "mean": -0.004940014114326041,
+    "n": 1417,
+    "n_clusters": 439,
+    "one_sided_p": 0.7769863295112596,
+    "margin": -0.02,
+    "superiority": false,
+    "holm_p": 1.0,
+    "holm_alpha": 0.025,
+    "holm_lower": -0.024123689989982273,
+    "passes": false
+   },
+   {
+    "name": "EM learned-bm25 k=8",
+    "mean": -0.01834862385321101,
+    "n": 1417,
+    "n_clusters": 439,
+    "one_sided_p": 0.9944602869730734,
+    "margin": -0.02,
+    "superiority": false,
+    "holm_p": 1.0,
+    "holm_alpha": 0.05,
+    "holm_lower": -0.03789078700655284,
+    "passes": false
+   }
+  ],
+  "gate_passes": false
+ },
+ "sensitivity_clean282_clustered": {
+  "family": "holm-6-clustered",
+  "tests": [
+   {
+    "name": "recall learned-bm25 k=4",
+    "mean": 0.04550827423167848,
+    "n": 282,
+    "n_clusters": 200,
+    "one_sided_p": 0.0009915730988057766,
+    "margin": 0.05,
+    "superiority": true,
+    "holm_p": 0.003966292395223107,
+    "holm_alpha": 0.0125,
+    "holm_lower": 0.009545286825196017,
+    "passes": false
+   },
+   {
+    "name": "recall learned-bm25 k=8",
+    "mean": 0.0076832151300236405,
+    "n": 282,
+    "n_clusters": 200,
+    "one_sided_p": 0.42690679319626046,
+    "margin": 0.05,
+    "superiority": true,
+    "holm_p": 1.0,
+    "holm_alpha": 0.016666666666666666,
+    "holm_lower": -0.02873567378453372,
+    "passes": false
+   },
+   {
+    "name": "recall learned-longest k=4",
+    "mean": 0.30319148936170215,
+    "n": 282,
+    "n_clusters": 200,
+    "one_sided_p": 5.2083567037388565e-27,
+    "margin": -0.02,
+    "superiority": false,
+    "holm_p": 3.125014022243314e-26,
+    "holm_alpha": 0.008333333333333333,
+    "holm_lower": 0.24721869406581304,
+    "passes": true
+   },
+   {
+    "name": "recall learned-longest k=8",
+    "mean": 0.2145390070921986,
+    "n": 282,
+    "n_clusters": 200,
+    "one_sided_p": 8.485834574932067e-17,
+    "margin": -0.02,
+    "superiority": false,
+    "holm_p": 4.242917287466034e-16,
+    "holm_alpha": 0.01,
+    "holm_lower": 0.1519944777957362,
+    "passes": true
+   },
+   {
+    "name": "EM learned-bm25 k=4",
+    "mean": -0.0035460992907801418,
+    "n": 282,
+    "n_clusters": 200,
+    "one_sided_p": 0.5877963804622754,
+    "margin": -0.02,
+    "superiority": false,
+    "holm_p": 1.0,
+    "holm_alpha": 0.025,
+    "holm_lower": -0.0398553733930377,
+    "passes": false
+   },
+   {
+    "name": "EM learned-bm25 k=8",
+    "mean": -0.01773049645390071,
+    "n": 282,
+    "n_clusters": 200,
+    "one_sided_p": 0.8651470801620025,
+    "margin": -0.02,
+    "superiority": false,
+    "holm_p": 1.0,
+    "holm_alpha": 0.05,
+    "holm_lower": -0.04794520547945205,
+    "passes": false
+   }
+  ],
+  "gate_passes": false
+ },
+ "exploratory_labels_removed_for_this_analysis_only": true
+}
